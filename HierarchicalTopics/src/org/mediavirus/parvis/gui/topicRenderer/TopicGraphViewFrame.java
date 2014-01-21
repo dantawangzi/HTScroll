@@ -204,14 +204,24 @@ public class TopicGraphViewFrame extends JFrame {
         boolean isMagnified;
         Font font;
         int stringSize;
-        Color color;
+        Color rectColor;
         int index;
         TreeNode node;
         boolean isDisplayed;
         int occurance;
         float probablity;
         Point2D location;
-
+        boolean highlightFromLabelTopics = false;
+        
+        Color stringColor;
+        
+        
+        
+        public void setHighlightFromLabelTopics(boolean b)
+        {
+            
+            highlightFromLabelTopics = b;
+        }
         public int getOccurance() {
             return occurance;
         }
@@ -238,14 +248,17 @@ public class TopicGraphViewFrame extends JFrame {
         }
 
         public void drawRect(Graphics g) {
-            g.setColor(Color.yellow);
+            if (this.rectColor!=null)
+                g.setColor(this.rectColor);
+            else
+                g.setColor(Color.LIGHT_GRAY);
 
             g.fillRect((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
             // g.drawString(s, posX, posY);
         }
 
         public void drawString(Graphics g) {
-            g.setColor(color);
+            g.setColor(this.stringColor);
             g.setFont(font);
 
             g.drawString(s, posX, posY);
@@ -275,8 +288,12 @@ public class TopicGraphViewFrame extends JFrame {
             return this.font;
         }
 
-        public void setColor(Color f) {
-            color = f;
+        public void setRectColor(Color f) {
+            rectColor = f;
+        }
+        
+        public void setStringColor(Color f) {
+            stringColor = f;
         }
 
         public void setString(String ss) {
@@ -1704,6 +1721,9 @@ public class TopicGraphViewFrame extends JFrame {
                                     if (highlightOne == 1) {
                                         temp.drawRect(g);
                                     }
+                                    
+                                    if (temp.highlightFromLabelTopics == true)
+                                        temp.drawRect(g);
 
                                     //temp.drawRect(g);
                                     if (temp.isDisplayed) {
@@ -1984,7 +2004,13 @@ public class TopicGraphViewFrame extends JFrame {
 
     public void highLightByYearIdxKwNode(TreeNode key, int selectedTimeColumnIdx, List<List<int[]>> tYK, HashMap<TreeNode, List<labelText>> hm) {
 
-
+        if (tYK == null)
+        {
+            System.out.println("topic Year Keywords is null");
+            return;
+        }
+        
+        
         TreeNode t = key;
 
         ObservableCachingLayout lll = (ObservableCachingLayout) vv.getGraphLayout();
@@ -2251,6 +2277,105 @@ public class TopicGraphViewFrame extends JFrame {
 
     }
 
+    
+    public void setHighlightLabelsFromLabelTopics(HashMap<String, List<Integer>> highindex, HashMap<String, List<Float>> highweight,HashMap<String, Color> highIndexNumber)
+    {
+        //Color []colorPlate = {Color.CYAN, Color.pink, Color.MAGENTA, Color.gray};
+        for (List<labelText> lt : allLabels.values())
+        {
+            for (labelText l : lt)
+            {
+                l.setHighlightFromLabelTopics(false);
+                l.setRectColor(Color.yellow);
+            }                        
+        }
+        
+        
+        Iterator it = highindex.keySet().iterator();
+        int currI = 0;
+        while(it.hasNext())
+        {
+            String key = (String)it.next();
+            List<Integer> index = highindex.get(key);
+            List<Float> weight = highweight.get(key);
+            Color highlightColor = highIndexNumber.get(key);
+            
+              
+                
+            int size2 = index.size();
+            Color tempColor = highlightColor;
+            
+             Color convertColor = null;
+            
+            for (int j=0; j<index.size(); j++)
+            {
+                
+                
+                
+                int nodeindex = index.get(j);
+                ObservableCachingLayout lll = (ObservableCachingLayout) vv.getGraphLayout();
+                TreeNode found = null;
+                for (int i = 0; i < lll.getGraph().getVertices().size(); i++)
+                {
+                    Object o = lll.getGraph().getVertices().toArray()[i];
+                    if (o instanceof TreeNode)
+                    {
+                        TreeNode t = (TreeNode) lll.getGraph().getVertices().toArray()[i];                    
+                        if (t.getChildren().isEmpty() && t.getValue().contains("L") && t.getIndex() == nodeindex)
+                        {
+                            found = t;
+                            break;
+                        }
+
+                    }
+
+                }
+
+                
+                List<labelText> l = allLabels.get(found);
+             
+                     
+                     if (index.size() != 1)
+            {
+                        convertColor = new Color(highlightColor.getRGB());
+                        float[] hsv = new float[3];
+                        hsv = Color.RGBtoHSB(tempColor.getRed(), tempColor.getGreen(), tempColor.getBlue(), hsv);
+                                            
+                        float weightJ = weight.get(j);
+                         System.out.println(weightJ + " " + hsv[0] + " " + hsv[1] + " " + hsv[2]);
+                        hsv[1] = hsv[1]*weightJ;
+                        
+                        int tempColorInt = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
+                        convertColor = new Color(tempColorInt);
+                        System.out.println(convertColor.getRed() + " " + convertColor.getGreen() + " " + convertColor.getBlue());
+                
+            }
+
+                for (labelText tempLT : l)
+                {
+                    
+                   
+            
+                    
+                    
+                    if (index.size()==1)
+                        tempLT.setRectColor(tempColor);
+                    else
+                        tempLT.setRectColor(convertColor);
+                    
+                    tempLT.setHighlightFromLabelTopics(true);    
+                }
+
+            }
+            currI++;
+            
+        }
+                  
+        
+         vv.repaint();
+        
+        
+    }
     void buildLabelLocations() {
 
         allLabels.clear();
@@ -2313,7 +2438,7 @@ public class TopicGraphViewFrame extends JFrame {
                         //Font HelveticaFont = new Font("Helvetica", Font.BOLD, 12);
 
                         tempLT.setFont(font);
-                        tempLT.setColor(Color.BLUE);
+                        //tempLT.setColor(Color.BLUE);
 
                         tempLT.column = index;
 
@@ -2417,7 +2542,7 @@ public class TopicGraphViewFrame extends JFrame {
                         font = new Font("Font", Font.PLAIN, occuranceFontSizePara * tempLT.getOccurance()/*occurances.get(index + 1)[j]*/ + labelFontSize);
                         tempLT.setFont(font);
 
-                        tempLT.setColor(Color.BLUE);
+                        //tempLT.setColor(Color.BLUE);
                         tempLT.isHighlighted = false;
 
                         tempLT.column = index;
@@ -2631,12 +2756,12 @@ public class TopicGraphViewFrame extends JFrame {
 
                                 font = new Font(HelveticaFont, Font.BOLD, occuranceFontSizePara * tempLT.getOccurance()/*occurances.get(index + 1)[j]*/ + highlightFontSize);
                                 tempLT.setFont(font);
-                                tempLT.setColor(Color.BLACK);
+                                tempLT.setStringColor(Color.BLACK);
 
                             } else {
                                 font = new Font(HelveticaFont, Font.PLAIN, occuranceFontSizePara * tempLT.getOccurance()/*occurances.get(index + 1)[j]*/ + labelFontSize);
                                 tempLT.setFont(font);
-                                tempLT.setColor(Color.BLUE);
+                                tempLT.setStringColor(Color.BLUE);
 
                             }
 
@@ -2686,12 +2811,12 @@ public class TopicGraphViewFrame extends JFrame {
 
                             font = new Font(HelveticaFont, Font.BOLD, occuranceFontSizePara * tempLT.getOccurance()/*occurances.get(index + 1)[j]*/ + highlightFontSize);
                             tempLT.setFont(font);
-                            tempLT.setColor(Color.BLACK);
+                            tempLT.setStringColor(Color.BLACK);
 
                         } else {
                             font = new Font(HelveticaFont, Font.PLAIN, occuranceFontSizePara * tempLT.getOccurance()/*occurances.get(index + 1)[j]*/ + labelFontSize);
                             tempLT.setFont(font);
-                            tempLT.setColor(Color.BLUE);
+                            tempLT.setStringColor(Color.BLUE);
 
                         }
 

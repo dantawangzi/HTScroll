@@ -193,7 +193,7 @@ public class CSVReader implements Closeable {
      */
     public List<String[]> readAll() throws IOException {
         
-        int count = 0;
+        //int count = 0;
         List<String[]> allElements = new ArrayList<String[]>();
         while (hasNext) {
    
@@ -201,7 +201,7 @@ public class CSVReader implements Closeable {
             if (nextLineAsTokens != null)
                 allElements.add(nextLineAsTokens);
             
-            count++;
+            //count++;
         }
         return allElements;
 

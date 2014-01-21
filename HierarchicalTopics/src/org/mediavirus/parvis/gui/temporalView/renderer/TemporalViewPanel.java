@@ -95,16 +95,13 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     private DateFormat timeIntervalFormat;
     private int level = -1;
 
-    
-    
-    public void setMyPanelSize(int w, int h)
-    {
+    public void setMyPanelSize(int w, int h) {
         myPanelWidth = w;
         myPanelHeight = h;
         setPreferredSize(new Dimension(w, h));
-        
-        
+
     }
+
     public int getLevel() {
         return level;
     }
@@ -128,9 +125,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     public void setMyPanelHeight(int myPanelHeight) {
         this.myPanelHeight = myPanelHeight;
     }
-    
-    
-    
+
     private boolean zoomed = false;
 
     public boolean isZoomed() {
@@ -1675,7 +1670,6 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
                 //Rectangle2D rect = currentStreams.get(index).getRenderRegion().getBounds2D();
 
                 //PathIterator path = currentStreams.get(index).getRenderRegion().getPathIterator(null);
-
                 //currentStreams.get(index).getRenderRegion().
 //                float temp_sum = 0;
 //                int count = 0;
@@ -1691,9 +1685,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //
 //                    }
 //                }
-
-               // temp_sum = temp_sum / count;
-
+                // temp_sum = temp_sum / count;
                 Font font = new Font("Arial", Font.PLAIN, 20);
                 g2d.setColor(Color.black);
                 g2d.setFont(font);
@@ -1934,12 +1926,13 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
         } else {
             long millis = 0;
-            
-            if (parent.getTemporalFrame().getData().getHr2ms() == null)
+
+            if (parent.getTemporalFrame().getData().getHr2ms() == null) {
                 millis = 0;
-            else
+            } else {
                 millis = parent.getTemporalFrame().getData().getHr2ms();
-            
+            }
+
             long days = TimeUnit.MILLISECONDS.toDays(millis);
             intervalString = days + "day(s)";
         }
@@ -2015,11 +2008,10 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         g2d.drawString(intervalString, 10, 0 + height / 20);
 
         int size = 0;
-        
+
         if (multiTopicKeywordList != null) {
-            
-                size = multiTopicKeywordList.size();
-           
+
+            size = multiTopicKeywordList.size();
 
             for (int i = 0; i < size; i++) {
                 String s = multiTopicKeywordList.get(i).getString();
@@ -2300,25 +2292,20 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     public HashMap<TopicGraphViewFrame.customLabelTimecolumnKey, List<TopicGraphViewFrame.labelText>> getLabelTimeMap() {
         return labelTimeMap;
     }
-    
-    
-    
-    
-    HashMap< TopicGraphViewFrame.customLabelTimecolumnKey , List<TopicGraphViewFrame.labelText>> labelTimeMap 
-            = new HashMap< TopicGraphViewFrame.customLabelTimecolumnKey ,List<TopicGraphViewFrame.labelText>>();
-    
-    public void buildLabelTimeMap()
-    {                        
-                
-        
-//        if (this.getData().topicYearKwIdx!=null)
-//            labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), this.getData().topicYearKwIdx );
-//                    
-        
-                
+
+    HashMap< TopicGraphViewFrame.customLabelTimecolumnKey, List<TopicGraphViewFrame.labelText>> labelTimeMap
+            = new HashMap< TopicGraphViewFrame.customLabelTimecolumnKey, List<TopicGraphViewFrame.labelText>>();
+
+    /**
+     * Wenwen: comment here if not want word cloud
+     */
+    public void buildLabelTimeMap() {
+
+        if (this.getData().topicYearKwIdx != null) {
+            //labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), this.getData().topicYearKwIdx);
+        }
+
     }
-    
-    
 
     public Point2D currentMouseLocation = new Point2D.Double();
 
@@ -2335,10 +2322,8 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //                size = 20;
 //            } 
 //        else
-            size = ls.size();
-            
-            
-        
+        size = ls.size();
+
         for (int i = 0; i < size; i++) {
             TopicGraphViewFrame.labelText lt = ls.get(i);
 
@@ -2361,8 +2346,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
         System.out.println(this.getBounds());
         System.out.println(bounds);
-        
-        
+
         for (LabelWordleLite word : list) {
 
             setLabelVisualPos(word, p, bounds);
@@ -2451,7 +2435,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
          //System.out.println(vi.getString() + "size " + size);
         // System.out.println("strBound " + strBound);
-       // System.out.println("glyphBound " + glyphBound);
+        // System.out.println("glyphBound " + glyphBound);
         /*
          * location is the glyph's location, i.e.:
          * x = the minimum x coordinate of the glyph
@@ -2459,7 +2443,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
          */
         //vi.setLocation(new Point2D.Double(location.getX(), location.getY()));
         //  vi.setLocation(new Point2D.Double(location.getX() + glyphBound.getX() + strBound.getWidth() / 2, location.getY() + fm.getDescent() - strBound.getHeight() / 2));
-        double x = /*p.getX()*/ + location.getX() - glyphBound.getX() / 2 - strBound.getWidth() / 2;
+        double x = p.getX() + location.getX() - glyphBound.getX() / 2 - strBound.getWidth() / 2;
         double y = location.getY() - glyphBound.getY() / 2 - strBound.getHeight() / 2;
 
 //        if (x < 0) {
@@ -2475,7 +2459,6 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //        else if (y >= this.getHeight()) {
 //            y = y - (y - bounds.getHeight());
 //        }
-
         Point2D vilocation = new Point2D.Double(x, y);
 
         vi.setLocation(vilocation);// + fm.getDescent() - strBound.getHeight() / 2));

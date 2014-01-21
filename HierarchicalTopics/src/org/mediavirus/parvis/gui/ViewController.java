@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Stack;
 import org.mediavirus.parvis.gui.topicRenderer.TopicGraphViewFrame.customLabelTimecolumnKey;
 import org.mediavirus.parvis.gui.topicRenderer.VastGeoFrame;
 import org.mediavirus.parvis.gui.topicRenderer.WorldMapProcessingFrame;
@@ -115,9 +116,20 @@ public class ViewController {
     public EventViewFrame eventViewFrame;
     private TreeNode currentNode;
 
+    // public List<Color> labelColor = new ArrayList<Color>(); 
+     public Stack labelColor = new Stack();
+     
     public ViewController() {
         leafNodeSequence = new ArrayList<Integer>();
-
+        
+        
+        labelColor.push(new Color(141,211,199));                
+        labelColor.push(new Color(255,255,179));
+        labelColor.push(new Color(190,186,218));
+        labelColor.push(new Color(251,128,114));
+        
+        
+    
     }
 
     public void setTopicSequence(List<Integer> seq) {
@@ -480,6 +492,16 @@ public class ViewController {
 
     }
 
+    public void stateChangedFromLabelToTopic(HashMap<String, List<Integer>> highindex,HashMap<String, List<Float>> highWeight, HashMap<String, Color> highIndexNumber)
+    {
+        getTopicGraphViewPanel().setHighlightLabelsFromLabelTopics(highindex, highWeight, highIndexNumber);
+        
+        
+    }
+    
+    
+    
+    
     public void stateChanged(TreeNode ct) {
         currentNode = ct;
 
@@ -672,6 +694,28 @@ public class ViewController {
     }
     private List<Float[]> hueColors;
 
+    
+    
+    public List<Float[]> getHueColors() {
+        return hueColors;
+    }
+    
+    
+   
+    
+    public static Color[] labelColors = 
+    {
+        new Color(141,211,199),
+        new Color(255,255,179),
+        new Color(190,186,218),
+        new Color(251,128,114)
+        
+        
+        
+    };
+    
+    
+   
     public void setNewHueColors() {
         hueColors = new ArrayList<Float[]>();
 

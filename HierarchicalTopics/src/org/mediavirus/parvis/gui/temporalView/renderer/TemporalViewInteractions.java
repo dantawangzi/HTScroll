@@ -979,6 +979,10 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                         focusedColumn.setIsFocused(true);
                         attachedPanel.setFocusedColumn(i);
 
+                        
+                         /**
+     * Wenwen: comment here if not want word cloud
+     */
                         attachedPanel.parent.stateChangedSecond(mouseOveredNode, i, attachedPanel, showingSingle);
 
                         //attachedPanel.setTimeColumnStream(j);

@@ -4,26 +4,33 @@
  */
 package org.mediavirus.parvis.gui.topicRenderer;
 
+import java.awt.Color;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPopupMenu;
 import org.mediavirus.parvis.gui.ViewController;
+import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.DataColorAction;
 import prefuse.action.layout.Layout;
 import prefuse.action.layout.RandomLayout;
 import prefuse.action.layout.graph.ForceDirectedLayout;
@@ -68,12 +75,10 @@ public class PrefuseLabelTopicGraphPanel extends Display {
     //Visualization vis;
     private static final String LABEL = "label";
 
-    
     public ViewController parent;
-    
-    
+
     public PrefuseLabelTopicGraphPanel(String folderPath, ViewController vc, List<List<Float>> disMatrix) throws FileNotFoundException, IOException {
-        
+
         super(new Visualization());
 
         this.parent = vc;
@@ -85,15 +90,13 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         setUpActions();
         setUpDisplay();
 
-
         m_vis.run("color");
         m_vis.run("layout");
 
     }
     float[][] topicWeightPerLabel;
     float[][] topicWeightPerLabelNew;
-    
-    
+
     float[][] hellingerDis;
     HashMap<Integer, List<TopicWeight>> topicWeightPerLabelMap = new HashMap<Integer, List<TopicWeight>>();
 
@@ -108,30 +111,20 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
         }
     }
-    
-    
-    private float calculateSum(float[][] M1, float[][]M2, int row, int col)
-    {
+
+    private float calculateSum(float[][] M1, float[][] M2, int row, int col) {
         float sum = 0;
-        
-        for (int i=0; i<M1[row].length; i++)
-        {            
-            sum+= M1[row][i]*M2[i][col];
+
+        for (int i = 0; i < M1[row].length; i++) {
+            sum += M1[row][i] * M2[i][col];
         }
-        
-        
-        
-        
+
         return sum;
     }
 
-    private void setUpData(String folderPath,  List<List<Float>> disMatrix) throws FileNotFoundException, IOException {
-
-        
-        
+    private void setUpData(String folderPath, List<List<Float>> disMatrix) throws FileNotFoundException, IOException {
 
         HashMap<Integer, String> labelDictMap = new HashMap<Integer, String>();
-
 
         String dictfile = folderPath + "labeldict";
 
@@ -146,10 +139,8 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         labelCount -= 2;
         br.close();
 
-        
         System.out.println("label count is " + labelCount);
-        
-        
+
         br = new BufferedReader(new FileReader(dictfile));
 
         String rline = br.readLine();
@@ -161,7 +152,6 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             labelDictMap.put(Integer.parseInt(labelint), labeltext);
             rline = br.readLine();
         }
-
 
         br.close();
 
@@ -187,88 +177,74 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                 String temp1[] = labeltopicview[j].split(" ");
                 int index = Integer.parseInt(temp1[0].replaceAll("\\D+", ""));
                 float weight = Float.parseFloat(temp1[1]);
+                if (i == 0) {
+                    weight = 0;
+                }
                 topicWeightPerLabel[i][index] = weight;
+
                 TopicWeight tw = new TopicWeight(index, weight);
                 topicWeightPerLabelMap.get(i).add(tw);
             }
 
-
         }
-        
+
         System.out.println("topicWeightPerLabel calculated..");
-        
-        
-        for (int i=0; i<topicWeightPerLabel.length; i++)
-        {
-            for (int j=0; j<topicWeightPerLabel[0].length; j++)
-                 System.out.print(topicWeightPerLabel[i][j] + " ");
-            
-            
-             System.out.println();
-             
-             
+
+        for (int i = 0; i < topicWeightPerLabel.length; i++) {
+            for (int j = 0; j < topicWeightPerLabel[0].length; j++) {
+                System.out.print(topicWeightPerLabel[i][j] + " ");
+            }
+
+            System.out.println();
+
         }
         topicWeightPerLabelNew = topicWeightPerLabel;
 
-        
         ///////////////////////////////////////////////////////////////////////////////////////////
         // between is topicweight * topic-topic distance
         float max = -999999;
         float min = 999999;
-        for (int i=0; i<disMatrix.size();i++)
-        {
-            for(int j=0; j<disMatrix.get(i).size(); j++)
-            {
-                if (disMatrix.get(i).get(j)>=max)
+        for (int i = 0; i < disMatrix.size(); i++) {
+            for (int j = 0; j < disMatrix.get(i).size(); j++) {
+                if (disMatrix.get(i).get(j) >= max) {
                     max = disMatrix.get(i).get(j);
-                if (disMatrix.get(i).get(j)<=min)
+                }
+                if (disMatrix.get(i).get(j) <= min) {
                     min = disMatrix.get(i).get(j);
+                }
             }
         }
-        
+
         float[][] distanceMatrix = new float[disMatrix.size()][disMatrix.size()];
-        
-        for (int i=0; i<disMatrix.size();i++)
-        {
-            for(int j=0; j<disMatrix.get(i).size(); j++)
-            {
+
+        for (int i = 0; i < disMatrix.size(); i++) {
+            for (int j = 0; j < disMatrix.get(i).size(); j++) {
 //                if (disMatrix.get(i).get(j)==0)
 //                   distanceMatrix[i][j] = 0;
 //                else
-                 distanceMatrix[i][j] = (1-disMatrix.get(i).get(j));//1-(disMatrix.get(i).get(j) - min)/(max - min);
-                
+                distanceMatrix[i][j] = (1 - disMatrix.get(i).get(j));//1-(disMatrix.get(i).get(j) - min)/(max - min);
+
             }
         }
-        
 
         int w = labelCount;
         int h = topicWeightPerLabel[0].length;
-        
-        for (int i=0; i<w; i++)
-        {
-            for (int j=0; j<h; j++)
-            {
-                
-                topicWeightPerLabelNew[i][j] = calculateSum(topicWeightPerLabel, distanceMatrix, i, j);
-                
 
-                
-            }                        
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+
+                topicWeightPerLabelNew[i][j] = calculateSum(topicWeightPerLabel, distanceMatrix, i, j);
+
+            }
         }
 
-
-
         br.close();
-        
-        ///////////////////////////////////////////////////////////////////////////////////////////
 
+        ///////////////////////////////////////////////////////////////////////////////////////////
        // System.out.println(topicWeightPerLabel.length + " " + topicWeightPerLabel[0].length);
-        
-        
-         hellingerDis = new float[labelCount][labelCount];
+        hellingerDis = new float[labelCount][labelCount];
 
         for (int i = 0; i < labelCount; i++) {
-
 
             for (int j = 0; j < labelCount; j++) {
 
@@ -287,7 +263,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
         }
 
-
+        float sum_of_hell = 0;
 
         for (int i = 0; i < labelCount; i++) {
             for (int j = 0; j < labelCount; j++) {
@@ -298,37 +274,103 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             System.out.print("\n");
         }
 
+        for (int i = 0; i < labelCount; i++) {
 
+            for (int j = (i + 1); j < labelCount; j++) {
+                sum_of_hell += hellingerDis[i][j];
+
+            }
+
+        }
+
+        int edgesnumber = (labelCount - 1) + (labelCount - 2) * (labelCount - 1) / 2;
+        float average_of_hell = sum_of_hell / edgesnumber;
+        float sn_square = 0;
+        int count = 0;
+        for (int i = 0; i < labelCount; i++) {
+
+            for (int j = (i + 1); j < labelCount; j++) {
+
+                if (i != j) {
+                    sn_square += (hellingerDis[i][j] - average_of_hell) * (hellingerDis[i][j] - average_of_hell);
+                    count++;
+                }
+            }
+
+        }
+
+        double sntd = Math.sqrt(sn_square / count);
+
+        System.out.println("mean value " + average_of_hell + " std is " + sntd + " edgesnumber " + edgesnumber + " " + count);
 
         graph = new Graph();
 
         int number_of_nodes = labelCount; //label numbers
 
-
-
-
+         //output to json
+//                 PrintWriter out = null;
+//            try {
+//                out = new PrintWriter(folderPath + "labels.json");
+//            } catch (FileNotFoundException ex) {
+//                Logger.getLogger(PrefuseLabelTopicGraphPanel.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        out.println("{");
+//        out.println("\t\"nodes\":[");
         graph.addColumn("name", String.class);
         graph.addColumn("id", Integer.class);
         graph.addColumn("LabelText", String.class);
+        graph.addColumn("selected", Boolean.class);
+
         for (int i = 0; i < number_of_nodes; i++) {
 
             Node n = graph.addNode();
             n.set("id", i);
             n.set("name", "Label" + Integer.toString(i));
             n.set("LabelText", labelDictMap.get(i + 1));
+            n.set("selected", false);
+
+//            if (i == number_of_nodes-1)
+//                out.println("\t\t{\"name\":" + "\"" + labelDictMap.get(i + 1) + "\"," + "\"group\":" + i +"}");
+//            else
+//                out.println("\t\t{\"name\":" + "\"" + labelDictMap.get(i + 1) + "\"," + "\"group\":" + i + "},");
         }
 
-
+//        out.println("\t],");
+//        out.println("\t\"links\":[");
         for (int i = 0; i < number_of_nodes; i++) {
-            for (int j = number_of_nodes - 1; j > 1; j--) {
-                if (j != i) {
-                    graph.addEdge(i, j);
-
+            //for (int j = number_of_nodes - 1; j > 1; j--) 
+            for (int j = (i + 1); j < number_of_nodes; j++) {
+                //if (j != i) 
+                {
+                    if (hellingerDis[i][j] >= (average_of_hell + sntd)) {
+                        graph.addEdge(i, j);
+                    }
+                    //{"source":1,"target":0,"value":1},
                 }
             }
         }
 
+        System.out.println(graph.getEdgeCount() + " edges in graph.");
+//        for (int i = 0; i < number_of_nodes; i++) {
+//            for (int j = (i+1); j<number_of_nodes ; j++)
+//            {
+//                //out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + hellingerDis[i][j] + "},");     
+//                
+//                
+//                int value = (int) (hellingerDis[i][j]>40?hellingerDis[i][j]:0);
+//                
+//                if (i == (number_of_nodes-2) && (j==number_of_nodes-1))
+//                {
+//                    out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + value + "}");                
+//                }
+//                else
+//                    out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + value + "},");                
+//            }                        
+//        }
 
+//       out.println("\t]");
+//        out.println("}");
+//        out.close();
     }
 
     private void setUpVisualization() {
@@ -339,53 +381,54 @@ public class PrefuseLabelTopicGraphPanel extends Display {
     private void setUpRenderers() {
         FinalRenderer r = new FinalRenderer();//ShapeRenderer();
 
-
+        int scale = 10;
         DefaultRendererFactory drf = new DefaultRendererFactory(r);
 
         drf.add(new InGroupPredicate("nodedec"), new LabelRenderer("LabelText"));
         m_vis.setRendererFactory(drf);
 
-
         final Schema DECORATOR_SCHEMA = PrefuseLib.getVisualItemSchema();
         DECORATOR_SCHEMA.setDefault(VisualItem.INTERACTIVE, false);
         DECORATOR_SCHEMA.setDefault(VisualItem.TEXTCOLOR, ColorLib.rgb(0, 0, 0));
-        DECORATOR_SCHEMA.setDefault(VisualItem.FONT, FontLib.getFont("Tahoma", 16));
+        DECORATOR_SCHEMA.setDefault(VisualItem.FONT, FontLib.getFont("Tahoma", 2 * scale));
         m_vis.addDecorators("nodedec", "graph.nodes", DECORATOR_SCHEMA);
-
-
-
 
     }
 
     private void setUpActions() {
-        ColorAction fill = new ColorAction("graph.nodes", VisualItem.FILLCOLOR, ColorLib.rgb(0, 200, 0));
+        //ColorAction fill = new ColorAction("graph.nodes", VisualItem.FILLCOLOR, ColorLib.rgb(0, 200, 0));
+
+        DataColorAction fill = new DataColorAction("graph.nodes", "selected",
+                Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
+
         ColorAction edges = new ColorAction("graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200));
 
         ActionList color = new ActionList();
         color.add(fill);
         color.add(edges);
 
-        //ActionList layout = new ActionList();
+        //   ActionList layout = new ActionList(100000000L);
         ActionList layout = new ActionList(Activity.INFINITY);
 
-
+//RandomLayout fdl = new RandomLayout();
         //ForceDirectedLayout fdl = new ForceDirectedLayout("graph", false);
-
         DataMountainForceLayout fdl = new DataMountainForceLayout("graph", false, hellingerDis);
         fdl.setDataGroups("graph.nodes", "graph.edges");
 
-
+        //ForceSimulator a = fdl.getForceSimulator();
+        // Force[] x = a.getForces();
+//        NBodyForce nbf = (NBodyForce) x[0];
+//        DragForce df = (DragForce) x[1];
+//        SpringForce sf = (SpringForce) x[2];
         layout.add(fdl);
         layout.add(new FinalDecoratorLayout("nodedec"));
 
 //        ActionList layout = new ActionList(Activity.INFINITY);
 //        
 //        layout.add(new RandomLayout("graph"));
-
         layout.add(new RepaintAction());
-        
-        //m_vis.setValue("graph.nodes", null, VisualItem.FIXED, true);
 
+        //m_vis.setValue("graph.nodes", null, VisualItem.FIXED, true);
         m_vis.putAction("color", color);
         m_vis.putAction("layout", layout);
 
@@ -393,6 +436,10 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
     private void setUpDisplay() {
 
+        //zoom(new Point2D.Double(0,0), 15);
+        double l = this.getScale();
+        System.out.println("scale: " + l);
+        setSize(100, 100);
         setHighQuality(true);
         addControlListener(new DragControl());
         addControlListener(new PanControl());
@@ -400,25 +447,125 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         addControlListener(new FinalControlListener());
 
     }
-    int[] palette = {ColorLib.rgb(200, 0, 0), ColorLib.rgb(0, 0, 200)};
+    int[] palette = {ColorLib.rgb(0, 0, 200), ColorLib.rgb(200, 200, 0)};
 
+    HashMap<String, List<Integer>> highlightedLabelsMap = new HashMap<String, List<Integer>>();
+    HashMap<String, List<Float>> labelHighlightWeightMap = new HashMap<String, List<Float>>();
+//    HashMap<String, Integer> labelHighlightIndexMap = new HashMap<String, Integer>();
+    
+    HashMap<String, Color> labelHighlightColorMap = new HashMap<String, Color>();
+    
+    
     public class FinalControlListener extends ControlAdapter implements Control {
 
         @Override
         public void itemClicked(VisualItem item, MouseEvent e) {
             if (item instanceof NodeItem) {
-                String name = ((String) item.get("name"));
-                int age = (Integer) item.get("id");
-                List<TopicWeight> x = topicWeightPerLabelMap.get(age);
-                JPopupMenu jpub = new JPopupMenu();
-                jpub.add("name: " + name);                
-                jpub.add("topicweight list: ");
-                for (int i = 0; i < x.size() / 4; i++) {
-                    jpub.add("Topic" + x.get(i).index + " Weight " + x.get(i).weight);
 
+                Object xx = item.get("selected");
+
+                if ((Boolean) xx) {
+                    boolean currV = (Boolean) xx;
+                    item.set("selected", !currV);
+                    if (currV) {
+                        item.setFillColor(palette[1]);
+                    } else {
+                        item.setFillColor(palette[0]);
+                    }
+
+                    item.getVisualization().repaint();
+                    String name = ((String) item.get("name"));
+                    
+                    
+                    parent.labelColor.push(labelHighlightColorMap.get(name));
+                    
+                    labelHighlightWeightMap.remove(name);
+                    highlightedLabelsMap.remove(name);
+                    labelHighlightColorMap.remove(name);
+                    
+                    
+                    parent.stateChangedFromLabelToTopic(highlightedLabelsMap, labelHighlightWeightMap, labelHighlightColorMap);
+                } else {
+                    if (labelHighlightWeightMap.size() < 4) {
+
+                        //int index = labelHighlightWeightMap.size();
+                                
+                        Color currentColor = (Color) parent.labelColor.pop();
+                        boolean currV = (Boolean) xx;
+                        item.set("selected", !currV);
+                        
+                        //System.out.println(item.get("selected"));
+                        //                ni.setFillColor(palette[1]);                                        
+                        if (currV) {
+                            item.setFillColor(palette[1]);
+                           
+                            
+                        } else {
+                            Color cc = currentColor;                                                     
+                            
+                            item.setFillColor( ColorLib.rgb(cc.getRed(), cc.getGreen(), cc.getBlue()));
+                             
+                            //item.setFillColor(palette[0]);
+                        }
+
+                        item.getVisualization().repaint();
+
+                        String name = ((String) item.get("name"));
+
+//                if (labelHighlightWeightMap.containsKey(name))
+//                {
+//                    labelHighlightWeightMap.remove(name);
+//                    highlightedLabelsMap.remove(name);
+//                }
+//                else
+                        {
+
+//                    if (labelHighlightWeightMap.size()<4)
+//                    {
+                            int age = (Integer) item.get("id");
+                            List<TopicWeight> x = topicWeightPerLabelMap.get(age);
+                            JPopupMenu jpub = new JPopupMenu();
+                            jpub.add("name: " + name);
+
+                            float SumOfTopic = 0;
+
+                            for (int i = 0; i < x.size(); i++) {
+                                SumOfTopic += x.get(i).weight;
+                            }
+                            jpub.add("topicweight list: " + SumOfTopic);
+                            int count = 0;
+                            List<Float> tmpLabelHighlightWeight = new ArrayList<Float>();
+                            List<Integer> tmplabelHighlight = new ArrayList<Integer>();
+                            float tmpSumTopic = 0;
+                            for (int i = 0; i < x.size(); i++) {
+                                if (x.get(i).weight <= 0.05 * SumOfTopic) {
+                                    break;
+                                }
+
+                                count++;
+                                tmpLabelHighlightWeight.add(x.get(i).weight / SumOfTopic);
+                                tmplabelHighlight.add(x.get(i).index);
+                                jpub.add(x.get(i).index + " " + x.get(i).weight);
+                                tmpSumTopic += x.get(i).weight;
+                                if (tmpSumTopic >= 0.7 * SumOfTopic) {
+                                    break;
+                                }
+
+                            }
+
+                            labelHighlightColorMap.put(name, currentColor);
+                            labelHighlightWeightMap.put(name, tmpLabelHighlightWeight);
+                            highlightedLabelsMap.put(name, tmplabelHighlight);
+
+                            jpub.show(e.getComponent(), (int) item.getX(),
+                                    (int) item.getY());
+                        }
+
+                        parent.stateChangedFromLabelToTopic(highlightedLabelsMap, labelHighlightWeightMap, labelHighlightColorMap);
+                    }
+
+                    //}
                 }
-                jpub.show(e.getComponent(), (int) item.getX(),
-                        (int) item.getY());
             }
         }
     }
@@ -461,24 +608,25 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
         float[][] hellingerDistance;
 
-        public DataMountainForceLayout(boolean enforceBounds) {
-            super("data", enforceBounds, false);
-
-            ForceSimulator fsim = new ForceSimulator();
-            fsim.addForce(new NBodyForce(-0.4f, 25f, NBodyForce.DEFAULT_THETA));
-            fsim.addForce(new SpringForce(1e-5f, 0f));
-            fsim.addForce(new DragForce());
-            setForceSimulator(fsim);
-
-            m_nodeGroup = "data";
-            m_edgeGroup = null;
-        }
-
+//        public DataMountainForceLayout(boolean enforceBounds) {
+//            super("data", enforceBounds, false);
+//
+//            ForceSimulator fsim = new ForceSimulator();
+//            //fsim.addForce(new NBodyForce(-0.4f, 25f, NBodyForce.DEFAULT_THETA));
+//            fsim.addForce(new NBodyForce(-8.0f, 2500f, NBodyForce.DEFAULT_THETA));
+//            fsim.addForce(new SpringForce(1e-5f, 0f));
+//            fsim.addForce(new DragForce());
+//            setForceSimulator(fsim);
+//
+//            m_nodeGroup = "data";
+//            m_edgeGroup = null;
+//        }
         public DataMountainForceLayout(String graph, boolean enforceBounds, float[][] edgeWeight) {
             super(graph, enforceBounds, false);
 
             ForceSimulator fsim = new ForceSimulator();
-            fsim.addForce(new NBodyForce(-0.4f, 25f, NBodyForce.DEFAULT_THETA));
+            //fsim.addForce(new NBodyForce(-0.4f, 25f, NBodyForce.DEFAULT_THETA));
+            fsim.addForce(new NBodyForce(-.4f, 25f, NBodyForce.DEFAULT_THETA));
             fsim.addForce(new SpringForce(1e-5f, 0f));
             fsim.addForce(new DragForce());
             setForceSimulator(fsim);
@@ -486,8 +634,6 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             hellingerDistance = edgeWeight;
             m_nodeGroup = graph;
             //m_edgeGroup = null;
-
-
 
         }
 
@@ -513,6 +659,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                 fitem.location[0] = (float) item.getEndX();
                 fitem.location[1] = (float) item.getEndY();
                 fitem.mass = getMassValue(item);
+                fitem.mass = 3;//setMassValue(1);
 
                 // get spring anchor
 //                ForceItem aitem = (ForceItem)item.get(FORCEITEM);
@@ -527,7 +674,6 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 //                fsim.addSpring(fitem, aitem, 0);
             }
 
-
             if (m_edgeGroup != null) {
                 iter = m_vis.visibleItems(m_edgeGroup);
                 while (iter.hasNext()) {
@@ -539,17 +685,18 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                     float coeff = getSpringCoefficient(e);
                     float slen = getSpringLength(e);
 
-                    
                     int idx1 = (Integer) n1.get("id");
                     int idx2 = (Integer) n2.get("id");
-                    
-                    slen = hellingerDistance[idx1][idx2]* 1;
-                    
+
+//                    fsim.addForce(null);
+                    slen = hellingerDistance[idx1][idx2] * 1;
+                    //fsim.addSpring(f1, f2,  -1.f, slen);
                     fsim.addSpring(f1, f2, (coeff >= 0 ? coeff : -1.f), slen);
 
                     //fsim.addSpring(f1, f2, (coeff>=0?coeff:-1.f), (slen>=0?slen:-1.f));
                 }
             }
+
         }
     } // end of inner class DataMountainForceLayout
 }

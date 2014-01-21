@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.mediavirus.parvis.gui.MinimalismMainFrame;
+import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * A Simple file parser for reading CSV files and instantiate the
@@ -160,17 +161,32 @@ public class CSVFile extends SimpleParallelSpaceModel {
          * For actual content of the docs
          */
         String tmpURL = filepath.replaceAll("_usage", "");
+        
+        
+         
+         
+        
         allDocs = new ArrayList<String[]>();//for actual documents
-        CSVReader csvReader = new CSVReader(tmpURL);
-
+       org.mediavirus.parvis.file.CSVReader csvReader = new org.mediavirus.parvis.file.CSVReader(tmpURL);
+        // au.com.bytecode.opencsv.CSVReader csvReader = new au.com.bytecode.opencsv.CSVReader(new FileReader(tmpURL));
         if (readall) {
             allDocs = csvReader.readAll();//readAll();//first line is the header
-        } else {
-            allDocs = csvReader.read13();
-        }
+            
+            }
+//         else {
+//            allDocs = csvReader.read13();
+//        }
 
         System.out.println("finished reading content, all record size =  " + allDocs.size());
 
+        
+        au.com.bytecode.opencsv.CSVReader csvReader1 = new au.com.bytecode.opencsv.CSVReader(new FileReader(filepath));
+        allElements = new ArrayList<String[]>();
+        allElements = csvReader1.readAll();
+        System.out.println("aaa" + allElements.size());
+        numDimensions = allElements.get(0).length;
+        
+        
         termWeights = new ArrayList<String[]>();
         termWeights_norm = new ArrayList<float[]>();
 
@@ -183,7 +199,7 @@ public class CSVFile extends SimpleParallelSpaceModel {
         weightFilePath = weightFilePath + "topic-term-distributions.csv";
 
         if (!readfromdb) {
-            CSVReader csvReader2 = new CSVReader(weightFilePath);
+            org.mediavirus.parvis.file.CSVReader csvReader2 = new org.mediavirus.parvis.file.CSVReader(weightFilePath);
             termWeights = csvReader2.readAll();
 
             System.out.println("finished reading topic-term-distributions");
@@ -227,7 +243,9 @@ public class CSVFile extends SimpleParallelSpaceModel {
 
         internalRecords = new ArrayList<String[]>();
 
-        readAll();
+        
+       
+        //readAll();
 
         br.close();
 
@@ -278,9 +296,11 @@ public class CSVFile extends SimpleParallelSpaceModel {
         String simipath = folderPath + "similarityMatrix.txt";
         File f2 = new File(simipath);
 
+        normalizeTermWeights();
+        
         if ((!f1.exists()) || (!f2.exists())) {
 
-             normalizeTermWeights();
+             
             calculateTopicSimilarity();
 
             PrintWriter out = new PrintWriter(topicPath);
@@ -357,10 +377,17 @@ public class CSVFile extends SimpleParallelSpaceModel {
      * @throws IOException if bad things happen during the read
      */
     public void readAll() throws IOException {
-        allElements = new ArrayList<String[]>();//for doc-term distribution
-
+        allElements = new ArrayList<String[]>();//usage
+        
+        
+        int count = 0;
         while (hasNext) {
+            System.out.println(count++);
             String[] nextLineAsTokens = readNext();
+            if (nextLineAsTokens.length!= 20)
+            {
+                System.out.println(nextLineAsTokens.length);
+            }
             if (nextLineAsTokens != null) {
                 allElements.add(nextLineAsTokens);
 

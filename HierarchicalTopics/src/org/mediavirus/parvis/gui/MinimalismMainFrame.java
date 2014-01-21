@@ -29,7 +29,6 @@ import prefuse.data.io.GraphWriter;
 import prefuse.data.io.TreeMLWriter;
 import prefuse.data.io.*;
 
-
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
@@ -53,24 +52,25 @@ import java.util.logging.Logger;
 public class MinimalismMainFrame extends javax.swing.JFrame {
 
     //private ViewController viewcontroller;
-    
     //Defined by wdou
     private org.mediavirus.parvis.gui.ViewController viewController;
+
+    DocumentViewer documentViewer = null;
+    TemporalViewFrame temporalFrame = null;
+    TopicGraphViewFrame topicFrame = null;
+    VastGeoFrame vcGeoFrame = null;
+    EventViewFrame eventViewFrame = null;
 
     public MinimalismMainFrame() {
         initComponents();
         viewController = new ViewController();
 
         //// TODO: DXW---Need to comment this out!April 03, 2013
-
         Topics topicDisplay = new Topics(viewController);
-        
 
-        viewController.addTopicDisplay(topicDisplay);        
-        
-        
-        
-        DocumentViewer documentViewer = new DocumentViewer(viewController);
+        viewController.addTopicDisplay(topicDisplay);
+
+        documentViewer = new DocumentViewer(viewController);
         documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         viewController.addDocumentViewer(documentViewer);
 
@@ -102,6 +102,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenu = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jCheckBoxTemporalFrame = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxTopicGraph = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxGeoFrame = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxLabelTopicFrame = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
         helpItem = new javax.swing.JMenuItem();
         aboutItem = new javax.swing.JMenuItem();
@@ -139,6 +144,46 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
         menuBar.add(fileMenu);
 
+        jMenu1.setText("Panels");
+
+        jCheckBoxTemporalFrame.setSelected(true);
+        jCheckBoxTemporalFrame.setText("Themeriver Frame");
+        jCheckBoxTemporalFrame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxTemporalFrameActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jCheckBoxTemporalFrame);
+
+        jCheckBoxTopicGraph.setSelected(true);
+        jCheckBoxTopicGraph.setText("HierarchicalTopics Frame");
+        jCheckBoxTopicGraph.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxTopicGraphActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jCheckBoxTopicGraph);
+
+        jCheckBoxGeoFrame.setSelected(true);
+        jCheckBoxGeoFrame.setText("GeoSpatial Frame");
+        jCheckBoxGeoFrame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxGeoFrameActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jCheckBoxGeoFrame);
+
+        jCheckBoxLabelTopicFrame.setSelected(true);
+        jCheckBoxLabelTopicFrame.setText("Label/Topic Graph Frame");
+        jCheckBoxLabelTopicFrame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxLabelTopicFrameActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jCheckBoxLabelTopicFrame);
+
+        menuBar.add(jMenu1);
+
         helpMenu.setText("Help");
 
         helpItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
@@ -158,7 +203,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
     static public Map<Integer, Integer> parIdx2docIdx;
 
     private void openItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openItemActionPerformed
-        
+
 //               System.out.println("MySQL Connect Example.");
 //        Connection conn = null;
 //        String url = "jdbc:mysql://152.15.99.7/";
@@ -197,41 +242,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        
-        
-        
-    
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
             public boolean accept(File f) {
@@ -261,33 +271,26 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
                 try {
 
-                 if (tmpURL.endsWith("csv")) {
-                     
-                     
-                     
-                     int idx = tmpURL.lastIndexOf("\\");
-                    if(idx == -1){
+                    if (tmpURL.endsWith("csv")) {
+
+                        int idx = tmpURL.lastIndexOf("\\");
+                        if (idx == -1) {
                             idx = tmpURL.lastIndexOf("/");
                         }
-                    String folderPath = tmpURL.substring(0, idx+1);
-                        
-                        String headerPath = folderPath + "header.txt";
-                     
-                     
-                        
-                        viewController.readHeaderFile(headerPath);
-                                                                       
-                     
-                        CSVFile csvf = new CSVFile(tmpURL);
-                        
-                        csvf.readContents( viewController.b_readAll, viewController.b_readFromDB,
-                               viewController.host, viewController.port, viewController.database, viewController.collection2, viewController.nameField2
-                                        );
+                        String folderPath = tmpURL.substring(0, idx + 1);
 
-                                                
-                        
+                        String headerPath = folderPath + "header.txt";
+
+                        viewController.readHeaderFile(headerPath);
+
+                        CSVFile csvf = new CSVFile(tmpURL);
+
+                        csvf.readContents(viewController.b_readAll, viewController.b_readFromDB,
+                                viewController.host, viewController.port, viewController.database, viewController.collection2, viewController.nameField2
+                        );
+
                         viewController.setUsageRecord(csvf.getInternalRecord());
-                        
+
                         viewController.setInternalDocs(csvf.getInternalDocs());
 
                         viewController.setTopicSequence(csvf.getTopicSequence());
@@ -298,22 +301,18 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
                         viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
 
-                        
-                        
                         viewController.setParidx2DocIdx(csvf.getParIdx2docIdx());
-                        
-                        
+
                         viewController.setFormat(csvf.getFormat());
-                        
+
                         viewController.setContentIdx(csvf.getContentIdx());
-                        
-                        if (!viewController.b_readAll)
+
+                        if (!viewController.b_readAll) {
                             viewController.setContentIdx(0);
-                        
-                        
+                        }
+
                         setTitle("HirarchicalTopics" + csvf.getName());
 
-                        
                         /**
                          * Initialize temporal view*
                          */
@@ -324,38 +323,33 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
                         // Get the current screen size
                         Dimension scrnsize = toolkit.getScreenSize();
-                        
 
                         String csvfilepath = csvf.getFolderPath();
 
                         viewController.csvfFolderPath = csvfilepath;
-                        TemporalViewFrame temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2,  scrnsize.height);
+                        temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
                         viewController.addTemporalFrame(temporalFrame);
-                        
-                        
-                        
-                        temporalFrame.loadData(csvf.getFolderPath(), csvf.getInternalRecord(), csvf.getTopicSequence(), csvf.getYears(), 
-                                csvf.getInternalDocs(), csvf.getTermWeights(), csvf.getTermWeights_norm(),csvf.getTermIndex(), csvf.getAllTopics(), 
-                                csvfilepath, csvf.getContentIdx()
-                                , csvf.getFormat()
-                                , viewController.intervalDays, viewController.b_readAll, viewController.b_recaluateValue, viewController.zoomSubBins);
-                        
+
+                        temporalFrame.loadData(csvf.getFolderPath(), csvf.getInternalRecord(), csvf.getTopicSequence(), csvf.getYears(),
+                                csvf.getInternalDocs(), csvf.getTermWeights(), csvf.getTermWeights_norm(), csvf.getTermIndex(), csvf.getAllTopics(),
+                                csvfilepath, csvf.getContentIdx(), csvf.getFormat(), viewController.intervalDays, viewController.b_readAll, viewController.b_recaluateValue, viewController.zoomSubBins);
+
                         temporalFrame.setVisible(true);
                         temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
                         temporalFrame.setLocation(0, 0);
 //           
-                        
+
                         System.out.println("Theme River Done!");
-                        
-                        TopicGraphViewFrame topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights());
+
+                        topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights());
                         viewController.addTopicGraphViewPanel(topicFrame);
                         viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics(), csvf.getTopicSequence());
                         System.out.println("topic frame load topics done.");
-                        
+
                         viewController.getTopicGraphViewPanel().buildTree(csvf.getFolderPath());
-                        
+
                         System.out.println("topic frame build tree done..");
-                        
+
                         topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
                         topicFrame.setLocation(scrnsize.width / 2, 0);
 
@@ -363,13 +357,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
                         topicFrame.setVisible(true);
 
                         System.out.println("Topics Graph done!");
-                        
+
                         temporalFrame.getMainPanel().buildLabelTimeMap();
                         //temporalFrame.getSubPanel().buildLabelTimeMap();
-                        
-                        
-                        
-                        
+
                         viewController.setLeafNodeSequence(topicFrame.getLeafSequence());
 
                         int s = viewController.getTopicGraphViewPanel().getTree().size();
@@ -455,8 +446,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 //                        
                         //System.out.println(geoLocations.size());
                         //MongoClient.close();
-                                                                
-                                                                
                         //DBCursor cursor = coll.find();
 //                        try {
 //                           while(cursor.hasNext()) {
@@ -513,46 +502,65 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 ////    } catch (Exception e) {
 ////      e.printStackTrace();
 ////    }
-
                         Graph pgh = null;//(viewController.makePrefuseGraph(treeString));
 //
-                        
-                         System.out.println("get geo locations done");
-                         viewController.geoLocations = csvf.getTwitterGeoLocations();
-                         
+
+                        System.out.println("get geo locations done");
+                        viewController.geoLocations = csvf.getTwitterGeoLocations();
+
 //                        WorldMapProcessingFrame worldMapFrame = new WorldMapProcessingFrame(viewController,csvf.getTwitterGeoLocations(), csvf.getMediumLocation());
 //                        viewController.addWorldMapProcessingFrame(worldMapFrame);
 //                        worldMapFrame.setSize(1000, 1000);
 //                        worldMapFrame.setVisible(true);
 ////
 //                        
-                        
                         viewController.twitterPointMax = csvf.getMaxLocation();
                         viewController.twitterPointMin = csvf.getMinLocation();
-                        
-                        
-                        VastGeoFrame vcGeoFrame = new VastGeoFrame(viewController, csvf.getFolderPath(), csvf.getTwitterGeoLocations());
-                        
-                        
+
+                        vcGeoFrame = new VastGeoFrame(viewController, csvf.getFolderPath(), csvf.getTwitterGeoLocations());
+
                         viewController.setVCGF(vcGeoFrame);
-                        
-                        
+
                         vcGeoFrame.setVisible(true);
-                        
+
 //
                         System.out.println("GeoFrame done");
 
-
-
-                        EventViewFrame eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
-                        viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, folderPath, csvf.getSimilarityMatrix());
+                        eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
+                                viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, folderPath, csvf.getSimilarityMatrix());
 //                       
                         eventViewFrame.setVisible(true);
 
                         System.out.println("label graph done");
 
+                        vcGeoFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                            @Override
+                            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                jCheckBoxGeoFrame.setState(false);
+                            }
+                        });
 
-                        
+                        eventViewFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                            @Override
+                            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                jCheckBoxLabelTopicFrame.setState(false);
+                            }
+                        });
+
+                        topicFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                            @Override
+                            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                jCheckBoxTopicGraph.setState(false);
+                            }
+                        });
+
+                        temporalFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                            @Override
+                            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                                jCheckBoxTemporalFrame.setState(false);
+                            }
+                        });
+
                     }
                 } catch (Exception e) {
                     System.out.println(e.toString() + e.getMessage());
@@ -569,6 +577,30 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitForm
 
+    private void jCheckBoxTemporalFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTemporalFrameActionPerformed
+
+        boolean currentState = jCheckBoxTemporalFrame.getState();
+        temporalFrame.setVisible(currentState);        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxTemporalFrameActionPerformed
+
+    private void jCheckBoxTopicGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTopicGraphActionPerformed
+        // TODO add your handling code here:
+         boolean currentState = jCheckBoxTopicGraph.getState();
+        topicFrame.setVisible(currentState); 
+    }//GEN-LAST:event_jCheckBoxTopicGraphActionPerformed
+
+    private void jCheckBoxGeoFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxGeoFrameActionPerformed
+        // TODO add your handling code here:
+        boolean currentState = jCheckBoxGeoFrame.getState();
+        vcGeoFrame.setVisible(currentState);
+    }//GEN-LAST:event_jCheckBoxGeoFrameActionPerformed
+
+    private void jCheckBoxLabelTopicFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLabelTopicFrameActionPerformed
+        // TODO add your handling code here:
+        boolean currentState = jCheckBoxLabelTopicFrame.getState();
+        eventViewFrame.setVisible(currentState);
+    }//GEN-LAST:event_jCheckBoxLabelTopicFrameActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -583,6 +615,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem helpItem;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxGeoFrame;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxLabelTopicFrame;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxTemporalFrame;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxTopicGraph;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.ButtonGroup menuEditGroup;
     private javax.swing.JMenuItem openMenu;
