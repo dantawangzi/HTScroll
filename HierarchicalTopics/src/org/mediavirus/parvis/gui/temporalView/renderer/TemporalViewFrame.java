@@ -63,7 +63,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
     private TemporalViewPanel mainPanel;
     private TemporalViewPanel subPanel;
     private CategoryBarElement data;
-    private List<Integer> tSequence;
+    
     private List<Float> topicSims;
     private List<Float[]> colorMap;
     //private List<TemporalViewPanel> secondColumn;
@@ -307,11 +307,42 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 //    }
     public void setMigLayoutForScrollPane() {
 
+        
+        
+        List<Integer> removeKeys = new ArrayList<Integer>();
+        
+          for (Map.Entry<Integer, List<TemporalViewPanel>> entry : temporalPanelMap.entrySet()) 
+        {
+            int Key = entry.getKey();
+    
+            
+            List<TemporalViewPanel> value = (List<TemporalViewPanel>)entry.getValue();
+            if (value.isEmpty())
+            {
+                removeKeys.add(Key);
+              
+            }
+        }
+          
+          for (int i=0; i<removeKeys.size(); i++)
+          {
+              int Key = removeKeys.get(i);
+                temporalPanelMap.remove(Key);
+                System.out.println("key " + Key + " removed, Map size " + temporalPanelMap.size());
+   
+              
+          }
+          
+       
+          
+          
+          
         setAllPanelSize();
 
         System.out.println("all panel size set");
 
-        
+      
+       
         
         testPanel.removeAll();
         int framewidth = testPanel.getWidth();
@@ -480,8 +511,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
             
             BoxLayout borderlayout = new BoxLayout(layoutPanelMap.get(L),BoxLayout.Y_AXIS);    
             layoutPanelMap.get(L).setLayout(borderlayout);
-            layoutPanelMap.get(L).setPreferredSize(new Dimension(temporalPanelMap.get(L).get(0).getMyPanelWidth(), frameheight));
-            layoutPanelMap.get(L).setSize(temporalPanelMap.get(L).get(0).getMyPanelWidth(), frameheight);
+            layoutPanelMap.get(L).setPreferredSize(new Dimension(temporalPanelMap.get(L-1).get(0).getMyPanelWidth(), frameheight));
+            layoutPanelMap.get(L).setSize(temporalPanelMap.get(L-1).get(0).getMyPanelWidth(), frameheight);
             
             
             for (int m=0; m<jp.length; m++)
@@ -1048,11 +1079,11 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
     }
 
-    public void loadData(String path, List<String[]> internalRecord, List<Integer> topicSequence, List<Long> years,
+    public void loadData(String path, List<String[]> internalRecord,  List<Long> years,
             List<String[]> allDocs, List<String[]> termWeights, List<float[]> termWeights_norm, Map<String, Integer> termIndex,
             List<String[]> allTopics, String csvpath, int contentIdx, DateFormat f, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub) throws FileNotFoundException, IOException {
 
-        data = new CategoryBarElement(internalRecord, topicSequence, years, allDocs, termWeights, termWeights_norm, termIndex, allTopics, csvpath, contentIdx, f,
+        data = new CategoryBarElement(internalRecord, years, allDocs, termWeights, termWeights_norm, termIndex, allTopics, csvpath, contentIdx, f,
                 incrementalDays, b_readall, b_recalculate, NumOfTemporalBinsSub);
 
         myTree = new ArrayList<TreeNode>();

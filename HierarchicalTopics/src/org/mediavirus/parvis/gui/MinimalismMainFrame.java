@@ -293,15 +293,14 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
                         viewController.setInternalDocs(csvf.getInternalDocs());
 
-                        viewController.setTopicSequence(csvf.getTopicSequence());
+                       
 
                         viewController.setTopicSimilarities(csvf.getTopicSimilarities());
 
-                        viewController.getTopicDisplay().loadTopic(csvf.getAllTopics(), csvf.getTopicSequence());
+                        viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
 
                         viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
 
-                        viewController.setParidx2DocIdx(csvf.getParIdx2docIdx());
 
                         viewController.setFormat(csvf.getFormat());
 
@@ -330,7 +329,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
                         temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
                         viewController.addTemporalFrame(temporalFrame);
 
-                        temporalFrame.loadData(csvf.getFolderPath(), csvf.getInternalRecord(), csvf.getTopicSequence(), csvf.getYears(),
+                        temporalFrame.loadData(csvf.getFolderPath(), csvf.getInternalRecord(), csvf.getYears(),
                                 csvf.getInternalDocs(), csvf.getTermWeights(), csvf.getTermWeights_norm(), csvf.getTermIndex(), csvf.getAllTopics(),
                                 csvfilepath, csvf.getContentIdx(), csvf.getFormat(), viewController.intervalDays, viewController.b_readAll, viewController.b_recaluateValue, viewController.zoomSubBins);
 
@@ -343,7 +342,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
                         topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights());
                         viewController.addTopicGraphViewPanel(topicFrame);
-                        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics(), csvf.getTopicSequence());
+                        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
                         System.out.println("topic frame load topics done.");
 
                         viewController.getTopicGraphViewPanel().buildTree(csvf.getFolderPath());

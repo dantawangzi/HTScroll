@@ -55,11 +55,11 @@ public class CategoryBarElement {
         return time;
     }
 
-    public CategoryBarElement(List<String[]> internalRecord, List<Integer> topicSequence, List<Long> years,
+    public CategoryBarElement(List<String[]> internalRecord, List<Long> years,
             List<String[]> allDocs, List<String[]> termWeights, List<float[]> termWeights_norm, Map<String, Integer> termIndex, List<String[]> allTopics, String csvPath,
             int contentIdx, DateFormat format, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub) throws IOException {
         try {
-            initiateComponents(internalRecord, topicSequence, years, allDocs, termWeights, termWeights_norm, termIndex, allTopics, csvPath, contentIdx,
+            initiateComponents(internalRecord, years, allDocs, termWeights, termWeights_norm, termIndex, allTopics, csvPath, contentIdx,
                     format, incrementalDays, b_readall, b_recalculate, NumOfTemporalBinsSub);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CategoryBarElement.class.getName()).log(Level.SEVERE, null, ex);
@@ -166,7 +166,7 @@ public class CategoryBarElement {
     Long maxT = Long.MIN_VALUE;
     Long minT = Long.MAX_VALUE;
 
-    private void initiateComponents(List<String[]> internalRecord, List<Integer> topicSequence, List<Long> years,
+    private void initiateComponents(List<String[]> internalRecord, List<Long> years,
             List<String[]> allDocs, List<String[]> termWeights, List<float[]> termWeights_norm, Map<String, Integer> termIndex,
             List<String[]> allTopics, String csvPath, int contentIdx, DateFormat format, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub) throws FileNotFoundException, IOException {
 
@@ -230,30 +230,14 @@ public class CategoryBarElement {
                 totalTopicNumbers = new float[internalRecord.get(0).length];
                 sumOfDocument = 0;
                 for (int j = 0; j < totalTopicNumbers.length; j++) {
-                    totalTopicNumbers[j] = Float.parseFloat(internalRecord.get(i)[topicSequence.get(j)]);
+                    totalTopicNumbers[j] = Float.parseFloat(internalRecord.get(i)[j]);
                     sumOfDocument += totalTopicNumbers[j];
                 }
 
                 values_UnNorm.add(totalTopicNumbers);
                 sumOfDocuments.add(sumOfDocument);
             }
-            /*
-             * Normalize the termWeights
-             */
-            // termWeightF = new ArrayList<float[]>();
-//            float tmpS = 0;
-//            float[] tmpW;
-//            for (int k = 0; k < termWeights.size(); k++) {
-//                tmpW = new float[termWeights.get(0).length];
-//                for (int i = 0; i < termWeights.get(0).length; i++) {
-//                    tmpS += Float.parseFloat(termWeights.get(0)[i]);
-//                }
-//                for (int j = 0; j < termWeights.get(0).length; j++) {
-//                    tmpW[j] = Float.parseFloat(termWeights.get(0)[j]) / tmpS;
-//                }
-//                termWeightF.add(tmpW);
-//
-//            }
+
         } catch (Exception ex) {
             Logger.getLogger(CategoryBarElement.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -450,7 +434,7 @@ public class CategoryBarElement {
                      */
                     for (int t = 0; t < numKeywords; t++) {
 
-                        curKeyword = allTopics.get(topicSequence.get(i) + 1)[t + 2].trim();
+                        curKeyword = allTopics.get(i + 1)[t + 2].trim();
 
                         curKeyword = curKeyword.replaceAll("_", " ");
                         numOccur = new int[_numOfTemporalBins];
@@ -561,11 +545,11 @@ public class CategoryBarElement {
 //                                System.out.println("k " + k);
 //                            
 //2                         //TODO k = 1 k = 2; with group or without
-                                curKeyword = allTopics.get(topicSequence.get(i) + 1)[k + 2].trim().toLowerCase();
+                                curKeyword = allTopics.get((i) + 1)[k + 2].trim().toLowerCase();
 
                                 //System.out.println(curKeyword);
                                 tmpCol = termIndex.get(curKeyword);
-                                tmpWeight = (termWeightF.get(topicSequence.get(i))[tmpCol]);
+                                tmpWeight = (termWeightF.get(i)[tmpCol]);
 
                                 for (int n = 0; n < _numOfTemporalBins; n++) {
                                     tmpWeightSum += topicTFs.get(i).get(k)[n];

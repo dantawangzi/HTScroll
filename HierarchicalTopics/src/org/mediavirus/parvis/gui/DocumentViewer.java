@@ -10,12 +10,14 @@
  */
 package org.mediavirus.parvis.gui;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
+import com.mysql.jdbc.Connection;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -27,8 +29,14 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -36,10 +44,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -47,22 +60,10 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultHighlighter;
 import org.mediavirus.parvis.file.CSVReader;
-import org.mediavirus.parvis.model.DataTable;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import org.mediavirus.parvis.gui.temporalView.renderer.TemporalViewPanel;
 import org.mediavirus.parvis.gui.temporalView.renderer.TreeNode;
-
-
-import com.mysql.jdbc.Connection;
-import java.net.UnknownHostException;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.mediavirus.parvis.gui.temporalView.renderer.ZoomedTemporalViewPanel;
+import org.mediavirus.parvis.model.DataTable;
 
 /**
  *
@@ -677,6 +678,7 @@ public class DocumentViewer extends JFrame {
         thresholdLabel = new javax.swing.JLabel();
         RTRatio = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        JExportButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Document Viewer");
@@ -757,6 +759,13 @@ public class DocumentViewer extends JFrame {
 
         jLabel3.setText("RT Ratio with Threshold:");
 
+        JExportButton.setText("Export Doc");
+        JExportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JExportButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -764,14 +773,15 @@ public class DocumentViewer extends JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(101, 101, 101))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -780,7 +790,8 @@ public class DocumentViewer extends JFrame {
                                 .addComponent(thresholdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(44, 44, 44)
                                 .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(JExportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -801,10 +812,11 @@ public class DocumentViewer extends JFrame {
                             .addComponent(thresholdLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(20, 20, 20)
+                .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(JExportButton))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -813,7 +825,7 @@ public class DocumentViewer extends JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
-                .addGap(0, 27, Short.MAX_VALUE))
+                .addGap(0, 25, Short.MAX_VALUE))
         );
 
         pack();
@@ -843,7 +855,7 @@ public class DocumentViewer extends JFrame {
             if (parentPanel instanceof ZoomedTemporalViewPanel)
                 selectDocumentsToPresentZoomed(threshold, ((ZoomedTemporalViewPanel)parentPanel).getDocumentInThisPanel());
             else
-                 selectDocumentsToPresent(threshold);
+                selectDocumentsToPresent(threshold);
             
 
             
@@ -896,6 +908,58 @@ public class DocumentViewer extends JFrame {
         searchKeywordWithinDoc.setText("Highlight Keywords with in Selected Document");
     }//GEN-LAST:event_searchKeywordWithinDocFocusLost
 
+    private void JExportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JExportButtonActionPerformed
+
+        //export csv files to folder:
+        
+        
+        int temprow = selectedDocuments.size();
+        
+        List<String[]> content = new ArrayList<String[]>();
+        for (int i=0; i<temprow; i++)
+        {
+            String[] tmpdata = new String[columnNames.length];
+            
+            
+             int tempDocIdx = selectedDocuments.get(i);
+             for (int j=0; j<columnNames.length; j++)
+             {
+                 tmpdata[j] = tmpDocs.get(tempDocIdx + 1)[j];
+             }
+                        
+            
+            content.add(tmpdata);
+        }
+        
+        
+    
+       
+            au.com.bytecode.opencsv.CSVWriter csvW;
+        try {
+            //System.out.println(temprow);
+            csvW = new au.com.bytecode.opencsv.CSVWriter(new FileWriter(parent.csvfFolderPath  + "\\export.csv"));
+            csvW.writeAll(content);
+            csvW.close();
+            
+            JOptionPane.showMessageDialog(null, "Your document is here: " + parent.csvfFolderPath  + "\\export.csv",
+                    "Export Documents Successful!", JOptionPane.INFORMATION_MESSAGE);
+            
+            
+            
+        } catch (IOException ex) {
+            System.out.println("Export unsuccessful, check please!");
+            Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+   
+
+
+
+        
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JExportButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -907,6 +971,7 @@ public class DocumentViewer extends JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton JExportButton;
     private javax.swing.JTextField RTRatio;
     private javax.swing.JTextField acrossCorpusWordSearchText;
     private javax.swing.JSlider docSelectionThreshold;

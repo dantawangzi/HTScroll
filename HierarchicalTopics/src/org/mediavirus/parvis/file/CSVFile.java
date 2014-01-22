@@ -51,16 +51,13 @@ public class CSVFile extends SimpleParallelSpaceModel {
     public List<String[]> internalRecords;
     private List<Integer> docYear;
     private List<float[]> ori_norm;
-    //public Map<Integer, String> parIdx2awardNum;
-    public Map<Integer, Integer> parIdx2docIdx;
+
     //for scatterplot view
-    private List<Float> recordmax;
-    private List<Float> recordmean;
-    private List<Float> recordsd;
-    private List<Float> recordEntropy;
+ 
+  
     //For document viewer
     List<String[]> allElements;
-    private List<String[]> recordDocs;
+    
     private List<String[]> allDocs;
     private List<String[]> allTopics;
     private List<Long> years;
@@ -101,13 +98,7 @@ public class CSVFile extends SimpleParallelSpaceModel {
         return contentIdx;
     }
 
-    public Map<Integer, Integer> getParIdx2docIdx() {
-        return parIdx2docIdx;
-    }
 
-    public void setParIdx2docIdx(Map<Integer, Integer> parIdx2docIdx) {
-        this.parIdx2docIdx = parIdx2docIdx;
-    }
 
     public List<float[]> getTermWeights_norm() {
         return termWeights_norm;
@@ -241,9 +232,7 @@ public class CSVFile extends SimpleParallelSpaceModel {
 
         System.out.println("Start reading usage file..");
 
-        internalRecords = new ArrayList<String[]>();
-
-        
+        internalRecords = new ArrayList<String[]>();       
        
         //readAll();
 
@@ -289,27 +278,19 @@ public class CSVFile extends SimpleParallelSpaceModel {
 //        }
 
         //if ()topicSequence
-        String topicPath = folderPath + "topicSequence.txt";
-
-        File f1 = new File(topicPath);
+       
 
         String simipath = folderPath + "similarityMatrix.txt";
         File f2 = new File(simipath);
 
         normalizeTermWeights();
         
-        if ((!f1.exists()) || (!f2.exists())) {
+        if ((!f2.exists())) {
 
              
             calculateTopicSimilarity();
 
-            PrintWriter out = new PrintWriter(topicPath);
-            for (int j = 0; j < topicSequence.size(); j++) {
-                out.printf("%d\n", topicSequence.get(j));
-            }
-            out.close();
-
-            out = new PrintWriter(simipath);
+            PrintWriter out = new PrintWriter(simipath);
             for (int j = 0; j < similarityMatrix.size(); j++) {
                 for (int k = 0; k < similarityMatrix.get(j).size(); k++) {
                     out.printf("%f ", similarityMatrix.get(j).get(k));
@@ -322,24 +303,13 @@ public class CSVFile extends SimpleParallelSpaceModel {
         } else {
 
             System.out.println("topicSequence exist, Loading...  topicSequence.txt");
-            BufferedReader br1 = new BufferedReader(new FileReader(topicPath));
-
-            topicSequence = new ArrayList<Integer>();
-            String line = br1.readLine();
-            while (line != null) {
-                topicSequence.add(Integer.parseInt(line));
-                line = br1.readLine();
-            }
-
-            br1.close();
-
-            System.out.println("finished loading topicSequence");
+           
 
             similarityMatrix = new ArrayList<List<Float>>();
 
-            br1 = new BufferedReader(new FileReader(simipath));
+            BufferedReader br1 = new BufferedReader(new FileReader(simipath));
 
-            line = br1.readLine();
+            String line = br1.readLine();
             while (line != null) {
                 List<Float> tmpls = new ArrayList<Float>();
                 String[] tmps = line.split(" ");
@@ -361,9 +331,9 @@ public class CSVFile extends SimpleParallelSpaceModel {
         //System.out.println("Calculate individual document diversity");
         //calculateDocumentDiversity();
 
-        reorderTopics();
+        
 
-        System.out.println("finished reorderTopics");
+        
 
     }
 
@@ -488,26 +458,15 @@ public class CSVFile extends SimpleParallelSpaceModel {
     public void processRecords() throws ParseException {
         String label = null;
         beforeNorm = new ArrayList<float[]>();
-        /**
-         * For the scatterplot
-         */
-        recordmax = new ArrayList<Float>();
-        recordmean = new ArrayList<Float>();
-        recordsd = new ArrayList<Float>();
-        recordEntropy = new ArrayList<Float>();
-        docYear = new ArrayList<Integer>();
-        ori_norm = new ArrayList<float[]>();
-        years = new ArrayList<Long>();
-        ori_labels = new ArrayList<String>();
+      
 
-        int parid = 0;
-        parIdx2docIdx = new HashMap();
-        recordDocs = new ArrayList<String[]>();
-        if (!allDocs.isEmpty()) {
-            recordDocs.add(allDocs.get(0));
-        } else {
-            System.out.println("Error reading in documents");
-        }
+           
+        docYear = new ArrayList<Integer>();
+      
+        years = new ArrayList<Long>();
+        
+
+    
 
         //allDocs.get(0).length;
         List<Integer> timeinfo;
@@ -688,92 +647,21 @@ public class CSVFile extends SimpleParallelSpaceModel {
 
                         }
                     }
-                }
-
-                float[] curVal = new float[numDimensions];
-                float[] normVal = new float[numDimensions];
-                float sum = 0;
-                //label = Integer.toString(idSeq.get(h));
-                for (int i = 0; i < numDimensions; i++) {
-                    curVal[i] = Float.parseFloat(allElements.get(idx)[i]);
-                    //curVal[i] = Float.parseFloat(oneDay.get(h)[i]);
-                    sum += curVal[i];
-                }
-                float tempSum = 0;
-                float rMax = -1;
-                float rMean = (float) (1.0 / (float) numDimensions);
-                float rSD = 0;
-                float rEntropy = 0;
-                //To normalize the values
-                if (sum != 0) {
-                    for (int i = 0; i < numDimensions; i++) {
-                        normVal[i] = curVal[i] / sum;
-                        tempSum += normVal[i];
-                        if (rMax < normVal[i]) {
-                            rMax = normVal[i];
-                        }
-                        rSD += (normVal[i] - rMean) * (normVal[i] - rMean);
-                    }
-                } else {
-                    for (int i = 0; i < numDimensions; i++) {
-                        normVal[i] = 0;
-                    }
-                }
-
-                rSD = (float) Math.sqrt(rSD / numDimensions);
-                rEntropy = calculateEntropy(normVal);
-                recordsd.add(rSD);
-                recordmax.add(rMax);
-                recordEntropy.add(rEntropy);
+                }          
                 internalRecords.add(allElements.get(idx));
-                recordDocs.add(allDocs.get(idx));
-                ori_norm.add(normVal);
 
-                
                 years.add(tmpT);//in milliseconds       
-                 
-                label = Integer.toString(idx);
-                
-                ori_labels.add(label);
-                
 
-                parIdx2docIdx.put(parid, idx);
-                
-                parid++;
-                //System.out.println(idx);
             }
 
         }
-        setRecordSD(recordsd);
-        setRecordMax(recordmax);
-        setRecordEntropy(recordEntropy);
+    
+        
         System.out.println("internal Records" + internalRecords.size());
 
         //setParidx2DocIdx(parIdx2docIdx);
     }
 
-    public void reorderTopics() {
-        //Iterator it = ori_norm.entrySet().iterator();
-        for (int k = 0; k < ori_norm.size(); k++) {
-            float[] tmpNorm = new float[numDimensions];
-            int tmpid = 0;
-
-            for (int i = 0; i < numDimensions; i++) {
-                //tmpNorm[i] = (ori_norm.get(k))[i];//Not reorder
-                tmpNorm[i] = (ori_norm.get(k))[topicSequence.get(i)];//reorder
-                tmpid++;
-            }
-            addRecord(tmpNorm, ori_labels.get(k));
-        }
-        //Hack alert!!!!!!!!
-        float lastRowVal[] = new float[numDimensions];
-        for (int i = 0; i < numDimensions; i++) {
-            lastRowVal[i] = (float) 1.0;
-        }
-        String label = Integer.toString(0);
-        addRecord(lastRowVal, label);
-
-    }
 
     /**
      * Reads the next line from the buffer and converts to a string array.
@@ -862,7 +750,6 @@ public class CSVFile extends SimpleParallelSpaceModel {
         this.similarityMatrix = similarityMatrix;
     }
     private List<List<Float>> similarityMatrix;//upper triangle of a similarity matrix
-    private List<Integer> topicSequence;
 
     public void normalizeTermWeights() {
         float[] tmpTermWeights;
@@ -950,36 +837,11 @@ public class CSVFile extends SimpleParallelSpaceModel {
             topicSimilarities.add(overallMin);
         }
 
-        topicSequence = new ArrayList<Integer>();
-        //topicSequence.add(dim.height);
-        //topicSequence.add(dim.width);
+       
+       
 
         int i = 0;
-        //int tmpi = dim.width;
-        /**
-         * Reorder topics
-         */
-//        topicSequence.add(firstAxis);
-//        int tmpi = firstAxis;
-//        while (i < numDimensions - 1) {
-//            int tmpIdx = 0;
-//
-//            float min = Float.MAX_VALUE;
-//            for (int j = 0; j < similarityMatrix.get(tmpi).size(); j++) {
-//
-//                if (min > similarityMatrix.get(tmpi).get(j)) {
-//                    if (!topicSequence.contains(j)) {
-//                        min = similarityMatrix.get(tmpi).get(j);
-//                        tmpIdx = j;
-//                    }
-//                }
-//            }
-//            topicSimilarities.add(min);
-//            tmpi = tmpIdx;
-//            topicSequence.add(tmpi);
-//            i++;
-        //Nor reorder
-        topicSequence.add(0);
+
         int tmpi = 1;
         while (i < numDimensions - 1) {
             int tmpIdx = 0;
@@ -988,30 +850,21 @@ public class CSVFile extends SimpleParallelSpaceModel {
             for (int j = 0; j < similarityMatrix.get(tmpi).size(); j++) {
 
                 if (min > similarityMatrix.get(tmpi).get(j)) {
-                    if (!topicSequence.contains(j)) {
+                    
                         min = similarityMatrix.get(tmpi).get(j);
                         tmpIdx = j;
-                    }
+                    
                 }
             }
             topicSimilarities.add(min);
             tmpi = tmpIdx;
-            topicSequence.add(i + 1);
+           
             i++;
         }
 
-        //First row is header
-//        String[] header = new String[numDimensions];
-//        for (int k = 0; k < numDimensions; k++) {
-//            header[k] = allElements.get(0)[topicSequence.get(k)];
-//        }
-        //this.setAxisLabels(header);
-        //this.setNewAxisSequence(topicSequence);
+
     }
 
-    public List<Integer> getTopicSequence() {
-        return topicSequence;
-    }
 
     public List<Long> getYears() {
         return years;

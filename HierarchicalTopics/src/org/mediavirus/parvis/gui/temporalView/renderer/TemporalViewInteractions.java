@@ -162,7 +162,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
                             tp = new TemporalViewPanel(attachedPanel.parent);
                             int index = tf.getTemporalPanelMap().get(1).size();
-                            tp.setName("second" + index);
+                            tp.setName("attachedPanel.getLevel()+1" + " " + index);
                             tp.setPanelLabelId(index);
                             //tp.setPreferredSize(new Dimension(600, 300));
                             tp.setData(tf.getData());
@@ -1330,31 +1330,85 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
             }
         };
-        ActionListener bListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JMenuItem source = (JMenuItem) (e.getSource());
-                //System.out.print(source);
-
-                
-                TemporalViewPanel currentP = attachedPanel;
-                        
-                
-                
-                
-                int indexremove = -1;
+        
+        
+        
+        // remove panel interactions
+        void RemovePanel(TemporalViewPanel currentP)
+        {
+            
+            
+                if (currentP.getchildPanel().isEmpty())
+                {
+            
+                   int indexremove = -1;
                    for (int j = 0; j < currentP.getFatherPanel().getchildPanel().size(); j++) {
                             
                                 currentP.getFatherPanel().getchildPanel().remove(currentP);
                                 indexremove = j;
+                                System.out.print("TemporalFrame " + currentP.getName() +" removed");
                                 break;
                             
                         }
                 
-                parentFrame.getTemporalPanelMap().get(currentP.getLevel()).remove(currentP);
+                   
+                  //remove all children
+                              
+                   
+                    parentFrame.getTemporalPanelMap().get(currentP.getLevel()).remove(currentP);
+                    currentP.getFatherPanel().getDrawLabels().remove(indexremove);
+                    currentP.getFatherPanel().getDrawLabelsLocation().remove(indexremove);
+                    System.out.println("removed" + currentP.getLevel() + " column " + indexremove);   
+                
+                }
+                else
+                {
+                    
+                    for (int i=0; i< currentP.getchildPanel().size(); i++)
+                    {
+                        RemovePanel(currentP.getchildPanel().get(i));
+                        i--;
+                    }
+                    
+                    int indexremove = -1;
+                    for (int j = 0; j < currentP.getFatherPanel().getchildPanel().size(); j++) {
+
+                                 currentP.getFatherPanel().getchildPanel().remove(currentP);
+                                 indexremove = j;
+                                 System.out.print("TemporalFrame " + currentP.getName() +" removed");
+                                 break;
+
+                         }
+
+
+                   //remove all children
+
+
+                 parentFrame.getTemporalPanelMap().get(currentP.getLevel()).remove(currentP);
                  currentP.getFatherPanel().getDrawLabels().remove(indexremove);
                  currentP.getFatherPanel().getDrawLabelsLocation().remove(indexremove);
-            System.out.println("removed" + currentP.getLevel() + " column " + indexremove);                        
+                 System.out.println("removed" + currentP.getLevel() + " column " + indexremove);     
+                    
+                    
+                }
+        }
+        
+        
+        
+        ActionListener bListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JMenuItem source = (JMenuItem) (e.getSource());
+                //System.out.print(source);
+                
+                TemporalViewPanel currentP = attachedPanel;
+                                       
+                RemovePanel(currentP);
+                
+                         
             
+                
+                
+                
             
 //                for (TemporalViewPanel tvp : parentFrame.getSecondColumn()) {
 //                    if (tvp.getName().equals(currentPanelString)) {

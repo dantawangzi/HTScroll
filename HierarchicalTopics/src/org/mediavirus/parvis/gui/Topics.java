@@ -86,11 +86,11 @@ private List<String[]> allTopics;
         return reorganizedTopics;
     }
     
-    public void loadTopic(List<String[]> topics, List<Integer> sequence) throws IOException {
+    public void loadTopic(List<String[]> topics) throws IOException {
 
         allTopics = topics;
         extractFrequency();
-        //displayTopics(sequence);
+       
 
 
     }
@@ -173,7 +173,7 @@ private List<String[]> allTopics;
         reorganizedTopics = new ArrayList<String[]>();
         reorganizedTopics.add(allTopics.get(0));
         for(int i=1; i<allTopics.size(); i++){
-            int t = this.parent.getTopicSequence().get(i-1)+1;
+            int t = (i-1)+1;
             reorganizedTopics.add(allTopics.get(t));
         }
 

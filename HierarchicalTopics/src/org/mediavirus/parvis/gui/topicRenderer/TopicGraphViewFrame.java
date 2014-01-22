@@ -3336,7 +3336,7 @@ public class TopicGraphViewFrame extends JFrame {
     }
     private List<String[]> allTopics;
 
-    public void loadTopic(List<String[]> topics, List<Integer> sequence) throws IOException {
+    public void loadTopic(List<String[]> topics) throws IOException {
 
         allTopics = topics;
         extractFrequency();
@@ -3385,7 +3385,7 @@ public class TopicGraphViewFrame extends JFrame {
         reorganizedTopics = new ArrayList<String[]>();
         reorganizedTopics.add(allTopics.get(0));
         for (int i = 1; i < allTopics.size(); i++) {
-            int t = this.parent.getTopicSequence().get(i - 1) + 1;
+            int t = (i - 1) + 1;
             reorganizedTopics.add(allTopics.get(t));
         }
 
@@ -4562,6 +4562,15 @@ public class TopicGraphViewFrame extends JFrame {
                             } catch (IOException ex) {
                                 Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
                             }
+                            
+                              if (!tvf.getTemporalPanelMap().containsKey(1))
+                            {
+                                List<TemporalViewPanel> tvpl = new ArrayList<TemporalViewPanel>();
+                                tvf.getTemporalPanelMap().put(1, tvpl);
+                                
+                            }
+                              
+                              
                          int index = tvf.getTemporalPanelMap().get(1).size();
                         tp.setName("1" + index);
                             tp.setPanelLabelId(index);   
@@ -4575,17 +4584,21 @@ public class TopicGraphViewFrame extends JFrame {
                         for (TreeNode n : tvf.getTree())
                         {
                            
-                            if ((n.getIndex() == tempt.getIndex()) && n.getChildren().isEmpty())
+
+                             if ((n.getIndex() == tempt.getIndex()) && n.getValue().equals(tempt.getValue()))
+                                 //if ((n.getIndex() == tempt.getIndex()) && n.getChildren().isEmpty())
                             {
                                 tp.currentNode = n;
                                 break;
                              }
                         }
                         
-                        
+                        if (tp.currentNode == null)
+                            System.out.println("No node found matches");
                         
 
                         Integer it = new Integer(tempt.getIndex());
+                        it = index;
                             tvf.getMainPanel().getDrawLabels().add(it);
 
                             Point2D pf = new Point2D.Float(0,0);
@@ -4594,7 +4607,7 @@ public class TopicGraphViewFrame extends JFrame {
                             tp.setFatherPanel(tvf.getMainPanel());
                             tp.calculateLocalNormalizingValue(tp.getData(), tp.currentNode);
 
-
+     
 
                             tvf.getTemporalPanelMap().get(1).add(tp);
                             float normalizeValue = -1;

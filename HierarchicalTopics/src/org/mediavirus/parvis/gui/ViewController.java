@@ -62,7 +62,7 @@ public class ViewController {
     private List<String[]> InternalUsageRecord;
     private List<String[]> InternalDocs;
     private List<Float> topicSimilarities;
-    private List<Integer> tSeq;
+  
     public boolean topicChanged = false;
     private DateFormat format;
     public String csvfFolderPath;
@@ -132,15 +132,9 @@ public class ViewController {
     
     }
 
-    public void setTopicSequence(List<Integer> seq) {
-        tSeq = new ArrayList<Integer>();
-        tSeq = seq;
-    }
+ 
 
-    public List<Integer> getTopicSequence() {
-
-        return tSeq;
-    }
+  
 
     /**
      * No header
@@ -340,8 +334,8 @@ public class ViewController {
             if (highlightedTextLabels==null)
                 System.out.println("null label map");
 //            
-//            System.out.println(highlightedTextLabels.size());
-            ap.DrawWordleCloud(ap.currentMouseLocation, highlightedTextLabels);
+
+//bck            ap.DrawWordleCloud(ap.currentMouseLocation, highlightedTextLabels);
             
         }
 
