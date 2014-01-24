@@ -24,7 +24,7 @@
             </bookmark>
             <bookmark id="7">
                 <name/>
-                <line>2033</line>
+                <line>2049</line>
                 <key/>
             </bookmark>
         </file>
@@ -75,13 +75,13 @@
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TreeNode.java</file>
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/CategoryBarElement.java</file>
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewInteractions.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalPanelTree.java</file>
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/Topics.java</file>
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/eventsView/EventViewFrame.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewPanel.java</file>
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewFrame.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/DocumentViewer.java</file>
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/file/CSVFile.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewPanel.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/MinimalismMainFrame.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/topicRenderer/PrefuseLabelTopicGraphPanel.java</file>
         </group>
     </open-files>
 </project-private>

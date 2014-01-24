@@ -358,7 +358,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
                         System.out.println("Topics Graph done!");
 
                         temporalFrame.getMainPanel().buildLabelTimeMap();
-                        //temporalFrame.getSubPanel().buildLabelTimeMap();
+                        temporalFrame.getSubPanel().buildLabelTimeMap();
 
                         viewController.setLeafNodeSequence(topicFrame.getLeafSequence());
 

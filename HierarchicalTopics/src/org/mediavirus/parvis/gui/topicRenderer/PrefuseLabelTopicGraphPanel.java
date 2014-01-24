@@ -351,6 +351,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         }
 
         System.out.println(graph.getEdgeCount() + " edges in graph.");
+        
 //        for (int i = 0; i < number_of_nodes; i++) {
 //            for (int j = (i+1); j<number_of_nodes ; j++)
 //            {

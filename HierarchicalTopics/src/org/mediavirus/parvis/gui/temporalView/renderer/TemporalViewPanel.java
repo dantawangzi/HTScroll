@@ -1215,6 +1215,22 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
             curg2d.setFont(font);
             curg2d.drawString(Integer.toString(drawPanelLabelId), 0, 30);
+            
+            int size = currentNode.getTopicsContainedIdx().size();
+            String currentTopics = "";
+            
+            
+            for (int i=0; i<size;i++)
+            {
+                currentTopics += "Topic" + Integer.toString(currentNode.getTopicsContainedIdx().get(i)) + " ";
+                
+            }
+            
+            font = new Font("Arial", Font.ITALIC, 20);
+
+            curg2d.setFont(font);
+            
+            curg2d.drawString(currentTopics, 0, 50);
             // System.out.println(drawPanelLabelId + "label id");
         }
         curg2d.drawLine(0, 0, (int) width, 0);
@@ -2302,8 +2318,11 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     public void buildLabelTimeMap() {
 
         if (this.getData().topicYearKwIdx != null) {
-            //labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), this.getData().topicYearKwIdx);
+            
+            labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), this.getData().topicYearKwIdx);
         }
+        else
+            System.out.println("topicYearKwIdx is null, no labels built..");
 
     }
 

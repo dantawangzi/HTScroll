@@ -335,7 +335,7 @@ public class ViewController {
                 System.out.println("null label map");
 //            
 
-//bck            ap.DrawWordleCloud(ap.currentMouseLocation, highlightedTextLabels);
+            ap.DrawWordleCloud(ap.currentMouseLocation, highlightedTextLabels);
             
         }
 

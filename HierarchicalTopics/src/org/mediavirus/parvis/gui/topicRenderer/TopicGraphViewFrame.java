@@ -182,15 +182,13 @@ public class TopicGraphViewFrame extends JFrame {
             hash = 47 * hash + this.field2;
             return hash;
         }
-        
-        
-         @Override 
-         public String toString()
-         {
-             
-             String k = field2.toString();//Integer.parseInt(field2);
-             return field1 + " " + k;
-         }
+
+        @Override
+        public String toString() {
+
+            String k = field2.toString();//Integer.parseInt(field2);
+            return field1 + " " + k;
+        }
 
     }
 
@@ -212,16 +210,14 @@ public class TopicGraphViewFrame extends JFrame {
         float probablity;
         Point2D location;
         boolean highlightFromLabelTopics = false;
-        
+
         Color stringColor;
-        
-        
-        
-        public void setHighlightFromLabelTopics(boolean b)
-        {
-            
+
+        public void setHighlightFromLabelTopics(boolean b) {
+
             highlightFromLabelTopics = b;
         }
+
         public int getOccurance() {
             return occurance;
         }
@@ -248,10 +244,11 @@ public class TopicGraphViewFrame extends JFrame {
         }
 
         public void drawRect(Graphics g) {
-            if (this.rectColor!=null)
+            if (this.rectColor != null) {
                 g.setColor(this.rectColor);
-            else
+            } else {
                 g.setColor(Color.LIGHT_GRAY);
+            }
 
             g.fillRect((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
             // g.drawString(s, posX, posY);
@@ -291,7 +288,7 @@ public class TopicGraphViewFrame extends JFrame {
         public void setRectColor(Color f) {
             rectColor = f;
         }
-        
+
         public void setStringColor(Color f) {
             stringColor = f;
         }
@@ -1721,9 +1718,10 @@ public class TopicGraphViewFrame extends JFrame {
                                     if (highlightOne == 1) {
                                         temp.drawRect(g);
                                     }
-                                    
-                                    if (temp.highlightFromLabelTopics == true)
+
+                                    if (temp.highlightFromLabelTopics == true) {
                                         temp.drawRect(g);
+                                    }
 
                                     //temp.drawRect(g);
                                     if (temp.isDisplayed) {
@@ -2004,65 +2002,56 @@ public class TopicGraphViewFrame extends JFrame {
 
     public void highLightByYearIdxKwNode(TreeNode key, int selectedTimeColumnIdx, List<List<int[]>> tYK, HashMap<TreeNode, List<labelText>> hm) {
 
-        if (tYK == null)
-        {
+        if (tYK == null) {
             System.out.println("topic Year Keywords is null");
             return;
         }
-        
-        
+
         TreeNode t = key;
 
         ObservableCachingLayout lll = (ObservableCachingLayout) vv.getGraphLayout();
 
+        for (int ii = 0; ii < t.getTopicsContainedIdx().size(); ii++) {
 
+            TreeNode t1 = null;
+            String matchedNodeString = "LeafTopic" + t.getTopicsContainedIdx().get(ii);
 
-
-            for (int ii = 0; ii < t.getTopicsContainedIdx().size(); ii++) {
-
-                TreeNode t1 = null;
-                String matchedNodeString = "LeafTopic" + t.getTopicsContainedIdx().get(ii);
-
-                for (int i = 0; i < lll.getGraph().getVertices().size(); i++) {
-                    Object o = lll.getGraph().getVertices().toArray()[i];
-                    t1 = (TreeNode) o;
-                    if (t1.getValue().equals(matchedNodeString)) {
-                        break;
-                    }
+            for (int i = 0; i < lll.getGraph().getVertices().size(); i++) {
+                Object o = lll.getGraph().getVertices().toArray()[i];
+                t1 = (TreeNode) o;
+                if (t1.getValue().equals(matchedNodeString)) {
+                    break;
                 }
-
-                //System.out.println("t1 " + t1.getValue() + " inde " + matchedNodeString);
-                if (allLabels.get(t1) != null) {
-
-                    if (!hm.containsKey(t1)) {
-                        List<labelText> aaa = new ArrayList<labelText>();
-                        hm.put(t1, aaa);
-                    }
-
-                    List<labelText> ltl = allLabels.get(t1);
-
-                    int[] index = tYK.get(t.getTopicsContainedIdx().get(ii)).get(selectedTimeColumnIdx);
-
-                    for (int i = 0; i < index.length; i++) {
-
-                        if ((index[i]) < (labelsToDisplay - 2)) {
-
-                            //ltl.get(index[i] + 1).isHighlighted = true;
-                            hm.get(t1).add(ltl.get(index[i] + 1));
-                            //System.out.println("added label");
-                        }
-
-                    }
-
-                }
-                else
-                {
-                System.out.println("where is my node?");
-                }
-
             }
 
-        
+            //System.out.println("t1 " + t1.getValue() + " inde " + matchedNodeString);
+            if (allLabels.get(t1) != null) {
+
+                if (!hm.containsKey(t1)) {
+                    List<labelText> aaa = new ArrayList<labelText>();
+                    hm.put(t1, aaa);
+                }
+
+                List<labelText> ltl = allLabels.get(t1);
+
+                int[] index = tYK.get(t.getTopicsContainedIdx().get(ii)).get(selectedTimeColumnIdx);
+
+                for (int i = 0; i < index.length; i++) {
+
+                    if ((index[i]) < (labelsToDisplay - 2)) {
+
+                        //ltl.get(index[i] + 1).isHighlighted = true;
+                        hm.get(t1).add(ltl.get(index[i] + 1));
+                        //System.out.println("added label");
+                    }
+
+                }
+
+            } else {
+                System.out.println("where is my node?");
+            }
+
+        }
 
         //updateLabelLocations();
         //vv.repaint();
@@ -2277,52 +2266,38 @@ public class TopicGraphViewFrame extends JFrame {
 
     }
 
-    
-    public void setHighlightLabelsFromLabelTopics(HashMap<String, List<Integer>> highindex, HashMap<String, List<Float>> highweight,HashMap<String, Color> highIndexNumber)
-    {
+    public void setHighlightLabelsFromLabelTopics(HashMap<String, List<Integer>> highindex, HashMap<String, List<Float>> highweight, HashMap<String, Color> highIndexNumber) {
         //Color []colorPlate = {Color.CYAN, Color.pink, Color.MAGENTA, Color.gray};
-        for (List<labelText> lt : allLabels.values())
-        {
-            for (labelText l : lt)
-            {
+        for (List<labelText> lt : allLabels.values()) {
+            for (labelText l : lt) {
                 l.setHighlightFromLabelTopics(false);
                 l.setRectColor(Color.yellow);
-            }                        
+            }
         }
-        
-        
+
         Iterator it = highindex.keySet().iterator();
         int currI = 0;
-        while(it.hasNext())
-        {
-            String key = (String)it.next();
+        while (it.hasNext()) {
+            String key = (String) it.next();
             List<Integer> index = highindex.get(key);
             List<Float> weight = highweight.get(key);
             Color highlightColor = highIndexNumber.get(key);
-            
-              
-                
+
             int size2 = index.size();
             Color tempColor = highlightColor;
-            
-             Color convertColor = null;
-            
-            for (int j=0; j<index.size(); j++)
-            {
-                
-                
-                
+
+            Color convertColor = null;
+
+            for (int j = 0; j < index.size(); j++) {
+
                 int nodeindex = index.get(j);
                 ObservableCachingLayout lll = (ObservableCachingLayout) vv.getGraphLayout();
                 TreeNode found = null;
-                for (int i = 0; i < lll.getGraph().getVertices().size(); i++)
-                {
+                for (int i = 0; i < lll.getGraph().getVertices().size(); i++) {
                     Object o = lll.getGraph().getVertices().toArray()[i];
-                    if (o instanceof TreeNode)
-                    {
-                        TreeNode t = (TreeNode) lll.getGraph().getVertices().toArray()[i];                    
-                        if (t.getChildren().isEmpty() && t.getValue().contains("L") && t.getIndex() == nodeindex)
-                        {
+                    if (o instanceof TreeNode) {
+                        TreeNode t = (TreeNode) lll.getGraph().getVertices().toArray()[i];
+                        if (t.getChildren().isEmpty() && t.getValue().contains("L") && t.getIndex() == nodeindex) {
                             found = t;
                             break;
                         }
@@ -2331,51 +2306,43 @@ public class TopicGraphViewFrame extends JFrame {
 
                 }
 
-                
                 List<labelText> l = allLabels.get(found);
-             
-                     
-                     if (index.size() != 1)
-            {
-                        convertColor = new Color(highlightColor.getRGB());
-                        float[] hsv = new float[3];
-                        hsv = Color.RGBtoHSB(tempColor.getRed(), tempColor.getGreen(), tempColor.getBlue(), hsv);
-                                            
-                        float weightJ = weight.get(j);
-                         System.out.println(weightJ + " " + hsv[0] + " " + hsv[1] + " " + hsv[2]);
-                        hsv[1] = hsv[1]*weightJ;
-                        
-                        int tempColorInt = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
-                        convertColor = new Color(tempColorInt);
-                        System.out.println(convertColor.getRed() + " " + convertColor.getGreen() + " " + convertColor.getBlue());
-                
-            }
 
-                for (labelText tempLT : l)
-                {
-                    
-                   
-            
-                    
-                    
-                    if (index.size()==1)
+                if (index.size() != 1) {
+                    convertColor = new Color(highlightColor.getRGB());
+                    float[] hsv = new float[3];
+                    hsv = Color.RGBtoHSB(tempColor.getRed(), tempColor.getGreen(), tempColor.getBlue(), hsv);
+
+                    float weightJ = weight.get(j);
+                    System.out.println(weightJ + " " + hsv[0] + " " + hsv[1] + " " + hsv[2]);
+                    hsv[1] = hsv[1] * weightJ;
+
+                    int tempColorInt = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
+                    convertColor = new Color(tempColorInt);
+                    System.out.println(convertColor.getRed() + " " + convertColor.getGreen() + " " + convertColor.getBlue());
+
+                }
+
+                for (labelText tempLT : l) {
+
+                    if (index.size() == 1) {
                         tempLT.setRectColor(tempColor);
-                    else
+                    } else {
                         tempLT.setRectColor(convertColor);
-                    
-                    tempLT.setHighlightFromLabelTopics(true);    
+                    }
+
+                    tempLT.setHighlightFromLabelTopics(true);
                 }
 
             }
             currI++;
-            
+
         }
-                  
-        
-         vv.repaint();
-        
-        
+
+        vv.repaint();
+
     }
+
     void buildLabelLocations() {
 
         allLabels.clear();
@@ -2843,44 +2810,38 @@ public class TopicGraphViewFrame extends JFrame {
         }
 
     }
-    
-    
-    public List<labelText> retriveLabelsOfNode(TreeNode t, int timecolumn, List<List<int[]>> tYK)
-    {
-        List<labelText> r = new ArrayList<labelText>();                
-        
-        if (t.getChildren().isEmpty())
-        {
-             
+
+    public List<labelText> retriveLabelsOfNode(TreeNode t, int timecolumn, List<List<int[]>> tYK) {
+        List<labelText> r = new ArrayList<labelText>();
+
+        if (t.getChildren().isEmpty()) {
+
             List<labelText> ltl = allLabels.get(t);
             //System.out.println(t);
             int[] index = tYK.get(t.getIndex()).get(timecolumn);
 
-                    for (int j = 0; j < index.length; j++) {
-                        
-                        if ((index[j]) < (labelsToDisplay - 2))
-                            r.add(ltl.get(index[j] + 1));
-                    }
-        }
-        else
-        {
-     
-             //System.out.println("single here" );
-            HashMap<TreeNode,List<labelText>> highlightedOfthisNode = new HashMap<TreeNode,List<labelText>>();
-           // System.out.println("single here" );
+            for (int j = 0; j < index.length; j++) {
+
+                if ((index[j]) < (labelsToDisplay - 2)) {
+                    r.add(ltl.get(index[j] + 1));
+                }
+            }
+        } else {
+
+            //System.out.println("single here" );
+            HashMap<TreeNode, List<labelText>> highlightedOfthisNode = new HashMap<TreeNode, List<labelText>>();
+            // System.out.println("single here" );
             highLightByYearIdxKwNode(t, timecolumn, tYK, highlightedOfthisNode);
-  
+
             //System.out.println("highlight over");
             r = putUpHighlightedKeywordList(highlightedOfthisNode);
             //System.out.println("putUp over");                                    
         }
         return r;
-        
-        
+
     }
-    
-    
-        List<labelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<labelText>> m) {
+
+    List<labelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<labelText>> m) {
         List<labelText> r = new ArrayList<TopicGraphViewFrame.labelText>();
 
         int size = m.size();
@@ -2888,27 +2849,23 @@ public class TopicGraphViewFrame extends JFrame {
         int maxkeywordnumber = 30;
 
         int iterationRuns = maxkeywordnumber / size;
-        
-        
-        System.out.println(size + " " + iterationRuns);
-        
+
+        //System.out.println(size + " " + iterationRuns);
         if (iterationRuns < 1) {
             iterationRuns = 1;
         }
-        
-        if (iterationRuns>5)
-            iterationRuns = 5;
 
-        
+        if (iterationRuns > 5) {
+            iterationRuns = 5;
+        }
+
         for (int i = 0; i < iterationRuns; i++) {
-            
-            
+
             for (Object o : m.values()) {
-            
-                if (i<((List<labelText>)o).size())
-                {
+
+                if (i < ((List<labelText>) o).size()) {
                     labelText k = ((List<labelText>) o).get(i);
-                
+
                     r.add(k);
                 }
             }
@@ -2990,56 +2947,50 @@ public class TopicGraphViewFrame extends JFrame {
 //        return hmp;
 //        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-        
-        
-        public HashMap< customLabelTimecolumnKey, List<labelText>> buildLabelMap(TreeNode cNode, List<List<int[]>> tYK) {
+    public HashMap< customLabelTimecolumnKey, List<labelText>> buildLabelMap(TreeNode cNode, List<List<int[]>> tYK) {
 
         HashMap< customLabelTimecolumnKey, List<labelText>> hmp = new HashMap< customLabelTimecolumnKey, List<labelText>>();
         ObservableCachingLayout lll = (ObservableCachingLayout) vv.getGraphLayout();
-        
+
         System.out.println("building label maps in " + this.getName());
-        
+
         int numberofyears = parent.getTemporalFrame().getData().getNumOfYears();
 //        System.out.println("numberofyears" + numberofyears);
 //        System.out.println(tYK.size())             ;
 //        System.out.println(tYK.get(0).size());
 //        System.out.println(tYK.get(0).get(0).length);
         TreeNode tk = cNode;
-        System.out.println(tk.getValue() );
-        
+        System.out.println(tk.getValue());
+
         for (int i = 0; i < numberofyears; i++) {
-            
-             customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk.getValue(), i);
-                
-                List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);           
-               // System.out.println(tmpLabels.size());
-                hmp.put(key, tmpLabels);
+
+            customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk.getValue(), i);
+
+            List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
+            // System.out.println(tmpLabels.size());
+            hmp.put(key, tmpLabels);
                 //System.out.println(key.toString());
-            
+
         }
-        
+
         for (int i = 0; i < numberofyears; i++) {
-    
-            if (tk.getChildren().isEmpty())
-            {
-                 //System.out.println("single leaf" + i);
-                 customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk.getValue(), i);
-                
-                List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);           
+
+            if (tk.getChildren().isEmpty()) {
+                //System.out.println("single leaf" + i);
+                customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk.getValue(), i);
+
+                List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
 
                 hmp.put(key, tmpLabels);
-                
-            }
-            else
-            {
+
+            } else {
 //                List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
 //                    // System.out.println("single node" + i);
 //                     
 //                    customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk, i);
 //                    hmp.put(key, tmpLabels);
-                    
-                for (int j=0; j<tk.getChildren().size(); j++)
-                {
+
+                for (int j = 0; j < tk.getChildren().size(); j++) {
                     TreeNode t1 = (TreeNode) tk.getChildren().get(j);
                     //TreeNode t1 = null;
 //                    String matchedNodeString = "LeafTopic" + tk.getTopicsContainedIdx().get(j);
@@ -3051,22 +3002,21 @@ public class TopicGraphViewFrame extends JFrame {
 //                            break;
 //                        }
 //                    }
-                    
-                     //System.out.println("single node" + i);
-                      List<labelText> tmpLabels = retriveLabelsOfNode(t1, i, tYK);
-                    System.out.println("single node" + tmpLabels.size());
-                     
+
+                    //System.out.println("single node" + i);
+                    List<labelText> tmpLabels = retriveLabelsOfNode(t1, i, tYK);
+                    //System.out.println("single node" + tmpLabels.size());
+
                     customLabelTimecolumnKey key = new customLabelTimecolumnKey(t1.getValue(), i);
                     hmp.put(key, tmpLabels);
-                   
-                    
-                }                                                
+
+                }
             }
 
         }
 
         System.out.println("hmp size " + hmp.size());
-        
+
         return hmp;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -3433,7 +3383,7 @@ public class TopicGraphViewFrame extends JFrame {
                 }
             }
         }
-        System.out.println("Words that show up more than twice: " + occurances.size() +"in topic view");
+        System.out.println("Words that show up more than twice: " + occurances.size() + "in topic view");
     }
     private JPanel[] panels;
 
@@ -4554,99 +4504,83 @@ public class TopicGraphViewFrame extends JFrame {
 //                    } catch (IOException ex) {
 //                        Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
 //                    }
-                     
-                     {
-                         TemporalViewPanel tp = null;
-                            try {
-                                tp = new TemporalViewPanel(parent);
-                            } catch (IOException ex) {
-                                Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            
-                              if (!tvf.getTemporalPanelMap().containsKey(1))
-                            {
-                                List<TemporalViewPanel> tvpl = new ArrayList<TemporalViewPanel>();
-                                tvf.getTemporalPanelMap().put(1, tvpl);
-                                
-                            }
-                              
-                              
-                         int index = tvf.getTemporalPanelMap().get(1).size();
+
+                    {
+                        TemporalViewPanel tp = null;
+                        try {
+                            tp = new TemporalViewPanel(parent);
+                        } catch (IOException ex) {
+                            Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        if (!tvf.getTemporalPanelMap().containsKey(1)) {
+                            List<TemporalViewPanel> tvpl = new ArrayList<TemporalViewPanel>();
+                            tvf.getTemporalPanelMap().put(1, tvpl);
+
+                        }
+
+                        int index = tvf.getTemporalPanelMap().get(1).size();
                         tp.setName("1" + index);
-                            tp.setPanelLabelId(index);   
-                            tp.setLevel(1);
-                          tp.setData(tvf.getData());
-                            tp.setTree(tvf.getTree());
+                        tp.setPanelLabelId(index);
+                        tp.setLevel(1);
+                        tp.setData(tvf.getData());
+                        tp.setTree(tvf.getTree());
                         tvf.getMainPanel().addChildPanel(tp);
                         tp.setFatherPanel(tvf.getMainPanel());
                         TreeNode tempt = (TreeNode) picked.iterator().next();
-                        
-                        for (TreeNode n : tvf.getTree())
-                        {
-                           
 
-                             if ((n.getIndex() == tempt.getIndex()) && n.getValue().equals(tempt.getValue()))
-                                 //if ((n.getIndex() == tempt.getIndex()) && n.getChildren().isEmpty())
+                        for (TreeNode n : tvf.getTree()) {
+
+                            if ((n.getIndex() == tempt.getIndex()) && n.getValue().equals(tempt.getValue())) //if ((n.getIndex() == tempt.getIndex()) && n.getChildren().isEmpty())
                             {
                                 tp.currentNode = n;
                                 break;
-                             }
+                            }
                         }
-                        
-                        if (tp.currentNode == null)
+
+                        if (tp.currentNode == null) {
                             System.out.println("No node found matches");
-                        
+                        }
 
                         Integer it = new Integer(tempt.getIndex());
                         it = index;
-                            tvf.getMainPanel().getDrawLabels().add(it);
+                        tvf.getMainPanel().getDrawLabels().add(it);
 
-                            Point2D pf = new Point2D.Float(0,0);
+                        Point2D pf = new Point2D.Float(0, 0);
 
-                            tvf.getMainPanel().getDrawLabelsLocation().add(pf);
-                            tp.setFatherPanel(tvf.getMainPanel());
-                            tp.calculateLocalNormalizingValue(tp.getData(), tp.currentNode);
+                        tvf.getMainPanel().getDrawLabelsLocation().add(pf);
+                        tp.setFatherPanel(tvf.getMainPanel());
+                        tp.calculateLocalNormalizingValue(tp.getData(), tp.currentNode);
 
-     
-
-                            tvf.getTemporalPanelMap().get(1).add(tp);
-                            float normalizeValue = -1;
-                            if (tvf.getTemporalPanelMap().get(1).size() > 0) {
-                                for (TemporalViewPanel ttp : tvf.getTemporalPanelMap().get(1)) {
-                                    if (ttp.getLocalNormalizingValue() >= normalizeValue) {
-                                        normalizeValue = ttp.getLocalNormalizingValue();
-                                    }
-                                }
-                                for (TemporalViewPanel ttp : tvf.getTemporalPanelMap().get(1)) {
-                                    ttp.setGlobalNormalizingValue(normalizeValue);
+                        tvf.getTemporalPanelMap().get(1).add(tp);
+                        float normalizeValue = -1;
+                        if (tvf.getTemporalPanelMap().get(1).size() > 0) {
+                            for (TemporalViewPanel ttp : tvf.getTemporalPanelMap().get(1)) {
+                                if (ttp.getLocalNormalizingValue() >= normalizeValue) {
+                                    normalizeValue = ttp.getLocalNormalizingValue();
                                 }
                             }
+                            for (TemporalViewPanel ttp : tvf.getTemporalPanelMap().get(1)) {
+                                ttp.setGlobalNormalizingValue(normalizeValue);
+                            }
+                        }
 
                             // tp.UpdateTemporalView(new Dimension(tf.getWidth()/(1+secondColumnExist+thirdColumnExist),tf.getHeight()/3), tp.getGlobalNormalizingValue());
-
-
-                            for (TemporalViewPanel ttp : tvf.getTemporalPanelMap().get(1)) {
-                                ttp.calculateRenderControlPointsOfEachHierarchy(tp.getData(), tp.currentNode, tp.getGlobalNormalizingValue());
-                                ttp.computerZeroslopeAreasHierarchy(0);
+                        for (TemporalViewPanel ttp : tvf.getTemporalPanelMap().get(1)) {
+                            ttp.calculateRenderControlPointsOfEachHierarchy(tp.getData(), tp.currentNode, tp.getGlobalNormalizingValue());
+                            ttp.computerZeroslopeAreasHierarchy(0);
                                 //ttp.detectEvents();
 
-                                //ttp.UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), ttp.getGlobalNormalizingValue());
-                            }
-
-
+                            //ttp.UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), ttp.getGlobalNormalizingValue());
+                        }
 
                             //tvf.getMainPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() * 2 / 3), tvf.getMainPanel().getLocalNormalizingValue());
-                            //tvf.getSubPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), tvf.getSubPanel().getLocalNormalizingValue());
+                        //tvf.getSubPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), tvf.getSubPanel().getLocalNormalizingValue());
+                        System.out.println("second column panel added");
+                        tvf.setMigLayoutForScrollPane();
 
-                            System.out.println("second column panel added");
-                            tvf.setMigLayoutForScrollPane();
-                         
-                         
-                         
-                     }
-                    
-                    
-                    
+                    }
+
                 }
 
             }

@@ -461,21 +461,62 @@ public class CategoryBarElement {
                 }
 
                 {
-                    System.out.println("Output categoryBar.txt");
-                    PrintWriter out = new PrintWriter(csvPath + "categoryBar.txt");
-                    for (int j = 0; j < categoryBar.size(); j++) {
-                        for (int i = 0; i < categoryBar.get(j).length; i++) {
-                            out.printf("%g ", categoryBar.get(j)[i]);
+                    
+                    
+                    
+
+
+                    System.out.println("output  unormalized_categoryBar.txt");
+                    PrintWriter out = new PrintWriter(csvPath + "unormalized_categoryBar.txt");
+                    for (int j = 0; j < unormalized_categoryBar.size(); j++) {
+                        for (int i = 0; i < unormalized_categoryBar.get(j).length; i++) {
+                            out.printf("%g ", unormalized_categoryBar.get(j)[i]);
                         }
                         out.printf("\n");
                     }
                     out.close();
+                    
+                    
+                                        
+                                System.out.println("Normalizing theme river..");
+            float[] tempSum = new float[_numOfTemporalBins];
+            float[] normTempSum = new float[_numOfTemporalBins];
+            float maxSum = 0;
+            for (int i = 0; i < _numOfTemporalBins; i++) {
+                tempSum[i] = 0;
+                for (int j = 0; j < numberOfTopics; j++) {
+                    tempSum[i] += categoryBar.get(j)[i];
+                }
+                if (maxSum < tempSum[i]) {
+                    maxSum = tempSum[i];
+                }
+            }
+            /**
+             * Normalize across columns*
+             */
+            for (int i = 0; i < _numOfTemporalBins; i++) {
+                normTempSum[i] = tempSum[i] / maxSum;
+            }
+            /**
+             * Normalize within columns*
+             */
+            for (int i = 0; i < _numOfTemporalBins; i++) {
+                for (int j = 0; j < numberOfTopics; j++) {
+                    if (tempSum[i] != 0) {
+                        categoryBar.get(j)[i] = categoryBar.get(j)[i] / tempSum[i] * normTempSum[i];
+                    } else {
+                        categoryBar.get(j)[i] = 0;//Don't know if this is right
+                    }
 
-                    System.out.println("output  unormalized_categoryBar.txt");
-                    out = new PrintWriter(csvPath + "unormalized_categoryBar.txt");
-                    for (int j = 0; j < unormalized_categoryBar.size(); j++) {
-                        for (int i = 0; i < unormalized_categoryBar.get(j).length; i++) {
-                            out.printf("%g ", unormalized_categoryBar.get(j)[i]);
+                }
+            }
+
+            System.out.println("Normalizing theme river finished.");
+                    System.out.println("Output categoryBar.txt");
+                    out = new PrintWriter(csvPath + "categoryBar.txt");
+                    for (int j = 0; j < categoryBar.size(); j++) {
+                        for (int i = 0; i < categoryBar.get(j).length; i++) {
+                            out.printf("%g ", categoryBar.get(j)[i]);
                         }
                         out.printf("\n");
                     }
@@ -516,124 +557,182 @@ public class CategoryBarElement {
             }
 
             /////////////////////////////////////////////////////////////////////////////////
-            System.out.println("topicYearKwIdx calculating...");
-            int[] tmp4;
-            float[] tmpAllKeywords;
-            float tmpWeight = 0, tmpWeightSum = 0, tmpWeightProduct = 1;
-            int tmpCol = 0;
-            List<int[]> topKeywordByYear;
-            topicYearKwIdx = new ArrayList<List<int[]>>();
+            //topicYearKwIdax load
+            String filepathtyki = csvPath + "topicYearKwIdx.txt";
+            File f1 = new File(filepathtyki);
+            if (f1.exists())                    
+            {
+                topicYearKwIdx = new ArrayList<List<int[]>>();
+                
+                 System.out.println("cache files exist, Loading topicYearKwIdx.txt... ");
+                
+               
 
-            if (b_readall) {
-                for (int i = 0; i < numberOfTopics; i++) {
-                    /*
-                     * For every topic, pick top 4 keyword for every time frame
-                     */
+                   FileReader reader = new FileReader(filepathtyki);
+                    BufferedReader in = new BufferedReader(reader);
+                    for (int i = 0; i < _numberOfTopics; i++) {
+                        List<int[]> tempList = new ArrayList<int[]>();
 
-                    topKeywordByYear = new ArrayList<int[]>();//for each topic
-                    try {
-                        for (int y = 0; y < _numOfTemporalBins; y++) {
-
-//                        if (debugPrint)
-//                            System.out.println("y = " + y);
-                            tmp4 = new int[5];
-                            tmpAllKeywords = new float[numKeywords];
-
-                            for (int k = 0; k < numKeywords; k++) {
-
-//                            if (debugPrint && k==22)
-//                                System.out.println("k " + k);
-//                            
-//2                         //TODO k = 1 k = 2; with group or without
-                                curKeyword = allTopics.get((i) + 1)[k + 2].trim().toLowerCase();
-
-                                //System.out.println(curKeyword);
-                                tmpCol = termIndex.get(curKeyword);
-                                tmpWeight = (termWeightF.get(i)[tmpCol]);
-
-                                for (int n = 0; n < _numOfTemporalBins; n++) {
-                                    tmpWeightSum += topicTFs.get(i).get(k)[n];
-
-                                }
-
-//                            if (tmpWeightSum == 0)
-//                            {
-//                                tmpAllKeywords[k] = 0; 
-//                            
-//                            }
-                                // else{
-                                for (int m = 0; m < numberOfTopics; m++) {
-                                    tmpWeightProduct = tmpWeightProduct * termWeightF.get(m)[tmpCol];
-                                }
-
-                                tmpWeightProduct = (float) Math.pow(tmpWeightProduct, 1 / numberOfTopics);
-                                tmpWeightProduct = (float) (tmpWeight * Math.log(tmpWeight / tmpWeightProduct));
-                                tmpAllKeywords[k] = (float) ((0.5 * topicTFs.get(i).get(k)[y] / tmpWeightSum) + 0.5 * tmpWeightProduct);
-                                //tmpAllKeywords[k] = (float) ((0.5 * topicTFs.get(i).get(k)[y]/tmpWeightSum) + 0.5 * tmpWeightProduct);
-                                //}
-
-                                tmpWeightSum = 0;
-                                tmpWeightProduct = 1;
-                            //System.out.println("numOfHours " + y + "keywords "+ k);
-                                //System.out.println(curKeyword);
+                        for (int k = 0; k < _numOfTemporalBins; k++) {
+                            String string = in.readLine();
+                            String[] inputs = string.split("\\s");
+                            int[] tempFloat = new int[inputs.length];
+                            for (int j = 0; j < tempFloat.length; j++) {
+                                tempFloat[j] = Integer.parseInt(inputs[j]);
                             }
 
-                            /*
-                             * Find the 4 largest number in the array
-                             */
-//                        map = new TreeMap();
-//
-//                        
-//                        for (int m = 0; m < tmpAllKeywords.length; m++) {
-//                            map.put(tmpAllKeywords[m], m);
-//                        }
-//                        //Arrays.sort(tmpAllKeywords);
-//                        Arrays.sort(tmpAllKeywords,Collections.reverseOrder());
-                            List<compFloat> tmparray = new ArrayList<compFloat>();
-                            for (int m = 0; m < tmpAllKeywords.length; m++) {
-
-                              if (!Float.isNaN(tmpAllKeywords[m]))                                  
-                              {
-//                                  tmpAllKeywords[m] = -Float.MAX_VALUE;
-//                                   compFloat cmf = new compFloat(m,tmpAllKeywords[m]);
-//                                  
-                                    compFloat cmf = new compFloat(m, tmpAllKeywords[m]);
-                                    tmparray.add(cmf);
-                              }
-                                
-                            }
-                            
-                            
-                            FloatComparer c = new FloatComparer();
-                            Collections.sort(tmparray, c);
-
-//                        
-//                        iterator = map.keySet().iterator();
-//                        Object key;
-//                        for (int m = 0; m < tmp4.length; m++) {
-//                            key = map.lastKey();
-//                            tmp4[m] = Integer.parseInt(map.get(key).toString());
-//                            map.remove(map.lastKey());
-//                        }
-                            for (int m = 0; m < tmp4.length; m++) {
-
-                                tmp4[m] = tmparray.get(m).index;
-
-                            }
-
-                            topKeywordByYear.add(tmp4);
+                            tempList.add(tempFloat);
                         }
-                    } catch (Exception e) {
-                        System.out.println(e);
-                        System.out.println("topicYearKwIdx error " + i + "th key word ");
 
+                        topicYearKwIdx.add(tempList);
                     }
 
-                    topicYearKwIdx.add(topKeywordByYear);
-                }
+                    in.close();
+                    reader.close();
+                   
             }
+            else
+            {
+             
+            
+                System.out.println("topicYearKwIdx calculating...");
+                int[] tmp4;
+                float[] tmpAllKeywords;
+                float tmpWeight = 0, tmpWeightSum = 0, tmpWeightProduct = 1;
+                int tmpCol = 0;
+                List<int[]> topKeywordByYear;
+                topicYearKwIdx = new ArrayList<List<int[]>>();
 
-            System.out.println("topicYearKwIdx calculated..");
+                if (b_readall) {
+                    for (int i = 0; i < numberOfTopics; i++) {
+                        /*
+                         * For every topic, pick top 4 keyword for every time frame
+                         */
+
+                        topKeywordByYear = new ArrayList<int[]>();//for each topic
+                        try {
+                            for (int y = 0; y < _numOfTemporalBins; y++) {
+
+    //                        if (debugPrint)
+    //                            System.out.println("y = " + y);
+                                tmp4 = new int[5];
+                                tmpAllKeywords = new float[numKeywords];
+
+                                for (int k = 0; k < numKeywords; k++) {
+
+    //                            if (debugPrint && k==22)
+    //                                System.out.println("k " + k);
+    //                            
+    //2                         //TODO k = 1 k = 2; with group or without
+                                    curKeyword = allTopics.get((i) + 1)[k + 2].trim().toLowerCase();
+
+                                    //System.out.println(curKeyword);
+                                    tmpCol = termIndex.get(curKeyword);
+                                    tmpWeight = (termWeightF.get(i)[tmpCol]);
+
+                                    for (int n = 0; n < _numOfTemporalBins; n++) {
+                                        tmpWeightSum += topicTFs.get(i).get(k)[n];
+
+                                    }
+
+    //                            if (tmpWeightSum == 0)
+    //                            {
+    //                                tmpAllKeywords[k] = 0; 
+    //                            
+    //                            }
+                                    // else{
+                                    for (int m = 0; m < numberOfTopics; m++) {
+                                        tmpWeightProduct = tmpWeightProduct * termWeightF.get(m)[tmpCol];
+                                    }
+
+                                    tmpWeightProduct = (float) Math.pow(tmpWeightProduct, 1 / numberOfTopics);
+                                    tmpWeightProduct = (float) (tmpWeight * Math.log(tmpWeight / tmpWeightProduct));
+                                    tmpAllKeywords[k] = (float) ((0.5 * topicTFs.get(i).get(k)[y] / tmpWeightSum) + 0.5 * tmpWeightProduct);
+                                    //tmpAllKeywords[k] = (float) ((0.5 * topicTFs.get(i).get(k)[y]/tmpWeightSum) + 0.5 * tmpWeightProduct);
+                                    //}
+
+                                    tmpWeightSum = 0;
+                                    tmpWeightProduct = 1;
+                                //System.out.println("numOfHours " + y + "keywords "+ k);
+                                    //System.out.println(curKeyword);
+                                }
+
+                                /*
+                                 * Find the 4 largest number in the array
+                                 */
+    //                        map = new TreeMap();
+    //
+    //                        
+    //                        for (int m = 0; m < tmpAllKeywords.length; m++) {
+    //                            map.put(tmpAllKeywords[m], m);
+    //                        }
+    //                        //Arrays.sort(tmpAllKeywords);
+    //                        Arrays.sort(tmpAllKeywords,Collections.reverseOrder());
+                                List<compFloat> tmparray = new ArrayList<compFloat>();
+                                for (int m = 0; m < tmpAllKeywords.length; m++) {
+
+                                  if (!Float.isNaN(tmpAllKeywords[m]))                                  
+                                  {
+    //                                  tmpAllKeywords[m] = -Float.MAX_VALUE;
+    //                                   compFloat cmf = new compFloat(m,tmpAllKeywords[m]);
+    //                                  
+                                        compFloat cmf = new compFloat(m, tmpAllKeywords[m]);
+                                        tmparray.add(cmf);
+                                  }
+
+                                }
+
+
+                                FloatComparer c = new FloatComparer();
+                                Collections.sort(tmparray, c);
+
+    //                        
+    //                        iterator = map.keySet().iterator();
+    //                        Object key;
+    //                        for (int m = 0; m < tmp4.length; m++) {
+    //                            key = map.lastKey();
+    //                            tmp4[m] = Integer.parseInt(map.get(key).toString());
+    //                            map.remove(map.lastKey());
+    //                        }
+                                for (int m = 0; m < tmp4.length; m++) {
+
+                                    tmp4[m] = tmparray.get(m).index;
+
+                                }
+
+                                topKeywordByYear.add(tmp4);
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e);
+                            System.out.println("topicYearKwIdx error " + i + "th key word ");
+
+                        }
+
+                        topicYearKwIdx.add(topKeywordByYear);
+                    }
+                }
+
+                System.out.println("topicYearKwIdx calculated..output cache files");
+
+                PrintWriter ofp = new PrintWriter(csvPath + "topicYearKwIdx.txt");
+                for (int i=0; i< topicYearKwIdx.size(); i++)
+                {
+                    for (int j=0; j<topicYearKwIdx.get(i).size(); j++)
+                    {
+                        for (int k=0; k<topicYearKwIdx.get(i).get(j).length; k++)
+                            ofp.print(topicYearKwIdx.get(i).get(j)[k] +" ");
+                        
+                        ofp.print("\n");
+                    }
+                    
+                }
+
+
+                ofp.close();
+
+            
+            }
+            
             /**
              * Normalize for the themeRiver - Normalize twice - first across
              * columns then within columns*
@@ -642,40 +741,40 @@ public class CategoryBarElement {
              * year1 year2 year3 T1 T2 T3
              */
 
-            System.out.println("Normalizing theme river..");
-            float[] tempSum = new float[_numOfTemporalBins];
-            float[] normTempSum = new float[_numOfTemporalBins];
-            float maxSum = 0;
-            for (int i = 0; i < _numOfTemporalBins; i++) {
-                tempSum[i] = 0;
-                for (int j = 0; j < numberOfTopics; j++) {
-                    tempSum[i] += categoryBar.get(j)[i];
-                }
-                if (maxSum < tempSum[i]) {
-                    maxSum = tempSum[i];
-                }
-            }
-            /**
-             * Normalize across columns*
-             */
-            for (int i = 0; i < _numOfTemporalBins; i++) {
-                normTempSum[i] = tempSum[i] / maxSum;
-            }
-            /**
-             * Normalize within columns*
-             */
-            for (int i = 0; i < _numOfTemporalBins; i++) {
-                for (int j = 0; j < numberOfTopics; j++) {
-                    if (tempSum[i] != 0) {
-                        categoryBar.get(j)[i] = categoryBar.get(j)[i] / tempSum[i] * normTempSum[i];
-                    } else {
-                        categoryBar.get(j)[i] = 0;//Don't know if this is right
-                    }
-
-                }
-            }
-
-            System.out.println("Normalizing theme river finished.");
+//            System.out.println("Normalizing theme river..");
+//            float[] tempSum = new float[_numOfTemporalBins];
+//            float[] normTempSum = new float[_numOfTemporalBins];
+//            float maxSum = 0;
+//            for (int i = 0; i < _numOfTemporalBins; i++) {
+//                tempSum[i] = 0;
+//                for (int j = 0; j < numberOfTopics; j++) {
+//                    tempSum[i] += categoryBar.get(j)[i];
+//                }
+//                if (maxSum < tempSum[i]) {
+//                    maxSum = tempSum[i];
+//                }
+//            }
+//            /**
+//             * Normalize across columns*
+//             */
+//            for (int i = 0; i < _numOfTemporalBins; i++) {
+//                normTempSum[i] = tempSum[i] / maxSum;
+//            }
+//            /**
+//             * Normalize within columns*
+//             */
+//            for (int i = 0; i < _numOfTemporalBins; i++) {
+//                for (int j = 0; j < numberOfTopics; j++) {
+//                    if (tempSum[i] != 0) {
+//                        categoryBar.get(j)[i] = categoryBar.get(j)[i] / tempSum[i] * normTempSum[i];
+//                    } else {
+//                        categoryBar.get(j)[i] = 0;//Don't know if this is right
+//                    }
+//
+//                }
+//            }
+//
+//            System.out.println("Normalizing theme river finished.");
 
         }
     }
