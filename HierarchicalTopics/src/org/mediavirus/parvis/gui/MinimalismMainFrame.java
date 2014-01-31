@@ -3,47 +3,49 @@
 package org.mediavirus.parvis.gui;
 
 import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 import com.mysql.jdbc.Connection;
 import eventsView.EventViewFrame;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import javax.swing.*;
+import java.awt.geom.Point2D;
 import java.io.*;
 import java.net.*;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
+import javax.swing.JTable;
 import org.apache.commons.io.IOUtils;
 import org.mediavirus.parvis.file.*;
 import org.mediavirus.parvis.gui.temporalView.renderer.TemporalViewFrame;
 import org.mediavirus.parvis.gui.topicRenderer.TopicGraphViewFrame;
-import org.mediavirus.parvis.gui.topicRenderer.WorldMapProcessingFrame;
 import org.mediavirus.parvis.gui.topicRenderer.VastGeoFrame;
+import org.mediavirus.parvis.gui.topicRenderer.WorldMapProcessingFrame;
 import prefuse.data.Graph;
+import prefuse.data.io.*;
 
 import prefuse.data.io.AbstractGraphWriter;
 import prefuse.data.io.GraphWriter;
 import prefuse.data.io.TreeMLWriter;
-import prefuse.data.io.*;
-
-import com.mongodb.MongoClient;
-import com.mongodb.MongoException;
-import com.mongodb.WriteConcern;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.DBCursor;
-import com.mongodb.ServerAddress;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -99,6 +101,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
         menuEditGroup = new javax.swing.ButtonGroup();
         buttonEditGroup = new javax.swing.ButtonGroup();
         jButton1 = new javax.swing.JButton();
+        jConnectMongoButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenu = new javax.swing.JMenuItem();
@@ -129,6 +132,15 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1, java.awt.BorderLayout.CENTER);
+
+        jConnectMongoButton.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
+        jConnectMongoButton.setText("Connect Mongo");
+        jConnectMongoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jConnectMongoButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jConnectMongoButton, java.awt.BorderLayout.LINE_END);
 
         menuBar.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
 
@@ -293,14 +305,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
                         viewController.setInternalDocs(csvf.getInternalDocs());
 
-                       
-
                         viewController.setTopicSimilarities(csvf.getTopicSimilarities());
 
                         viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
 
                         viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
-
 
                         viewController.setFormat(csvf.getFormat());
 
@@ -311,20 +320,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
                         }
 
                         setTitle("HirarchicalTopics" + csvf.getName());
-
-                        /**
-                         * Initialize temporal view*
-                         */
                         viewController.setNewHueColors();
 
-                        // Get the default toolkit
                         Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-                        // Get the current screen size
                         Dimension scrnsize = toolkit.getScreenSize();
 
                         String csvfilepath = csvf.getFolderPath();
-
                         viewController.csvfFolderPath = csvfilepath;
                         temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
                         viewController.addTemporalFrame(temporalFrame);
@@ -336,37 +338,281 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
                         temporalFrame.setVisible(true);
                         temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
                         temporalFrame.setLocation(0, 0);
-//           
-
-                        System.out.println("Theme River Done!");
 
                         topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights());
-                        viewController.addTopicGraphViewPanel(topicFrame);
-                        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
-                        System.out.println("topic frame load topics done.");
+        viewController.addTopicGraphViewPanel(topicFrame);
+        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
+        System.out.println("topic frame load topics done.");
 
-                        viewController.getTopicGraphViewPanel().buildTree(csvf.getFolderPath());
+        viewController.getTopicGraphViewPanel().buildTree(csvf.getFolderPath());
 
-                        System.out.println("topic frame build tree done..");
+        System.out.println("topic frame build tree done..");
 
-                        topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
-                        topicFrame.setLocation(scrnsize.width / 2, 0);
+        topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
+        topicFrame.setLocation(scrnsize.width / 2, 0);
 
-                        viewController.getTopicGraphViewPanel().generateLayout();
-                        topicFrame.setVisible(true);
+        viewController.getTopicGraphViewPanel().generateLayout();
+        topicFrame.setVisible(true);
 
-                        System.out.println("Topics Graph done!");
+        System.out.println("Topics Graph done!");
+        
+        
+                        initializeViews(csvf);
+                        /**
+                         * Initialize temporal view*
+                         */
 
-                        temporalFrame.getMainPanel().buildLabelTimeMap();
-                        temporalFrame.getSubPanel().buildLabelTimeMap();
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.toString() + e.getMessage());
+                }
 
-                        viewController.setLeafNodeSequence(topicFrame.getLeafSequence());
+            }
+        }
+    }//GEN-LAST:event_openItemActionPerformed
 
-                        int s = viewController.getTopicGraphViewPanel().getTree().size();
+    /**
+     * Exit the Application
+     */
+    private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
+        System.exit(0);
+    }//GEN-LAST:event_exitForm
 
-                        FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
+    private void jCheckBoxTemporalFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTemporalFrameActionPerformed
 
-                        String treeString = IOUtils.toString(inputStream);
+        boolean currentState = jCheckBoxTemporalFrame.getState();
+        temporalFrame.setVisible(currentState);        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxTemporalFrameActionPerformed
+
+    private void jCheckBoxTopicGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTopicGraphActionPerformed
+        // TODO add your handling code here:
+        boolean currentState = jCheckBoxTopicGraph.getState();
+        topicFrame.setVisible(currentState);
+    }//GEN-LAST:event_jCheckBoxTopicGraphActionPerformed
+
+    private void jCheckBoxGeoFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxGeoFrameActionPerformed
+        // TODO add your handling code here:
+        boolean currentState = jCheckBoxGeoFrame.getState();
+        vcGeoFrame.setVisible(currentState);
+    }//GEN-LAST:event_jCheckBoxGeoFrameActionPerformed
+
+    private void jCheckBoxLabelTopicFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLabelTopicFrameActionPerformed
+        // TODO add your handling code here:
+        boolean currentState = jCheckBoxLabelTopicFrame.getState();
+        eventViewFrame.setVisible(currentState);
+    }//GEN-LAST:event_jCheckBoxLabelTopicFrameActionPerformed
+
+    private void jConnectMongoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectMongoButtonActionPerformed
+
+        
+        viewController.b_readFromDB = true;
+        
+        
+        JOptionPane p = new JOptionPane();
+
+        String[] columnName = {"Data"};
+
+        MongoClient mongoClient = null;
+        try {
+            mongoClient = new MongoClient("10.18.203.211", 27017);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        DB db = mongoClient.getDB("lda_results");
+
+        Set<String> colls = db.getCollectionNames();
+
+        for (String s1 : colls) {
+            System.out.println(s1);
+        }
+
+        DBCollection coll = db.getCollection("job_index");
+        System.out.println("database count : " + coll.getCount());
+
+        List<String> jobNames = new ArrayList<String>();
+
+        DBCursor cursor = coll.find();
+        try {
+            while (cursor.hasNext()) {
+                BasicDBObject dbo = (BasicDBObject) cursor.next();
+                String s = dbo.getString("_id");
+                jobNames.add(s);
+                //System.out.println(dbo);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        Object[][] data = new Object[jobNames.size()][];
+        for (int i = 0; i < jobNames.size(); i++) {
+            Object[] tmp = new Object[1];
+            tmp[0] = (Object) jobNames.get(i);
+            data[i] = tmp;
+
+        }
+        JTable table = new JTable(data, columnName);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.setFillsViewportHeight(true);
+
+        JOptionPane.showMessageDialog(null, scrollPane,
+                "select", JOptionPane.YES_NO_CANCEL_OPTION);
+
+        String job = jobNames.get(table.getSelectedRow());
+        
+
+        
+
+        CSVFile csvf = new CSVFile("");
+        try {
+            
+            
+       // viewController.setUsageRecord(csvf.getInternalRecord());
+
+        //viewController.setInternalDocs(csvf.getInternalDocs());
+
+       // viewController.setTopicSimilarities(csvf.getTopicSimilarities());
+
+        List<String[]> topics  = new ArrayList<String[]>() ;
+        
+        DBCollection currentColl = db.getCollection(job);
+        
+        currentColl.getCount();
+         BasicDBObject dbo = new BasicDBObject("type", "topic");
+        DBCursor cursorfind = currentColl.find(dbo);
+        HashMap<String, String[]> topicsByMongo = new HashMap<String, String[]>();
+        
+        while (cursorfind.hasNext())
+        {
+            BasicDBObject tmpdbo = (BasicDBObject) cursorfind.next();
+            String Key = tmpdbo.getString("_id");
+            String terms =  tmpdbo.getString("terms");
+            String[] tmps = terms.split(",");
+            String[] tmpdest = new String[tmps.length+2];
+            tmpdest[0] = "Group";
+            tmpdest[1] = Key;
+            for (int i=0; i<tmps.length; i++)
+            {
+                tmpdest[2+i] = tmps[i];
+                
+            }
+            topicsByMongo.put(Key, tmpdest);                       
+            
+        }
+        for (int i=0; i<topicsByMongo.size(); i++)
+        {
+            String key = "t" + Integer.toString(i);
+            topics.add(topicsByMongo.get(key));
+        }
+        
+        
+            
+        viewController.getTopicDisplay().loadTopic(topics/*csvf.getAllTopics()*/);
+       
+        //viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
+       
+       
+        DBCollection dbc = db.getCollection("job_index");
+        BasicDBObject q1 = new BasicDBObject("_id", job);
+         cursor = dbc.find(q1);                
+         String s = "";
+        while (cursor.hasNext())
+        {
+            
+            
+             BasicDBObject dbo1 = (BasicDBObject) cursor.next();
+        
+             s = ((BasicDBObject) dbo1.get("mongo_input")).getString("date_format");
+           
+             System.out.println(s);
+        }
+        
+        
+        SimpleDateFormat format = new SimpleDateFormat("YYYY-HH-MM");
+        
+       viewController.setFormat(format);
+
+        String TreeString = "";
+        q1 = new BasicDBObject("type", "flat");
+        cursorfind = currentColl.find(q1);
+        BasicDBObject dbo1 = (BasicDBObject) cursorfind.next();
+        TreeString = dbo1.getString("tree");
+        
+        viewController.setNewHueColors();
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+        Dimension scrnsize = toolkit.getScreenSize();
+
+        String csvfilepath = csvf.getFolderPath();
+        viewController.csvfFolderPath = csvfilepath;
+        
+            temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
+
+            viewController.addTemporalFrame(temporalFrame);
+
+            temporalFrame.loadCacheData(job, TreeString);
+            
+         
+            temporalFrame.setVisible(true);
+            temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
+            temporalFrame.setLocation(0, 0);
+
+            topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights());
+        viewController.addTopicGraphViewPanel(topicFrame);
+        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
+        System.out.println("topic frame load topics done.");
+
+        viewController.getTopicGraphViewPanel().buildTreeWithTreeString(TreeString);
+
+        System.out.println("topic frame build tree done..");
+
+        topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
+        topicFrame.setLocation(scrnsize.width / 2, 0);
+
+        viewController.getTopicGraphViewPanel().generateLayout();
+        topicFrame.setVisible(true);
+
+        System.out.println("Topics Graph done!");
+        
+            initializeViews(csvf);
+            
+            
+        } catch (IOException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    
+        mongoClient.close();
+
+
+// TODO add your handling code here:
+
+    }//GEN-LAST:event_jConnectMongoButtonActionPerformed
+
+    void initializeViews(CSVFile csvf) throws IOException {
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+        Dimension scrnsize = toolkit.getScreenSize();
+
+        String csvfilepath = csvf.getFolderPath();
+
+       
+
+        
+
+        temporalFrame.getMainPanel().buildLabelTimeMap();
+        temporalFrame.getSubPanel().buildLabelTimeMap();
+
+        viewController.setLeafNodeSequence(topicFrame.getLeafSequence());
+
+        int s = viewController.getTopicGraphViewPanel().getTree().size();
+
+        FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
+
+        String treeString = IOUtils.toString(inputStream);
 
 //
 //                        MongoClient mongoClient = new MongoClient("152.15.99.7", 27017);
@@ -443,9 +689,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 //                            cursor.close();
 //                        }
 //                        
-                        //System.out.println(geoLocations.size());
-                        //MongoClient.close();
-                        //DBCursor cursor = coll.find();
+        //System.out.println(geoLocations.size());
+        //MongoClient.close();
+        //DBCursor cursor = coll.find();
 //                        try {
 //                           while(cursor.hasNext()) {
 //                               System.out.println(cursor.next());
@@ -501,11 +747,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 ////    } catch (Exception e) {
 ////      e.printStackTrace();
 ////    }
-                        Graph pgh = null;//(viewController.makePrefuseGraph(treeString));
+        Graph pgh = null;//(viewController.makePrefuseGraph(treeString));
 //
 
-                        System.out.println("get geo locations done");
-                        viewController.geoLocations = csvf.getTwitterGeoLocations();
+        System.out.println("get geo locations done");
+        viewController.geoLocations = csvf.getTwitterGeoLocations();
 
 //                        WorldMapProcessingFrame worldMapFrame = new WorldMapProcessingFrame(viewController,csvf.getTwitterGeoLocations(), csvf.getMediumLocation());
 //                        viewController.addWorldMapProcessingFrame(worldMapFrame);
@@ -513,92 +759,54 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 //                        worldMapFrame.setVisible(true);
 ////
 //                        
-                        viewController.twitterPointMax = csvf.getMaxLocation();
-                        viewController.twitterPointMin = csvf.getMinLocation();
+        viewController.twitterPointMax = csvf.getMaxLocation();
+        viewController.twitterPointMin = csvf.getMinLocation();
 
-                        vcGeoFrame = new VastGeoFrame(viewController, csvf.getFolderPath(), csvf.getTwitterGeoLocations());
+        vcGeoFrame = new VastGeoFrame(viewController, csvf.getFolderPath(), csvf.getTwitterGeoLocations());
 
-                        viewController.setVCGF(vcGeoFrame);
+        viewController.setVCGF(vcGeoFrame);
 
-                        vcGeoFrame.setVisible(true);
+        vcGeoFrame.setVisible(true);
 
 //
-                        System.out.println("GeoFrame done");
+        System.out.println("GeoFrame done");
 
-                        eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
-                                viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, folderPath, csvf.getSimilarityMatrix());
+        eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
+                viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, csvf.getFolderPath(), csvf.getSimilarityMatrix());
 //                       
-                        eventViewFrame.setVisible(true);
+        eventViewFrame.setVisible(true);
 
-                        System.out.println("label graph done");
+        System.out.println("label graph done");
 
-                        vcGeoFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-                            @Override
-                            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                                jCheckBoxGeoFrame.setState(false);
-                            }
-                        });
-
-                        eventViewFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-                            @Override
-                            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                                jCheckBoxLabelTopicFrame.setState(false);
-                            }
-                        });
-
-                        topicFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-                            @Override
-                            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                                jCheckBoxTopicGraph.setState(false);
-                            }
-                        });
-
-                        temporalFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-                            @Override
-                            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                                jCheckBoxTemporalFrame.setState(false);
-                            }
-                        });
-
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.toString() + e.getMessage());
-                }
-
+        vcGeoFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                jCheckBoxGeoFrame.setState(false);
             }
-        }
-    }//GEN-LAST:event_openItemActionPerformed
+        });
 
-    /**
-     * Exit the Application
-     */
-    private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
-        System.exit(0);
-    }//GEN-LAST:event_exitForm
+        eventViewFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                jCheckBoxLabelTopicFrame.setState(false);
+            }
+        });
 
-    private void jCheckBoxTemporalFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTemporalFrameActionPerformed
+        topicFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                jCheckBoxTopicGraph.setState(false);
+            }
+        });
 
-        boolean currentState = jCheckBoxTemporalFrame.getState();
-        temporalFrame.setVisible(currentState);        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBoxTemporalFrameActionPerformed
+        temporalFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                jCheckBoxTemporalFrame.setState(false);
+            }
+        });
 
-    private void jCheckBoxTopicGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTopicGraphActionPerformed
-        // TODO add your handling code here:
-         boolean currentState = jCheckBoxTopicGraph.getState();
-        topicFrame.setVisible(currentState); 
-    }//GEN-LAST:event_jCheckBoxTopicGraphActionPerformed
-
-    private void jCheckBoxGeoFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxGeoFrameActionPerformed
-        // TODO add your handling code here:
-        boolean currentState = jCheckBoxGeoFrame.getState();
-        vcGeoFrame.setVisible(currentState);
-    }//GEN-LAST:event_jCheckBoxGeoFrameActionPerformed
-
-    private void jCheckBoxLabelTopicFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLabelTopicFrameActionPerformed
-        // TODO add your handling code here:
-        boolean currentState = jCheckBoxLabelTopicFrame.getState();
-        eventViewFrame.setVisible(currentState);
-    }//GEN-LAST:event_jCheckBoxLabelTopicFrameActionPerformed
+    }
 
     /**
      * @param args the command line arguments
@@ -618,6 +826,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jCheckBoxLabelTopicFrame;
     private javax.swing.JCheckBoxMenuItem jCheckBoxTemporalFrame;
     private javax.swing.JCheckBoxMenuItem jCheckBoxTopicGraph;
+    private javax.swing.JButton jConnectMongoButton;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.ButtonGroup menuEditGroup;

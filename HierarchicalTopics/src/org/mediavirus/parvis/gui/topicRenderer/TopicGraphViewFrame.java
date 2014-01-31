@@ -466,7 +466,7 @@ public class TopicGraphViewFrame extends JFrame {
             }
 
             public void componentMoved(ComponentEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet.");
+                //throw new UnsupportedOperationExceptibon("Not supported yet.");
             }
 
             public void componentShown(ComponentEvent e) {
@@ -636,6 +636,38 @@ public class TopicGraphViewFrame extends JFrame {
 
     }
 
+    
+    public void buildTreeWithTreeString(String everything)
+    {
+         myTree = new ArrayList<TreeNode>();
+       
+        //folderPath = path;
+      
+        everything = everything.replaceAll(" ", "");
+
+        processTree(everything);
+
+        try {
+            int size = myTree.size();
+
+            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+            out.write(everything);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Exception ");
+
+        }
+
+        myTree.get(0).calculateNodeSize();
+
+        myTree.get(0).calculateNodeString();
+
+        NodeStringProcessing();
+
+        setNodeColor();
+        
+        
+    }
     public void buildTree(String path) throws FileNotFoundException, IOException {
 
         myTree = new ArrayList<TreeNode>();
@@ -3291,23 +3323,7 @@ public class TopicGraphViewFrame extends JFrame {
         allTopics = topics;
         extractFrequency();
 
-        int numberOfTopics = allTopics.size();
-//        labeltexts = new labelText[numberOfTopics][labelsToDisplay];
-//        for (int i = 0; i < numberOfTopics; i++) {
-//            for (int j = 0; j < labelsToDisplay; j++) {
-//                labeltexts[i][j] = new labelText();
-//            }
-//        }
 
-//        labelIsSelected = new boolean[numberOfTopics][labelsToDisplay];
-//
-//
-//        for (int i = 0; i < numberOfTopics; i++) {
-//            for (int j = 0; j < labelsToDisplay; j++) {
-//                labelIsSelected[i][j] = false;
-//            }
-//        }
-        //buildTopicLabels(sequence);
     }
 
     public void UpdateTopicGraphicView(Dimension size) {
@@ -3333,6 +3349,17 @@ public class TopicGraphViewFrame extends JFrame {
     private void extractFrequency() {
         //Re-organize topics based on the similarities
         reorganizedTopics = new ArrayList<String[]>();
+        
+        
+        
+         if (parent.b_readFromDB)
+        {
+            
+            
+            
+        }
+         else
+         {
         reorganizedTopics.add(allTopics.get(0));
         for (int i = 1; i < allTopics.size(); i++) {
             int t = (i - 1) + 1;
@@ -3383,6 +3410,18 @@ public class TopicGraphViewFrame extends JFrame {
                 }
             }
         }
+        
+       
+        
+        
+        
+         }
+        
+        
+        
+        
+        
+        
         System.out.println("Words that show up more than twice: " + occurances.size() + "in topic view");
     }
     private JPanel[] panels;

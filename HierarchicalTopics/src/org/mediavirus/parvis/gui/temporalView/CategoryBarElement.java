@@ -4,12 +4,24 @@
  */
 package org.mediavirus.parvis.gui.temporalView;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.MongoClient;
+import java.io.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.Integer;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,12 +32,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.mediavirus.parvis.file.CSVReader;
-import java.io.PrintWriter;
-import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Comparator;
+import org.mediavirus.parvis.gui.MinimalismMainFrame;
 import org.mediavirus.parvis.gui.topicRenderer.TopicGraphViewFrame;
 
 /**
@@ -109,7 +116,8 @@ public class CategoryBarElement {
         return beginningTime;
     }
 
-    public CategoryBarElement(String tmpURL) {
+    public CategoryBarElement(String dataBaseName) throws IOException {
+        initiateComponentsFromMongo(dataBaseName);
         //initComponents(tmpURL);
     }
     private int _numberOfTopics = 0;
@@ -461,10 +469,6 @@ public class CategoryBarElement {
                 }
 
                 {
-                    
-                    
-                    
-
 
                     System.out.println("output  unormalized_categoryBar.txt");
                     PrintWriter out = new PrintWriter(csvPath + "unormalized_categoryBar.txt");
@@ -475,43 +479,41 @@ public class CategoryBarElement {
                         out.printf("\n");
                     }
                     out.close();
-                    
-                    
-                                        
-                                System.out.println("Normalizing theme river..");
-            float[] tempSum = new float[_numOfTemporalBins];
-            float[] normTempSum = new float[_numOfTemporalBins];
-            float maxSum = 0;
-            for (int i = 0; i < _numOfTemporalBins; i++) {
-                tempSum[i] = 0;
-                for (int j = 0; j < numberOfTopics; j++) {
-                    tempSum[i] += categoryBar.get(j)[i];
-                }
-                if (maxSum < tempSum[i]) {
-                    maxSum = tempSum[i];
-                }
-            }
-            /**
-             * Normalize across columns*
-             */
-            for (int i = 0; i < _numOfTemporalBins; i++) {
-                normTempSum[i] = tempSum[i] / maxSum;
-            }
-            /**
-             * Normalize within columns*
-             */
-            for (int i = 0; i < _numOfTemporalBins; i++) {
-                for (int j = 0; j < numberOfTopics; j++) {
-                    if (tempSum[i] != 0) {
-                        categoryBar.get(j)[i] = categoryBar.get(j)[i] / tempSum[i] * normTempSum[i];
-                    } else {
-                        categoryBar.get(j)[i] = 0;//Don't know if this is right
+
+                    System.out.println("Normalizing theme river..");
+                    float[] tempSum = new float[_numOfTemporalBins];
+                    float[] normTempSum = new float[_numOfTemporalBins];
+                    float maxSum = 0;
+                    for (int i = 0; i < _numOfTemporalBins; i++) {
+                        tempSum[i] = 0;
+                        for (int j = 0; j < numberOfTopics; j++) {
+                            tempSum[i] += categoryBar.get(j)[i];
+                        }
+                        if (maxSum < tempSum[i]) {
+                            maxSum = tempSum[i];
+                        }
+                    }
+                    /**
+                     * Normalize across columns*
+                     */
+                    for (int i = 0; i < _numOfTemporalBins; i++) {
+                        normTempSum[i] = tempSum[i] / maxSum;
+                    }
+                    /**
+                     * Normalize within columns*
+                     */
+                    for (int i = 0; i < _numOfTemporalBins; i++) {
+                        for (int j = 0; j < numberOfTopics; j++) {
+                            if (tempSum[i] != 0) {
+                                categoryBar.get(j)[i] = categoryBar.get(j)[i] / tempSum[i] * normTempSum[i];
+                            } else {
+                                categoryBar.get(j)[i] = 0;//Don't know if this is right
+                            }
+
+                        }
                     }
 
-                }
-            }
-
-            System.out.println("Normalizing theme river finished.");
+                    System.out.println("Normalizing theme river finished.");
                     System.out.println("Output categoryBar.txt");
                     out = new PrintWriter(csvPath + "categoryBar.txt");
                     for (int j = 0; j < categoryBar.size(); j++) {
@@ -560,41 +562,35 @@ public class CategoryBarElement {
             //topicYearKwIdax load
             String filepathtyki = csvPath + "topicYearKwIdx.txt";
             File f1 = new File(filepathtyki);
-            if (f1.exists())                    
-            {
+            if (false/*f1.exists()*/) {
                 topicYearKwIdx = new ArrayList<List<int[]>>();
-                
-                 System.out.println("cache files exist, Loading topicYearKwIdx.txt... ");
-                
-               
 
-                   FileReader reader = new FileReader(filepathtyki);
-                    BufferedReader in = new BufferedReader(reader);
-                    for (int i = 0; i < _numberOfTopics; i++) {
-                        List<int[]> tempList = new ArrayList<int[]>();
+                System.out.println("cache files exist, Loading topicYearKwIdx.txt... ");
 
-                        for (int k = 0; k < _numOfTemporalBins; k++) {
-                            String string = in.readLine();
-                            String[] inputs = string.split("\\s");
-                            int[] tempFloat = new int[inputs.length];
-                            for (int j = 0; j < tempFloat.length; j++) {
-                                tempFloat[j] = Integer.parseInt(inputs[j]);
-                            }
+                FileReader reader = new FileReader(filepathtyki);
+                BufferedReader in = new BufferedReader(reader);
+                for (int i = 0; i < _numberOfTopics; i++) {
+                    List<int[]> tempList = new ArrayList<int[]>();
 
-                            tempList.add(tempFloat);
+                    for (int k = 0; k < _numOfTemporalBins; k++) {
+                        String string = in.readLine();
+                        String[] inputs = string.split("\\s");
+                        int[] tempFloat = new int[inputs.length];
+                        for (int j = 0; j < tempFloat.length; j++) {
+                            tempFloat[j] = Integer.parseInt(inputs[j]);
                         }
 
-                        topicYearKwIdx.add(tempList);
+                        tempList.add(tempFloat);
                     }
 
-                    in.close();
-                    reader.close();
-                   
-            }
-            else
-            {
-             
-            
+                    topicYearKwIdx.add(tempList);
+                }
+
+                in.close();
+                reader.close();
+
+            } else {
+
                 System.out.println("topicYearKwIdx calculating...");
                 int[] tmp4;
                 float[] tmpAllKeywords;
@@ -614,16 +610,16 @@ public class CategoryBarElement {
                             for (int y = 0; y < _numOfTemporalBins; y++) {
 
     //                        if (debugPrint)
-    //                            System.out.println("y = " + y);
+                                //                            System.out.println("y = " + y);
                                 tmp4 = new int[5];
                                 tmpAllKeywords = new float[numKeywords];
 
                                 for (int k = 0; k < numKeywords; k++) {
 
     //                            if (debugPrint && k==22)
-    //                                System.out.println("k " + k);
-    //                            
-    //2                         //TODO k = 1 k = 2; with group or without
+                                    //                                System.out.println("k " + k);
+                                    //                            
+                                    //2                         //TODO k = 1 k = 2; with group or without
                                     curKeyword = allTopics.get((i) + 1)[k + 2].trim().toLowerCase();
 
                                     //System.out.println(curKeyword);
@@ -636,10 +632,10 @@ public class CategoryBarElement {
                                     }
 
     //                            if (tmpWeightSum == 0)
-    //                            {
-    //                                tmpAllKeywords[k] = 0; 
-    //                            
-    //                            }
+                                    //                            {
+                                    //                                tmpAllKeywords[k] = 0; 
+                                    //                            
+                                    //                            }
                                     // else{
                                     for (int m = 0; m < numberOfTopics; m++) {
                                         tmpWeightProduct = tmpWeightProduct * termWeightF.get(m)[tmpCol];
@@ -653,7 +649,7 @@ public class CategoryBarElement {
 
                                     tmpWeightSum = 0;
                                     tmpWeightProduct = 1;
-                                //System.out.println("numOfHours " + y + "keywords "+ k);
+                                    //System.out.println("numOfHours " + y + "keywords "+ k);
                                     //System.out.println(curKeyword);
                                 }
 
@@ -661,39 +657,37 @@ public class CategoryBarElement {
                                  * Find the 4 largest number in the array
                                  */
     //                        map = new TreeMap();
-    //
-    //                        
-    //                        for (int m = 0; m < tmpAllKeywords.length; m++) {
-    //                            map.put(tmpAllKeywords[m], m);
-    //                        }
-    //                        //Arrays.sort(tmpAllKeywords);
-    //                        Arrays.sort(tmpAllKeywords,Collections.reverseOrder());
+                                //
+                                //                        
+                                //                        for (int m = 0; m < tmpAllKeywords.length; m++) {
+                                //                            map.put(tmpAllKeywords[m], m);
+                                //                        }
+                                //                        //Arrays.sort(tmpAllKeywords);
+                                //                        Arrays.sort(tmpAllKeywords,Collections.reverseOrder());
                                 List<compFloat> tmparray = new ArrayList<compFloat>();
                                 for (int m = 0; m < tmpAllKeywords.length; m++) {
 
-                                  if (!Float.isNaN(tmpAllKeywords[m]))                                  
-                                  {
+                                    if (!Float.isNaN(tmpAllKeywords[m])) {
     //                                  tmpAllKeywords[m] = -Float.MAX_VALUE;
-    //                                   compFloat cmf = new compFloat(m,tmpAllKeywords[m]);
-    //                                  
+                                        //                                   compFloat cmf = new compFloat(m,tmpAllKeywords[m]);
+                                        //                                  
                                         compFloat cmf = new compFloat(m, tmpAllKeywords[m]);
                                         tmparray.add(cmf);
-                                  }
+                                    }
 
                                 }
-
 
                                 FloatComparer c = new FloatComparer();
                                 Collections.sort(tmparray, c);
 
     //                        
-    //                        iterator = map.keySet().iterator();
-    //                        Object key;
-    //                        for (int m = 0; m < tmp4.length; m++) {
-    //                            key = map.lastKey();
-    //                            tmp4[m] = Integer.parseInt(map.get(key).toString());
-    //                            map.remove(map.lastKey());
-    //                        }
+                                //                        iterator = map.keySet().iterator();
+                                //                        Object key;
+                                //                        for (int m = 0; m < tmp4.length; m++) {
+                                //                            key = map.lastKey();
+                                //                            tmp4[m] = Integer.parseInt(map.get(key).toString());
+                                //                            map.remove(map.lastKey());
+                                //                        }
                                 for (int m = 0; m < tmp4.length; m++) {
 
                                     tmp4[m] = tmparray.get(m).index;
@@ -715,24 +709,21 @@ public class CategoryBarElement {
                 System.out.println("topicYearKwIdx calculated..output cache files");
 
                 PrintWriter ofp = new PrintWriter(csvPath + "topicYearKwIdx.txt");
-                for (int i=0; i< topicYearKwIdx.size(); i++)
-                {
-                    for (int j=0; j<topicYearKwIdx.get(i).size(); j++)
-                    {
-                        for (int k=0; k<topicYearKwIdx.get(i).get(j).length; k++)
-                            ofp.print(topicYearKwIdx.get(i).get(j)[k] +" ");
-                        
+                for (int i = 0; i < topicYearKwIdx.size(); i++) {
+                    for (int j = 0; j < topicYearKwIdx.get(i).size(); j++) {
+                        for (int k = 0; k < topicYearKwIdx.get(i).get(j).length; k++) {
+                            ofp.print(topicYearKwIdx.get(i).get(j)[k] + " ");
+                        }
+
                         ofp.print("\n");
                     }
-                    
-                }
 
+                }
 
                 ofp.close();
 
-            
             }
-            
+
             /**
              * Normalize for the themeRiver - Normalize twice - first across
              * columns then within columns*
@@ -740,7 +731,6 @@ public class CategoryBarElement {
             /**
              * year1 year2 year3 T1 T2 T3
              */
-
 //            System.out.println("Normalizing theme river..");
 //            float[] tempSum = new float[_numOfTemporalBins];
 //            float[] normTempSum = new float[_numOfTemporalBins];
@@ -775,8 +765,245 @@ public class CategoryBarElement {
 //            }
 //
 //            System.out.println("Normalizing theme river finished.");
+        }
+    }
+
+    private void initiateComponentsFromMongo(String MongoDBJobName) throws FileNotFoundException, IOException {
+
+        MongoClient mongoClient = null;
+        try {
+            mongoClient = new MongoClient("10.18.203.211", 27017);
+        } catch (UnknownHostException ex) {
+            System.out.println("DB begin load cache error");
+        }
+
+        DB db = mongoClient.getDB("lda_results");
+        DBCollection dbc = db.getCollection("job_index");
+
+        BasicDBObject q1 = new BasicDBObject("_id", MongoDBJobName);
+        DBCursor cursor = dbc.find(q1);
+         int incrementalDays = 0;
+         System.out.println(q1);
+        while (cursor.hasNext())
+        {
+            
+            
+             BasicDBObject dbo1 = (BasicDBObject) cursor.next();
+             System.out.println(dbo1);
+             int _numberOfDocs = Integer.parseInt(dbo1.getString("num_docs"));
+             minT = Long.parseLong(dbo1.getString("min_year"));
+             maxT = Long.parseLong(dbo1.getString("max_year"));
+             incrementalDays = Integer.parseInt(dbo1.getString("incremental_days"));
+             String s = ((BasicDBObject) dbo1.get("mongo_input")).getString("date_format");
+            _numberOfTopics = Integer.parseInt(((BasicDBObject) dbo1.get("meta")).getString("num_topics"));
 
         }
+       
+        
+        
+        DBCollection currentColl = db.getCollection(MongoDBJobName);
+
+        categoryBar = new ArrayList<float[]>();
+        unormalized_categoryBar = new ArrayList<float[]>();
+        idxOfDocumentPerSlot = new HashMap<Integer, List<Integer>>();
+
+        hr2ms = (long) ((long)incrementalDays * 86400000);//86400000L;
+
+        _numOfTemporalBins = (int) Math.ceil((maxT - minT) / hr2ms);
+        _numOfTemporalBins = (int) Math.floor((maxT - minT) / hr2ms) + 1;
+
+        beginningTime = minT; //time.get(0);
+      
+        int numKeywords = 30;//TODO: hardcode alert!!
+
+        List<int[]> topicKTF = null;
+
+        topicTFs = new ArrayList<List<int[]>>();
+
+        System.out.println("Loading cache files from mongo ...");
+
+        //read in files
+        categoryBar.clear();
+        unormalized_categoryBar.clear();
+        idxOfDocumentPerSlot.clear();
+        topicTFs.clear();
+        
+//        BasicDBObject andQuery = new BasicDBObject();
+//	List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+//	obj.add(new BasicDBObject("number", 2));
+//	obj.add(new BasicDBObject("name", "mkyong-2"));
+//	andQuery.put("$and", obj);
+// 
+//	System.out.println(andQuery.toString());
+// 
+//	DBCursor cursor = collection.find(andQuery);
+//	while (cursor.hasNext()) {
+//		System.out.println(cursor.next());
+//	}
+        BasicDBObject dbo = new BasicDBObject("type", "cat_bar");
+        DBCursor cursorfind = currentColl.find(dbo);
+        HashMap<String, float[]> cateBarMongo = new HashMap<String, float[]>();
+        while (cursorfind.hasNext())
+        {
+            BasicDBObject tmpDBO = (BasicDBObject) cursorfind.next();
+            String key = tmpDBO.getString("_id");
+            String weights = tmpDBO.getString("weights");
+            String[] tmp = weights.split(",");
+            float[] tmpvalue = new float[tmp.length];
+            for (int i=0; i<tmp.length; i++)
+                tmpvalue[i] = Float.parseFloat(tmp[i]);
+            
+            cateBarMongo.put(key, tmpvalue);                       
+        }               
+        
+        for (int i=0; i<_numOfTemporalBins; i++)
+        {
+                String key = "tb" + (new Integer(i)).toString();
+                categoryBar.add(cateBarMongo.get(key));                         
+        }
+        
+        System.out.println("categoryBar loaded");
+        
+        
+        BasicDBObject dboUn = new BasicDBObject("type", "unorm_cat_bar");
+        cursorfind = currentColl.find(dboUn);
+        HashMap<String, float[]> cateBarMongoUn = new HashMap<String, float[]>();
+        while (cursorfind.hasNext())
+        {
+            BasicDBObject tmpDBO = (BasicDBObject) cursorfind.next();
+            String key = tmpDBO.getString("_id");
+            String weights = tmpDBO.getString("weights");
+            String[] tmp = weights.split(",");
+            float[] tmpvalue = new float[tmp.length];
+            for (int i=0; i<tmp.length; i++)
+                tmpvalue[i] = Float.parseFloat(tmp[i]);
+            
+            cateBarMongoUn.put(key, tmpvalue);                       
+        }               
+        
+        for (int i=0; i<_numOfTemporalBins; i++)
+        {
+                String key = "utb" + (new Integer(i)).toString();
+                unormalized_categoryBar.add(cateBarMongoUn.get(key));                         
+        }
+        
+        System.out.println("unormalized_categoryBar loaded");
+        
+        BasicDBObject dboTFs = new BasicDBObject("type", "top_tf");
+        HashMap<String, int[]> tfsMongo = new HashMap<String, int[]>();
+        cursorfind = currentColl.find(dboTFs);
+         while (cursorfind.hasNext())
+        {
+             BasicDBObject tmpDBO = (BasicDBObject) cursorfind.next();
+             String key = tmpDBO.getString("_id");
+             String weights = tmpDBO.getString("weights");
+            String[] tmp = weights.split(",");
+            int[] tmpvalue = new int[tmp.length];
+            for (int i=0; i<tmp.length; i++)
+                tmpvalue[i] = Integer.parseInt(tmp[i]);
+            
+            tfsMongo.put(key, tmpvalue); 
+            //System.out.println(tmpDBO);
+            
+        }
+                     
+        
+         
+        for (int i=0; i<_numberOfTopics; i++)
+        {
+            List<int[]> tmpL = new ArrayList<int[]>();
+            for (int j=0; j<numKeywords; j++)
+            {                                
+                String key = "top" + (new Integer(i)).toString() + "term" + (new Integer(j)).toString();
+                tmpL.add(tfsMongo.get(key));   
+            }
+            topicTFs.add(tmpL);
+            
+        }
+        
+         System.out.println("topicTFs  loaded");
+        
+        BasicDBObject dboidxbyh = new BasicDBObject("type", "idx_slot");
+        HashMap<String, int[]> idxbyMongo = new HashMap<String, int[]>();
+        cursorfind = currentColl.find(dboidxbyh);
+         while (cursorfind.hasNext())
+        {
+             BasicDBObject tmpDBO = (BasicDBObject) cursorfind.next();
+//             System.out.println(tmpDBO);
+  
+             String weights = tmpDBO.getString("weights");
+            String[] tmp = weights.split(",");
+            int[] tmpvalue = new int[tmp.length];
+            String key = tmp[0];
+            for (int i=0; i<(tmp.length-1); i++)
+                tmpvalue[i] = Integer.parseInt(tmp[i+1]);
+            
+            
+            idxbyMongo.put(key, tmpvalue); 
+            //System.out.println(tmpDBO);
+            
+        }
+                          
+        
+        for (Map.Entry<String, int[]> entry : idxbyMongo.entrySet()) 
+        { 
+            int Key = Integer.parseInt(entry.getKey());
+            int[] tmp = entry.getValue();
+            List<Integer> tmpl = new ArrayList<Integer>();
+            for (int i=0; i<tmp.length; i++)
+            {
+                tmpl.add(tmp[i]);
+            }
+            idxOfDocumentPerSlot.put(Key, tmpl);
+            
+        }
+        
+         System.out.println("idxOfDocumentPerSlot loaded");
+              
+         
+         BasicDBObject dbotyk = new BasicDBObject("type", "top_y_kw_idx");
+        HashMap<String, int[]> tykbyMongo = new HashMap<String, int[]>();
+        cursorfind = currentColl.find(dbotyk);
+         while (cursorfind.hasNext())
+        {
+             BasicDBObject tmpDBO = (BasicDBObject) cursorfind.next();
+            // System.out.println(tmpDBO);
+                                  
+             String key = tmpDBO.getString("_id");
+             String weights = tmpDBO.getString("top_terms");
+            String[] tmp = weights.split(",");
+            int[] tmpvalue = new int[tmp.length];
+            for (int i=0; i<tmp.length; i++)
+                tmpvalue[i] = Integer.parseInt(tmp[i]);
+            
+            tykbyMongo.put(key, tmpvalue); 
+            
+            
+            //System.out.println(tmpDBO);
+            
+        }
+         
+         
+                 topicYearKwIdx = new ArrayList<List<int[]>>();
+
+        for (int i = 0; i < _numberOfTopics; i++) {
+            List<int[]> tempList = new ArrayList<int[]>();
+
+            for (int k = 0; k < _numOfTemporalBins; k++) {
+               
+                String Key = "t" + Integer.toString(i) +"b" + Integer.toString(k);             
+                
+                tempList.add(tykbyMongo.get(Key));
+            }
+
+            topicYearKwIdx.add(tempList);
+        }
+         
+          System.out.println("topicYearKwIdx loaded");
+         
+
+          System.out.println("loading cache files from mongo, done!");
+
     }
 
     public boolean testFileExistance(String path) {

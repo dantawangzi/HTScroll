@@ -86,10 +86,13 @@ private List<String[]> allTopics;
         return reorganizedTopics;
     }
     
+    
+    
+    
     public void loadTopic(List<String[]> topics) throws IOException {
 
         allTopics = topics;
-        extractFrequency();
+        //extractFrequency();
        
 
 

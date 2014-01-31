@@ -1079,6 +1079,50 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
     }
 
+    
+    public void loadCacheData(String databaseName, String TreeString) throws IOException
+    {
+        data = new CategoryBarElement(databaseName);
+        myTree = new ArrayList<TreeNode>();
+        buildTreeWithString(TreeString);
+        
+        BuildNodeValue(data, myTree.get(0));
+        BuildUnNormNodeValue(data, myTree.get(0));
+
+        myTree.get(0).calculateNodeContainedIdx();
+
+        System.out.println("building trees and values in temporal frame finished...");
+        setNodeColor();
+        getMainPanel().setData(data);
+
+        getMainPanel().currentNode = myTree.get(0);
+        //calculateRenderControlPoints(data);
+
+        getMainPanel().setTree(myTree);
+
+        getMainPanel().calculateLocalNormalizingValue(data, getMainPanel().currentNode);
+        getMainPanel().calculateRenderControlPointsOfEachHierarchy(data, getMainPanel().currentNode, getMainPanel().getLocalNormalizingValue());
+        getMainPanel().computerZeroslopeAreasHierarchy(0);
+        getMainPanel().detectEvents(getMainPanel().getEventThreshold());
+
+        getSubPanel().setData(data);
+
+        getSubPanel().currentNode = myTree.get(1);
+        //calculateRenderControlPoints(data);
+
+        getSubPanel().setTree(myTree);
+        getSubPanel().calculateLocalNormalizingValue(data, getSubPanel().currentNode);
+        getSubPanel().calculateRenderControlPointsOfEachHierarchy(data, getSubPanel().currentNode, getSubPanel().getLocalNormalizingValue());
+        getSubPanel().computerZeroslopeAreasHierarchy(0);
+        getSubPanel().detectEvents(getMainPanel().getEventThreshold());
+
+        getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
+        
+        getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
+        System.out.println("initial calculating of main and subpanel done");
+        
+        
+    }
     public void loadData(String path, List<String[]> internalRecord,  List<Long> years,
             List<String[]> allDocs, List<String[]> termWeights, List<float[]> termWeights_norm, Map<String, Integer> termIndex,
             List<String[]> allTopics, String csvpath, int contentIdx, DateFormat f, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub) throws FileNotFoundException, IOException {
@@ -1366,6 +1410,85 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         }
     }
 
+    
+     public void buildTreeWithString(String everything) {
+
+
+        everything = everything.replaceAll(" ", "");
+        everything = everything.replaceAll("\r", "");
+
+        Scanner sc = new Scanner(everything);
+
+        sc.useDelimiter("\n");
+        String temp = sc.next();
+
+        String nodes = sc.next();
+
+        String[] tempNodes = nodes.split(",");
+
+        System.out.println(tempNodes.length + " nodes in tree");
+        TreeNode NodeArray[] = new TreeNode[1000];
+        TreeNode LeafArray[] = new TreeNode[1000];
+
+        for (int i = 0; i < tempNodes.length; i++) {
+
+            String a = tempNodes[i].replaceAll("\\D", "");
+
+            int index = Integer.parseInt(a);
+
+            TreeNode t = new TreeNode(index, tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", ""));
+
+            if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'N') {
+
+                NodeArray[index] = t;
+                myTree.add(t);
+            } else if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'L') {
+                LeafArray[index] = t;
+                myTree.add(t);
+            } else {
+                int c = 0;
+            }
+        }
+
+        String edges = sc.next();
+
+        String[] tempEdges = edges.split("\\),");
+
+        System.out.println((tempEdges.length - 1) + " links in tree");
+
+        for (int i = 0; i < tempEdges.length - 1; i++) {
+            String[] tempE = tempEdges[i].split(",");
+            TreeNode tt1, tt2;
+
+            int index1 = Integer.parseInt(tempE[0].replaceAll("\\D", ""));
+            int index2 = Integer.parseInt(tempE[1].replaceAll("\\D", ""));
+
+            String tempE1 = tempE[0].replaceAll("[^\\p{L}\\p{N}]", "");
+            if (tempE1.charAt(0) == 'N') {
+
+                tt1 = NodeArray[index1];
+            } else if (tempE1.charAt(0) == 'L') {
+                tt1 = LeafArray[index1];
+            } else {
+                int c = 0;
+                tt1 = null;
+            }
+
+            String tempE2 = tempE[1].replaceAll("[^\\p{L}\\p{N}]", "");
+            if (tempE2.charAt(0) == 'N') {
+                tt2 = NodeArray[index2];
+            } else if (tempE2.charAt(0) == 'L') {
+                tt2 = LeafArray[index2];
+            } else {
+                int c = 0;
+                tt2 = null;
+            }
+
+            tt1.addChildNode(tt2);
+        }
+    }
+
+     
     public void setNodeColor() {
         List<Float[]> colorSpecturm = getMainPanel().getCurrentColorMap();
 

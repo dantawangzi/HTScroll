@@ -377,7 +377,7 @@ public class ViewController {
     boolean b_recaluateValue = false;
     int zoomSubBins = 5;
     boolean b_readAll = true;
-    boolean b_readFromDB = false;
+    public boolean b_readFromDB = false;
     String host = "152.15.99.7";
     String user = "lee";
     String password = "uncc_lee";

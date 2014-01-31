@@ -342,7 +342,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             for (int j = (i + 1); j < number_of_nodes; j++) {
                 //if (j != i) 
                 {
-                    if (hellingerDis[i][j] >= (average_of_hell + sntd)) {
+                    if (hellingerDis[i][j] >= (average_of_hell /*+ sntd*/)) {
                         graph.addEdge(i, j);
                     }
                     //{"source":1,"target":0,"value":1},
