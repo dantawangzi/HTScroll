@@ -63,10 +63,18 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
     VastGeoFrame vcGeoFrame = null;
     EventViewFrame eventViewFrame = null;
 
+    ConsoleFrame consoleFrame = null;
+    
+    
+    
     public MinimalismMainFrame() {
         initComponents();
+        
         viewController = new ViewController();
-
+        
+        jCheckBoxConsoleMenu.setState(false);
+        consoleFrame = new ConsoleFrame();
+        consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //// TODO: DXW---Need to comment this out!April 03, 2013
         Topics topicDisplay = new Topics(viewController);
 
@@ -112,6 +120,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
         jCheckBoxLabelTopicFrame = new javax.swing.JCheckBoxMenuItem();
         helpMenu = new javax.swing.JMenu();
         helpItem = new javax.swing.JMenuItem();
+        jCheckBoxConsoleMenu = new javax.swing.JCheckBoxMenuItem();
         aboutItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -201,6 +210,15 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
         helpItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         helpItem.setText("Help");
         helpMenu.add(helpItem);
+
+        jCheckBoxConsoleMenu.setSelected(true);
+        jCheckBoxConsoleMenu.setText("Console");
+        jCheckBoxConsoleMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxConsoleMenuActionPerformed(evt);
+            }
+        });
+        helpMenu.add(jCheckBoxConsoleMenu);
 
         aboutItem.setText("About...");
         helpMenu.add(aboutItem);
@@ -296,29 +314,43 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
                         viewController.readHeaderFile(headerPath);
 
                         CSVFile csvf = new CSVFile(tmpURL);
+                        
+                        
+                        if (viewController.b_readAll)
+                        {
 
-                        csvf.readContents(viewController.b_readAll, viewController.b_readFromDB,
-                                viewController.host, viewController.port, viewController.database, viewController.collection2, viewController.nameField2
-                        );
+                            csvf.readContents(viewController.b_readAll, viewController.b_readFromDB,
+                                    viewController.host, viewController.port, viewController.database, viewController.collection2, viewController.nameField2
+                            );
 
-                        viewController.setUsageRecord(csvf.getInternalRecord());
+                            viewController.setUsageRecord(csvf.getInternalRecord());
 
-                        viewController.setInternalDocs(csvf.getInternalDocs());
+                            viewController.setInternalDocs(csvf.getInternalDocs());
 
-                        viewController.setTopicSimilarities(csvf.getTopicSimilarities());
+                            viewController.setTopicSimilarities(csvf.getTopicSimilarities());
 
-                        viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
+                            viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
 
-                        viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
+                            viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
 
-                        viewController.setFormat(csvf.getFormat());
+                            viewController.setFormat(csvf.getFormat());
 
-                        viewController.setContentIdx(csvf.getContentIdx());
+                            viewController.setContentIdx(csvf.getContentIdx());
 
-                        if (!viewController.b_readAll) {
-                            viewController.setContentIdx(0);
+                            if (!viewController.b_readAll) {
+                                viewController.setContentIdx(0);
+                            }
+
+                            viewController.setGlobalReadIndex(1);
                         }
-
+                        else
+                        {
+                            csvf.readContents(viewController.b_readAll);
+                             viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
+                             //SimpleDateFormat f = new SimpleDateFormat("YYYY-hh-dd");
+                              viewController.setFormat(csvf.getFormat());
+                            
+                        }
                         setTitle("HirarchicalTopics" + csvf.getName());
                         viewController.setNewHueColors();
 
@@ -339,22 +371,22 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
                         temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
                         temporalFrame.setLocation(0, 0);
 
-                        topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights());
-        viewController.addTopicGraphViewPanel(topicFrame);
-        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
-        System.out.println("topic frame load topics done.");
+                        topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights(), null);
+                        viewController.addTopicGraphViewPanel(topicFrame);
+                        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
+                        System.out.println("topic frame load topics done.");
 
-        viewController.getTopicGraphViewPanel().buildTree(csvf.getFolderPath());
+                        viewController.getTopicGraphViewPanel().buildTree(csvf.getFolderPath());
 
-        System.out.println("topic frame build tree done..");
+                        System.out.println("topic frame build tree done..");
 
-        topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
-        topicFrame.setLocation(scrnsize.width / 2, 0);
+                        topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
+                        topicFrame.setLocation(scrnsize.width / 2, 0);
 
-        viewController.getTopicGraphViewPanel().generateLayout();
-        topicFrame.setVisible(true);
+                        viewController.getTopicGraphViewPanel().generateLayout();
+                        topicFrame.setVisible(true);
 
-        System.out.println("Topics Graph done!");
+                        System.out.println("Topics Graph done!");
         
         
                         initializeViews(csvf);
@@ -406,7 +438,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
         
         viewController.b_readFromDB = true;
-        
+        viewController.setGlobalReadIndex(0);
         
         JOptionPane p = new JOptionPane();
 
@@ -478,7 +510,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
         
         DBCollection currentColl = db.getCollection(job);
         
-        currentColl.getCount();
+      
          BasicDBObject dbo = new BasicDBObject("type", "topic");
         DBCursor cursorfind = currentColl.find(dbo);
         HashMap<String, String[]> topicsByMongo = new HashMap<String, String[]>();
@@ -559,9 +591,47 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
             temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
             temporalFrame.setLocation(0, 0);
 
-            topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights());
+            
+            HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
+            List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
+            
+            if (viewController.b_readFromDB)
+            {
+                dbo = new BasicDBObject("type", "topic_terms");
+                cursorfind = currentColl.find(dbo);
+               
+                while (cursorfind.hasNext())
+                {
+                    BasicDBObject tmpDBO = (BasicDBObject) cursorfind.next();
+                    String key = tmpDBO.getString("_id");
+                    String weights = tmpDBO.getString("weight");
+                    
+                    float tmpvalue = Float.parseFloat(weights);
+                    
+                    termWeightMongo.put(key, tmpvalue);                       
+                }               
+                
+                for (int i=0; i<topicsByMongo.size(); i++)
+                {
+                    List<Float> tmpL = new ArrayList<Float>();
+                    for (int j=0; j<50; j++) // hard code
+                    {                                
+                        String key = "dist_top" + (new Integer(i)).toString() + "term" + (new Integer(j)).toString();
+                        tmpL.add(termWeightMongo.get(key));   
+                    }
+                    topkTermWeightMongo.add(tmpL);
+
+                }
+                
+                
+            }
+            
+            
+            
+            
+            topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
         viewController.addTopicGraphViewPanel(topicFrame);
-        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
+        viewController.getTopicGraphViewPanel().loadTopic(topics);
         System.out.println("topic frame load topics done.");
 
         viewController.getTopicGraphViewPanel().buildTreeWithTreeString(TreeString);
@@ -590,6 +660,14 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 // TODO add your handling code here:
 
     }//GEN-LAST:event_jConnectMongoButtonActionPerformed
+
+    private void jCheckBoxConsoleMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxConsoleMenuActionPerformed
+    
+        boolean currentState = jCheckBoxConsoleMenu.getState();
+        consoleFrame.setVisible(currentState);
+
+// TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxConsoleMenuActionPerformed
 
     void initializeViews(CSVFile csvf) throws IOException {
 
@@ -778,6 +856,15 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
         System.out.println("label graph done");
 
+        
+        consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                jCheckBoxConsoleMenu.setState(false);
+            }
+        });
+        
+        
         vcGeoFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -822,6 +909,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem helpItem;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxConsoleMenu;
     private javax.swing.JCheckBoxMenuItem jCheckBoxGeoFrame;
     private javax.swing.JCheckBoxMenuItem jCheckBoxLabelTopicFrame;
     private javax.swing.JCheckBoxMenuItem jCheckBoxTemporalFrame;

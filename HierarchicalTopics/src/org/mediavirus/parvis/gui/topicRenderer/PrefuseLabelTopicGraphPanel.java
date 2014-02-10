@@ -190,14 +190,14 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
         System.out.println("topicWeightPerLabel calculated..");
 
-        for (int i = 0; i < topicWeightPerLabel.length; i++) {
-            for (int j = 0; j < topicWeightPerLabel[0].length; j++) {
-                System.out.print(topicWeightPerLabel[i][j] + " ");
-            }
-
-            System.out.println();
-
-        }
+//        for (int i = 0; i < topicWeightPerLabel.length; i++) {
+//            for (int j = 0; j < topicWeightPerLabel[0].length; j++) {
+//                System.out.print(topicWeightPerLabel[i][j] + " ");
+//            }
+//
+//            System.out.println();
+//
+//        }
         topicWeightPerLabelNew = topicWeightPerLabel;
 
         ///////////////////////////////////////////////////////////////////////////////////////////
@@ -265,14 +265,14 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
         float sum_of_hell = 0;
 
-        for (int i = 0; i < labelCount; i++) {
-            for (int j = 0; j < labelCount; j++) {
-
-                System.out.print(hellingerDis[i][j] + " ");
-
-            }
-            System.out.print("\n");
-        }
+//        for (int i = 0; i < labelCount; i++) {
+//            for (int j = 0; j < labelCount; j++) {
+//
+//                System.out.print(hellingerDis[i][j] + " ");
+//
+//            }
+//            System.out.print("\n");
+//        }
 
         for (int i = 0; i < labelCount; i++) {
 
@@ -308,14 +308,14 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         int number_of_nodes = labelCount; //label numbers
 
          //output to json
-//                 PrintWriter out = null;
-//            try {
-//                out = new PrintWriter(folderPath + "labels.json");
-//            } catch (FileNotFoundException ex) {
-//                Logger.getLogger(PrefuseLabelTopicGraphPanel.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        out.println("{");
-//        out.println("\t\"nodes\":[");
+                 PrintWriter out = null;
+            try {
+                out = new PrintWriter(folderPath + "labels.json");
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(PrefuseLabelTopicGraphPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        out.println("{");
+        out.println("\t\"nodes\":[");
         graph.addColumn("name", String.class);
         graph.addColumn("id", Integer.class);
         graph.addColumn("LabelText", String.class);
@@ -329,20 +329,20 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             n.set("LabelText", labelDictMap.get(i + 1));
             n.set("selected", false);
 
-//            if (i == number_of_nodes-1)
-//                out.println("\t\t{\"name\":" + "\"" + labelDictMap.get(i + 1) + "\"," + "\"group\":" + i +"}");
-//            else
-//                out.println("\t\t{\"name\":" + "\"" + labelDictMap.get(i + 1) + "\"," + "\"group\":" + i + "},");
+            if (i == number_of_nodes-1)
+                out.println("\t\t{\"name\":" + "\"" + labelDictMap.get(i + 1) + "\"," + "\"group\":" + i +"}");
+            else
+                out.println("\t\t{\"name\":" + "\"" + labelDictMap.get(i + 1) + "\"," + "\"group\":" + i + "},");
         }
 
-//        out.println("\t],");
-//        out.println("\t\"links\":[");
+        out.println("\t],");
+        out.println("\t\"links\":[");
         for (int i = 0; i < number_of_nodes; i++) {
             //for (int j = number_of_nodes - 1; j > 1; j--) 
             for (int j = (i + 1); j < number_of_nodes; j++) {
                 //if (j != i) 
                 {
-                    if (hellingerDis[i][j] >= (average_of_hell /*+ sntd*/)) {
+                    if (hellingerDis[i][j] >= (average_of_hell + sntd)) {
                         graph.addEdge(i, j);
                     }
                     //{"source":1,"target":0,"value":1},
@@ -352,12 +352,13 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
         System.out.println(graph.getEdgeCount() + " edges in graph.");
         
-//        for (int i = 0; i < number_of_nodes; i++) {
-//            for (int j = (i+1); j<number_of_nodes ; j++)
-//            {
-//                //out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + hellingerDis[i][j] + "},");     
-//                
-//                
+        for (int i = 0; i < number_of_nodes; i++) {
+            for (int j = (i+1); j<number_of_nodes ; j++)
+            {
+                 if (hellingerDis[i][j] >= (average_of_hell + sntd))
+                    out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + hellingerDis[i][j] + "},");     
+                
+                
 //                int value = (int) (hellingerDis[i][j]>40?hellingerDis[i][j]:0);
 //                
 //                if (i == (number_of_nodes-2) && (j==number_of_nodes-1))
@@ -366,12 +367,11 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 //                }
 //                else
 //                    out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + value + "},");                
-//            }                        
-//        }
-
-//       out.println("\t]");
-//        out.println("}");
-//        out.close();
+            }                        
+        }
+       out.println("\t]");
+        out.println("}");
+        out.close();
     }
 
     private void setUpVisualization() {
@@ -627,7 +627,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
             ForceSimulator fsim = new ForceSimulator();
             //fsim.addForce(new NBodyForce(-0.4f, 25f, NBodyForce.DEFAULT_THETA));
-            fsim.addForce(new NBodyForce(-.4f, 25f, NBodyForce.DEFAULT_THETA));
+            fsim.addForce(new NBodyForce(-0.4f, 30f, NBodyForce.DEFAULT_THETA));
             fsim.addForce(new SpringForce(1e-5f, 0f));
             fsim.addForce(new DragForce());
             setForceSimulator(fsim);

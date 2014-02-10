@@ -1952,6 +1952,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             long days = TimeUnit.MILLISECONDS.toDays(millis);
             intervalString = days + "day(s)";
         }
+        
 
         {
             int number = parent.getTemporalFrame().getData().getNumOfYears();

@@ -174,6 +174,9 @@ public class CategoryBarElement {
     Long maxT = Long.MIN_VALUE;
     Long minT = Long.MAX_VALUE;
 
+    double topicWeightThreshold = 0.1;
+    
+    
     private void initiateComponents(List<String[]> internalRecord, List<Long> years,
             List<String[]> allDocs, List<String[]> termWeights, List<float[]> termWeights_norm, Map<String, Integer> termIndex,
             List<String[]> allTopics, String csvPath, int contentIdx, DateFormat format, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub) throws FileNotFoundException, IOException {
@@ -230,6 +233,7 @@ public class CategoryBarElement {
             _numOfTemporalBins = (int) Math.ceil((maxT - minT) / hr2ms);
             _numOfTemporalBins = (int) Math.floor((maxT - minT) / hr2ms) + 1;
             System.out.println("Number of Slot " + _numOfTemporalBins);
+            
             /**
              * Convert String to float value*
              */
@@ -267,7 +271,8 @@ public class CategoryBarElement {
             System.out.println("Prob with normalizing in CategoryBar");
         }
 
-        System.out.println("normalizing in CategoryBar done");
+        
+        System.out.println("normalizing in CategoryBar done" + values_Norm.size() + " " + values_Norm.get(0).length);
         /**
          * First row contain the column names; Column7 (start from 0) is year
          * info *
@@ -275,11 +280,11 @@ public class CategoryBarElement {
 
         beginningTime = minT; //time.get(0);
 
-        if (!values_UnNorm.isEmpty()) {
-            int numberOfTopics = values_UnNorm.get(0).length;//number of topics
+        if (!values_UnNorm.isEmpty()) 
+       {
+            int numberOfTopics = _numberOfTopics;//values_UnNorm.get(0).length;//number of topics
             int numRecords = values_UnNorm.size();
-            //int numBar = (int) Math.ceil((time.get(time.size() - 1) - time.get(0)) / hr2ms); //each hour is a bar
-            //setNumOfYears(numBar);
+          
             System.out.println("numRecords " + numRecords);
 
             float[] individualTopicOfTotalTime;
@@ -452,7 +457,9 @@ public class CategoryBarElement {
                             for (int l = 0; l < idxOfDocumentPerSlot.get(y).size(); l++) {
                                 tmpid = idxOfDocumentPerSlot.get(y).get(l);
                                 if (contentIdx != -1) {
-                                    count += countMatches(allDocs.get(tmpid + 1)[contentIdx].toLowerCase(), curKeyword);
+                                    
+                                    if (values_Norm.get(tmpid)[i] > topicWeightThreshold)
+                                        count += countMatches(allDocs.get(tmpid + 1)[contentIdx].toLowerCase(), curKeyword);
                                 }
                             }
                             numOccur[y] = count;
@@ -536,7 +543,7 @@ public class CategoryBarElement {
                     }
                     out.close();
 
-                    System.out.println("output  idxByHours.txt");
+                    System.out.println("output idxByHours.txt");
                     out = new PrintWriter(csvPath + "idxByHours.txt");
 
                     for (Integer key : idxOfDocumentPerSlot.keySet()) {
@@ -562,7 +569,7 @@ public class CategoryBarElement {
             //topicYearKwIdax load
             String filepathtyki = csvPath + "topicYearKwIdx.txt";
             File f1 = new File(filepathtyki);
-            if (false/*f1.exists()*/) {
+            if (f1.exists()) {
                 topicYearKwIdx = new ArrayList<List<int[]>>();
 
                 System.out.println("cache files exist, Loading topicYearKwIdx.txt... ");
@@ -604,24 +611,21 @@ public class CategoryBarElement {
                         /*
                          * For every topic, pick top 4 keyword for every time frame
                          */
-
+                        
                         topKeywordByYear = new ArrayList<int[]>();//for each topic
                         try {
                             for (int y = 0; y < _numOfTemporalBins; y++) {
 
-    //                        if (debugPrint)
-                                //                            System.out.println("y = " + y);
+                                
                                 tmp4 = new int[5];
                                 tmpAllKeywords = new float[numKeywords];
 
                                 for (int k = 0; k < numKeywords; k++) {
 
-    //                            if (debugPrint && k==22)
-                                    //                                System.out.println("k " + k);
-                                    //                            
-                                    //2                         //TODO k = 1 k = 2; with group or without
                                     curKeyword = allTopics.get((i) + 1)[k + 2].trim().toLowerCase();
 
+                                    
+                                    
                                     //System.out.println(curKeyword);
                                     tmpCol = termIndex.get(curKeyword);
                                     tmpWeight = (termWeightF.get(i)[tmpCol]);
@@ -631,46 +635,27 @@ public class CategoryBarElement {
 
                                     }
 
-    //                            if (tmpWeightSum == 0)
-                                    //                            {
-                                    //                                tmpAllKeywords[k] = 0; 
-                                    //                            
-                                    //                            }
-                                    // else{
+
                                     for (int m = 0; m < numberOfTopics; m++) {
-                                        tmpWeightProduct = tmpWeightProduct * termWeightF.get(m)[tmpCol];
+                                        if (termWeightF.get(m)[tmpCol]!=0)
+                                            tmpWeightProduct = tmpWeightProduct * termWeightF.get(m)[tmpCol];
                                     }
 
                                     tmpWeightProduct = (float) Math.pow(tmpWeightProduct, 1 / numberOfTopics);
                                     tmpWeightProduct = (float) (tmpWeight * Math.log(tmpWeight / tmpWeightProduct));
                                     tmpAllKeywords[k] = (float) ((0.5 * topicTFs.get(i).get(k)[y] / tmpWeightSum) + 0.5 * tmpWeightProduct);
-                                    //tmpAllKeywords[k] = (float) ((0.5 * topicTFs.get(i).get(k)[y]/tmpWeightSum) + 0.5 * tmpWeightProduct);
-                                    //}
-
+                      
                                     tmpWeightSum = 0;
                                     tmpWeightProduct = 1;
-                                    //System.out.println("numOfHours " + y + "keywords "+ k);
-                                    //System.out.println(curKeyword);
+                       
                                 }
 
-                                /*
-                                 * Find the 4 largest number in the array
-                                 */
-    //                        map = new TreeMap();
-                                //
-                                //                        
-                                //                        for (int m = 0; m < tmpAllKeywords.length; m++) {
-                                //                            map.put(tmpAllKeywords[m], m);
-                                //                        }
-                                //                        //Arrays.sort(tmpAllKeywords);
-                                //                        Arrays.sort(tmpAllKeywords,Collections.reverseOrder());
+  
                                 List<compFloat> tmparray = new ArrayList<compFloat>();
                                 for (int m = 0; m < tmpAllKeywords.length; m++) {
 
                                     if (!Float.isNaN(tmpAllKeywords[m])) {
-    //                                  tmpAllKeywords[m] = -Float.MAX_VALUE;
-                                        //                                   compFloat cmf = new compFloat(m,tmpAllKeywords[m]);
-                                        //                                  
+                                
                                         compFloat cmf = new compFloat(m, tmpAllKeywords[m]);
                                         tmparray.add(cmf);
                                     }
@@ -680,25 +665,23 @@ public class CategoryBarElement {
                                 FloatComparer c = new FloatComparer();
                                 Collections.sort(tmparray, c);
 
-    //                        
-                                //                        iterator = map.keySet().iterator();
-                                //                        Object key;
-                                //                        for (int m = 0; m < tmp4.length; m++) {
-                                //                            key = map.lastKey();
-                                //                            tmp4[m] = Integer.parseInt(map.get(key).toString());
-                                //                            map.remove(map.lastKey());
-                                //                        }
+                                int len = tmparray.size()>=tmp4.length?tmp4.length:tmparray.size();
+                                
                                 for (int m = 0; m < tmp4.length; m++) {
+                                    tmp4[m] = -1;
+                                }
+                                for (int m = 0; m < len; m++) {
 
-                                    tmp4[m] = tmparray.get(m).index;
-
+                                 
+                                        tmp4[m] = tmparray.get(m).index;
+                                 
                                 }
 
                                 topKeywordByYear.add(tmp4);
                             }
                         } catch (Exception e) {
                             System.out.println(e);
-                            System.out.println("topicYearKwIdx error " + i + "th key word ");
+                            System.out.println("topicYearKwIdx error " + i + "th key word " );
 
                         }
 
@@ -782,7 +765,7 @@ public class CategoryBarElement {
 
         BasicDBObject q1 = new BasicDBObject("_id", MongoDBJobName);
         DBCursor cursor = dbc.find(q1);
-         int incrementalDays = 0;
+         float incrementalDays = 0;
          System.out.println(q1);
         while (cursor.hasNext())
         {
@@ -793,7 +776,7 @@ public class CategoryBarElement {
              int _numberOfDocs = Integer.parseInt(dbo1.getString("num_docs"));
              minT = Long.parseLong(dbo1.getString("min_year"));
              maxT = Long.parseLong(dbo1.getString("max_year"));
-             incrementalDays = Integer.parseInt(dbo1.getString("incremental_days"));
+             incrementalDays = Float.parseFloat(dbo1.getString("incremental_days"));
              String s = ((BasicDBObject) dbo1.get("mongo_input")).getString("date_format");
             _numberOfTopics = Integer.parseInt(((BasicDBObject) dbo1.get("meta")).getString("num_topics"));
 
@@ -807,7 +790,7 @@ public class CategoryBarElement {
         unormalized_categoryBar = new ArrayList<float[]>();
         idxOfDocumentPerSlot = new HashMap<Integer, List<Integer>>();
 
-        hr2ms = (long) ((long)incrementalDays * 86400000);//86400000L;
+        hr2ms = (long) (incrementalDays * 86400000);//86400000L;
 
         _numOfTemporalBins = (int) Math.ceil((maxT - minT) / hr2ms);
         _numOfTemporalBins = (int) Math.floor((maxT - minT) / hr2ms) + 1;
@@ -856,7 +839,7 @@ public class CategoryBarElement {
             cateBarMongo.put(key, tmpvalue);                       
         }               
         
-        for (int i=0; i<_numOfTemporalBins; i++)
+        for (int i=0; i<cateBarMongo.size(); i++)
         {
                 String key = "tb" + (new Integer(i)).toString();
                 categoryBar.add(cateBarMongo.get(key));                         
@@ -881,7 +864,7 @@ public class CategoryBarElement {
             cateBarMongoUn.put(key, tmpvalue);                       
         }               
         
-        for (int i=0; i<_numOfTemporalBins; i++)
+        for (int i=0; i<cateBarMongoUn.size(); i++)
         {
                 String key = "utb" + (new Integer(i)).toString();
                 unormalized_categoryBar.add(cateBarMongoUn.get(key));                         
@@ -909,7 +892,7 @@ public class CategoryBarElement {
                      
         
          
-        for (int i=0; i<_numberOfTopics; i++)
+        for (int i=0; i<tfsMongo.size(); i++)
         {
             List<int[]> tmpL = new ArrayList<int[]>();
             for (int j=0; j<numKeywords; j++)

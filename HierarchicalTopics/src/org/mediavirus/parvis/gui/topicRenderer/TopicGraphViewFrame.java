@@ -420,11 +420,14 @@ public class TopicGraphViewFrame extends JFrame {
     private boolean bMergeMode = true;
     Map<String, Integer> wordTermIndex;
     List<String[]> wordTermWeightsF;
+    
+    List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
 
-    public TopicGraphViewFrame(ViewController viewController, Map<String, Integer> termIndex, List<String[]> termWeight) throws FileNotFoundException, IOException {
+    public TopicGraphViewFrame(ViewController viewController, Map<String, Integer> termIndex, List<String[]> termWeight, List<List<Float>> TermWeightMongo) throws FileNotFoundException, IOException {
         this.parent = viewController;
         wordTermIndex = termIndex;
         wordTermWeightsF = termWeight;
+        topkTermWeightMongo = TermWeightMongo;
 
         selectedNode = new TreeNode(null);
 
@@ -579,7 +582,7 @@ public class TopicGraphViewFrame extends JFrame {
                 NodeArray[index] = t;
                 myTree.add(t);
             } else if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'L') {
-                t.setNodeTopics(allTopics.get(index + 1));
+                t.setNodeTopics(allTopics.get(index + parent.getGlobalReadIndex()));
                 //      labels[1][2];
                 LeafArray[index] = t;
                 leafSequence.add(index);
@@ -848,7 +851,7 @@ public class TopicGraphViewFrame extends JFrame {
                     for (int j = 0; j < thisNode.getTopicsContainedIdx().size(); j++) {
                         int index = thisNode.getTopicsContainedIdx().get(j);
 
-                        String t[] = allTopics.get(index + 1);
+                        String t[] = allTopics.get(index + parent.getGlobalReadIndex());
                         temp[count] = t[nodeStringStartIndex + k];
                         count++;
                     }
@@ -1916,7 +1919,7 @@ public class TopicGraphViewFrame extends JFrame {
                         List<Integer> highlightInt = new ArrayList<Integer>();
                         highlightInt.clear();
 
-                        for (int j = 1; j < allTopics.size(); j++) {
+                        for (int j = parent.getGlobalReadIndex(); j < allTopics.size(); j++) {
                             String[] o = allTopics.get(j);
 
                             for (int i = 0; i < o.length; i++) {
@@ -2375,6 +2378,9 @@ public class TopicGraphViewFrame extends JFrame {
 
     }
 
+    
+    
+    
     void buildLabelLocations() {
 
         allLabels.clear();
@@ -2411,14 +2417,18 @@ public class TopicGraphViewFrame extends JFrame {
 
                             String tempxx = t.getNodeTopics()[j];
 
-                            int tmpCol;
+                            int tmpCol = -1;
 
-                            if (!StringUtils.isNumeric(tempxx)) {
-                                tmpCol = wordTermIndex.get(t.getNodeTopics()[j].toLowerCase());
-                            } else {
-                                tmpCol = wordTermIndex.get(t.getNodeTopics()[j]);
+                            if (!parent.b_readFromDB)
+                            {
+                                if (!StringUtils.isNumeric(tempxx)) {
+                                    tmpCol = wordTermIndex.get(t.getNodeTopics()[j].toLowerCase());
+                                } else {
+                                    tmpCol = wordTermIndex.get(t.getNodeTopics()[j]);
+                                }
                             }
-
+                            
+                            
                             if (occurances.get(index + 1)[j] == 0) {
                                 tempLT.setOccurance(1);
                             } else {
@@ -2428,8 +2438,15 @@ public class TopicGraphViewFrame extends JFrame {
                                     tempLT.setOccurance(occurances.get(index + 1)[j]);
                                 }
                             }
+                            
+                            float weight = 0; 
+                            
+                            if (parent.b_readFromDB)
+                                weight = topkTermWeightMongo.get(index).get(j-1);
+                            else
+                                weight = Float.parseFloat(wordTermWeightsF.get(index)[tmpCol]);
 
-                            tempLT.setProbablity(Float.parseFloat(wordTermWeightsF.get(index)[tmpCol]));
+                            tempLT.setProbablity(weight);
 
                         }
 
@@ -2506,7 +2523,7 @@ public class TopicGraphViewFrame extends JFrame {
                     for (int j = 0; j < t.getTopicsContainedIdx().size(); j++) {
 
                         int index1 = t.getTopicsContainedIdx().get(j);
-                        String t1[] = allTopics.get(index1 + 1);
+                        String t1[] = allTopics.get(index1 + parent.getGlobalReadIndex());
                         labelText tempLT = new labelText();
 
                         int index = index1;
@@ -2515,14 +2532,22 @@ public class TopicGraphViewFrame extends JFrame {
                         int py = (int) loc.getY();
 
                         int leng = t1[nodeStringStartIndex + k].length();
+                        
+                        
+                        
                         if (wordTermIndex.get(t1[nodeStringStartIndex + k].toLowerCase()) == null) {
                             tempLT.setOccurance(1);
                             tempLT.setProbablity(99999.0f);
                         } else {
 
                             //System.out.println(t1[nodeStringStartIndex + k].toLowerCase());
-                            int tmpCol = wordTermIndex.get(t1[nodeStringStartIndex + k].toLowerCase());
-
+                            int tmpCol = -1;
+                            
+                            if (!parent.b_readFromDB)
+                            {
+                                tmpCol = wordTermIndex.get(t1[nodeStringStartIndex + k].toLowerCase());
+                            }
+                            
                             if (occurances.get(index + 1)[k + 1] == 0) {
                                 tempLT.setOccurance(1);
                             } else {
@@ -2532,8 +2557,18 @@ public class TopicGraphViewFrame extends JFrame {
                                     tempLT.setOccurance(occurances.get(index + 1)[k + 1]);
                                 }
                             }
+                            
 
-                            tempLT.setProbablity(Float.parseFloat(wordTermWeightsF.get(index)[tmpCol]));
+                            float weight = 0;
+                            
+                            
+                             if (parent.b_readFromDB)
+                                weight = topkTermWeightMongo.get(index).get(j-1);
+                            else
+                                weight = Float.parseFloat(wordTermWeightsF.get(index)[tmpCol]);
+                             
+                             
+                            tempLT.setProbablity(weight);
 
                         }
 
@@ -3344,68 +3379,65 @@ public class TopicGraphViewFrame extends JFrame {
     }
     private List<String[]> reorganizedTopics;
     private List<int[]> occurances;
-    private List<List<Dimension>> otherOccurances;
+    //private List<List<Dimension>> otherOccurances;
 
     private void extractFrequency() {
         //Re-organize topics based on the similarities
         reorganizedTopics = new ArrayList<String[]>();
         
-        
-        
-         if (parent.b_readFromDB)
-        {
-            
-            
-            
-        }
-         else
-         {
+         
+         
         reorganizedTopics.add(allTopics.get(0));
-        for (int i = 1; i < allTopics.size(); i++) {
+        for (int i = parent.getGlobalReadIndex(); i < allTopics.size(); i++) {
             int t = (i - 1) + 1;
             reorganizedTopics.add(allTopics.get(t));
         }
 
+        
+        
         if (reorganizedTopics != null) {
             occurances = new ArrayList<int[]>(reorganizedTopics.size());
             for (int i = 0; i < reorganizedTopics.size(); i++) {
                 int[] temp = new int[reorganizedTopics.get(0).length];
                 occurances.add(temp);
             }
-            otherOccurances = new ArrayList<List<Dimension>>();
+            //otherOccurances = new ArrayList<List<Dimension>>();
             int count = 1;
             Dimension keyPos, tempPos;
             List<Dimension> tmpDim = null;
-            for (int i = 1; i < reorganizedTopics.size(); i++) {
-                for (int j = 2; j < reorganizedTopics.get(0).length; j++) {
+            for (int i = parent.getGlobalReadIndex(); i < reorganizedTopics.size(); i++) {
+                for (int j = parent.getGlobalReadIndex()+1; j < reorganizedTopics.get(0).length; j++) {
                     //Compare every word with other words
                     keyPos = new Dimension(i, j);
-                    for (int m = 1; m < reorganizedTopics.size(); m++) {
-                        for (int n = 2; n < reorganizedTopics.get(0).length; n++) {
+                    for (int m = parent.getGlobalReadIndex(); m < reorganizedTopics.size(); m++) {
+                        for (int n = parent.getGlobalReadIndex()+1; n < reorganizedTopics.get(0).length; n++) {
                             if (m == i && n == j) {
                                 //Skip the word itself
                             } else {
                                 if (reorganizedTopics.get(i)[j].trim().equalsIgnoreCase(reorganizedTopics.get(m)[n].trim())) {
                                     count++;
-                                    tempPos = new Dimension(m, n);
-                                    if (count == 2) {//no dimension array has been created for the current word
-                                        tmpDim = new ArrayList<Dimension>();
-                                        tmpDim.add(keyPos);
-                                    }
-                                    tmpDim.add(tempPos);
+//                                    tempPos = new Dimension(m, n);
+//                                    if (count == 2) {//no dimension array has been created for the current word
+//                                        tmpDim = new ArrayList<Dimension>();
+//                                        tmpDim.add(keyPos);
+//                                    }
+//                                    tmpDim.add(tempPos);
                                 }
                             }
                         }
                     }
-                    if (tmpDim != null) {
-                        otherOccurances.add(tmpDim);
-                    }
-                    if (tmpDim != null) {
-                        for (int q = 0; q < tmpDim.size(); q++) {
-                            occurances.get(tmpDim.get(q).width)[tmpDim.get(q).height] = count;
-                        }
-                    }
-                    tmpDim = null;
+//                    if (tmpDim != null) {
+//                        otherOccurances.add(tmpDim);
+//                    }
+                    
+                    occurances.get(i)[j] = count;
+                    
+//                    if (tmpDim != null) {
+//                        for (int q = 0; q < tmpDim.size(); q++) {
+//                            occurances.get(tmpDim.get(q).width)[tmpDim.get(q).height] = count;
+//                        }
+//                    }
+//                    tmpDim = null;
                     count = 1;
                 }
             }
@@ -3415,7 +3447,7 @@ public class TopicGraphViewFrame extends JFrame {
         
         
         
-         }
+        
         
         
         
@@ -3426,119 +3458,119 @@ public class TopicGraphViewFrame extends JFrame {
     }
     private JPanel[] panels;
 
-    private void buildTopicLabels(List<Integer> sequence) {
-        if (sequence != null) {
-
-            int numOfTopics = 0, numOfWords = 0;
-
-            if (allTopics != null) {
-                numOfTopics = allTopics.size();//first line is the header
-                numOfWords = allTopics.get(0).length;
-                panels = new JPanel[numOfTopics];//first line is the header
-                labels = new JLabel[numOfTopics][numOfWords];
-            }
-
-            GridBagLayout gbag = new GridBagLayout();
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.fill = GridBagConstraints.BOTH;
-            gbc.anchor = java.awt.GridBagConstraints.WEST;
-            gbc.weightx = 1.0;
-            gbc.weighty = 1.0;
-            gbc.gridwidth = GridBagConstraints.REMAINDER;
-            gbc.gridheight = 1;
-            gbc.insets = new Insets(0, 0, 0, 0);
-            //mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-            //  mainPanel.setLayout(gbag);
-
-            int tmpi = 0;
-            panels[tmpi] = new JPanel();
-            //gbag.setConstraints(panels[i], gbc);
-            panels[tmpi].setLayout(new FlowLayout(FlowLayout.LEFT));
-            //panels[tmpi].setPreferredSize(new Dimension(428, 32));
-            panels[tmpi].setPreferredSize(new Dimension(856, 62));//for demo
-            for (int k = 1; k < numOfWords; k++) {
-                labels[0][k] = new JLabel(allTopics.get(0)[k]);
-                Font ff = new Font("Font", Font.PLAIN, 3 * occurances.get(0)[k] + 12);
-                //Font ff = new Font("Font", Font.PLAIN, 5 * occurances.get(0)[k] + 32);//for demo
-                labels[0][k].setFont(ff);
-                labels[0][k].setName(Integer.toString(tmpi) + "," + Integer.toString(k));
-                //     labels[0][k].addMouseListener(this);
-                panels[0].add(labels[0][k]);
-            }
-            //    mainPanel.add(panels[0], gbc);
-
-            //  setColorMap();
-            //   panelBckColors = new ArrayList<Color>();
-            for (int i = 1; i < numOfTopics; i++) {//first line is the header
-                //int tmpid = sequence.get(i-1)+1;
-
-                panels[i] = new JPanel();
-                panels[i].setLayout(new FlowLayout(FlowLayout.LEFT));
-                //panels[i].setPreferredSize(new Dimension(428, 32));
-                panels[tmpi].setPreferredSize(new Dimension(856, 62));//for demo
-                /**
-                 * sequence is 1 less in size than numOfTopics since numOfTopics
-                 * contains the header
-                 */
-                for (int j = 1; j < numOfWords; j++) {//Skip the first word every time
-                    labels[i][j] = new JLabel(reorganizedTopics.get(i)[j]);//Based on re-ordered topics
-                    //Font f = new Font("Font", Font.PLAIN, 2 * occurances.get(i)[j] + 12);
-                    Font f = new Font("Font", Font.PLAIN, 3 * occurances.get(i)[j] + 10);//For demo
-                    labels[i][j].setFont(f);
-                    labels[i][j].setName(Integer.toString(i) + "," + Integer.toString(j));
-                    //labels[i][j] = new JLabel(allTopics.get(sequence.get(i - 1) + 1)[j]);
-                    //Font f = new Font("Font", Font.PLAIN, 3 * occurances.get(sequence.get(i - 1) + 1)[j] + 12);
+//    private void buildTopicLabels(List<Integer> sequence) {
+//        if (sequence != null) {
+//
+//            int numOfTopics = 0, numOfWords = 0;
+//
+//            if (allTopics != null) {
+//                numOfTopics = allTopics.size();//first line is the header
+//                numOfWords = allTopics.get(0).length;
+//                panels = new JPanel[numOfTopics];//first line is the header
+//                labels = new JLabel[numOfTopics][numOfWords];
+//            }
+//
+//            GridBagLayout gbag = new GridBagLayout();
+//            GridBagConstraints gbc = new GridBagConstraints();
+//            gbc.fill = GridBagConstraints.BOTH;
+//            gbc.anchor = java.awt.GridBagConstraints.WEST;
+//            gbc.weightx = 1.0;
+//            gbc.weighty = 1.0;
+//            gbc.gridwidth = GridBagConstraints.REMAINDER;
+//            gbc.gridheight = 1;
+//            gbc.insets = new Insets(0, 0, 0, 0);
+//            //mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+//            //  mainPanel.setLayout(gbag);
+//
+//            int tmpi = 0;
+//            panels[tmpi] = new JPanel();
+//            //gbag.setConstraints(panels[i], gbc);
+//            panels[tmpi].setLayout(new FlowLayout(FlowLayout.LEFT));
+//            //panels[tmpi].setPreferredSize(new Dimension(428, 32));
+//            panels[tmpi].setPreferredSize(new Dimension(856, 62));//for demo
+//            for (int k = 1; k < numOfWords; k++) {
+//                labels[0][k] = new JLabel(allTopics.get(0)[k]);
+//                Font ff = new Font("Font", Font.PLAIN, 3 * occurances.get(0)[k] + 12);
+//                //Font ff = new Font("Font", Font.PLAIN, 5 * occurances.get(0)[k] + 32);//for demo
+//                labels[0][k].setFont(ff);
+//                labels[0][k].setName(Integer.toString(tmpi) + "," + Integer.toString(k));
+//                //     labels[0][k].addMouseListener(this);
+//                panels[0].add(labels[0][k]);
+//            }
+//            //    mainPanel.add(panels[0], gbc);
+//
+//            //  setColorMap();
+//            //   panelBckColors = new ArrayList<Color>();
+//            for (int i = 1; i < numOfTopics; i++) {//first line is the header
+//                //int tmpid = sequence.get(i-1)+1;
+//
+//                panels[i] = new JPanel();
+//                panels[i].setLayout(new FlowLayout(FlowLayout.LEFT));
+//                //panels[i].setPreferredSize(new Dimension(428, 32));
+//                panels[tmpi].setPreferredSize(new Dimension(856, 62));//for demo
+//                /**
+//                 * sequence is 1 less in size than numOfTopics since numOfTopics
+//                 * contains the header
+//                 */
+//                for (int j = 1; j < numOfWords; j++) {//Skip the first word every time
+//                    labels[i][j] = new JLabel(reorganizedTopics.get(i)[j]);//Based on re-ordered topics
+//                    //Font f = new Font("Font", Font.PLAIN, 2 * occurances.get(i)[j] + 12);
+//                    Font f = new Font("Font", Font.PLAIN, 3 * occurances.get(i)[j] + 10);//For demo
 //                    labels[i][j].setFont(f);
-//                    labels[i][j].setName(Integer.toString(sequence.get(i - 1) + 1) + "," + Integer.toString(j));
-                    //     labels[i][j].addMouseListener(this);                    
-                    panels[i].add(labels[i][j]);
-                }
-                try {
-                    //    Color tmpColor = Color.getHSBColor(colorMap.get(i-1)[1], (float) (colorMap.get(i - 1)[2]-0.4), colorMap.get(i-1)[3]);
-                    //Color tmpColor = new Color(colorMap.get(i-1)[1], colorMap.get(i - 1)[2], colorMap.get(i-1)[3], (float) 0.3);
-                    //     panels[i].setBackground(tmpColor);
-                    //    panelBckColors.add(tmpColor);
-                } catch (Exception e) {
-                    System.out.println("Can't assign colors to topic panels");
-                }
+//                    labels[i][j].setName(Integer.toString(i) + "," + Integer.toString(j));
+//                    //labels[i][j] = new JLabel(allTopics.get(sequence.get(i - 1) + 1)[j]);
+//                    //Font f = new Font("Font", Font.PLAIN, 3 * occurances.get(sequence.get(i - 1) + 1)[j] + 12);
+////                    labels[i][j].setFont(f);
+////                    labels[i][j].setName(Integer.toString(sequence.get(i - 1) + 1) + "," + Integer.toString(j));
+//                    //     labels[i][j].addMouseListener(this);                    
+//                    panels[i].add(labels[i][j]);
+//                }
+//                try {
+//                    //    Color tmpColor = Color.getHSBColor(colorMap.get(i-1)[1], (float) (colorMap.get(i - 1)[2]-0.4), colorMap.get(i-1)[3]);
+//                    //Color tmpColor = new Color(colorMap.get(i-1)[1], colorMap.get(i - 1)[2], colorMap.get(i-1)[3], (float) 0.3);
+//                    //     panels[i].setBackground(tmpColor);
+//                    //    panelBckColors.add(tmpColor);
+//                } catch (Exception e) {
+//                    System.out.println("Can't assign colors to topic panels");
+//                }
+//
+//            }
+//
+//        }
+//
+//    }
 
-            }
-
-        }
-
-    }
-
-    private JPanel buildLabel(TreeNode t) {
-
-        JPanel pan1 = new JPanel();
-//       GridBagLayout gbag = new GridBagLayout();
-//      GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.fill = GridBagConstraints.BOTH;
-//        gbc.anchor = java.awt.GridBagConstraints.WEST;
-//        gbc.weightx = 1.0;
-//        gbc.weighty = 1.0;
-//        gbc.gridwidth = GridBagConstraints.REMAINDER;
-//        gbc.gridheight = 1;
-//        gbc.insets = new Insets(0,0,0,0);
-//        gbag.setConstraints(pan1, gbc);
-
-        pan1.setLayout(new FlowLayout(FlowLayout.LEFT));
-        pan1.setPreferredSize(new Dimension(100, 10));//for demo
-        for (int k = 1; k < 5; k++) {
-            String[] labelText = t.getNodeTopics();
-
-            JLabel tempLabel = new JLabel(labelText[k + 1]);
-
-            Font ff = new Font("Font", Font.PLAIN, 10);
-
-            tempLabel.setFont(ff);
-            tempLabel.setName(Integer.toString(k));
-
-            pan1.add(tempLabel);
-        }
-
-        return pan1;
-    }
+//    private JPanel buildLabel(TreeNode t) {
+//
+//        JPanel pan1 = new JPanel();
+////       GridBagLayout gbag = new GridBagLayout();
+////      GridBagConstraints gbc = new GridBagConstraints();
+////        gbc.fill = GridBagConstraints.BOTH;
+////        gbc.anchor = java.awt.GridBagConstraints.WEST;
+////        gbc.weightx = 1.0;
+////        gbc.weighty = 1.0;
+////        gbc.gridwidth = GridBagConstraints.REMAINDER;
+////        gbc.gridheight = 1;
+////        gbc.insets = new Insets(0,0,0,0);
+////        gbag.setConstraints(pan1, gbc);
+//
+//        pan1.setLayout(new FlowLayout(FlowLayout.LEFT));
+//        pan1.setPreferredSize(new Dimension(100, 10));//for demo
+//        for (int k = 1; k < 5; k++) {
+//            String[] labelText = t.getNodeTopics();
+//
+//            JLabel tempLabel = new JLabel(labelText[k + 1]);
+//
+//            Font ff = new Font("Font", Font.PLAIN, 10);
+//
+//            tempLabel.setFont(ff);
+//            tempLabel.setName(Integer.toString(k));
+//
+//            pan1.add(tempLabel);
+//        }
+//
+//        return pan1;
+//    }
 
 //     public void paint(Graphics g) {
 //			g.setColor(Color.lightGray);

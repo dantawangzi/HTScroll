@@ -160,7 +160,8 @@ public class CSVFile extends SimpleParallelSpaceModel {
         allDocs = new ArrayList<String[]>();//for actual documents
        org.mediavirus.parvis.file.CSVReader csvReader = new org.mediavirus.parvis.file.CSVReader(tmpURL);
         // au.com.bytecode.opencsv.CSVReader csvReader = new au.com.bytecode.opencsv.CSVReader(new FileReader(tmpURL));
-        if (readall) {
+        //if (readall)
+        {
             allDocs = csvReader.readAll();//readAll();//first line is the header
             
             }
@@ -172,9 +173,12 @@ public class CSVFile extends SimpleParallelSpaceModel {
 
         
         au.com.bytecode.opencsv.CSVReader csvReader1 = new au.com.bytecode.opencsv.CSVReader(new FileReader(filepath));
+       
+         //               org.mediavirus.parvis.file.CSVReader csvReader1 = new  org.mediavirus.parvis.file.CSVReader((filepath));
+
         allElements = new ArrayList<String[]>();
         allElements = csvReader1.readAll();
-        System.out.println("aaa" + allElements.size());
+        System.out.println("allElements " + allElements.size());
         numDimensions = allElements.get(0).length;
         
         
@@ -284,7 +288,7 @@ public class CSVFile extends SimpleParallelSpaceModel {
         File f2 = new File(simipath);
 
         normalizeTermWeights();
-        
+//        
         if ((!f2.exists())) {
 
              
@@ -330,6 +334,163 @@ public class CSVFile extends SimpleParallelSpaceModel {
         //calculateTopicSimilarityCosine();
         //System.out.println("Calculate individual document diversity");
         //calculateDocumentDiversity();
+
+        
+
+        
+
+    }
+
+    
+    
+     public void readContents(boolean readall) throws IOException, ParseException {
+
+        /**
+         * For actual content of the docs
+         */
+        String tmpURL = filepath.replaceAll("_usage", "");
+                  
+        
+         au.com.bytecode.opencsv.CSVReader csvReader1 = new au.com.bytecode.opencsv.CSVReader(new FileReader(filepath));
+       
+      // org.mediavirus.parvis.file.CSVReader csvReader1 = new  org.mediavirus.parvis.file.CSVReader((filepath));
+
+        allElements = new ArrayList<String[]>();
+        //allElements = csvReader1.readAll();
+        String[] xx = csvReader1.readNext();
+        allElements.add(xx) ;
+        System.out.println("allElements " + allElements.size());
+        
+        
+        
+        allDocs = new ArrayList<String[]>();//for actual documents
+       org.mediavirus.parvis.file.CSVReader csvReader = new org.mediavirus.parvis.file.CSVReader(tmpURL);
+        // au.com.bytecode.opencsv.CSVReader csvReader = new au.com.bytecode.opencsv.CSVReader(new FileReader(tmpURL));
+
+          allDocs = csvReader.readAll();//readAll();//first line is the header
+
+
+        System.out.println("finished reading content, all record size =  " + allDocs.size());
+
+        
+       
+        numDimensions = allElements.get(0).length;
+        
+        
+        termWeights = new ArrayList<String[]>();
+        termWeights_norm = new ArrayList<float[]>();
+
+        int idx = tmpURL.lastIndexOf("\\");
+        if (idx == -1) {
+            idx = tmpURL.lastIndexOf("/");
+        }
+
+        String weightFilePath = tmpURL.substring(0, idx + 1);
+        weightFilePath = weightFilePath + "topic-term-distributions.csv";
+
+        
+            org.mediavirus.parvis.file.CSVReader csvReader2 = new org.mediavirus.parvis.file.CSVReader(weightFilePath);
+            //termWeights = csvReader2.readAll();
+
+            System.out.println("finished reading topic-term-distributions");
+        
+
+        InputStream inputStream = new FileInputStream(filepath);
+        InputStreamReader in = new InputStreamReader(inputStream);
+       
+        br = new BufferedReader(in);
+
+        System.out.println("Start reading usage file..");
+
+        internalRecords = new ArrayList<String[]>();       
+
+        br.close();
+
+        System.out.println("finished reading usage file");
+
+        idx = tmpURL.lastIndexOf("\\");
+        if (idx == -1) {
+            idx = tmpURL.lastIndexOf("/");
+        }
+        String termIndexPath = tmpURL.substring(0, idx + 1);
+        folderPath = termIndexPath;
+        termIndexPath = termIndexPath + "term-index.txt";
+
+        InputStream inputStream2 = new FileInputStream(termIndexPath);
+        DataInputStream inStream = new DataInputStream(inputStream2);
+        InputStreamReader in2 = new InputStreamReader(inStream);
+        br = new BufferedReader(in2);
+        hasNext = true;
+        readTermIndex();
+        inStream.close();
+        br.close();
+
+        System.out.println("finished reading term-index file");
+
+        String topicsPath = tmpURL.replaceAll(".csv", "-topk.csv");
+        InputStream inputStream3 = new FileInputStream(topicsPath);
+        InputStreamReader in3 = new InputStreamReader(inputStream3);
+        br = new BufferedReader(in3);
+        hasNext = true;
+        readTopics();
+        br.close();
+
+        System.out.println("finished reading topk file");
+
+        processRecords();
+
+        System.out.println("finished processRecords");
+
+//
+//       
+//
+//        String simipath = folderPath + "similarityMatrix.txt";
+//        File f2 = new File(simipath);
+//
+//        normalizeTermWeights();
+////        
+//        if ((!f2.exists())) {
+//
+//             
+//            calculateTopicSimilarity();
+//
+//            PrintWriter out = new PrintWriter(simipath);
+//            for (int j = 0; j < similarityMatrix.size(); j++) {
+//                for (int k = 0; k < similarityMatrix.get(j).size(); k++) {
+//                    out.printf("%f ", similarityMatrix.get(j).get(k));
+//                }
+//                out.printf("\n");
+//            }
+//            out.close();
+//
+//            System.out.println("finished calculateTopicSimilarity, topic seq file output");
+//        } else {
+//
+//            System.out.println("topicSequence exist, Loading...  topicSequence.txt");
+//           
+//
+//            similarityMatrix = new ArrayList<List<Float>>();
+//
+//            BufferedReader br1 = new BufferedReader(new FileReader(simipath));
+//
+//            String line = br1.readLine();
+//            while (line != null) {
+//                List<Float> tmpls = new ArrayList<Float>();
+//                String[] tmps = line.split(" ");
+//                for (int k = 0; k < tmps.length; k++) {
+//                    tmpls.add(Float.parseFloat(tmps[k]));
+//                }
+//                similarityMatrix.add(tmpls);
+//                line = br1.readLine();
+//            }
+//
+//            br1.close();
+//
+//            System.out.println("finished loading similarity matrix");
+//
+//        }
+
+   
 
         
 
@@ -603,9 +764,11 @@ public class CSVFile extends SimpleParallelSpaceModel {
         System.out.println("alldoc " + allDocs.size());
         System.out.println("all elements" + allElements.size());
         
-        for (int idx = 1; idx < allElements.size(); idx++) {
-            if (allElements.get(idx).length == numDimensions) {
-                if (!allElements.get(idx)[0].isEmpty()) {
+        for (int idx = 1; idx < allDocs.size(); idx++) {
+            //if (allElements.get(idx).length == numDimensions) 
+            {
+                //if (!allElements.get(idx)[0].isEmpty()) 
+                {
 
                     //System.out.println( allDocs.get(idx)[dateColumn]);
                     String tmptime = allDocs.get(idx)[dateColumn]; //column for year info

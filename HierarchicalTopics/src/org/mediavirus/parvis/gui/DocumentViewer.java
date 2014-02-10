@@ -589,15 +589,14 @@ public class DocumentViewer extends JFrame {
             for (int l = 0; l < curTreeNode.getTopicsContainedIdx().size(); l++) {
                 docIdx = parentPanel.getData().idxOfDocumentPerSlot.get(selectedTimeColumn).get(k);
                 int topicIndex = curTreeNode.getTopicsContainedIdx().get(l);
+                
                 if (parentPanel.getData().values_Norm.get(docIdx)[topicIndex] > threshold) {
                     selectedDocuments.add(docIdx);
                 }
+                
                 countTotalDoc++;
             }
         }
-
-
-
 
 
 

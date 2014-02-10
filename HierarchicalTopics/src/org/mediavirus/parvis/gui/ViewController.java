@@ -333,9 +333,9 @@ public class ViewController {
             
             if (highlightedTextLabels==null)
                 System.out.println("null label map");
-//            
+           
 
-            ap.DrawWordleCloud(ap.currentMouseLocation, highlightedTextLabels);
+//            ap.DrawWordleCloud(ap.currentMouseLocation, highlightedTextLabels);
             
         }
 
@@ -373,6 +373,19 @@ public class ViewController {
         }
 
     }
+
+    public int getGlobalReadIndex() {
+        return globalReadIndex;
+    }
+
+    public void setGlobalReadIndex(int globalReadIndex) {
+        this.globalReadIndex = globalReadIndex;
+    }
+    
+    
+    
+    
+    int globalReadIndex = 0;
     float intervalDays = 7;
     boolean b_recaluateValue = false;
     int zoomSubBins = 5;

@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="11">
-        <file>
-            <url>src/eventsView/EventsViewPanel.java</url>
-            <bookmark id="8">
-                <name/>
-                <line>709</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/org/mediavirus/parvis/gui/temporalView/renderer/TreeNode.java</url>
-            <bookmark id="2">
-                <name/>
-                <line>451</line>
-                <key/>
-            </bookmark>
-        </file>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="13">
         <file>
             <url>src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewInteractions.java</url>
             <bookmark id="11">
@@ -32,6 +16,14 @@
             </bookmark>
         </file>
         <file>
+            <url>src/org/mediavirus/parvis/gui/temporalView/CategoryBarElement.java</url>
+            <bookmark id="13">
+                <name/>
+                <line>461</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewPanel.java</url>
             <bookmark id="9">
                 <name/>
@@ -40,7 +32,23 @@
             </bookmark>
             <bookmark id="7">
                 <name/>
-                <line>2049</line>
+                <line>2050</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/eventsView/EventsViewPanel.java</url>
+            <bookmark id="8">
+                <name/>
+                <line>709</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/org/mediavirus/parvis/gui/temporalView/renderer/TreeNode.java</url>
+            <bookmark id="2">
+                <name/>
+                <line>451</line>
                 <key/>
             </bookmark>
         </file>
@@ -70,20 +78,18 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/DocumentViewer.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/topicRenderer/TopicGraphViewFrame.java</file>
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/ViewController.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TreeNode.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/CategoryBarElement.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewInteractions.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/Topics.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/eventsView/EventViewFrame.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewFrame.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/file/CSVFile.java</file>
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewPanel.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/MinimalismMainFrame.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/file/CSVFile.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewFrame.java</file>
             <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/topicRenderer/PrefuseLabelTopicGraphPanel.java</file>
-            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/HirarchicalTopicsMain.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TemporalViewInteractions.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/DocumentViewer.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/CategoryBarElement.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/topicRenderer/TopicGraphViewFrame.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/Topics.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/MinimalismMainFrame.java</file>
+            <file>file:/C:/Users/lyu8/Documents/HierarchicalTopics/src/org/mediavirus/parvis/gui/temporalView/renderer/TimeColumn.java</file>
         </group>
     </open-files>
 </project-private>
