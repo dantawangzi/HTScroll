@@ -1,4 +1,0 @@
-wordle.layout.CenterLineInitiator
-wordle.layout.PositionInitiatorLite
-wordle.layout.AlphabeticInitiator
-wordle.layout.CenterOutInitiator

@@ -1,2 +1,0 @@
-wordle.layout.Dimension
-wordle.layout.WordleCollectionLite
