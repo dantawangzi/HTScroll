@@ -705,7 +705,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         
 
         repaint();
-        revalidate();
+        this.getRootPane().revalidate();
+        //revalidate();
 
         
         

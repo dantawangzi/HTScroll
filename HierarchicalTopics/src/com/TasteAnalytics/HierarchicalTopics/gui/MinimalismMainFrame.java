@@ -590,9 +590,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 //        }
 //        
         
+         
             
         viewController.getTopicDisplay().loadTopic(topics/*csvf.getAllTopics()*/);
-       
+       System.out.append("topk loaded");
         //viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
        
        
@@ -634,7 +635,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
      
         
         
-        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         
        viewController.setFormat(format);
 
