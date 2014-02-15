@@ -1013,11 +1013,16 @@ public class CategoryBarElement {
          
          c.login();
          
-         for (Object r : (ArrayList) c.getJobDocsMeta(JobName))
+         for (Object r : (ArrayList) c.getJob(JobName))
          {
              //System.out.println(r);
              HashMap hr = (HashMap) r;
-             int _numberOfDocs = (Integer)hr.get("num_docs");
+             String snumbOfDocs = String.valueOf(hr.get("num_docs"));
+//             if (snumbOfDocs.contains("."))
+//             {
+//                 
+//             }  
+//             int _numberOfDocs = 0;
              minT = (Long)(hr.get("min_year"));
              maxT = (Long)(hr.get("max_year"));
              Object to = (hr.get("incremental_days"));
@@ -1026,6 +1031,12 @@ public class CategoryBarElement {
                  int a = (Integer)to;
                  incrementalDays = (float) a;
              }  
+             else if (to instanceof Double)
+             {
+                 double a = (Double) to;
+                 incrementalDays = (float) a;
+             }
+                 
              else
              {
                 incrementalDays = new Float((String) to);
