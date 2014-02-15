@@ -1,0 +1,16 @@
+
+*.properties
+
+*.xml
+
+*.properties
+
+*.class
+
+HierarchicalTopics/build/classes/.netbeans_automatic_build
+
+HierarchicalTopics/build/classes/.netbeans_update_resources
+
+*.rs
+
+*.form
