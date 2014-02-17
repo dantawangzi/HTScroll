@@ -61,6 +61,8 @@ public class LDAHTTPClient {
 		}
 		
                 
+                
+                
 	}
         
         public void close() throws IOException{
@@ -172,7 +174,7 @@ public class LDAHTTPClient {
 		return apacheGet(path, job_id+"&"+doc_type+"&"+field);
 	}
 
-	public Object getTopicSlotDocs(String job_id, int topic_id, int slot_id, double threshold, String in_db, String in_table) throws IOException{
+	public Object getTopicSlotDocs(String job_id, int topic_id, int slot_id, double threshold, String in_db, String in_table, String fields[], String id_type) throws IOException{
 		String path = "tsd";
 		job_id = "job_id="+job_id;
 		String t_id = "topic_id="+String.valueOf(topic_id);
@@ -180,9 +182,18 @@ public class LDAHTTPClient {
 		String thresh = "threshold="+String.valueOf(threshold);
 		in_db = "indb="+in_db;
 		in_table = "intable="+in_table;
-		String field = "field=t_id,text";
+                id_type = "id_type=" + id_type;
+                
+                
+                if (fields!=null)
+                {String field = "field=";
+		for (int i=0; i<fields.length; i++)
+                    field += fields[i]+",";
+                field = field.substring(0, field.length()-1);
 
-		return apacheGet(path, job_id+"&"+t_id+"&"+s_id+"&"+thresh+"&"+in_db+"&"+in_table+"&"+field);
+		return apacheGet(path, job_id+"&"+t_id+"&"+s_id+"&"+thresh+"&"+in_db+"&"+in_table+"&"+field+"&" +id_type);
+                }else
+                    return apacheGet(path, job_id+"&"+t_id+"&"+s_id+"&"+thresh+"&"+in_db+"&"+in_table+"&" +id_type);
 	}
 
         
@@ -226,45 +237,46 @@ public class LDAHTTPClient {
 
 		LDAHTTPClient c  = new LDAHTTPClient("http","localhost", "2012");
 		// gets all the jobs indexes (index collection name)
-		for (Object r : (ArrayList) c.getJobs())
-			System.out.println(((HashMap)r).get("_id"));
+//		for (Object r : (ArrayList) c.getJobs())
+//			System.out.println(((HashMap)r).get("_id"));
+//
+//		// query for topk
+//		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "topic"))
+//			System.out.println(r);
+//		
+//		// query for tree
+//		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "flat"))
+//			System.out.println(r);
+//
+//		// query for topk
+//		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "topic_terms"))
+//			System.out.println(r);
+//
+//		// query for cat_bar
+//		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "cat_bar"))
+//			System.out.println(r);
+//
+//		// query for unorm_cat_bar
+//		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "unorm_cat_bar"))
+//			System.out.println(r);
+//
+//		// query for top_tf
+//		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "top_tf"))
+//			System.out.println(r);
+//
+//		// query for idx_slot
+//		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "idx_slot"))
+//			System.out.println(r);
+//
+//		// query for top_y_kw_idx
+//		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "top_y_kw_idx"))
+//			System.out.println(r);
 
-		// query for topk
-		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "topic"))
-			System.out.println(r);
-		
-		// query for tree
-		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "flat"))
-			System.out.println(r);
-
-		// query for topk
-		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "topic_terms"))
-			System.out.println(r);
-
-		// query for cat_bar
-		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "cat_bar"))
-			System.out.println(r);
-
-		// query for unorm_cat_bar
-		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "unorm_cat_bar"))
-			System.out.println(r);
-
-		// query for top_tf
-		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "top_tf"))
-			System.out.println(r);
-
-		// query for idx_slot
-		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "idx_slot"))
-			System.out.println(r);
-
-		// query for top_y_kw_idx
-		for (Object r : (ArrayList) c.getJobDocs("a1392236079254_protype_BI_LEMMA_T3", "top_y_kw_idx"))
-			System.out.println(r);
-
-		// given job:"a1392227928804_protype_BI_LEMMA_T3", get doc in slot 1 with a threshold of 0.25 in topic 0
-		for (Object r : (ArrayList) c.getTopicSlotDocs("a1392236079254_protype_BI_LEMMA_T3", 0, 1, 0.25, "protype", "info"))
-			System.out.println(r);
-		
+	//	 given job:"a1392227928804_protype_BI_LEMMA_T3", get doc in slot 1 with a threshold of 0.25 in topic 0
+//                String[] a = null;
+//		for (Object r : (ArrayList) c.getTopicSlotDocs("a1391797786164_lowes_all_fb_BI_LEMMA_T25", 0, 1, 0.25, "lowes", "fb_lowes", a))
+//			System.out.println(r);
+//		
                 c.close();
 		System.out.print("end");
 

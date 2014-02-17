@@ -973,8 +973,10 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
                 scrollPane.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
                 ((TemporalViewFrame) e.getComponent()).setSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
 
-                myFrameWidth = e.getComponent().getSize().width;
-                myFrameHeight = e.getComponent().getSize().height;
+                
+                
+                myFrameWidth = ((TemporalViewFrame)e.getComponent()).getContentPane().getWidth();//e.getComponent().getSize().width;
+                myFrameHeight = ((TemporalViewFrame)e.getComponent()).getContentPane().getHeight();//e.getComponent().getSize().height;
 
 //                int sizeFactor = -1;
 //                int mainSizeFactor = 0;

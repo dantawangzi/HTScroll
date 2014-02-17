@@ -437,7 +437,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
     private void jConnectMongoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectMongoButtonActionPerformed
 
-        viewController.host = "54.209.61.133";
+        viewController.host = "10.18.202.126"; //"54.209.61.133";
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
         
@@ -623,13 +623,26 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
            for (Object r : (ArrayList) connection.getJob(job))
            {
                HashMap hr = (HashMap) r;
-               String field = String.valueOf(hr.get("field"));
-               field = field.replaceAll("\\[","");
-               field = field.replaceAll("\\]","");
-                       field = field.replaceAll("\"","");
-                        field = field.replaceAll(" ","");
-               viewController.nameFields = field.split(",");
+               List<String> ls = ((List)hr.get("field"));
+               if (ls != null)
+               {viewController.nameFields = new String[ls.size()];
+               for (int i=0; i<ls.size(); i++)
+                   viewController.nameFields[i] = ls.get(i);
+               }
+               else
+                   viewController.nameFields = null;
+                   
+               
+//               String field = String.valueOf(hr.get("field"));
+//               field = field.replaceAll("\\[","");
+//               field = field.replaceAll("\\]","");
+//                       field = field.replaceAll("\"","");
+//                        field = field.replaceAll(" ","");
+//               viewController.nameFields = field.split(",");
                viewController.text_id = ((String)(((HashMap)(hr.get("mongo_input"))).get("text_index")));
+               viewController.database = ((String)(((HashMap)(hr.get("mongo_input"))).get("db")));
+               viewController.table = ((String)(((HashMap)(hr.get("mongo_input"))).get("table")));
+               viewController.id_type = ((String)(((HashMap)(hr.get("mongo_input"))).get("_id_type")));
            }
             
      

@@ -2320,7 +2320,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
         if (this.getData().topicYearKwIdx != null) {
             
-            //labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), this.getData().topicYearKwIdx);
+            labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), this.getData().topicYearKwIdx);
         }
         else
             System.out.println("topicYearKwIdx is null, no labels built..");

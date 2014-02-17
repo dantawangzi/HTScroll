@@ -177,9 +177,9 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                 String temp1[] = labeltopicview[j].split(" ");
                 int index = Integer.parseInt(temp1[0].replaceAll("\\D+", ""));
                 float weight = Float.parseFloat(temp1[1]);
-                if (i == 0) {
-                    weight = 0;
-                }
+//                if (i == 0) {
+//                    weight = 0;
+//                }
                 topicWeightPerLabel[i][index] = weight;
 
                 TopicWeight tw = new TopicWeight(index, weight);
@@ -540,7 +540,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                             float tmpSumTopic = 0;
                             for (int i = 0; i < x.size(); i++) {
                                 if (x.get(i).weight <= 0.05 * SumOfTopic) {
-                                    break;
+                                    continue;
                                 }
 
                                 count++;

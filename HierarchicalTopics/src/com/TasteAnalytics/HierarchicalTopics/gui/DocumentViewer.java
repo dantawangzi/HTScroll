@@ -188,46 +188,53 @@ public class DocumentViewer extends JFrame {
 
 
 
-//        geoHeatMapPanel.setLayout(null/*new CardLayout()*/);
-//        geoHeatMapPanel.setPreferredSize(new Dimension(520, 264));
-//        geoHeatMapPanel.setVisible(true);
-
-
-
-//        JLabel Label = new JLabel();
-//
-//
-//        Label.setBounds(0, 0, 520, 264);
-//        // Label.setBackground(new Color(0, 0, 0, .5f));  
-//        // Label.setOpaque(true);
+////        geoHeatMapPanel.setLayout(null/*new CardLayout()*/);
+////        geoHeatMapPanel.setPreferredSize(new Dimension(520, 264));
+////        geoHeatMapPanel.setVisible(true);
 //
 //
 //
+////        JLabel Label = new JLabel();
+////
+////
+////        Label.setBounds(0, 0, 520, 264);
+////        // Label.setBackground(new Color(0, 0, 0, .5f));  
+////        // Label.setOpaque(true);
+////
+////
+////
+////
+////
+//        
+//        
+//        
+//        BufferedImage htimage = createHeatMap(1000, 500);
+//        parent.getVCGF().setHeatmapImg(htimage);
+//
+//        
+//        
+//        
+//        
+//        //Label.setIcon(new ImageIcon( createHeatMap(520,264)));
+//        //   geoHeatMapPanel.add(Label);
+//
+////           if (image != null) {
+////            JLabel picLabel = new JLabel(new ImageIcon( createHeatMap(520,264)));
+////
+////           // picLabel.setOpaque(true);
+////            picLabel.setBounds(0, 0, 520, 264);
+////            picLabel.setBackground(new Color(0, 0, 0, .5f));
+////           
+////             geoHeatMapPanel.add(picLabel);
+////            
+////        }
 //
 //
-        BufferedImage htimage = createHeatMap(1000, 500);
-        parent.getVCGF().setHeatmapImg(htimage);
-
-        //Label.setIcon(new ImageIcon( createHeatMap(520,264)));
-        //   geoHeatMapPanel.add(Label);
-
-//           if (image != null) {
-//            JLabel picLabel = new JLabel(new ImageIcon( createHeatMap(520,264)));
+//        //parent.getVCGF().setHeatmapImg(htimage);
 //
-//           // picLabel.setOpaque(true);
-//            picLabel.setBounds(0, 0, 520, 264);
-//            picLabel.setBackground(new Color(0, 0, 0, .5f));
-//           
-//             geoHeatMapPanel.add(picLabel);
-//            
-//        }
-
-
-        //parent.getVCGF().setHeatmapImg(htimage);
-
-
-
-        //parent.updateGeoView(curTreeNode.getColor(), selectedDocuments);
+//
+//
+//        //parent.updateGeoView(curTreeNode.getColor(), selectedDocuments);
 
 
     }
@@ -601,14 +608,11 @@ public class DocumentViewer extends JFrame {
 
             for (int l = 0; l < curTreeNode.getTopicsContainedIdx().size(); l++) {
                 int topicIndex = curTreeNode.getTopicsContainedIdx().get(l);
-                for (Object r : (ArrayList) c.getTopicSlotDocs(parent.collection, topicIndex, selectedTimeColumn, threshold, "protype", "info")) {
+                for (Object r : (ArrayList) c.getTopicSlotDocs(
+                        parent.collection, topicIndex, selectedTimeColumn, threshold, parent.database, parent.table, parent.nameFields,parent.id_type)) {
                    // System.out.println(r);
                
-                
-                //String docid = (String) ((HashMap) r).get("doc_id");
-                 
-                selectedtweets.add((HashMap) r);
-                
+                    selectedtweets.add((HashMap) r);
                 
                 //selectedDocuments.add(docIdx);
                  //       selectedDocIDs.put(docIdx, docid);
@@ -616,7 +620,7 @@ public class DocumentViewer extends JFrame {
                 }
                
             }
-c.close();
+        c.close();
 
 //            for (int k = 0; k < parentPanel.getData().idxOfDocumentPerSlot.get(selectedTimeColumn).size(); k++) {
 //

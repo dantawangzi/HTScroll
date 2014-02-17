@@ -453,7 +453,7 @@ public class TopicGraphViewFrame extends JFrame {
         //setSize(600, 500);
 
         // setSize(width, height);
-        labelsToDisplay = 31;
+        labelsToDisplay = 51;
 
         tvf = this.parent.getTemporalFrame();
 
@@ -2913,7 +2913,7 @@ public class TopicGraphViewFrame extends JFrame {
 
         int size = m.size();
 
-        int maxkeywordnumber = 30;
+        int maxkeywordnumber = 50;
 
         int iterationRuns = maxkeywordnumber / size;
 

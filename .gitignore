@@ -14,3 +14,5 @@ HierarchicalTopics/build/classes/.netbeans_update_resources
 *.rs
 
 *.form
+/HierarchicalTopics/nbproject/private/
+/HierarchicalTopics/build/

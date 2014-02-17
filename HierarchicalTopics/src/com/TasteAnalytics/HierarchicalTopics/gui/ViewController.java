@@ -336,11 +336,11 @@ public class ViewController {
             highlightedTextLabels = ap.getLabelTimeMap().get(key);
             
             if (highlightedTextLabels==null)
-                System.out.println("null label map");
-           
-
-//            ap.DrawWordleCloud(ap.currentMouseLocation, highlightedTextLabels);
-            
+                System.out.println("no wordle cloud map ");
+           else
+            {
+                ap.DrawWordleCloud(ap.currentMouseLocation, highlightedTextLabels);
+            }
         }
 
         previousTimeColumn = selectedTimeColumn;
@@ -395,10 +395,10 @@ public class ViewController {
     int zoomSubBins = 5;
     boolean b_readAll = true;
     public boolean b_readFromDB = false;
-    String host = "152.15.99.7";
-    String user = "lee";
-    String password = "uncc_lee";
-    String table = "lda_results";
+    String host = "";
+    String user = "";
+    String password = "";
+    String table = "";
     //String host = "152.15.99.7";
     int port = 27107;
     String database = "patents";
@@ -407,6 +407,7 @@ public class ViewController {
     String[] nameFields;
     String nameField2;
     String text_id;
+    String id_type="";
     
     public void readHeaderFile(String headerpath) throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(headerpath));
