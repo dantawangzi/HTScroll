@@ -181,19 +181,26 @@ public class LDAHTTPClient {
 		String s_id = "slot_id="+String.valueOf(slot_id);
 		String thresh = "threshold="+String.valueOf(threshold);
 		in_db = "indb="+in_db;
+                                
 		in_table = "intable="+in_table;
-                id_type = "id_type=" + id_type;
+               
+                String field = "";
+                if (fields!=null)                                
+                {                    
+                    field = "&field=";
+                    for (int i=0; i<fields.length; i++)
+                        field += fields[i]+",";
+                    
+                    field = field.substring(0, field.length()-1);
+                    
+                }
+                if (id_type==null)                    
+                    id_type = "";
+                else
+                     id_type = "&id_type=" + id_type;
                 
-                
-                if (fields!=null)
-                {String field = "field=";
-		for (int i=0; i<fields.length; i++)
-                    field += fields[i]+",";
-                field = field.substring(0, field.length()-1);
-
-		return apacheGet(path, job_id+"&"+t_id+"&"+s_id+"&"+thresh+"&"+in_db+"&"+in_table+"&"+field+"&" +id_type);
-                }else
-                    return apacheGet(path, job_id+"&"+t_id+"&"+s_id+"&"+thresh+"&"+in_db+"&"+in_table+"&" +id_type);
+                return apacheGet(path, job_id+"&"+t_id+"&"+s_id+"&"+thresh+"&"+in_db+"&"+in_table +field + id_type);
+                    
 	}
 
         

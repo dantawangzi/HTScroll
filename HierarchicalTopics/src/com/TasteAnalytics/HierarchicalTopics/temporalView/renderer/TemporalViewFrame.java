@@ -1139,6 +1139,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
         buildTree(path);
 
+        
+        System.out.println("build tree finished");
         BuildNodeValue(data, myTree.get(0));
         BuildUnNormNodeValue(data, myTree.get(0));
 

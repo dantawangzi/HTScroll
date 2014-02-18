@@ -625,9 +625,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
                HashMap hr = (HashMap) r;
                List<String> ls = ((List)hr.get("field"));
                if (ls != null)
-               {viewController.nameFields = new String[ls.size()];
-               for (int i=0; i<ls.size(); i++)
-                   viewController.nameFields[i] = ls.get(i);
+               {
+                   viewController.nameFields = new String[ls.size()];
+                   for (int i=0; i<ls.size(); i++)
+                        viewController.nameFields[i] = ls.get(i);
                }
                else
                    viewController.nameFields = null;

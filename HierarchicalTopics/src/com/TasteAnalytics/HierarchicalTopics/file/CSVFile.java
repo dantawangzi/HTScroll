@@ -564,6 +564,7 @@ public class CSVFile extends SimpleParallelSpaceModel {
 //            add(new SimpleDateFormat("dd.M.yyyy"));
             add(new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S"));
             add(new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S"));
+             add(new SimpleDateFormat("yyyyMMddHHmmss"));
 
             add(new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss"));
             add(new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss"));
@@ -655,7 +656,7 @@ public class CSVFile extends SimpleParallelSpaceModel {
         for (int i = 0; i < allDocs.get(0).length; i++) {
             if (allDocs.get(0)[i].equals("Content") || allDocs.get(0)[i].equals("content")
                     || allDocs.get(0)[i].equals("Abstract") || allDocs.get(0)[i].equals("abstract") || allDocs.get(0)[i].equals("text")
-                    || allDocs.get(0)[i].equals("Description")
+                    || allDocs.get(0)[i].equals("Description") ||allDocs.get(0)[i].equals("new_text")
                     
                     
                     ) {

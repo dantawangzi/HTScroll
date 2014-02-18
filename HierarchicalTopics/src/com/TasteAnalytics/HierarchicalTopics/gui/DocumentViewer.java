@@ -1214,42 +1214,94 @@ public class DocumentViewer extends JFrame {
 //            cursor.close();
 //        }
         int count = 0;
-        int keysize = parent.nameFields.length;
-        int size = selectedtweets.size();
-         Object[][] content = new Object[size][keysize];
-
-        String[] columnFields = new String[keysize];;
-
-
         int contentIdx = -1;
-        //contentIdx = 2;
-        for (int i=0; i<parent.nameFields.length; i++)
+        Object[][] content;
+        String[] columnFields;
+        if (parent.nameFields == null)
         {
-            columnFields[i] = parent.nameFields[i];
-            if (parent.text_id.equals(parent.nameFields[i]))
-                                contentIdx = i;
+            int keysize = selectedtweets.get(0).keySet().size();
+             int size = selectedtweets.size();
+            content = new Object[size][keysize];
+
+            columnFields = new String[keysize];;
+                       
+            
+            int currentIdx = 0;
+            //List<String> currentfields = new ArrayList<String>();
+            
+            for (Object entry : selectedtweets.get(0).entrySet())
+            {
+                Map.Entry<Object,Object> entrykey = (Map.Entry<Object,Object>)entry;
+                String key = String.valueOf(entrykey.getKey());
+               //currentfields.add(key);
+                 columnFields[currentIdx] = key;
+                  if (parent.text_id.equals(key))
+                        contentIdx = currentIdx;
+                    currentIdx++;
+                    
+            }
+            
+            
+            
+             for (int i=0; i<selectedtweets.size(); i++)
+            {
+                 String[] tmp = new String[columnFields.length];
+               for (int j=0; j<columnFields.length; j++)
+               {
+                   
+                  
+                   tmp[j] = String.valueOf(selectedtweets.get(i).get(columnFields[j]));
+                   
+                 
+                   
+                   
+               }
+                
+                content[i] = tmp;
+               
+            }
+            
+            
+            
         }
-       
-        for (int j=0; j<size; j++)
+        else
         {
+            int keysize = parent.nameFields.length;
+            int size = selectedtweets.size();
+              content = new Object[size][keysize];
+
+            columnFields = new String[keysize];;
+
+
             
-            
-                String[] s = new String[keysize];
-               
-                 for (int i=0; i<parent.nameFields.length; i++)
-                 {
-                   s[i] =  String.valueOf ( selectedtweets.get(j).get(parent.nameFields[i]));
-               
-                 }
-   
-            
-                content[j] = s;
-            //count++;
-            
-        }
+            //contentIdx = 2;
+            for (int i=0; i<keysize; i++)
+            {
+                columnFields[i] = parent.nameFields[i];
+                if (parent.text_id.equals(parent.nameFields[i]))
+                                    contentIdx = i;
+            }
+
+            for (int j=0; j<size; j++)
+            {
+
+
+                    String[] s = new String[keysize];
+
+                     for (int i=0; i<parent.nameFields.length; i++)
+                     {
+                       s[i] =  String.valueOf ( selectedtweets.get(j).get(parent.nameFields[i]));
+
+                     }
+
+
+                    content[j] = s;
+                //count++;
+
+            }
         
         
-        this.setVisible(true);
+        }
 //        for (int i = 0; i < selectedDocIndexes.size(); i++) {
 //            int tempDocIdx = selectedDocIndexes.get(i);
 //            content[i] = tmpDocs.get(tempDocIdx + 1);//both files have headers
@@ -1310,7 +1362,7 @@ public class DocumentViewer extends JFrame {
             RTRatio.setText(countRT + " in " + selectedDocIndexes.size() + " documents contain RT, ratio: " + Float.toString(ratio));
         }
         
-
+        this.setVisible(true);
 
 
     }
