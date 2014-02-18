@@ -166,7 +166,7 @@ public class VastGeoFrame extends javax.swing.JFrame {
     
     public VastGeoFrame(ViewController vc, String csvFilePath, List<Point2D> geoLocations) {
         initComponents();
-        this.setTitle("Geo Spatial View of VAST DATA");
+        this.setTitle("Geo Spatial View");
         parent = vc;
 
 
@@ -179,6 +179,7 @@ public class VastGeoFrame extends javax.swing.JFrame {
             //System.out.println("File " + f.toString());
         } catch (Exception e) {
             System.out.println("Cannot read file: " + e);
+            this.setVisible(false);
         }
 
         background = new BackgroundPanel(img, BackgroundPanel.SCALED, 0, 0);

@@ -1281,8 +1281,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         float[] tempresult = new float[numofYears];
         float[] tempsum = new float[numofYears];
 
-        if (t.getArrayValue().size() == 0) {
-            if (t.getChildren().size() == 0) {
+        if (t.getArrayValue().isEmpty()) {
+            if (t.getChildren().isEmpty()) {
 
                 if (t.getValue().contains("L")) {
                     int index = t.getIndex();

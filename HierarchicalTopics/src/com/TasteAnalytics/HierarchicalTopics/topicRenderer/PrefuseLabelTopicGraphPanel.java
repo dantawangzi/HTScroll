@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPopupMenu;
 import com.TasteAnalytics.HierarchicalTopics.gui.ViewController;
+import java.awt.geom.RoundRectangle2D;
 import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
@@ -47,6 +48,7 @@ import prefuse.data.Schema;
 import prefuse.data.tuple.TupleSet;
 import prefuse.render.AbstractShapeRenderer;
 import prefuse.render.DefaultRendererFactory;
+import prefuse.render.EdgeRenderer;
 import prefuse.render.LabelRenderer;
 import prefuse.render.ShapeRenderer;
 import prefuse.util.ColorLib;
@@ -382,10 +384,12 @@ public class PrefuseLabelTopicGraphPanel extends Display {
     private void setUpRenderers() {
         FinalRenderer r = new FinalRenderer();//ShapeRenderer();
 
+        
         int scale = 10;
         DefaultRendererFactory drf = new DefaultRendererFactory(r);
 
         drf.add(new InGroupPredicate("nodedec"), new LabelRenderer("LabelText"));
+        drf.add(new InGroupPredicate("graph.edges"), new EdgeRenderer(Constants.EDGE_TYPE_CURVE));
         m_vis.setRendererFactory(drf);
 
         final Schema DECORATOR_SCHEMA = PrefuseLib.getVisualItemSchema();
@@ -403,8 +407,11 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                 Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
 
         ColorAction edges = new ColorAction("graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200));
-
+         final ColorAction borderColor = new BorderColorAction("graph.nodes");
+         
+         
         ActionList color = new ActionList();
+        color.add(borderColor);
         color.add(fill);
         color.add(edges);
 
@@ -448,7 +455,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         addControlListener(new FinalControlListener());
 
     }
-    int[] palette = {ColorLib.rgb(0, 0, 200), ColorLib.rgb(200, 200, 0)};
+    int[] palette = {ColorLib.rgb(0, 0, 200), ColorLib.rgb(224, 243, 219)};
 
     HashMap<String, List<Integer>> highlightedLabelsMap = new HashMap<String, List<Integer>>();
     HashMap<String, List<Float>> labelHighlightWeightMap = new HashMap<String, List<Float>>();
@@ -575,14 +582,31 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 //protected RectangularShape m_box = new Rectangle2D.Double();
         //protected Ellipse2D m_box = new Ellipse2D.Double();
 
-        protected Rectangle2D m_box = new Rectangle2D.Double();
+        protected RoundRectangle2D m_box = new RoundRectangle2D.Double();
 
         @Override
         protected Shape getRawShape(VisualItem item) {
-            m_box.setFrame(item.getX(), item.getY(), 100, 30);
+            
+            
+            int length = ((String)item.get("LabelText")).length();
+            m_box.setRoundRect(0, 0, 0, 0, 13*length*.25, 30*.5);
+            m_box.setFrame(item.getX(), item.getY(), 13*length, 30);
+        
             return m_box;
         }
+        
+
     }
+
+    
+//    
+//         protected double getLineWidth(VisualItem item) {
+//             if (item instanceof EdgeItem)
+//                return 30;//item.getSize();
+//             else
+//                 return item.getSize();
+//          }
+    
 
     public class FinalDecoratorLayout extends Layout {
 
@@ -602,6 +626,29 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                 setY(decorator, null, y);
             }
 
+        }
+    }
+    
+    
+     public static class BorderColorAction extends ColorAction {
+        
+        public BorderColorAction(String group) {
+            super(group, VisualItem.STROKECOLOR);
+        }
+        
+        public int getColor(VisualItem item) {
+            NodeItem nitem = (NodeItem)item;
+            if ( nitem.isHover() )
+                return ColorLib.rgb(255,12,19);
+            
+            int depth = nitem.getDepth();
+            if ( depth < 2 ) {
+                return ColorLib.gray(100);
+            } else if ( depth < 4 ) {
+                return ColorLib.gray(75);
+            } else {
+                return ColorLib.gray(50);
+            }
         }
     }
 

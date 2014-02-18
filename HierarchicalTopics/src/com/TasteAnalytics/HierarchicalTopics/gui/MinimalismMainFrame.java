@@ -968,7 +968,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
         viewController.setVCGF(vcGeoFrame);
 
-        vcGeoFrame.setVisible(true);
+        if (viewController.geoLocations!=null)
+            vcGeoFrame.setVisible(true);
+        else
+            vcGeoFrame.setVisible(false);
 //
 ////
         System.out.println("GeoFrame done");
