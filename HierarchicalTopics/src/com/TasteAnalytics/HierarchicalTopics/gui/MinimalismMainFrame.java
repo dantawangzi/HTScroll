@@ -77,9 +77,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
         consoleFrame = new ConsoleFrame();
         consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //// TODO: DXW---Need to comment this out!April 03, 2013
-        Topics topicDisplay = new Topics(viewController);
-
-        viewController.addTopicDisplay(topicDisplay);
+//        Topics topicDisplay = new Topics(viewController);
+//
+//        viewController.addTopicDisplay(topicDisplay);
 
         documentViewer = new DocumentViewer(viewController);
         documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -330,7 +330,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
 
                             viewController.setTopicSimilarities(csvf.getTopicSimilarities());
 
-                            viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
+                            //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
 
                             viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
 
@@ -347,7 +347,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
                         else
                         {
                             csvf.readContents(viewController.b_readAll);
-                             viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
+                             //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
                              //SimpleDateFormat f = new SimpleDateFormat("YYYY-hh-dd");
                               viewController.setFormat(csvf.getFormat());
                             
@@ -592,7 +592,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
         
          
             
-        viewController.getTopicDisplay().loadTopic(topics/*csvf.getAllTopics()*/);
+       // viewController.getTopicDisplay().loadTopic(topics/*csvf.getAllTopics()*/);
        System.out.append("topk loaded");
         //viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
        

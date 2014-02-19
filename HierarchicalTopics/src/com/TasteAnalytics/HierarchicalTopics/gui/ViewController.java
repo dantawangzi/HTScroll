@@ -54,7 +54,6 @@ public class ViewController {
 
     public TemporalViewListener tvl;
     public EventsViewListener evl;
-    public Topics td;
     public DocumentViewer docViewer;
     int contentIdx;
     public TemporalViewFrame tf;
@@ -165,17 +164,7 @@ public class ViewController {
         return this.InternalDocs;
     }
 
-    /*Code added for topic display window and document viewer*/
-    public void addTopicDisplay(Topics t) {
-        td = t;
-    }
 
-    public Topics getTopicDisplay() {
-        if (td != null) {
-            return td;
-        }
-        return null;
-    }
 
     public void addDocumentViewer(DocumentViewer d) {
         docViewer = d;

@@ -905,6 +905,10 @@ public class CSVFile extends SimpleParallelSpaceModel {
     public List<String[]> getAllTopics() {
         return allTopics;
     }
+    
+    public void setAllTopics(List<String[]> alt) {
+        allTopics = alt;
+    }
 
     public List<List<Float>> getSimilarityMatrix() {
         return similarityMatrix;

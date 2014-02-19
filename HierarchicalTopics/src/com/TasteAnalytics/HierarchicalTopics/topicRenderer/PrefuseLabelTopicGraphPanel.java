@@ -389,7 +389,8 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         DefaultRendererFactory drf = new DefaultRendererFactory(r);
 
         drf.add(new InGroupPredicate("nodedec"), new LabelRenderer("LabelText"));
-        drf.add(new InGroupPredicate("graph.edges"), new EdgeRenderer(Constants.EDGE_TYPE_CURVE));
+        drf.add(new InGroupPredicate("graph.edges"), new myEdgeRenderer(Constants.EDGE_TYPE_CURVE, Constants.EDGE_ARROW_FORWARD/*Constants.EDGE_ARROW_REVERSE*/));
+        
         m_vis.setRendererFactory(drf);
 
         final Schema DECORATOR_SCHEMA = PrefuseLib.getVisualItemSchema();
@@ -651,6 +652,40 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             }
         }
     }
+     
+     public class myEdgeRenderer extends EdgeRenderer
+     {
+         public myEdgeRenderer() {
+            super();
+        }
+
+        private myEdgeRenderer(int EDGE_TYPE_CURVE) {
+            super(EDGE_TYPE_CURVE);
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+        private myEdgeRenderer(int edgeType, int arrowType) {
+            super(edgeType, arrowType);
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+         
+        protected  double getLineWidth(VisualItem item) 
+        {
+            double width = 0;
+            
+            if (item instanceof EdgeItem)
+                width = 7;
+            
+            
+            
+             return width;
+            
+            
+        }
+         
+         
+         
+     }
 
     public class DataMountainForceLayout extends ForceDirectedLayout {
 
