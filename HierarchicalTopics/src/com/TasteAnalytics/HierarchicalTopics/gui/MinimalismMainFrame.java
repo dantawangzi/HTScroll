@@ -52,7 +52,7 @@ import prefuse.data.io.TreeMLWriter;
  *
  * @authors Derek Xiaoyu Wang, Wenwen Dou, Li Yu
  */
-public class MinimalismMainFrame extends javax.swing.JFrame {
+public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
     //private ViewController viewcontroller;
     //Defined by wdou
@@ -69,33 +69,18 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
     
     
     public MinimalismMainFrame() {
+        
+        
         initComponents();
         
-        viewController = new ViewController();
         
-        jCheckBoxConsoleMenu.setState(false);
-        consoleFrame = new ConsoleFrame();
-        consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //// TODO: DXW---Need to comment this out!April 03, 2013
-//        Topics topicDisplay = new Topics(viewController);
-//
-//        viewController.addTopicDisplay(topicDisplay);
-
-        documentViewer = new DocumentViewer(viewController);
-        documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        viewController.addDocumentViewer(documentViewer);
-
-        // Get the default toolkit
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-
-        // Get the current screen size
-        Dimension scrnsize = toolkit.getScreenSize();
-
-        // Set Initial Location
-        this.setLocation(scrnsize.width / 2, scrnsize.height / 3);
-
-        // Set Inital Size
-        this.setSize(300, 200);
+        Thread thread = new Thread(this);  
+        thread.start();  
+    
+        System.out.println("This is currently running on the main thread, " +  
+        "the id is: " + Thread.currentThread().getId());  
+        
+        
 
     }
 
@@ -1026,7 +1011,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        UIManager.put("org.mediavirus.parvis.gui.ParallelDisplayUI", "org.mediavirus.parvis.gui.BasicParallelDisplayUI");
+        UIManager.put("com.TasteAnalytics.HierarchicalTopics.temporalView", "com.TasteAnalytics.HierarchicalTopics.temporalView");
         new MinimalismMainFrame().show();
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1047,4 +1032,34 @@ public class MinimalismMainFrame extends javax.swing.JFrame {
     private javax.swing.ButtonGroup menuEditGroup;
     private javax.swing.JMenuItem openMenu;
     // End of variables declaration//GEN-END:variables
+
+    public void  run() {
+       viewController = new ViewController();
+        
+        jCheckBoxConsoleMenu.setState(false);
+        consoleFrame = new ConsoleFrame();
+        consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //// TODO: DXW---Need to comment this out!April 03, 2013
+//        Topics topicDisplay = new Topics(viewController);
+//
+//        viewController.addTopicDisplay(topicDisplay);
+
+        documentViewer = new DocumentViewer(viewController);
+        documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        viewController.addDocumentViewer(documentViewer);
+
+        // Get the default toolkit
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+        // Get the current screen size
+        Dimension scrnsize = toolkit.getScreenSize();
+
+        // Set Initial Location
+        this.setLocation(scrnsize.width / 2, scrnsize.height / 3);
+
+        // Set Inital Size
+        this.setSize(300, 200);
+        
+  //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
