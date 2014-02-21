@@ -1088,6 +1088,7 @@ public class DocumentViewer extends JFrame {
         int countRT = 0;
         for (int i = 0; i < content.length; i++) {
             String contentString = (String) content[i][parentPanel.parent.getContentIdx()];
+            System.out.println(contentString.length());
             if (contentString.contains("RT ") || contentString.contains("rt ")) {
                 countRT++;
                 // System.out.println(contentString);
@@ -1328,6 +1329,7 @@ public class DocumentViewer extends JFrame {
         {
             for (int i = 0; i < content.length; i++) {
             String contentString = (String) content[i][contentIdx];
+            //System.out.println(contentString.length());
             if (contentString.contains("RT ") || contentString.contains("rt ")) {
                 countRT++;
                 // System.out.println(contentString);
@@ -1339,14 +1341,18 @@ public class DocumentViewer extends JFrame {
         else
         {
         
-        for (int i = 0; i < content.length; i++) {
-            String contentString = (String) content[i][parentPanel.parent.getContentIdx()];
-            if (contentString.contains("RT ") || contentString.contains("rt ")) {
-                countRT++;
-                // System.out.println(contentString);
-            }
+            for (int i = 0; i < content.length; i++) {
+                String contentString = (String) content[i][parentPanel.parent.getContentIdx()];
+                
+               // System.out.println(contentString.length());
+                
+                
+                if (contentString.contains("RT ") || contentString.contains("rt ")) {
+                    countRT++;
+                    // System.out.println(contentString);
+                }
 
-        }
+            }
         }
 
         

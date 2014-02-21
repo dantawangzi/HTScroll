@@ -125,13 +125,17 @@ public class ViewController {
         leafNodeSequence = new ArrayList<Integer>();
         
         
-        labelColor.push(new Color(141,211,199));                
-        labelColor.push(new Color(255,255,179));
-        labelColor.push(new Color(190,186,218));
-        labelColor.push(new Color(251,128,114));
+//        labelColor.push(new Color(141,211,199));                
+//        labelColor.push(new Color(255,255,179));
+//        labelColor.push(new Color(190,186,218));
+//        labelColor.push(new Color(251,128,114));
         
+          labelColor.push(new Color(228,26,28));                
+        labelColor.push(new Color(55,126,184));
+        labelColor.push(new Color(77,175,74));
+        labelColor.push(new Color(152,78,163));
         
-    
+        labelColor.push(new Color(255,127,0));
     }
 
  

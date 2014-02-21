@@ -339,7 +339,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
           
         setAllPanelSize();
 
-        System.out.println("all panel size set");
+        //System.out.println("all panel size set");
 
       
        
@@ -837,7 +837,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
                                 (temporalPanelMap.size()) * tempWidth / (sizeFactor+1) + tempWidth / (1 + mainSizeFactor),
                                 tempHeight));
            
-        System.out.println("in update testpan " + testPanel.getWidth() + " " + testPanel.getHeight());
+       // System.out.println("in update testpan " + testPanel.getWidth() + " " + testPanel.getHeight());
            
         mainPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight * 2 / 3);
         subPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight / 3);
@@ -845,7 +845,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         int maxSecondaryPanelHeight = testPanel.getHeight() / 3;
         
         int secondWidth = (int) (myFrameWidth / (1 + sizeFactor));
-        System.out.println(temporalPanelMap.size() + " secondWidth " + secondWidth + " ");
+       // System.out.println(temporalPanelMap.size() + " secondWidth " + secondWidth + " ");
         
         if (temporalPanelMap.size() > 0) {
             for (TemporalViewPanel p : temporalPanelMap.get(1)) {
@@ -863,7 +863,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
                     int sizes = p.getFatherPanel().getchildPanel().size();
                     p.setMyPanelSize(secondWidth, (int) (p.getFatherPanel().getMyPanelHeight() / sizes));
-                    System.out.println("sizes " + sizes + " " +(int) (p.getFatherPanel().getMyPanelHeight() / sizes));
+                   // System.out.println("sizes " + sizes + " " +(int) (p.getFatherPanel().getMyPanelHeight() / sizes));
 
                 }
             }

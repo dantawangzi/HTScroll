@@ -2354,7 +2354,7 @@ public class TopicGraphViewFrame extends JFrame {
 
                     int tempColorInt = Color.HSBtoRGB(hsv[0], hsv[1], hsv[2]);
                     convertColor = new Color(tempColorInt);
-                    System.out.println(convertColor.getRed() + " " + convertColor.getGreen() + " " + convertColor.getBlue());
+                    //System.out.println(convertColor.getRed() + " " + convertColor.getGreen() + " " + convertColor.getBlue());
 
                 }
 

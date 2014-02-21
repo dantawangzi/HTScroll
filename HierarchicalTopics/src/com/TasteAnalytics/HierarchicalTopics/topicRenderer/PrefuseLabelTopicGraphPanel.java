@@ -495,7 +495,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                     
                     parent.stateChangedFromLabelToTopic(highlightedLabelsMap, labelHighlightWeightMap, labelHighlightColorMap);
                 } else {
-                    if (labelHighlightWeightMap.size() < 4) {
+                    if (labelHighlightWeightMap.size() < 5) {
 
                         //int index = labelHighlightWeightMap.size();
                                 
