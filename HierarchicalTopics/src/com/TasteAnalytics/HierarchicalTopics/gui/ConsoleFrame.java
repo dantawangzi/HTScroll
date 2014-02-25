@@ -173,6 +173,7 @@ public class ConsoleFrame extends javax.swing.JFrame implements WindowListener, 
                 if (pin.available() != 0) {
                     String input = this.readLine(pin);
                     textArea.append(input);
+                    textArea.setCaretPosition(textArea.getDocument().getLength());
                 }
                 if (quit) {
                     return;

@@ -1091,7 +1091,7 @@ public class DocumentViewer extends JFrame {
             System.out.println(contentString.length());
             if (contentString.contains("RT ") || contentString.contains("rt ")) {
                 countRT++;
-                // System.out.println(contentString);
+                System.out.println(contentString);
             }
 
         }

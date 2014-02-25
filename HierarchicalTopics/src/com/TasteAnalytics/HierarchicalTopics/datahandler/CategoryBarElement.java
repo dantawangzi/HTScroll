@@ -299,7 +299,7 @@ public class CategoryBarElement {
                 idxOfDocumentPerSlot.put(j, documentPerSlotVector);
             }
 
-            int numKeywords = 30;//TODO: hardcode alert!!
+            int numKeywords = 50;//TODO: hardcode alert!!
             String curKeyword;
             int[] numOccur;
             List<int[]> topicKTF = null;

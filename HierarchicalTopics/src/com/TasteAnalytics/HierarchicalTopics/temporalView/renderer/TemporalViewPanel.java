@@ -2326,13 +2326,32 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             System.out.println("topicYearKwIdx is null, no labels built..");
 
     }
+    
+    
+
 
     public Point2D currentMouseLocation = new Point2D.Double();
 
+    
+         public void DrawTopicWord(Point2D p, List<TopicGraphViewFrame.labelText> ls) 
+         {
+             
+             
+             
+             
+             
+         }
+                 
+                 
     List<TopicGraphViewFrame.labelText> multiTopicKeywordList;
 
     List<TopicGraphViewFrame.labelText> singleTopicKeywordList;
 
+    
+    
+    
+    
+    
     public void DrawWordleCloud(Point2D p, List<TopicGraphViewFrame.labelText> ls) {
 
         List<LabelWordleLite> list = new ArrayList<LabelWordleLite>();

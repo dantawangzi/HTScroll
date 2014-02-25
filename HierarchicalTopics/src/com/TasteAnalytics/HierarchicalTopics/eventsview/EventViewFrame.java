@@ -272,6 +272,7 @@ public class EventViewFrame extends JFrame {
 
         //prefuse
         
+        this.getContentPane().setLayout(new BorderLayout());
        labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(folderPath, vc, disMatrix);
        this.getContentPane().add(labelTopicGraphPanel);
         
