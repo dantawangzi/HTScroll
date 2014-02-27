@@ -12,7 +12,6 @@ import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
-import org.mediavirus.parvis.model.*;
 
 import java.io.*;
 import java.net.*;

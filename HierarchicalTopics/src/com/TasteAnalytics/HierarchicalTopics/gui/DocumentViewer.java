@@ -65,7 +65,7 @@ import com.TasteAnalytics.HierarchicalTopics.file.CSVReader;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.ZoomedTemporalViewPanel;
-import org.mediavirus.parvis.model.DataTable;
+import com.TasteAnalytics.HierarchicalTopics.file.DataTable;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
 
 /**
@@ -1091,7 +1091,7 @@ public class DocumentViewer extends JFrame {
             System.out.println(contentString.length());
             if (contentString.contains("RT ") || contentString.contains("rt ")) {
                 countRT++;
-                System.out.println(contentString);
+                // System.out.println(contentString);
             }
 
         }

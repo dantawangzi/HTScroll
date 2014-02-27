@@ -375,7 +375,9 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                           
                           
                       Number value = edgeThreSlider.getValue();
-                     updateEdges(  value.floatValue());         
+                     updateEdges(  value.floatValue());      
+                     m_vis.run("color");
+                     
 //                     setUpVisualization();
 //                        setUpRenderers();
 //                        setUpActions();
@@ -466,8 +468,15 @@ public class PrefuseLabelTopicGraphPanel extends Display {
       
          //output to json
   
-
-           graph.getEdgeTable().clear();
+        for (int i=0; i<graph.getEdgeCount(); i++)
+        {
+            graph.removeEdge(i);
+            
+        }
+        
+            //graph.clearEdges();
+            
+           //graph.getEdgeTable().clear();
            
             for (int i = 0; i < number_of_nodes; i++) {
                 //for (int j = number_of_nodes - 1; j > 1; j--) 
@@ -577,8 +586,8 @@ public class PrefuseLabelTopicGraphPanel extends Display {
     private void setUpDisplay() {
 
         //zoom(new Point2D.Double(0,0), 15);
-        double l = this.getScale();
-        System.out.println("scale: " + l);
+//        double l = this.getScale();
+//        System.out.println("scale: " + l);
         setSize(this.getWidth(), this.getHeight());
         setHighQuality(true);
         addControlListener(new DragControl());
