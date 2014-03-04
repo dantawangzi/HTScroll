@@ -67,6 +67,9 @@ import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.ZoomedTemporalViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.file.DataTable;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map.Entry;
 
 /**
  *
@@ -122,9 +125,6 @@ public class DocumentViewer extends JFrame {
 
         parentPanel = p;
         this.parent = p.parent;
-
-
-
 
 
         //BufferedImage image = ImageIO.read(new File(parent.csvfFolderPath + "Vastopolis_MapSmall.png"));
@@ -1059,27 +1059,86 @@ public class DocumentViewer extends JFrame {
     private DefaultTableModel model;
     private int[] paraSelectedRecords;
 
+    
+    static <K,V extends Comparable<? super V>> 
+            List<Entry<K, V>> entriesSortedByValues(Map<K,V> map) {
+
+    List<Entry<K,V>> sortedEntries = new ArrayList<Entry<K,V>>(map.entrySet());
+
+    Collections.sort(sortedEntries, 
+            new Comparator<Entry<K,V>>() {
+                @Override
+                public int compare(Entry<K,V> e1, Entry<K,V> e2) {
+                    return e2.getValue().compareTo(e1.getValue());
+                }
+            }
+    );
+
+    return sortedEntries;
+}
+            
+            
     final void updateDocViewContent(List<Integer> selectedDocIndexes) {
 
         // from csvf all Docs with first line :.................
         int temprow = selectedDocIndexes.size();
-        Object[][] content = new Object[temprow][columnNames.length];
+        Object[][] content = new Object[temprow][columnNames.length+1];
 
         this.setVisible(true);
-        for (int i = 0; i < selectedDocIndexes.size(); i++) {
-            int tempDocIdx = selectedDocIndexes.get(i);
-            content[i] = tmpDocs.get(tempDocIdx + 1);//both files have headers
-        }
+        
+        HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
+        
 
+        
+//        for (int i = 0; i < selectedDocIndexes.size(); i++) {
+//            int tempDocIdx = selectedDocIndexes.get(i);
+//            content[i] = tmpDocs.get(tempDocIdx + 1);//both files have headers
+//        }
+
+        
+          for (int i = 0; i < selectedDocIndexes.size(); i++) {
+       
+              float weight = 0.0f;
+              int tempDocIdx = selectedDocIndexes.get(i);  
+              for (int l = 0; l < curTreeNode.getTopicsContainedIdx().size(); l++) {
+                                     
+                   int topicIndex = curTreeNode.getTopicsContainedIdx().get(l);
+                   weight += parentPanel.getData().values_Norm.get(tempDocIdx)[topicIndex];                                        
+                }
+        
+             weightDoc.put(tempDocIdx,weight);
+        }
+               
+         List<Entry<Integer,Float>> sortedEntries =  entriesSortedByValues(weightDoc);
+                
+           
+       for (int i = 0; i < selectedDocIndexes.size(); i++) {
+            int tempDocIdx =  sortedEntries.get(i).getKey();
+            
+            content[i][0] = String.valueOf( sortedEntries.get(i).getValue());
+            for (int j=0; j<tmpDocs.get(tempDocIdx + 1).length; j++)
+            {
+                content[i][j+1] = tmpDocs.get(tempDocIdx + 1)[j];//both files have headers
+            }
+            
+        }
+        
+        
+        
+        String[] newColumnNames = new String[columnNames.length+1];
+        newColumnNames[0] = "weights";
+        for (int i=1;i<newColumnNames.length;i++)
+            newColumnNames[i] = columnNames[i-1];
+        
         if (dt == null) {
-            model = new DefaultTableModel(content, columnNames);
-            dt = new DataTable(content, columnNames);
+            model = new DefaultTableModel(content, newColumnNames);
+            dt = new DataTable(content, newColumnNames);
             jTable1.setModel(model);
             listener = new SelectionListener(jTable1);
             jTable1.getSelectionModel().addListSelectionListener(listener);
         } else {
             dt.setEntireTable(content);
-            model.setDataVector(content, columnNames);
+            model.setDataVector(content, newColumnNames);
             TableModelEvent event = new TableModelEvent(model);
             model.fireTableChanged(event);
         }
@@ -1087,7 +1146,7 @@ public class DocumentViewer extends JFrame {
 
         int countRT = 0;
         for (int i = 0; i < content.length; i++) {
-            String contentString = (String) content[i][parentPanel.parent.getContentIdx()];
+            String contentString = (String) content[i][parentPanel.parent.getContentIdx()+1];
             System.out.println(contentString.length());
             if (contentString.contains("RT ") || contentString.contains("rt ")) {
                 countRT++;
@@ -1214,10 +1273,14 @@ public class DocumentViewer extends JFrame {
 //        } finally {
 //            cursor.close();
 //        }
+        
+        
+        
         int count = 0;
         int contentIdx = -1;
         Object[][] content;
         String[] columnFields;
+        
         if (parent.nameFields == null)
         {
             int keysize = selectedtweets.get(0).keySet().size();
@@ -1297,18 +1360,16 @@ public class DocumentViewer extends JFrame {
 
 
                     content[j] = s;
-                //count++;
-
+              
             }
-        
-        
+       
         }
-//        for (int i = 0; i < selectedDocIndexes.size(); i++) {
-//            int tempDocIdx = selectedDocIndexes.get(i);
-//            content[i] = tmpDocs.get(tempDocIdx + 1);//both files have headers
-//        }
 
 
+
+        
+        
+        
 
         if (dt == null) {
             model = new DefaultTableModel(content, columnFields);
