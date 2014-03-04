@@ -544,65 +544,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             String key = "t" + Integer.toString(i);
             topics.add(topicsByMongo.get(key));
         }
-//        DBCollection currentColl = db.getCollection(job);
-//        
-//      
-//         BasicDBObject dbo = new BasicDBObject("type", "topic");
-//        DBCursor cursorfind = currentColl.find(dbo);
-//       
-//        
-//        while (cursorfind.hasNext())
-//        {
-//            BasicDBObject tmpdbo = (BasicDBObject) cursorfind.next();
-//            String Key = tmpdbo.getString("_id");
-//            String terms =  tmpdbo.getString("terms");
-//            String[] tmps = terms.split(",");
-//            String[] tmpdest = new String[tmps.length+2];
-//            tmpdest[0] = "Group";
-//            tmpdest[1] = Key;
-//            for (int i=0; i<tmps.length; i++)
-//            {
-//                tmpdest[2+i] = tmps[i];
-//                
-//            }
-//            topicsByMongo.put(Key, tmpdest);                       
-//            
-//        }
-//        for (int i=0; i<topicsByMongo.size(); i++)
-//        {
-//            String key = "t" + Integer.toString(i);
-//            topics.add(topicsByMongo.get(key));
-//        }
-//        
-        
-         
-            
-       // viewController.getTopicDisplay().loadTopic(topics/*csvf.getAllTopics()*/);
+
        System.out.append("topk loaded");
-        //viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
-       
-       
-//        DBCollection dbc = db.getCollection("job_index");
-//        BasicDBObject q1 = new BasicDBObject("_id", job);
-//         cursor = dbc.find(q1);                
-//         String s = "";
-//        while (cursor.hasNext())
-//        {
-//            
-//            
-//             BasicDBObject dbo1 = (BasicDBObject) cursor.next();
-//        
-//             s = ((BasicDBObject) dbo1.get("mongo_input")).getString("date_format");
-//           
-//             System.out.println(s);
-//        }
-        
-           //for (Object r : (ArrayList) connection.getJobs())
-//           {
-//               
-//               
-//               
-//           }
+
         
             
            for (Object r : (ArrayList) connection.getJob(job))
@@ -673,6 +617,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
             List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
             
+             HashMap<String, String> topicSimMongo = new HashMap<String, String>();
+            List<List<Float>> topicSim = new ArrayList<List<Float>>();
+            
+            
+            
             if (viewController.b_readFromDB)
             {
                 
@@ -700,6 +649,38 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
                     topkTermWeightMongo.add(tmpL);
 
                 }
+                
+                
+                for (Object r : (ArrayList) connection.getJobDocs(job, "top_sim"))
+                {
+                    HashMap hr = (HashMap) r;
+                    
+             
+                    String key = (String) hr.get("_id");
+                    String weights = (String) hr.get("weights");
+                    
+                  // float tmpvalue = Float.parseFloat(weights);
+                    topicSimMongo.put(key, weights);  
+                    
+                }
+                
+                for (int i=0; i<topicSimMongo.size(); i++)
+                {
+                    List<Float> tmpL = new ArrayList<Float>();                                                                        
+                        
+                    String key = "topsim" + (new Integer(i)).toString();
+                    
+                    String weights = topicSimMongo.get(key);
+                    String[]tmps = weights.split(",");
+                    for (int j=0;j<tmps.length; j++)                        
+                        tmpL.add(Float.parseFloat(tmps[j]));   
+                    
+                    topicSim.add(tmpL);
+
+                }
+                
+                csvf.setSimilarityMatrix(topicSim);
+//                
                 
 //                dbo = new BasicDBObject("type", "topic_terms");
 //                cursorfind = currentColl.find(dbo);

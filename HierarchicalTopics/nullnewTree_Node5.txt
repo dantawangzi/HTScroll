@@ -1,0 +1,3 @@
+digraphgraph{
+'Node1','LeafTopic2','Node0','LeafTopic0','LeafTopic1',
+('Node1','LeafTopic2'),('Node1','Node0'),('Node0','LeafTopic0'),('Node0','LeafTopic1'),}

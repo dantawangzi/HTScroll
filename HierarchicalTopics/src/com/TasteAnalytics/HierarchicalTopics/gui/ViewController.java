@@ -388,14 +388,14 @@ public class ViewController {
     int zoomSubBins = 5;
     boolean b_readAll = true;
     public boolean b_readFromDB = false;
-    String host = "";
+    public String host = "";
     String user = "";
     String password = "";
     String table = "";
     //String host = "152.15.99.7";
     int port = 27107;
     String database = "patents";
-    String collection = "patent";
+    public String collection = "patent";
     String collection2 = "unsorted_terms";
     String[] nameFields;
     String nameField2;

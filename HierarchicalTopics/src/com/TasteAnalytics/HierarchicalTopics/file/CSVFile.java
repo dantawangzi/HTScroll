@@ -812,7 +812,7 @@ public class CSVFile extends SimpleParallelSpaceModel {
                     }
                 }          
                 internalRecords.add(allElements.get(idx));
-
+                //System.out.println(idx);
                 years.add(tmpT);//in milliseconds       
 
             }
