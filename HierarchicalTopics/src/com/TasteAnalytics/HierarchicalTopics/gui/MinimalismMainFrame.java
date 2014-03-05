@@ -578,7 +578,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
      
         
         
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
        viewController.setFormat(format);
 

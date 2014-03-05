@@ -67,9 +67,13 @@ import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.ZoomedTemporalViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.file.DataTable;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
+import java.awt.Component;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map.Entry;
+import java.util.Stack;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -1081,21 +1085,190 @@ public class DocumentViewer extends JFrame {
     final void updateDocViewContent(List<Integer> selectedDocIndexes) {
 
         // from csvf all Docs with first line :.................
+       
+        
         int temprow = selectedDocIndexes.size();
         Object[][] content = new Object[temprow][columnNames.length+1];
 
         this.setVisible(true);
         
-        HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
+     if (false)
+     { 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         // for  all data sets  reddit only
+         final HashMap<String, Color> randomColor = new HashMap<String, Color>();
+         
+        HashMap<String, List<Integer>> submissionMap = new HashMap<String, List<Integer>>();
+        for (int i = 0; i < selectedDocIndexes.size(); i++) {
+             int tempDocIdx = selectedDocIndexes.get(i);  
+             String submission = tmpDocs.get(tempDocIdx + 1)[8];
+             
+             if (submissionMap.containsKey(submission))
+             {
+                List<Integer> tmpi = submissionMap.get(submission);
+                tmpi.add(tempDocIdx);
+                submissionMap.put(submission,tmpi);
+             }
+             else
+             {
+                 List<Integer> tmpi = new ArrayList<Integer>();
+                 tmpi.add(tempDocIdx);
+                 submissionMap.put(submission,tmpi);
+                 
+             }             
+        }
+        
+        
+        
+        String[] newColumnNames = {"weights", "_id" , "name", "content", "time", "c_id","ups","downs","submisson","subreddit", "label"};
+         content = new Object[temprow][newColumnNames.length+1];
+
+        int currentCount = 0;
+       for (Map.Entry<String, List<Integer>> entry : submissionMap.entrySet()) {
+           
+           
+           
+            Color c;
+            int r = (int) ((float)Math.random() * 255);
+            int g = (int) ((float)Math.random() * 255);
+            int b = (int) ((float)Math.random() * 255);
+            c = new Color(r,g,b);
+                              
+            
+                String key = entry.getKey();
+                List<Integer> docIdx = entry.getValue();
+             
+                randomColor.put(key, c);
+                
+                   HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
+                 for (int i = 0; i < docIdx.size(); i++) {
+
+                  float weight = 0.0f;
+                  int tempDocIdx = docIdx.get(i);  
+                  for (int l = 0; l < curTreeNode.getTopicsContainedIdx().size(); l++) {
+
+                       int topicIndex = curTreeNode.getTopicsContainedIdx().get(l);
+                       weight += parentPanel.getData().values_Norm.get(tempDocIdx)[topicIndex];                                        
+                    }
+
+                 weightDoc.put(tempDocIdx,weight);
+            }
+
+             List<Entry<Integer,Float>> sortedEntries =  entriesSortedByValues(weightDoc);
+                
+           
+                for (int i = 0; i < docIdx.size(); i++) {
+                     int tempDocIdx =  sortedEntries.get(i).getKey();
+
+                     content[i+currentCount][0] = String.valueOf( sortedEntries.get(i).getValue());
+                      content[i+currentCount][11] = tmpDocs.get(tempDocIdx + 1)[36];
+                     
+                     for (int j=0; j<(newColumnNames.length-1); j++)
+                     {
+                         content[i+currentCount][j+1] = tmpDocs.get(tempDocIdx + 1)[j+1];//both files have headers
+                     }
+
+                 }
+            
+            currentCount+= docIdx.size();
+            
+           
+        }
+        
         
 
-        
-//        for (int i = 0; i < selectedDocIndexes.size(); i++) {
-//            int tempDocIdx = selectedDocIndexes.get(i);
-//            content[i] = tmpDocs.get(tempDocIdx + 1);//both files have headers
-//        }
+        newColumnNames[0] = "weights";
 
         
+        if (dt == null) {
+            model = new DefaultTableModel(content, newColumnNames);
+            dt = new DataTable(content, newColumnNames);
+            jTable1.setModel(model);
+            listener = new SelectionListener(jTable1);
+            jTable1.getSelectionModel().addListSelectionListener(listener);
+          
+           
+//          final Stack lColor = new Stack();
+//          lColor.push(Color.white);
+//          lColor.push(Color.lightGray);
+          
+          
+//           jTable1.setDefaultRenderer(Object.class, new DefaultTableCellRenderer()
+//            {
+//                
+//                int flag = 0;
+//                Color currentColor = Color.white;
+//                Color replaceColor = Color.lightGray;
+//                @Override
+//                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+//                {
+//                    final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+//                   
+//              
+//                    
+//                    if (row>0)
+//                    {
+//                            String v = (String) table.getValueAt(row, 8);
+//                            String v1 = (String) table.getValueAt((row-1), 8);
+//
+//                            
+//                            
+//                         
+//                           if (v1.equals(v))
+//                           {
+//                               flag = 0;
+//                               // c.setBackground(currentColor);
+//                           }
+////                           
+//
+//                           else
+//                           {
+//                               flag = 1;
+////                               Color tmp = new Color(currentColor.getRGB());
+////                               currentColor = replaceColor;
+////                               replaceColor = tmp;
+//                               
+//                              // c.setBackground(currentColor);
+//                           }
+//                       
+//                    //c.setBackground(randomColor.get(v));
+//                    }
+//
+//                    if (flag != 0)                    
+//                    {
+//                        if (currentColor.equals(Color.white))
+//                            currentColor = Color.lightGray;
+//                        else 
+//                        if(currentColor.equals(Color.lightGray))
+//                            currentColor = Color.white;
+//                        
+//                        c.setBackground(currentColor);
+//                    }
+//                    return c;
+//                }
+//            });
+//            
+            
+        } else {
+            dt.setEntireTable(content);
+            model.setDataVector(content, newColumnNames);
+            TableModelEvent event = new TableModelEvent(model);
+            model.fireTableChanged(event);
+        }
+        
+        
+        
+        
+     }
+      else
+     {
+        
+        
+        
+        // for  all data sets
+  ////////////////////// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+          HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
           for (int i = 0; i < selectedDocIndexes.size(); i++) {
        
               float weight = 0.0f;
@@ -1123,6 +1296,8 @@ public class DocumentViewer extends JFrame {
             
         }
         
+       
+       
         
         
         String[] newColumnNames = new String[columnNames.length+1];
@@ -1159,9 +1334,9 @@ public class DocumentViewer extends JFrame {
 
 
         RTRatio.setText(countRT + " in " + selectedDocIndexes.size() + " documents contain RT, ratio: " + Float.toString(ratio));
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
+     }
     }
 
     final void updateDocViewContent(List<Integer> selectedDocIndexes, String DBURL, int DBPORT, String DBName, String collectionName, String[] fields) throws UnknownHostException {
@@ -1169,110 +1344,6 @@ public class DocumentViewer extends JFrame {
 
         int temprow = selectedDocIndexes.size();
 
-        
-//         LDAHTTPClient c = new LDAHTTPClient("http", parent.host, "2012");
-         
-
-//        
-//        MongoClient mongoClient = null;
-//        mongoClient = new MongoClient("10.18.203.211", 27017);
-//        DB db = mongoClient.getDB("lda_results");
-//        DBCollection dbc = db.getCollection("job_index");
-//
-//        BasicDBObject q1 = new BasicDBObject("_id", parent.collection);
-//        DBCursor cursor = dbc.find(q1);
-//
-//        String host = "";
-//        String dbname = "";
-//        String table = "";
-//        int port = -1;
-//
-//        while (cursor.hasNext()) {
-//
-//
-//            BasicDBObject dbo1 = (BasicDBObject) cursor.next();
-//            System.out.println(dbo1);
-//            host = ((BasicDBObject) dbo1.get("mongo_input")).getString("host");
-//            dbname = ((BasicDBObject) dbo1.get("mongo_input")).getString("db");
-//            table = ((BasicDBObject) dbo1.get("mongo_input")).getString("table");
-//            port = Integer.parseInt(((BasicDBObject) dbo1.get("mongo_input")).getString("port"));
-//        }
-//
-//
-//        MongoClient tweetclient = null;
-//        try {
-//            tweetclient = new MongoClient(host, port);
-//        } catch (UnknownHostException ex) {
-//            System.out.println("DB of original tweets begin load cache error");
-//        }
-//
-//        db = tweetclient.getDB(dbname);
-//
-//        DBCollection currentColl = db.getCollection(table);
-//
-//
-////        MongoClient mongoClient = new MongoClient(DBURL, DBPORT);
-////        DB db = mongoClient.getDB(DBName);
-////        Set<String> colls = db.getCollectionNames();
-//
-//        DBCollection coll = db.getCollection(parent.collection);
-//
-//        List<Integer> abc = selectedDocIndexes;
-//        List<String> sdoc = new ArrayList<String>();
-//
-//        for (Integer o : abc) {
-//
-//            sdoc.add(selectedDocIDs.get(o));
-//        }
-//
-//        BasicDBObject query = new BasicDBObject("_id", new BasicDBObject("$in", sdoc));
-//        cursor = currentColl.find(query);
-//
-//        int count = 0;
-//        BasicDBObject dbo1 = (BasicDBObject) cursor.next();
-//
-//        int keysize = dbo1.keySet().size();
-//
-//
-//        Object[][] content = new Object[temprow][keysize];
-//
-//        String[] columnFields = new String[keysize];;
-//
-//        cursor = currentColl.find(query);
-//        try {
-//            while (cursor.hasNext()) {
-//
-//                // Map<DBObject, DBObject> map = new HashMap<DBObject, DBObject>();
-//
-//                BasicDBObject dbo = (BasicDBObject) cursor.next();
-//
-//                Map<String, String> map = new HashMap<String, String>();
-//                map = dbo.toMap();
-//
-//
-//                int i = 0;
-//                String[] s = new String[keysize];
-//                for (Map.Entry<String, String> entry : map.entrySet()) {
-//
-//                    s[i] = entry.getValue();//(String) dbo.get(fields[i]);
-////                    System.out.println("Key : " + entry.getKey() + " Value : "
-////                            + entry.getValue());
-//
-//                    if (count == 0) {
-//                        columnFields[i] = entry.getKey();
-//                    }
-//                    i++;
-//                }
-//
-//
-//                content[count] = s;
-//
-//                count++;
-//
-//            }
-//        } finally {
-//            cursor.close();
-//        }
         
         
         
@@ -1330,7 +1401,18 @@ public class DocumentViewer extends JFrame {
         }
         else
         {
-            int keysize = parent.nameFields.length;
+            
+            String[] newNameFields = new String[parent.nameFields.length+1];
+            
+            
+            for (int i=0; i<parent.nameFields.length; i++)
+                newNameFields[i+1] = parent.nameFields[i];
+            
+            newNameFields[0] = "thresh";
+            
+            int keysize = newNameFields.length ;
+            
+            
             int size = selectedtweets.size();
               content = new Object[size][keysize];
 
@@ -1341,8 +1423,8 @@ public class DocumentViewer extends JFrame {
             //contentIdx = 2;
             for (int i=0; i<keysize; i++)
             {
-                columnFields[i] = parent.nameFields[i];
-                if (parent.text_id.equals(parent.nameFields[i]))
+                columnFields[i] = newNameFields[i];
+                if (parent.text_id.equals(newNameFields[i]))
                                     contentIdx = i;
             }
 
@@ -1352,9 +1434,9 @@ public class DocumentViewer extends JFrame {
 
                     String[] s = new String[keysize];
 
-                     for (int i=0; i<parent.nameFields.length; i++)
+                     for (int i=0; i<newNameFields.length; i++)
                      {
-                       s[i] =  String.valueOf ( selectedtweets.get(j).get(parent.nameFields[i]));
+                       s[i] =  String.valueOf ( selectedtweets.get(j).get(newNameFields[i]));
 
                      }
 

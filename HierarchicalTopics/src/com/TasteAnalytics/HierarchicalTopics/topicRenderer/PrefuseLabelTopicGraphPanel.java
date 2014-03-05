@@ -444,8 +444,24 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
                         Number value = edgeThreSlider.getValue();
                         updateEdges(value.floatValue());
-                        m_vis.run("color");
+                        
+                         m_vis.removeAction("layout");
+                         
+                         
+                        
 
+                         ActionList layout = new ActionList(Activity.INFINITY);
+
+                        DataMountainForceLayout fdl = new DataMountainForceLayout("graph.nodes", false, hellingerDis);
+                        fdl.setDataGroups("graph.nodes", "graph.edges");
+                        layout.add(fdl);
+                        layout.add(new FinalDecoratorLayout("nodedec"));
+
+                        layout.add(new RepaintAction());
+                        m_vis.putAction("layout", layout);
+                        
+                        m_vis.run("color");
+                        m_vis.run("layout");
 //                     setUpVisualization();
 //                        setUpRenderers();
 //                        setUpActions();
@@ -612,6 +628,8 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         //m_vis.setValue("graph.nodes", null, VisualItem.FIXED, true);
         m_vis.putAction("color", color);
         m_vis.putAction("layout", layout);
+        
+       
 
     }
 

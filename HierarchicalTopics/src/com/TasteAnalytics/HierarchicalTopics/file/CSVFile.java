@@ -763,54 +763,51 @@ public class CSVFile extends SimpleParallelSpaceModel {
         
         System.out.println("alldoc " + allDocs.size());
         System.out.println("all elements" + allElements.size());
+         
         
+        format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        
+       
         for (int idx = 1; idx < allDocs.size(); idx++) {
             //if (allElements.get(idx).length == numDimensions) 
             {
                 //if (!allElements.get(idx)[0].isEmpty()) 
-                {
+                
 
                     //System.out.println( allDocs.get(idx)[dateColumn]);
                     String tmptime = allDocs.get(idx)[dateColumn]; //column for year info
 
-                    //Long tmpTT = Double.valueOf(tmptime).longValue();
-//                    if (tmpTT>=1000000)
-//                    {
-//                        
-//                        
-//                        tmpT = tmpTT;
-//                        
-//                    }
-                    //else
-                    {
+                     tmpT = Long.parseLong(tmptime)*1000;
 
-                        tmptime = tmptime.replaceAll("\\/", "-");
-                        tmptime = tmptime.replaceAll(":", "-");
-                        tmptime = tmptime.replaceAll(" ", "-");
-                        tmptime = tmptime.replaceAll("\\.", "-");
-                        format = getTimeFormat(tmptime);
-
-                        try {
-
-                            if (((SimpleDateFormat) format).toPattern() == "yyyy") {
-                                tmptime = tmptime;//+"-1-1";
-                                tmpT = Integer.parseInt(tmptime);
-                                // dateT = (Date) format.parse(tmptime);
-                                //tmpT = dateT.getTime(); 
-                            } else {
-
-                                dateT = (Date) format.parse(tmptime);
-                                tmpT = dateT.getTime();
-                            }
-
-                        } catch (Exception e) {
-
-                            System.out.println(((SimpleDateFormat) format).toPattern());
-                            System.out.println("Datetime split failed at line " + idx + "With Time" + tmpT);
-
-                        }
-                    }
-                }          
+                    
+//
+//                        tmptime = tmptime.replaceAll("\\/", "-");
+//                        tmptime = tmptime.replaceAll(":", "-");
+//                        tmptime = tmptime.replaceAll(" ", "-");
+//                        tmptime = tmptime.replaceAll("\\.", "-");
+//                        format = getTimeFormat(tmptime);
+//
+//                        try {
+//
+//                            if (((SimpleDateFormat) format).toPattern() == "yyyy") {
+//                                tmptime = tmptime;//+"-1-1";
+//                                tmpT = Integer.parseInt(tmptime);
+//                            
+//                            } else {
+//                               
+//                                
+//                                dateT = (Date) format.parse(tmptime);
+//                                tmpT = dateT.getTime();
+//                            }
+//
+//                        } catch (Exception e) {
+//
+//                            System.out.println(((SimpleDateFormat) format).toPattern());
+//                            System.out.println("Datetime split failed at line " + idx + "With Time" + tmpT);
+//
+//                        }
+//                    
+                          
                 internalRecords.add(allElements.get(idx));
                 //System.out.println(idx);
                 years.add(tmpT);//in milliseconds       

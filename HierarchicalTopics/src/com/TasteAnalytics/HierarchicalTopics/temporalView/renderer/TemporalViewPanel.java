@@ -1950,6 +1950,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             }
 
             long days = TimeUnit.MILLISECONDS.toDays(millis);
+           
             intervalString = days + "day(s)";
         }
         
@@ -1985,6 +1986,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
                         lowerstr = sdf.format(new Date(tmpMili));//Integer.toString(data.getBeginningYear()+i);//TimeUtils.returnDate(timecolumns.get(i).getNearTime(), data.getData().get(i).getDateFormatter());
                     }
                 }
+
 
 //               
                 if (i == displayLengendTimeColumn) // g2d.drawString(upperstr, (int) ((i) * ratio + (ratio - metrics.stringWidth(upperstr)) / 2), 10);
