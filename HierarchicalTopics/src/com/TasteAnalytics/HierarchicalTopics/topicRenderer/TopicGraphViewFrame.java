@@ -1163,6 +1163,9 @@ public class TopicGraphViewFrame extends JFrame {
 //                magnifyViewSupport.activate(e.getStateChange() == ItemEvent.SELECTED);
 //            }
 //        });
+        
+        
+    
         final PickedState<Object> pickedState = vv.getPickedVertexState();
 
         pickedState.addItemListener(new ItemListener() {
@@ -1664,9 +1667,15 @@ public class TopicGraphViewFrame extends JFrame {
                 }
             }
         });
+        
+        
+       
 
         buildLabelLocations();
 
+        System.out.println(" build labels done");
+        
+        
         vv.addPreRenderPaintable(new VisualizationViewer.Paintable() {
             public void paint(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g;
@@ -2402,9 +2411,11 @@ public class TopicGraphViewFrame extends JFrame {
 
                     int index = t.getIndex();
 
-                    int countleng = 0;
+                    int countleng = 0; float w = 0;
                     for (int j = 1; j < labelsToDisplay; j++) {
 
+                       
+                        try{
                         labelText tempLT = new labelText();
 
                         int leng = t.getNodeTopics()[j].length();
@@ -2428,7 +2439,11 @@ public class TopicGraphViewFrame extends JFrame {
                                 }
                             }
                             
-                            
+                            if (tmpCol == 989)
+                            {
+                                int a = 0;
+                                
+                            }
                             if (occurances.get(index + 1)[j] == 0) {
                                 tempLT.setOccurance(1);
                             } else {
@@ -2446,9 +2461,11 @@ public class TopicGraphViewFrame extends JFrame {
                             else
                                 weight = Float.parseFloat(wordTermWeightsF.get(index)[tmpCol]);
 
+                            w = weight;
                             tempLT.setProbablity(weight);
-
                         }
+                        
+                        
 
                         font = new Font(HelveticaFont, Font.PLAIN, occuranceFontSizePara * tempLT.getOccurance()/*occurances.get(index + 1)[j]*/ + labelFontSize);
                         //Font HelveticaFont = new Font("Helvetica", Font.BOLD, 12);
@@ -2463,6 +2480,11 @@ public class TopicGraphViewFrame extends JFrame {
                         tempLT.setString(t.getNodeTopics()[j]);
 
                         tempList.add(tempLT);
+                        }
+                        catch(Exception e){
+                                System.out.println("word " + t.getNodeTopics()[j] + " in dict line " + wordTermIndex.get(t.getNodeTopics()[j])
+                                + " weight is " + w);
+                                }
                     }
 
                     labelTextComparer c = new labelTextComparer();

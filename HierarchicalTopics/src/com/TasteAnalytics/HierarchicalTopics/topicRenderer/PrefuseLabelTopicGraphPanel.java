@@ -221,9 +221,6 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                 }
                  
                  
-                 
-                 
-                 
              }
              
              

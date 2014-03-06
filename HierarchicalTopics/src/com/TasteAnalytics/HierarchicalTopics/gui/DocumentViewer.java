@@ -1346,7 +1346,6 @@ public class DocumentViewer extends JFrame {
 
         
         
-        
         int count = 0;
         int contentIdx = -1;
         Object[][] content;

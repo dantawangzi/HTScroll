@@ -707,7 +707,7 @@ public class CategoryBarElement {
                 ofp.close();
 
             }
-
+ System.out.println("topicYearKwIdx done");
             /**
              * Normalize for the themeRiver - Normalize twice - first across
              * columns then within columns*
