@@ -1951,7 +1951,23 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
             long days = TimeUnit.MILLISECONDS.toDays(millis);
            
-            intervalString = days + "day(s)";
+            if (days<1)
+            {
+                long hours = TimeUnit.MILLISECONDS.toHours(millis);
+                if (hours<1)
+                {
+                    long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+                    intervalString = minutes + "minutes(s)";
+                    
+                }    
+                else
+                 intervalString = hours + "hour(s)";
+                
+                
+            }    
+                
+            else
+                intervalString = days + "day(s)";
         }
         
 

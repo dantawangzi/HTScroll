@@ -19,10 +19,18 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import org.apache.commons.lang3.math.NumberUtils;
+//import org.apache.commons.lang.NumberUtils;
+//import org.apache.commons.lang.math.NumberUtils ;
+//import org.apache.commons.lang.math.NumberUtils;
+
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.TasteAnalytics.HierarchicalTopics.gui.MinimalismMainFrame;
 import au.com.bytecode.opencsv.CSVReader;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * A Simple file parser for reading CSV files and instantiate the
@@ -777,37 +785,41 @@ public class CSVFile extends SimpleParallelSpaceModel {
                     //System.out.println( allDocs.get(idx)[dateColumn]);
                     String tmptime = allDocs.get(idx)[dateColumn]; //column for year info
 
+                    if (tmptime.length()>4 &&  StringUtils.isNumeric(tmptime))
+                    
                      tmpT = Long.parseLong(tmptime)*1000;
 
                     
 ////
-//                        tmptime = tmptime.replaceAll("\\/", "-");
-//                        tmptime = tmptime.replaceAll(":", "-");
-//                        tmptime = tmptime.replaceAll(" ", "-");
-//                        tmptime = tmptime.replaceAll("\\.", "-");
-//                        format = getTimeFormat(tmptime);
-//
-//                        try {
-//
-//                            if (((SimpleDateFormat) format).toPattern() == "yyyy") {
-//                                tmptime = tmptime;//+"-1-1";
-//                                tmpT = Integer.parseInt(tmptime);
-//                            
-//                            } else {
-//                               
-//                                
-//                                dateT = (Date) format.parse(tmptime);
-//                                tmpT = dateT.getTime();
-//                            }
-//
-//                        } catch (Exception e) {
-//
-//                            System.out.println(((SimpleDateFormat) format).toPattern());
-//                            System.out.println("Datetime split failed at line " + idx + "With Time" + tmpT);
-//
-//                        }
+                    else
+                    {
+                        tmptime = tmptime.replaceAll("\\/", "-");
+                        tmptime = tmptime.replaceAll(":", "-");
+                        tmptime = tmptime.replaceAll(" ", "-");
+                        tmptime = tmptime.replaceAll("\\.", "-");
+                        format = getTimeFormat(tmptime);
+
+                        try {
+
+                            if (((SimpleDateFormat) format).toPattern() == "yyyy") {
+                                tmptime = tmptime;//+"-1-1";
+                                tmpT = Integer.parseInt(tmptime);
+                            
+                            } else {
+                               
+                                
+                                dateT = (Date) format.parse(tmptime);
+                                tmpT = dateT.getTime();
+                            }
+
+                        } catch (Exception e) {
+
+                            System.out.println(((SimpleDateFormat) format).toPattern());
+                            System.out.println("Datetime split failed at line " + idx + "With Time" + tmpT);
+
+                        }
 ////                    
-                          
+                    }
                 internalRecords.add(allElements.get(idx));
                 //System.out.println(idx);
                 years.add(tmpT);//in milliseconds       

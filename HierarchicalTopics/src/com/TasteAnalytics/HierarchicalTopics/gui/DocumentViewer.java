@@ -1073,7 +1073,7 @@ public class DocumentViewer extends JFrame {
             new Comparator<Entry<K,V>>() {
                 @Override
                 public int compare(Entry<K,V> e1, Entry<K,V> e2) {
-                    return e2.getValue().compareTo(e1.getValue());
+                    return e1.getValue().compareTo(e2.getValue());
                 }
             }
     );
@@ -1092,7 +1092,7 @@ public class DocumentViewer extends JFrame {
 
         this.setVisible(true);
         
-     if (false)
+     if (true)
      { 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
          // for  all data sets  reddit only
@@ -1141,6 +1141,16 @@ public class DocumentViewer extends JFrame {
                 randomColor.put(key, c);
                 
                    HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
+                   HashMap<Integer, Long> timeDoc = new HashMap<Integer, Long>();
+                   
+                     for (int i = 0; i < docIdx.size(); i++) {
+               
+                  int tempDocIdx = docIdx.get(i);  
+
+                 timeDoc.put(tempDocIdx,parentPanel.getData().getTime().get(tempDocIdx));
+            }
+                   
+                   
                  for (int i = 0; i < docIdx.size(); i++) {
 
                   float weight = 0.0f;
@@ -1154,13 +1164,14 @@ public class DocumentViewer extends JFrame {
                  weightDoc.put(tempDocIdx,weight);
             }
 
-             List<Entry<Integer,Float>> sortedEntries =  entriesSortedByValues(weightDoc);
+             List<Entry<Integer, Long>> sortedEntries =  entriesSortedByValues(timeDoc);
                 
            
                 for (int i = 0; i < docIdx.size(); i++) {
                      int tempDocIdx =  sortedEntries.get(i).getKey();
 
-                     content[i+currentCount][0] = String.valueOf( sortedEntries.get(i).getValue());
+                     content[i+currentCount][0] = String.valueOf(weightDoc.get(tempDocIdx));
+                     //content[i+currentCount][0] = String.valueOf( sortedEntries.get(i).getValue());
                       content[i+currentCount][11] = tmpDocs.get(tempDocIdx + 1)[36];
                      
                      for (int j=0; j<(newColumnNames.length-1); j++)
@@ -1344,8 +1355,6 @@ public class DocumentViewer extends JFrame {
 
         int temprow = selectedDocIndexes.size();
 
-        
-        
         int count = 0;
         int contentIdx = -1;
         Object[][] content;
