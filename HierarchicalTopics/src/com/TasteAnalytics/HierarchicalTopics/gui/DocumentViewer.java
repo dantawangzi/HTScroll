@@ -997,7 +997,7 @@ public class DocumentViewer extends JFrame {
 
         this.setVisible(true);
 
-        if (false) {
+        if (true) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // for  all data sets  reddit only
             final HashMap<String, Color> randomColor = new HashMap<String, Color>();
@@ -1019,9 +1019,11 @@ public class DocumentViewer extends JFrame {
                 }
             }
 
-            String[] newColumnNames = {"weights", "_id", "name", "content", "time", "c_id", "ups", "downs", "submisson", "subreddit", "label"};
-            content = new Object[temprow][newColumnNames.length + 1];
+            String[] newColumnNames = {"weights", "_id", "name", "content", "time", "c_id", "scores", "isRoot", "submisson", "subreddit", 
+             "summision_title", "submission_text", "subreddit_name",    "label", "pos", "neg"};
+            content = new Object[temprow][newColumnNames.length ];
 
+            //System.out.println(newColumnNames.length);
             int currentCount = 0;
             for (Map.Entry<String, List<Integer>> entry : submissionMap.entrySet()) {
 
@@ -1064,13 +1066,25 @@ public class DocumentViewer extends JFrame {
                 for (int i = 0; i < docIdx.size(); i++) {
                     int tempDocIdx = sortedEntries.get(i).getKey();
 
-                    content[i + currentCount][0] = String.valueOf(weightDoc.get(tempDocIdx));
+//                    for (int j=0; j<tmpDocs.get(tempDocIdx + 1).length; j++)
+//                        System.out.print( tmpDocs.get(tempDocIdx + 1)[j] +  " ") ;
+//                    
+                    
+                    content[i + currentCount][0] = String.valueOf(weightDoc.get(tempDocIdx));;
+                    
+                    
                     //content[i+currentCount][0] = String.valueOf( sortedEntries.get(i).getValue());
-                    content[i + currentCount][11] = tmpDocs.get(tempDocIdx + 1)[36];
+                   
 
-                    for (int j = 0; j < (newColumnNames.length - 1); j++) {
+                    
+                    
+                    for (int j = 0; j < (newColumnNames.length - 4); j++) {
                         content[i + currentCount][j + 1] = tmpDocs.get(tempDocIdx + 1)[j + 1];//both files have headers
                     }
+                    
+                     content[i + currentCount][13] = tmpDocs.get(tempDocIdx + 1)[39];
+                    content[i + currentCount][14] = tmpDocs.get(tempDocIdx + 1)[40];
+                    content[i + currentCount][15] = tmpDocs.get(tempDocIdx + 1)[41];
 
                 }
 

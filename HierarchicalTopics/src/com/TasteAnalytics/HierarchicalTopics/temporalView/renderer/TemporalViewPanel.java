@@ -1242,7 +1242,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
                 for (int i = 1; i < 10; i++) {
                     nodetopics += showingNode.getNodeTopics()[i] + " ";
           }
-                        
+                    font = new Font("Arial", Font.ITALIC, 13);    
                    curg2d.drawString(nodetopics, 0, 80);
             }           
                         
