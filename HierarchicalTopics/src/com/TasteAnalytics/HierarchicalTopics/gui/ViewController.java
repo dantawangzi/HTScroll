@@ -36,6 +36,7 @@ import java.util.Stack;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame.customLabelTimecolumnKey;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
+import java.awt.Point;
 
 import prefuse.data.Edge;
 import prefuse.data.Graph;
@@ -241,12 +242,83 @@ public class ViewController {
     HashMap<TreeNode, List<TopicGraphViewFrame.labelText>> nodeKeywordHighlightMap = new HashMap<TreeNode, List<TopicGraphViewFrame.labelText>>();
 
     public void stateChangedSecond(TreeNode ct, int selectedTimeColumn, TemporalViewPanel ap, boolean isSingle) {
+        
+        
+        
+        if (ct != null && ct.getChildren().isEmpty())
+        {
+            TreeNode ttt = findMatchingNodeInTopicGraph(ct);
+            //ap.drawTopicWords(ttt);
+            ap.showingNode = ttt;
+        }
+        else
+        {
+            ap.showingNode = null;
+        }
+        
+        
+        
+        
+        
+        
+        
         currentNode = ct;
 
         List<List<int[]>> tYK = getTemporalFrame().getData().topicYearKwIdx;
         highlightedTextLabels = null;//.clear();
         //nodeKeywordHighlightMap = null;
         //nodeKeywordHighlightMap.clear();
+        
+        
+              //if (currentNode == null)          
+                //currentNode = ap.currentNode;
+        if (currentNode!=null)    
+        if (selectedTimeColumn != previousTimeColumn || (!lastNode.equals(currentNode))) {
+            TopicGraphViewFrame.customLabelTimecolumnKey key;
+            //if (currentNode == null)          
+                //currentNode = ap.currentNode;
+            
+            TreeNode ttt = findMatchingNodeInTopicGraph(currentNode);
+            //key = new customLabelTimecolumnKey( ttt, selectedTimeColumn);
+            
+            
+            key = new TopicGraphViewFrame.customLabelTimecolumnKey(currentNode.getValue(), String.valueOf(selectedTimeColumn));
+            
+            //System.out.println( ap.getLabelTimeMap().size());
+            
+           // System.out.println(key.toString());
+            
+            //System.out.println("you key? " + ap.getLabelTimeMap().containsKey(key));
+         
+            
+                       highlightedTextLabels = ap.getLabelTimeMap().get(key);
+            
+            if (highlightedTextLabels==null)
+            {
+                
+//                Iterator it = ap.getLabelTimeMap().keySet().iterator();
+//            while(it.hasNext())
+//            {
+//                TopicGraphViewFrame.customLabelTimecolumnKey k = (TopicGraphViewFrame.customLabelTimecolumnKey) it.next();
+//                System.out.println(k);
+//            }
+                System.out.println(key);
+                System.out.println("no wordle cloud map ");
+            }
+           else
+            {
+                Point tmp_p = new Point(ap.getWidth()/2, ap.getHeight()/2);
+                
+                ap.DrawWordleCloud(tmp_p/*ap.currentMouseLocation*/, highlightedTextLabels);
+            }
+        }
+
+        previousTimeColumn = selectedTimeColumn;
+        lastNode = currentNode;
+
+        // getTopicGraphViewPanel().updateLabelLocations();
+        
+        
         if (tYK.isEmpty()) {
             // System.out.println("current Node is null");
 
@@ -309,37 +381,8 @@ public class ViewController {
         //highlightedTextLabels = getTopicGraphViewPanel().getHighligtedLabels();
 
         //System.out.println(highlightedTextLabels.size());
-        if (selectedTimeColumn != previousTimeColumn || (!lastNode.equals(currentNode))) {
-            TopicGraphViewFrame.customLabelTimecolumnKey key;
-            if (currentNode == null)
-                currentNode = ap.currentNode;
-            
-            TreeNode ttt = findMatchingNodeInTopicGraph(currentNode);
-            //key = new customLabelTimecolumnKey( ttt, selectedTimeColumn);
-            
-            
-            key = new TopicGraphViewFrame.customLabelTimecolumnKey(currentNode.getValue(), selectedTimeColumn);
-            
-            //System.out.println( ap.getLabelTimeMap().size());
-            
-           // System.out.println(key.toString());
-            
-            //System.out.println("you key? " + ap.getLabelTimeMap().containsKey(key));
-            
-            highlightedTextLabels = ap.getLabelTimeMap().get(key);
-            
-            if (highlightedTextLabels==null)
-                System.out.println("no wordle cloud map ");
-           else
-            {
-                ap.DrawWordleCloud(ap.currentMouseLocation, highlightedTextLabels);
-            }
-        }
-
-        previousTimeColumn = selectedTimeColumn;
-        lastNode = currentNode;
-
-        // getTopicGraphViewPanel().updateLabelLocations();
+        
+  
     }
 
     List<TopicGraphViewFrame.labelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<TopicGraphViewFrame.labelText>> m) {

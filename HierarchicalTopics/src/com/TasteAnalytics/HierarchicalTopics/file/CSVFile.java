@@ -165,8 +165,8 @@ public class CSVFile extends SimpleParallelSpaceModel {
          
         
         allDocs = new ArrayList<String[]>();//for actual documents
-        com.TasteAnalytics.HierarchicalTopics.file.CSVReader csvReader = new com.TasteAnalytics.HierarchicalTopics.file.CSVReader(tmpURL);
-        // au.com.bytecode.opencsv.CSVReader csvReader = new au.com.bytecode.opencsv.CSVReader(new FileReader(tmpURL));
+         com.TasteAnalytics.HierarchicalTopics.file.CSVReader csvReader = new com.TasteAnalytics.HierarchicalTopics.file.CSVReader(tmpURL);
+        //au.com.bytecode.opencsv.CSVReader csvReader = new au.com.bytecode.opencsv.CSVReader(new FileReader(tmpURL));
         //if (readall)
         {
             allDocs = csvReader.readAll();//readAll();//first line is the header
@@ -202,6 +202,7 @@ public class CSVFile extends SimpleParallelSpaceModel {
 
         if (!readfromdb) {
             com.TasteAnalytics.HierarchicalTopics.file.CSVReader csvReader2 = new com.TasteAnalytics.HierarchicalTopics.file.CSVReader(weightFilePath);
+            //au.com.bytecode.opencsv.CSVReader csvReader2 = new au.com.bytecode.opencsv.CSVReader(new FileReader(weightFilePath));
             termWeights = csvReader2.readAll();
 
             System.out.println("finished reading topic-term-distributions");

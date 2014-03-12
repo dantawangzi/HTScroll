@@ -130,10 +130,7 @@ public class DocumentViewer extends JFrame {
         parentPanel = p;
         this.parent = p.parent;
 
-
         //BufferedImage image = ImageIO.read(new File(parent.csvfFolderPath + "Vastopolis_MapSmall.png"));
-
-
         selectedDocuments = new ArrayList<Integer>();
         selectedDocIDs = new HashMap<Integer, String>();
 
@@ -159,7 +156,6 @@ public class DocumentViewer extends JFrame {
 
             // Color for selecting a column would be close to white
         }
-
 
         if (p instanceof ZoomedTemporalViewPanel) {
             System.out.println("omng");
@@ -188,9 +184,6 @@ public class DocumentViewer extends JFrame {
         } else {
             this.updateDocViewContent(selectedDocuments, p.parent.host, p.parent.port, p.parent.database, p.parent.collection, p.parent.nameFields);
         }
-
-
-
 
 ////        geoHeatMapPanel.setLayout(null/*new CardLayout()*/);
 ////        geoHeatMapPanel.setPreferredSize(new Dimension(520, 264));
@@ -239,8 +232,6 @@ public class DocumentViewer extends JFrame {
 //
 //
 //        //parent.updateGeoView(curTreeNode.getColor(), selectedDocuments);
-
-
     }
 
     public DocumentViewer(final TemporalViewPanel p, TreeNode t, int timecolumn_id) throws IOException {
@@ -262,13 +253,11 @@ public class DocumentViewer extends JFrame {
 
         selectDocumentsToPresent((double) this.docSelectionThreshold.getValue() / 100.0f);
 
-
         Set<Integer> hs = new LinkedHashSet<Integer>();
         hs.addAll(selectedDocuments);
         // System.out.println("hs size " + hs.size());
         selectedDocuments.clear();
         selectedDocuments.addAll(hs);
-
 
     }
     float localMaxValue = -9;
@@ -286,9 +275,7 @@ public class DocumentViewer extends JFrame {
 
 //        int imgWidth = 520;
 //        int imgHeight = 264;
-
         //BufferedImage img = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
-
         List<Point2D> tempTwitterLocations = new ArrayList<Point2D>();
         for (int i = 0; i < selectedDocuments.size(); i++) {
             int index = selectedDocuments.get(i);
@@ -312,10 +299,6 @@ public class DocumentViewer extends JFrame {
 
 //           System.out.println("ty = " + ty + " tx = " + tx);
 //           System.out.println("y = " + y + " x = " + x);
-
-
-
-
             for (int ay = (int) (Math.ceil(y) - heatmapRadius); ay < Math.floor(y) + heatmapRadius; ay++) {
                 for (int ax = (int) (Math.ceil(x) - heatmapRadius); ax < Math.floor(x) + heatmapRadius; ax++) {
                     if (ay >= 0 && ay < imgHeight && ax >= 0 && ax < imgWidth) {
@@ -327,7 +310,6 @@ public class DocumentViewer extends JFrame {
                         double weight = calculate_gaussian_weight(x, y, ax, ay, 1.1);
 
                         int index = ay * imgWidth + ax;
-
 
                         LocalImageMap[index] += weight;
 //			count[index]++;
@@ -356,18 +338,12 @@ public class DocumentViewer extends JFrame {
 
         BufferedImage img = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
 
-
         WritableRaster raster = img.getRaster();
-
-
-
 
         for (int y = 0; y < imgHeight; y++) {
             for (int x = 0; x < imgWidth; x++) {
                 int index = y * imgWidth + x;
                 //System.out.println(map[index]);
-
-
 
                 if (LocalImageMap[index] != 0) {
 
@@ -379,7 +355,6 @@ public class DocumentViewer extends JFrame {
                     int r = 0, g = 0, b = 0;
                     int alpha = (int) LocalImageMap[index];
                     int tmp;
-
 
                     if (alpha <= 255 && alpha >= 235) {
                         tmp = 255 - alpha;
@@ -401,23 +376,15 @@ public class DocumentViewer extends JFrame {
                         b = 255;
                     }
 
-
                     //raster.setSample(x, y, 3, 0.5);
                     raster.setSample(x, y, 0, r);
                     raster.setSample(x, y, 1, g);
                     raster.setSample(x, y, 2, b);
 
-
                 }
-
-
 
             }
         }
-
-
-
-
 
         return img;
     }
@@ -428,7 +395,6 @@ public class DocumentViewer extends JFrame {
             return null;
         }
 
-
         float boundary_left = (float) parent.twitterPointMax.getY();   //93.62f;
         float boundary_right = (float) parent.twitterPointMin.getY(); //93.12f;
         float boundary_top = (float) parent.twitterPointMax.getX();//42.35f;
@@ -436,7 +402,6 @@ public class DocumentViewer extends JFrame {
 
 //        int imgWidth = 520;
 //        int imgHeight = 264;
-
         BufferedImage img = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
 
         List<Point2D> tempTwitterLocations = new ArrayList<Point2D>();
@@ -462,21 +427,13 @@ public class DocumentViewer extends JFrame {
 
 //           System.out.println("ty = " + ty + " tx = " + tx);
 //           System.out.println("y = " + y + " x = " + x);
-
-
-
-
-
             for (int ay = (int) (Math.ceil(y) - heatmapRadius); ay < Math.floor(y) + heatmapRadius; ay++) {
                 for (int ax = (int) (Math.ceil(x) - heatmapRadius); ax < Math.floor(x) + heatmapRadius; ax++) {
                     if (ay >= 0 && ay < imgHeight && ax >= 0 && ax < imgWidth) {
 
-
-
                         double weight = calculate_gaussian_weight(x, y, ax, ay, 1.1);
 
                         int index = ay * imgWidth + ax;
-
 
                         map[index] += weight;
 //			count[index]++;
@@ -491,20 +448,14 @@ public class DocumentViewer extends JFrame {
                 maxxx = map[i];
             }
 
-
-
         }
 
-
         System.out.println("local maxxx");
-
 
         for (int y = 0; y < imgHeight; y++) {
             for (int x = 0; x < imgWidth; x++) {
                 int index = y * imgWidth + x;
                 //System.out.println(map[index]);
-
-
 
                 if (map[index] != 0) {
 
@@ -516,7 +467,6 @@ public class DocumentViewer extends JFrame {
                     int r = 0, g = 0, b = 0;
                     int alpha = (int) map[index];
                     int tmp;
-
 
                     if (alpha <= 255 && alpha >= 235) {
                         tmp = 255 - alpha;
@@ -538,32 +488,23 @@ public class DocumentViewer extends JFrame {
                         b = 255;
                     }
 
-
                     //raster.setSample(x, y, 3, 0.5);
                     raster.setSample(x, y, 0, r);
                     raster.setSample(x, y, 1, g);
                     raster.setSample(x, y, 2, b);
-
-
-
-
 
 //                       raster.setSample(x, y, 0, 255*map[index]*40);
 //                        raster.setSample(x, y, 1, 0);
 //                        raster.setSample(x, y, 2, 0);
                 }
 
-
-
             }
         }
-
 
 //        
 //         raster.setSample(x, y, 0, 255);
 //                    raster.setSample(x, y, 1, 0);
 //                    raster.setSample(x, y, 2, 0);
-
         return img;
     }
 
@@ -613,18 +554,18 @@ public class DocumentViewer extends JFrame {
             for (int l = 0; l < curTreeNode.getTopicsContainedIdx().size(); l++) {
                 int topicIndex = curTreeNode.getTopicsContainedIdx().get(l);
                 for (Object r : (ArrayList) c.getTopicSlotDocs(
-                        parent.collection, topicIndex, selectedTimeColumn, threshold, parent.database, parent.table, parent.nameFields,parent.id_type)) {
+                        parent.collection, topicIndex, selectedTimeColumn, threshold, parent.database, parent.table, parent.nameFields, parent.id_type)) {
                    // System.out.println(r);
-               
+
                     selectedtweets.add((HashMap) r);
-                
+
                 //selectedDocuments.add(docIdx);
-                 //       selectedDocIDs.put(docIdx, docid);
-                     countTotalDoc++;
+                    //       selectedDocIDs.put(docIdx, docid);
+                    countTotalDoc++;
                 }
-               
+
             }
-        c.close();
+            c.close();
 
 //            for (int k = 0; k < parentPanel.getData().idxOfDocumentPerSlot.get(selectedTimeColumn).size(); k++) {
 //
@@ -652,8 +593,6 @@ public class DocumentViewer extends JFrame {
 //                    countTotalDoc++;
 //                }
 //            }
-
-
         } else {
             for (int k = 0; k < parentPanel.getData().idxOfDocumentPerSlot.get(selectedTimeColumn).size(); k++) {
 
@@ -670,8 +609,6 @@ public class DocumentViewer extends JFrame {
             }
         }
 
-
-
     }
 
     private void selectDocumentsToPresentZoomed(double threshold, HashMap<Integer, List<Integer>> documentInThisPanel) {
@@ -681,7 +618,6 @@ public class DocumentViewer extends JFrame {
         int docIdx = 0;
         //System.out.println("selectedTimeColumn " + selectedTimeColumn + " " + parentPanel.getData().idxOfDocumentPerSlot.get(selectedTimeColumn).size());
         int countTotalDoc = 0;
-
 
         for (int k = 0; k < documentInThisPanel.get(selectedTimeColumn).size(); k++) {
 
@@ -694,12 +630,6 @@ public class DocumentViewer extends JFrame {
                 countTotalDoc++;
             }
         }
-
-
-
-
-
-
 
     }
 
@@ -716,7 +646,6 @@ public class DocumentViewer extends JFrame {
         columnNames = p.parent.getInternalDocs().get(0);
         tmpDocs = p.parent.getInternalDocs();
         this.updateDocContent(tmp);
-
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -933,8 +862,6 @@ public class DocumentViewer extends JFrame {
                 }
             }
 
-
-
             if (!parent.b_readFromDB) {
                 this.updateDocViewContent(selectedDocuments);
             } else {
@@ -944,9 +871,6 @@ public class DocumentViewer extends JFrame {
                     Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
-
-
 
         }
 
@@ -986,26 +910,19 @@ public class DocumentViewer extends JFrame {
     private void JExportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JExportButtonActionPerformed
 
         //export csv files to folder:
-
-
         int temprow = selectedDocuments.size();
 
         List<String[]> content = new ArrayList<String[]>();
         for (int i = 0; i < temprow; i++) {
             String[] tmpdata = new String[columnNames.length];
 
-
             int tempDocIdx = selectedDocuments.get(i);
             for (int j = 0; j < columnNames.length; j++) {
                 tmpdata[j] = tmpDocs.get(tempDocIdx + 1)[j];
             }
 
-
             content.add(tmpdata);
         }
-
-
-
 
         au.com.bytecode.opencsv.CSVWriter csvW;
         try {
@@ -1017,18 +934,10 @@ public class DocumentViewer extends JFrame {
             JOptionPane.showMessageDialog(null, "Your document is here: " + parent.csvfFolderPath + "\\export.csv",
                     "Export Documents Successful!", JOptionPane.INFORMATION_MESSAGE);
 
-
-
         } catch (IOException ex) {
             System.out.println("Export unsuccessful, check please!");
             Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-
-
-
-
-
 
         // TODO add your handling code here:
     }//GEN-LAST:event_JExportButtonActionPerformed
@@ -1063,147 +972,126 @@ public class DocumentViewer extends JFrame {
     private DefaultTableModel model;
     private int[] paraSelectedRecords;
 
-    
-    static <K,V extends Comparable<? super V>> 
-            List<Entry<K, V>> entriesSortedByValues(Map<K,V> map) {
+    static <K, V extends Comparable<? super V>>
+            List<Entry<K, V>> entriesSortedByValues(Map<K, V> map) {
 
-    List<Entry<K,V>> sortedEntries = new ArrayList<Entry<K,V>>(map.entrySet());
+        List<Entry<K, V>> sortedEntries = new ArrayList<Entry<K, V>>(map.entrySet());
 
-    Collections.sort(sortedEntries, 
-            new Comparator<Entry<K,V>>() {
-                @Override
-                public int compare(Entry<K,V> e1, Entry<K,V> e2) {
-                    return e1.getValue().compareTo(e2.getValue());
+        Collections.sort(sortedEntries,
+                new Comparator<Entry<K, V>>() {
+                    @Override
+                    public int compare(Entry<K, V> e1, Entry<K, V> e2) {
+                        return e1.getValue().compareTo(e2.getValue());
+                    }
                 }
-            }
-    );
+        );
 
-    return sortedEntries;
-}
-            
-            
+        return sortedEntries;
+    }
+
     final void updateDocViewContent(List<Integer> selectedDocIndexes) {
 
         // from csvf all Docs with first line :.................
-       
-        
         int temprow = selectedDocIndexes.size();
-        Object[][] content = new Object[temprow][columnNames.length+1];
+        Object[][] content = new Object[temprow][columnNames.length + 1];
 
         this.setVisible(true);
-        
-     if (true)
-     { 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-         // for  all data sets  reddit only
-         final HashMap<String, Color> randomColor = new HashMap<String, Color>();
-         
-        HashMap<String, List<Integer>> submissionMap = new HashMap<String, List<Integer>>();
-        for (int i = 0; i < selectedDocIndexes.size(); i++) {
-             int tempDocIdx = selectedDocIndexes.get(i);  
-             String submission = tmpDocs.get(tempDocIdx + 1)[8];
-             
-             if (submissionMap.containsKey(submission))
-             {
-                List<Integer> tmpi = submissionMap.get(submission);
-                tmpi.add(tempDocIdx);
-                submissionMap.put(submission,tmpi);
-             }
-             else
-             {
-                 List<Integer> tmpi = new ArrayList<Integer>();
-                 tmpi.add(tempDocIdx);
-                 submissionMap.put(submission,tmpi);
-                 
-             }             
-        }
-        
-        
-        
-        String[] newColumnNames = {"weights", "_id" , "name", "content", "time", "c_id","ups","downs","submisson","subreddit", "label"};
-         content = new Object[temprow][newColumnNames.length+1];
 
-        int currentCount = 0;
-       for (Map.Entry<String, List<Integer>> entry : submissionMap.entrySet()) {
-           
-           
-           
-            Color c;
-            int r = (int) ((float)Math.random() * 255);
-            int g = (int) ((float)Math.random() * 255);
-            int b = (int) ((float)Math.random() * 255);
-            c = new Color(r,g,b);
-                              
-            
+        if (false) {
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // for  all data sets  reddit only
+            final HashMap<String, Color> randomColor = new HashMap<String, Color>();
+
+            HashMap<String, List<Integer>> submissionMap = new HashMap<String, List<Integer>>();
+            for (int i = 0; i < selectedDocIndexes.size(); i++) {
+                int tempDocIdx = selectedDocIndexes.get(i);
+                String submission = tmpDocs.get(tempDocIdx + 1)[8];
+
+                if (submissionMap.containsKey(submission)) {
+                    List<Integer> tmpi = submissionMap.get(submission);
+                    tmpi.add(tempDocIdx);
+                    submissionMap.put(submission, tmpi);
+                } else {
+                    List<Integer> tmpi = new ArrayList<Integer>();
+                    tmpi.add(tempDocIdx);
+                    submissionMap.put(submission, tmpi);
+
+                }
+            }
+
+            String[] newColumnNames = {"weights", "_id", "name", "content", "time", "c_id", "ups", "downs", "submisson", "subreddit", "label"};
+            content = new Object[temprow][newColumnNames.length + 1];
+
+            int currentCount = 0;
+            for (Map.Entry<String, List<Integer>> entry : submissionMap.entrySet()) {
+
+                Color c;
+                int r = (int) ((float) Math.random() * 255);
+                int g = (int) ((float) Math.random() * 255);
+                int b = (int) ((float) Math.random() * 255);
+                c = new Color(r, g, b);
+
                 String key = entry.getKey();
                 List<Integer> docIdx = entry.getValue();
-             
+
                 randomColor.put(key, c);
-                
-                   HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
-                   HashMap<Integer, Long> timeDoc = new HashMap<Integer, Long>();
-                   
-                     for (int i = 0; i < docIdx.size(); i++) {
-               
-                  int tempDocIdx = docIdx.get(i);  
 
-                 timeDoc.put(tempDocIdx,parentPanel.getData().getTime().get(tempDocIdx));
-            }
-                   
-                   
-                 for (int i = 0; i < docIdx.size(); i++) {
+                HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
+                HashMap<Integer, Long> timeDoc = new HashMap<Integer, Long>();
 
-                  float weight = 0.0f;
-                  int tempDocIdx = docIdx.get(i);  
-                  for (int l = 0; l < curTreeNode.getTopicsContainedIdx().size(); l++) {
+                for (int i = 0; i < docIdx.size(); i++) {
 
-                       int topicIndex = curTreeNode.getTopicsContainedIdx().get(l);
-                       weight += parentPanel.getData().values_Norm.get(tempDocIdx)[topicIndex];                                        
+                    int tempDocIdx = docIdx.get(i);
+
+                    timeDoc.put(tempDocIdx, parentPanel.getData().getTime().get(tempDocIdx));
+                }
+
+                for (int i = 0; i < docIdx.size(); i++) {
+
+                    float weight = 0.0f;
+                    int tempDocIdx = docIdx.get(i);
+                    for (int l = 0; l < curTreeNode.getTopicsContainedIdx().size(); l++) {
+
+                        int topicIndex = curTreeNode.getTopicsContainedIdx().get(l);
+                        weight += parentPanel.getData().values_Norm.get(tempDocIdx)[topicIndex];
                     }
 
-                 weightDoc.put(tempDocIdx,weight);
-            }
+                    weightDoc.put(tempDocIdx, weight);
+                }
 
-             List<Entry<Integer, Long>> sortedEntries =  entriesSortedByValues(timeDoc);
-                
-           
+                List<Entry<Integer, Long>> sortedEntries = entriesSortedByValues(timeDoc);
+
                 for (int i = 0; i < docIdx.size(); i++) {
-                     int tempDocIdx =  sortedEntries.get(i).getKey();
+                    int tempDocIdx = sortedEntries.get(i).getKey();
 
-                     content[i+currentCount][0] = String.valueOf(weightDoc.get(tempDocIdx));
-                     //content[i+currentCount][0] = String.valueOf( sortedEntries.get(i).getValue());
-                      content[i+currentCount][11] = tmpDocs.get(tempDocIdx + 1)[36];
-                     
-                     for (int j=0; j<(newColumnNames.length-1); j++)
-                     {
-                         content[i+currentCount][j+1] = tmpDocs.get(tempDocIdx + 1)[j+1];//both files have headers
-                     }
+                    content[i + currentCount][0] = String.valueOf(weightDoc.get(tempDocIdx));
+                    //content[i+currentCount][0] = String.valueOf( sortedEntries.get(i).getValue());
+                    content[i + currentCount][11] = tmpDocs.get(tempDocIdx + 1)[36];
 
-                 }
-            
-            currentCount+= docIdx.size();
-            
-           
-        }
-        
-        
+                    for (int j = 0; j < (newColumnNames.length - 1); j++) {
+                        content[i + currentCount][j + 1] = tmpDocs.get(tempDocIdx + 1)[j + 1];//both files have headers
+                    }
 
-        newColumnNames[0] = "weights";
+                }
 
-        
-        if (dt == null) {
-            model = new DefaultTableModel(content, newColumnNames);
-            dt = new DataTable(content, newColumnNames);
-            jTable1.setModel(model);
-            listener = new SelectionListener(jTable1);
-            jTable1.getSelectionModel().addListSelectionListener(listener);
-          
-           
+                currentCount += docIdx.size();
+
+            }
+//        System.out.println(tmpDocs.size());
+//         System.out.println(parentPanel.getData().values_Norm.size());
+
+            newColumnNames[0] = "weights";
+
+            if (dt == null) {
+                model = new DefaultTableModel(content, newColumnNames);
+                dt = new DataTable(content, newColumnNames);
+                jTable1.setModel(model);
+                listener = new SelectionListener(jTable1);
+                jTable1.getSelectionModel().addListSelectionListener(listener);
+
 //          final Stack lColor = new Stack();
 //          lColor.push(Color.white);
 //          lColor.push(Color.lightGray);
-          
-          
 //           jTable1.setDefaultRenderer(Object.class, new DefaultTableCellRenderer()
 //            {
 //                
@@ -1259,99 +1147,82 @@ public class DocumentViewer extends JFrame {
 //                }
 //            });
 //            
-            
+            } else {
+                dt.setEntireTable(content);
+                model.setDataVector(content, newColumnNames);
+                TableModelEvent event = new TableModelEvent(model);
+                model.fireTableChanged(event);
+            }
+
         } else {
-            dt.setEntireTable(content);
-            model.setDataVector(content, newColumnNames);
-            TableModelEvent event = new TableModelEvent(model);
-            model.fireTableChanged(event);
-        }
-        
-        
-        
-        
-     }
-      else
-     {
-        
-        
-        
+
         // for  all data sets
-  ////////////////////// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-          HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
-          for (int i = 0; i < selectedDocIndexes.size(); i++) {
-       
-              float weight = 0.0f;
-              int tempDocIdx = selectedDocIndexes.get(i);  
-              for (int l = 0; l < curTreeNode.getTopicsContainedIdx().size(); l++) {
-                                     
-                   int topicIndex = curTreeNode.getTopicsContainedIdx().get(l);
-                   weight += parentPanel.getData().values_Norm.get(tempDocIdx)[topicIndex];                                        
+            ////////////////////// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
+            for (int i = 0; i < selectedDocIndexes.size(); i++) {
+
+                float weight = 0.0f;
+                int tempDocIdx = selectedDocIndexes.get(i);
+                for (int l = 0; l < curTreeNode.getTopicsContainedIdx().size(); l++) {
+
+                    int topicIndex = curTreeNode.getTopicsContainedIdx().get(l);
+                    weight += parentPanel.getData().values_Norm.get(tempDocIdx)[topicIndex];
                 }
-        
-             weightDoc.put(tempDocIdx,weight);
-        }
-               
-         List<Entry<Integer,Float>> sortedEntries =  entriesSortedByValues(weightDoc);
-                
-           
-       for (int i = 0; i < selectedDocIndexes.size(); i++) {
-            int tempDocIdx =  sortedEntries.get(i).getKey();
-            
-            content[i][0] = String.valueOf( sortedEntries.get(i).getValue());
-            for (int j=0; j<tmpDocs.get(tempDocIdx + 1).length; j++)
-            {
-                content[i][j+1] = tmpDocs.get(tempDocIdx + 1)[j];//both files have headers
-            }
-            
-        }
-        
-       
-       
-        
-        
-        String[] newColumnNames = new String[columnNames.length+1];
-        newColumnNames[0] = "weights";
-        for (int i=1;i<newColumnNames.length;i++)
-            newColumnNames[i] = columnNames[i-1];
-        
-        if (dt == null) {
-            model = new DefaultTableModel(content, newColumnNames);
-            dt = new DataTable(content, newColumnNames);
-            jTable1.setModel(model);
-            listener = new SelectionListener(jTable1);
-            jTable1.getSelectionModel().addListSelectionListener(listener);
-        } else {
-            dt.setEntireTable(content);
-            model.setDataVector(content, newColumnNames);
-            TableModelEvent event = new TableModelEvent(model);
-            model.fireTableChanged(event);
-        }
 
-
-        int countRT = 0;
-        for (int i = 0; i < content.length; i++) {
-            String contentString = (String) content[i][parentPanel.parent.getContentIdx()+1];
-            System.out.println(contentString.length());
-            if (contentString.contains("RT ") || contentString.contains("rt ")) {
-                countRT++;
-                // System.out.println(contentString);
+                weightDoc.put(tempDocIdx, weight);
             }
 
-        }
+            List<Entry<Integer, Float>> sortedEntries = entriesSortedByValues(weightDoc);
 
-        float ratio = (float) countRT / selectedDocIndexes.size();
+            for (int i = 0; i < selectedDocIndexes.size(); i++) {
+                int tempDocIdx = sortedEntries.get(i).getKey();
 
+                content[i][0] = String.valueOf(sortedEntries.get(i).getValue());
+                for (int j = 0; j < tmpDocs.get(tempDocIdx + 1).length; j++) {
+                    content[i][j + 1] = tmpDocs.get(tempDocIdx + 1)[j];//both files have headers
+                }
 
-        RTRatio.setText(countRT + " in " + selectedDocIndexes.size() + " documents contain RT, ratio: " + Float.toString(ratio));
+            }
+
+            String[] newColumnNames = new String[columnNames.length + 1];
+            newColumnNames[0] = "weights";
+            for (int i = 1; i < newColumnNames.length; i++) {
+                newColumnNames[i] = columnNames[i - 1];
+            }
+
+            if (dt == null) {
+                model = new DefaultTableModel(content, newColumnNames);
+                dt = new DataTable(content, newColumnNames);
+                jTable1.setModel(model);
+                listener = new SelectionListener(jTable1);
+                jTable1.getSelectionModel().addListSelectionListener(listener);
+            } else {
+                dt.setEntireTable(content);
+                model.setDataVector(content, newColumnNames);
+                TableModelEvent event = new TableModelEvent(model);
+                model.fireTableChanged(event);
+            }
+
+            int countRT = 0;
+            for (int i = 0; i < content.length; i++) {
+                String contentString = (String) content[i][parentPanel.parent.getContentIdx() + 1];
+                System.out.println(contentString.length());
+                if (contentString.contains("RT ") || contentString.contains("rt ")) {
+                    countRT++;
+                    // System.out.println(contentString);
+                }
+
+            }
+
+            float ratio = (float) countRT / selectedDocIndexes.size();
+
+            RTRatio.setText(countRT + " in " + selectedDocIndexes.size() + " documents contain RT, ratio: " + Float.toString(ratio));
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-     }
+        }
     }
 
     final void updateDocViewContent(List<Integer> selectedDocIndexes, String DBURL, int DBPORT, String DBName, String collectionName, String[] fields) throws UnknownHostException {
-
 
         int temprow = selectedDocIndexes.size();
 
@@ -1359,107 +1230,80 @@ public class DocumentViewer extends JFrame {
         int contentIdx = -1;
         Object[][] content;
         String[] columnFields;
-        
-        if (parent.nameFields == null)
-        {
+
+        if (parent.nameFields == null) {
             int keysize = selectedtweets.get(0).keySet().size();
-             int size = selectedtweets.size();
+            int size = selectedtweets.size();
             content = new Object[size][keysize];
 
             columnFields = new String[keysize];;
-                       
-            
+
             int currentIdx = 0;
             //List<String> currentfields = new ArrayList<String>();
-            
-            for (Object entry : selectedtweets.get(0).entrySet())
-            {
-                Map.Entry<Object,Object> entrykey = (Map.Entry<Object,Object>)entry;
+
+            for (Object entry : selectedtweets.get(0).entrySet()) {
+                Map.Entry<Object, Object> entrykey = (Map.Entry<Object, Object>) entry;
                 String key = String.valueOf(entrykey.getKey());
-               //currentfields.add(key);
-                 columnFields[currentIdx] = key;
-                  if (parent.text_id.equals(key))
-                        contentIdx = currentIdx;
-                    currentIdx++;
-                    
+                //currentfields.add(key);
+                columnFields[currentIdx] = key;
+                if (parent.text_id.equals(key)) {
+                    contentIdx = currentIdx;
+                }
+                currentIdx++;
+
             }
-            
-            
-            
-             for (int i=0; i<selectedtweets.size(); i++)
-            {
-                 String[] tmp = new String[columnFields.length];
-               for (int j=0; j<columnFields.length; j++)
-               {
-                   
-                  
-                   tmp[j] = String.valueOf(selectedtweets.get(i).get(columnFields[j]));
-                   
-                 
-                   
-                   
-               }
-                
+
+            for (int i = 0; i < selectedtweets.size(); i++) {
+                String[] tmp = new String[columnFields.length];
+                for (int j = 0; j < columnFields.length; j++) {
+
+                    tmp[j] = String.valueOf(selectedtweets.get(i).get(columnFields[j]));
+
+                }
+
                 content[i] = tmp;
-               
+
             }
-            
-            
-            
-        }
-        else
-        {
-            
-            String[] newNameFields = new String[parent.nameFields.length+1];
-            
-            
-            for (int i=0; i<parent.nameFields.length; i++)
-                newNameFields[i+1] = parent.nameFields[i];
-            
+
+        } else {
+
+            String[] newNameFields = new String[parent.nameFields.length + 1];
+
+            for (int i = 0; i < parent.nameFields.length; i++) {
+                newNameFields[i + 1] = parent.nameFields[i];
+            }
+
             newNameFields[0] = "thresh";
-            
-            int keysize = newNameFields.length ;
-            
-            
+
+            int keysize = newNameFields.length;
+
             int size = selectedtweets.size();
-              content = new Object[size][keysize];
+            content = new Object[size][keysize];
 
             columnFields = new String[keysize];;
 
-
-            
             //contentIdx = 2;
-            for (int i=0; i<keysize; i++)
-            {
+            for (int i = 0; i < keysize; i++) {
                 columnFields[i] = newNameFields[i];
-                if (parent.text_id.equals(newNameFields[i]))
-                                    contentIdx = i;
+                if (parent.text_id.equals(newNameFields[i])) {
+                    contentIdx = i;
+                }
             }
 
-            for (int j=0; j<size; j++)
-            {
+            for (int j = 0; j < size; j++) {
 
+                String[] s = new String[keysize];
 
-                    String[] s = new String[keysize];
+                for (int i = 0; i < newNameFields.length; i++) {
+                    s[i] = String.valueOf(selectedtweets.get(j).get(newNameFields[i]));
 
-                     for (int i=0; i<newNameFields.length; i++)
-                     {
-                       s[i] =  String.valueOf ( selectedtweets.get(j).get(newNameFields[i]));
+                }
 
-                     }
+                content[j] = s;
 
-
-                    content[j] = s;
-              
             }
-       
+
         }
-
-
-
-        
-        
-        
 
         if (dt == null) {
             model = new DefaultTableModel(content, columnFields);
@@ -1474,30 +1318,24 @@ public class DocumentViewer extends JFrame {
             model.fireTableChanged(event);
         }
 
-
         int countRT = 0;
-        if (parent.b_readFromDB)
-        {
+        if (parent.b_readFromDB) {
             for (int i = 0; i < content.length; i++) {
-            String contentString = (String) content[i][contentIdx];
-            //System.out.println(contentString.length());
-            if (contentString.contains("RT ") || contentString.contains("rt ")) {
-                countRT++;
-                // System.out.println(contentString);
+                String contentString = (String) content[i][contentIdx];
+                //System.out.println(contentString.length());
+                if (contentString.contains("RT ") || contentString.contains("rt ")) {
+                    countRT++;
+                    // System.out.println(contentString);
+                }
+
             }
 
-        }
-            
-        }
-        else
-        {
-        
+        } else {
+
             for (int i = 0; i < content.length; i++) {
                 String contentString = (String) content[i][parentPanel.parent.getContentIdx()];
-                
+
                // System.out.println(contentString.length());
-                
-                
                 if (contentString.contains("RT ") || contentString.contains("rt ")) {
                     countRT++;
                     // System.out.println(contentString);
@@ -1506,27 +1344,20 @@ public class DocumentViewer extends JFrame {
             }
         }
 
-        
-
-        if (parent.b_readFromDB)
-        {
-            float ratio = (float) countRT/(selectedtweets.size());
+        if (parent.b_readFromDB) {
+            float ratio = (float) countRT / (selectedtweets.size());
             RTRatio.setText(countRT + " in " + selectedtweets.size() + " documents contain RT, ratio: " + Float.toString(ratio));
-        }
-        else
-        {
-            float ratio =  ((float) countRT / selectedDocIndexes.size());
+        } else {
+            float ratio = ((float) countRT / selectedDocIndexes.size());
             RTRatio.setText(countRT + " in " + selectedDocIndexes.size() + " documents contain RT, ratio: " + Float.toString(ratio));
         }
-        
-        this.setVisible(true);
 
+        this.setVisible(true);
 
     }
 
     @Deprecated
     final void updateDocContent(int[] selectedRecords) {
-
 
         Map<Integer, Integer> parIdx2docIdx = parent.getParIdx2docIdx();
         //int numRec = Integer.parseInt(selectedRecords);
@@ -1543,9 +1374,7 @@ public class DocumentViewer extends JFrame {
                 System.out.println("selected-par" + paraSelectedRecords[i] + "docID" + parIdx2docIdx.get(selectedRecords[i]));
             }
 
-
         }
-
 
         Object[][] content = new Object[temprow][columnNames.length];
         this.setVisible(true);
@@ -1639,7 +1468,6 @@ public class DocumentViewer extends JFrame {
 //                searchResults.put(i, matchCount);
 //            }
 //        }
-
         if (searchResults.size() > 0) {
             searched = new ArrayList<Integer>();
             for (int key : searchResults.keySet()) {
@@ -1679,8 +1507,6 @@ public class DocumentViewer extends JFrame {
             TableModelEvent event = new TableModelEvent(model);
             model.fireTableChanged(event);
         }
-
-
 
     }
 

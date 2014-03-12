@@ -1185,9 +1185,11 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //         curg2d.setColor(Color.red);
 //        for (int i=0; i<testEventPoints.size(); i++)        
 //            curg2d.fillRect((int)testEventPoints.get(i).getX(), (int)testEventPoints.get(i).getY(), 5, 5);
-//        
-//        
+
+
 //        curg2d.setColor(Color.BLACK);
+
+        
         if (!testEventPoints.isEmpty() && bShowEvents) {
 
             curg2d.setStroke(new BasicStroke(2));
@@ -1231,6 +1233,19 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             curg2d.setFont(font);
             
             curg2d.drawString(currentTopics, 0, 50);
+            
+            if (showingNode!=null)
+            {
+                   String nodetopics = "";    
+          
+ 
+                for (int i = 1; i < 10; i++) {
+                    nodetopics += showingNode.getNodeTopics()[i] + " ";
+          }
+                        
+                   curg2d.drawString(nodetopics, 0, 80);
+            }           
+                        
             // System.out.println(drawPanelLabelId + "label id");
         }
         curg2d.drawLine(0, 0, (int) width, 0);
@@ -1711,18 +1726,23 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
             }
 
-            if (currentNode.getNodeTopics() != null) {
-                for (int i = 0; i < currentNode.getNodeTopics().length; i++) {
-                    if (currentNode.getValue().contains("Leaf")) {
-                        Font font = new Font("Arial", Font.PLAIN, 25);
-                        g2d.setFont(font);
-                        g2d.setColor(currentNode.getColor());
-                        g2d.drawString(currentNode.toString(), 10, 40);
-
-                    }
-
-                }
-            }
+            
+            
+            //draw topic number
+//            if (currentNode.getNodeTopics() != null) {
+//                for (int i = 0; i < currentNode.getNodeTopics().length; i++) {
+//                    if (currentNode.getValue().contains("Leaf")) {
+//                        Font font = new Font("Arial", Font.PLAIN, 25);
+//                        g2d.setFont(font);
+//                        g2d.setColor(currentNode.getColor());
+//                      g2d.drawString(currentNode.toString(), 10, 40);
+//
+//                    }
+//                                        
+//                }
+//            }
+            
+            
 
 //            
 //            for (int j=0; j<hierarchicalstreams.size(); j++) {
@@ -1803,6 +1823,24 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         }
     }
 
+    
+    public TreeNode showingNode = null;
+    
+    public void drawTopicWords(TreeNode n)
+    {
+         // System.out.print("here" + n.getNodeTopics());
+//        bi = (BufferedImage) createImage(width, height);
+//            curg2d = bi.createGraphics();
+   
+
+                   
+        
+ 
+        
+        
+    }
+    
+    
     private void assignAreaColors() {
         colors = new Color[getCategoryAreas().size()];
         for (int i = 0; i < getCategoryAreas().size(); i++) {
@@ -2337,9 +2375,10 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     public void buildLabelTimeMap() {
 
         if (this.getData().topicYearKwIdx != null) {
-            
+            System.out.println(this.currentNode.getValue());
             labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), this.getData().topicYearKwIdx);
-        }
+            
+                    }
         else
             System.out.println("topicYearKwIdx is null, no labels built..");
 
@@ -2401,8 +2440,8 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
         Rectangle2D bounds = findBoundary(list);
 
-        System.out.println(this.getBounds());
-        System.out.println(bounds);
+       // System.out.println(this.getBounds());
+       // System.out.println(bounds);
 
         for (LabelWordleLite word : list) {
 

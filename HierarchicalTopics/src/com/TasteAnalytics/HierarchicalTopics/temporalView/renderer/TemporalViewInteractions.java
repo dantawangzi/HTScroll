@@ -989,6 +989,8 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                     }
                 }
 
+                
+                
                 attachedPanel.setTimeColumnStream(-99);
                 attachedPanel.setNeedDoLayout(false);
                 attachedPanel.repaintView();

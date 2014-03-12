@@ -570,7 +570,7 @@ public class CategoryBarElement {
             //topicYearKwIdax load
             String filepathtyki = csvPath + "topicYearKwIdx.txt";
             File f1 = new File(filepathtyki);
-            if (f1.exists()) {
+            if (false/*f1.exists()*/) {
                 topicYearKwIdx = new ArrayList<List<int[]>>();
 
                 System.out.println("cache files exist, Loading topicYearKwIdx.txt... ");
@@ -633,9 +633,7 @@ public class CategoryBarElement {
 
                                     for (int n = 0; n < _numOfTemporalBins; n++) {
                                         tmpWeightSum += topicTFs.get(i).get(k)[n];
-
                                     }
-
 
                                     for (int m = 0; m < numberOfTopics; m++) {
                                         if (termWeightF.get(m)[tmpCol]!=0)
@@ -644,7 +642,7 @@ public class CategoryBarElement {
 
                                     tmpWeightProduct = (float) Math.pow(tmpWeightProduct, 1 / numberOfTopics);
                                     tmpWeightProduct = (float) (tmpWeight * Math.log(tmpWeight / tmpWeightProduct));
-                                    tmpAllKeywords[k] = (float) ((0.5 * topicTFs.get(i).get(k)[y] / tmpWeightSum) + 0.5 * tmpWeightProduct);
+                                    tmpAllKeywords[k] = (float) ((0.7 * topicTFs.get(i).get(k)[y] / tmpWeightSum) + 0.3 * tmpWeightProduct);
                       
                                     tmpWeightSum = 0;
                                     tmpWeightProduct = 1;

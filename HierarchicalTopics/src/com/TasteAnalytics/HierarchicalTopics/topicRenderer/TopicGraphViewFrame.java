@@ -157,9 +157,9 @@ public class TopicGraphViewFrame extends JFrame {
     public static class customLabelTimecolumnKey {
 
         String field1;
-        Integer field2;
+        String field2;
 
-        public customLabelTimecolumnKey(String t, int i) {
+        public customLabelTimecolumnKey(String t, String i) {
             field1 = t;
             field2 = i;
 
@@ -172,22 +172,22 @@ public class TopicGraphViewFrame extends JFrame {
             }
 
             customLabelTimecolumnKey other = (customLabelTimecolumnKey) o;
-            return field1.equals(other.field1) && other.field2 == field2;
+            return field1.equals(other.field1) && (other.field2 == null ? field2 == null : other.field2.equals(field2));
         }
 
         @Override
         public int hashCode() {
             int hash = 7;
             hash = 47 * hash + (this.field1 != null ? this.field1.hashCode() : 0);
-            hash = 47 * hash + this.field2;
+            hash = 47 * hash + (this.field2 != null ? this.field2.hashCode() : 0);
             return hash;
         }
 
         @Override
         public String toString() {
 
-            String k = field2.toString();//Integer.parseInt(field2);
-            return field1 + " " + k;
+            //String k = .toString();//Integer.parseInt(field2);
+            return field1 + " " + field2;
         }
 
     }
@@ -663,7 +663,7 @@ public class TopicGraphViewFrame extends JFrame {
 
         myTree.get(0).calculateNodeSize();
 
-        myTree.get(0).calculateNodeString();
+        //myTree.get(0).calculateNodeString();
 
         NodeStringProcessing();
 
@@ -3049,11 +3049,11 @@ public class TopicGraphViewFrame extends JFrame {
 //        System.out.println(tYK.get(0).size());
 //        System.out.println(tYK.get(0).get(0).length);
         TreeNode tk = cNode;
-        System.out.println(tk.getValue());
+        System.out.println(tk.getValue() + "is building" + tk.getChildren().size() + " children");
 
         for (int i = 0; i < numberofyears; i++) {
 
-            customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk.getValue(), i);
+            customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk.getValue(), String.valueOf(i));
 
             List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
             // System.out.println(tmpLabels.size());
@@ -3062,17 +3062,19 @@ public class TopicGraphViewFrame extends JFrame {
 
         }
 
+         if (!tk.getChildren().isEmpty())
         for (int i = 0; i < numberofyears; i++) {
 
-            if (tk.getChildren().isEmpty()) {
-                //System.out.println("single leaf" + i);
-                customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk.getValue(), i);
-
-                List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
-
-                hmp.put(key, tmpLabels);
-
-            } else {
+//            if (tk.getChildren().isEmpty()) {
+//                //System.out.println("single leaf" + i);
+//                customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk.getValue(), i);
+//
+//                List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
+//
+//                hmp.put(key, tmpLabels);
+//
+//            } else 
+            {
 //                List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
 //                    // System.out.println("single node" + i);
 //                     
@@ -3096,7 +3098,7 @@ public class TopicGraphViewFrame extends JFrame {
                     List<labelText> tmpLabels = retriveLabelsOfNode(t1, i, tYK);
                     //System.out.println("single node" + tmpLabels.size());
 
-                    customLabelTimecolumnKey key = new customLabelTimecolumnKey(t1.getValue(), i);
+                    customLabelTimecolumnKey key = new customLabelTimecolumnKey(t1.getValue(), String.valueOf(i));
                     hmp.put(key, tmpLabels);
 
                 }

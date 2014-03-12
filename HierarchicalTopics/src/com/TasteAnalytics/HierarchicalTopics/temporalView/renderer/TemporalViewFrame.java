@@ -450,7 +450,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
                     layoutPanelMap.get(1).add(temporalPanelMap.get(1).get(i));
 
                 }
-                System.out.println("widthHere" + widthHere);
+               // System.out.println("widthHere" + widthHere);
                 
                    numOfdummies = 3 - temporalPanelMap.get(1).size();
                     for (int j = 0; j < numOfdummies; j++) {
@@ -686,23 +686,23 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
         updateAllPanels();
                 
-        for (Integer i : temporalPanelMap.keySet())
-        {
-            
-            System.out.println( i + " " + temporalPanelMap.get(i).size() );
-            if (i>=2)
-            {
-                for (int j=0; j<temporalPanelMap.get(i).size();j++)
-                System.out.println(temporalPanelMap.get(i).get(j).getMyPanelHeight());
-                
-     
-            }
-        }
-          
-        
-        for (Integer i : lastColumnDummyNum.values())
-             System.out.println(" " +  i);
-        
+//        for (Integer i : temporalPanelMap.keySet())
+//        {
+//            
+//            //System.out.println( i + " " + temporalPanelMap.get(i).size() );
+//            if (i>=2)
+//            {
+//                for (int j=0; j<temporalPanelMap.get(i).size();j++)
+//                //System.out.println(temporalPanelMap.get(i).get(j).getMyPanelHeight());
+//                
+//     
+//            }
+//        }
+//          
+//        
+//        for (Integer i : lastColumnDummyNum.values())
+//             System.out.println(" " +  i);
+//        
 
         repaint();
         this.getRootPane().revalidate();
@@ -1093,7 +1093,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         BuildUnNormNodeValue(data, myTree.get(0));
 
         myTree.get(0).calculateNodeContainedIdx();
-
+       //  myTree.get(0).calculateNodeString();
         System.out.println("building trees and values in temporal frame finished...");
         setNodeColor();
         getMainPanel().setData(data);
@@ -1145,6 +1145,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         BuildUnNormNodeValue(data, myTree.get(0));
 
         myTree.get(0).calculateNodeContainedIdx();
+       //  myTree.get(0).calculateNodeString();
 
         System.out.println("building trees and values in temporal frame finished...");
         setNodeColor();
@@ -1189,6 +1190,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         BuildNodeValue(data, myTree.get(0));
         BuildUnNormNodeValue(data, myTree.get(0));
         myTree.get(0).calculateNodeContainedIdx();
+        // myTree.get(0).calculateNodeString();
 
         getMainPanel().currentNode = myTree.get(0);
         getMainPanel().setTree(myTree);
