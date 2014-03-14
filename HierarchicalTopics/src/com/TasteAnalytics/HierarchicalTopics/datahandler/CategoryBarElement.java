@@ -64,10 +64,10 @@ public class CategoryBarElement {
 
     public CategoryBarElement(List<String[]> internalRecord, List<Long> years,
             List<String[]> allDocs, List<String[]> termWeights, List<float[]> termWeights_norm, Map<String, Integer> termIndex, List<String[]> allTopics, String csvPath,
-            int contentIdx, DateFormat format, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub) throws IOException {
+            int contentIdx, DateFormat format, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub,List<HashMap<String, Integer>> content) throws IOException {
         try {
             initiateComponents(internalRecord, years, allDocs, termWeights, termWeights_norm, termIndex, allTopics, csvPath, contentIdx,
-                    format, incrementalDays, b_readall, b_recalculate, NumOfTemporalBinsSub);
+                    format, incrementalDays, b_readall, b_recalculate, NumOfTemporalBinsSub,content);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CategoryBarElement.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -175,12 +175,12 @@ public class CategoryBarElement {
     Long maxT = Long.MIN_VALUE;
     Long minT = Long.MAX_VALUE;
 
-    double topicWeightThreshold = 0.1;
+    double topicWeightThreshold = 0.25;
     
     
     private void initiateComponents(List<String[]> internalRecord, List<Long> years,
             List<String[]> allDocs, List<String[]> termWeights, List<float[]> termWeights_norm, Map<String, Integer> termIndex,
-            List<String[]> allTopics, String csvPath, int contentIdx, DateFormat format, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub) throws FileNotFoundException, IOException {
+            List<String[]> allTopics, String csvPath, int contentIdx, DateFormat format, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub,List<HashMap<String, Integer>> content) throws FileNotFoundException, IOException {
 
         _numOfTemporalBinsSub = NumOfTemporalBinsSub;
         List<Float> sumOfDocuments = new ArrayList<Float>();
@@ -450,7 +450,7 @@ public class CategoryBarElement {
 
                         curKeyword = allTopics.get(i + 1)[t + 2].trim();
 
-                        curKeyword = curKeyword.replaceAll("_", " ");
+                        //curKeyword = curKeyword.replaceAll("_", " ");
                         numOccur = new int[_numOfTemporalBins];
                         for (int y = 0; y < _numOfTemporalBins; y++) {
                             int count = 0;
@@ -459,8 +459,23 @@ public class CategoryBarElement {
                                 tmpid = idxOfDocumentPerSlot.get(y).get(l);
                                 if (contentIdx != -1) {
                                     
-                                    if (values_Norm.get(tmpid)[i] > topicWeightThreshold)
-                                        count += countMatches(allDocs.get(tmpid + 1)[contentIdx].toLowerCase(), curKeyword);
+//                                    if (values_Norm.get(tmpid)[i] > topicWeightThreshold)
+//                                        count += countMatches(allDocs.get(tmpid + 1)[contentIdx].toLowerCase(), curKeyword);
+                                    // for bi gram
+                                     if (values_Norm.get(tmpid)[i] > topicWeightThreshold)
+                                     {
+                                         
+                                         if (content.get(tmpid).containsKey(curKeyword))
+                                         {
+                                             
+                                             count += content.get(tmpid).get(curKeyword);
+                                         
+                                         }
+                                         //count += countMatches(allDocs.get(tmpid + 1)[contentIdx].toLowerCase(), curKeyword);
+                                     }
+                                    
+                                    
+                                    
                                 }
                             }
                             numOccur[y] = count;
@@ -532,7 +547,7 @@ public class CategoryBarElement {
                     }
                     out.close();
 
-                    System.out.println("output  topicTFs.txt");
+                    System.out.println("output  c.txt");
                     out = new PrintWriter(csvPath + "topicTFs.txt");
                     for (int k = 0; k < topicTFs.size(); k++) {
                         for (int j = 0; j < topicTFs.get(k).size(); j++) {
@@ -628,24 +643,31 @@ public class CategoryBarElement {
                                     
                                     
                                     //System.out.println(curKeyword);
-                                    tmpCol = termIndex.get(curKeyword);
-                                    tmpWeight = (termWeightF.get(i)[tmpCol]);
+                                      tmpCol = termIndex.get(curKeyword);
+                                   tmpWeight = (termWeightF.get(i)[tmpCol]);
 
-                                    for (int n = 0; n < _numOfTemporalBins; n++) {
-                                        tmpWeightSum += topicTFs.get(i).get(k)[n];
-                                    }
+                                   for (int n = 0; n < _numOfTemporalBins; n++) {
+                                       tmpWeightSum += topicTFs.get(i).get(k)[n];
+                                   }
 
-                                    for (int m = 0; m < numberOfTopics; m++) {
-                                        if (termWeightF.get(m)[tmpCol]!=0)
-                                            tmpWeightProduct = tmpWeightProduct * termWeightF.get(m)[tmpCol];
-                                    }
+                                   for (int m = 0; m < numberOfTopics; m++) {
+                                       if (termWeightF.get(m)[tmpCol]!=0)
+                                           tmpWeightProduct = tmpWeightProduct * termWeightF.get(m)[tmpCol];
+                                   }
 
-                                    tmpWeightProduct = (float) Math.pow(tmpWeightProduct, 1 / numberOfTopics);
-                                    tmpWeightProduct = (float) (tmpWeight * Math.log(tmpWeight / tmpWeightProduct));
-                                    tmpAllKeywords[k] = (float) ((0.7 * topicTFs.get(i).get(k)[y] / tmpWeightSum) + 0.3 * tmpWeightProduct);
-                      
-                                    tmpWeightSum = 0;
-                                    tmpWeightProduct = 1;
+                                   tmpWeightProduct = (float) Math.pow(tmpWeightProduct, 1.0 / (float)numberOfTopics);//cast to float
+                                   tmpWeightProduct = (float) (tmpWeight * Math.log(tmpWeight / tmpWeightProduct));
+                                   
+                                   if(tmpWeightSum > 0){
+                                       tmpAllKeywords[k] = (float) ((1.0 * topicTFs.get(i).get(k)[y] / tmpWeightSum) ); //+ 0.1 * tmpWeightProduct);
+                                   }
+                                   else{
+                                       tmpAllKeywords[k] = - Float.MAX_VALUE;
+                                       //tmpAllKeywords[k] = (float) (0.1 * tmpWeightProduct);
+                                   }
+                     
+                                   tmpWeightSum = 0;
+                                   tmpWeightProduct = 1;
                        
                                 }
 

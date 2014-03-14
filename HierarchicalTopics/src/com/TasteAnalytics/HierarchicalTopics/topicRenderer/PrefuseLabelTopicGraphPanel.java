@@ -92,6 +92,12 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
     private JValueSlider edgeThreSlider;
     private JLabel edgeNumberLabel;
+    
+    private JPanel itemPanel = new JPanel();
+    
+        
+    float global_edge_factor = 3;
+    private JValueSlider edgeWeightSlider;
 
     public PrefuseLabelTopicGraphPanel(String folderPath, ViewController vc, List<List<Float>> disMatrix) throws FileNotFoundException, IOException {
 
@@ -99,6 +105,10 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
         this.parent = vc;
         this.setLayout(new BorderLayout());
+        itemPanel.setSize(this.getWidth(), this.getHeight());
+        itemPanel.setLayout(new BorderLayout());
+        add(itemPanel,BorderLayout.PAGE_START);
+        
         edgeNumberLabel = new JLabel();
 
         setUpData(folderPath, disMatrix);
@@ -112,6 +122,8 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
         m_vis.run("color");
         m_vis.run("layout");
+        
+        
 
     }
 
@@ -427,14 +439,47 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
         System.out.println("mean value " + average_of_hell + " std is " + sntd + " edgesnumber " + edgesnumber + " " + count);
 
+        
         updateEdges((float) (average_of_hell + sntd));
 
+        PrintOutJsonEdges();
+        
+        
+        
         edgeThreSlider = new JValueSlider("EdgeWeight Slider", minHellValue, maxHellValue, (average_of_hell + sntd));
+        edgeWeightSlider = new JValueSlider("Weight Slider", 1, 10, 5);
+        
+        
         edgeThreSlider.setVisible(true);
-        //edgeThreSlider.setBounds(0, 0, 1000, 1000);
-        //edgeThreSlider.setForeground(Color.red);
+        edgeWeightSlider.setVisible(true);
+
         edgeThreSlider.setForeground(Color.gray);
 
+        
+        
+        edgeWeightSlider.addChangeListener(
+                new ChangeListener() {
+                     public void stateChanged(ChangeEvent e) {
+                    Number value = edgeWeightSlider.getValue();
+                    global_edge_factor = value.intValue();
+                      m_vis.removeAction("layout");
+                         
+
+                         ActionList layout = new ActionList(Activity.INFINITY);
+
+                        DataMountainForceLayout fdl = new DataMountainForceLayout("graph.nodes", false, hellingerDis);
+                        fdl.setDataGroups("graph.nodes", "graph.edges");
+                        layout.add(fdl);
+                        layout.add(new FinalDecoratorLayout("nodedec"));
+
+                        layout.add(new RepaintAction());
+                        m_vis.putAction("layout", layout);
+                        
+                        m_vis.run("color");
+                        m_vis.run("layout");
+                }
+                });
+        
         edgeThreSlider.addChangeListener(
                 new ChangeListener() {
                     public void stateChanged(ChangeEvent e) {
@@ -444,8 +489,6 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                         
                          m_vis.removeAction("layout");
                          
-                         
-                        
 
                          ActionList layout = new ActionList(Activity.INFINITY);
 
@@ -469,17 +512,21 @@ public class PrefuseLabelTopicGraphPanel extends Display {
 
                 });
 
-        edgeThreSlider.setSize(this.getSize().width, 150);
-        add(edgeThreSlider, BorderLayout.SOUTH);
+        edgeThreSlider.setSize(this.getSize().width/3, 150);
+        itemPanel.add(edgeThreSlider, BorderLayout.LINE_START);
+        
+           edgeWeightSlider.setSize(this.getSize().width/3, 150);
+        itemPanel.add(edgeWeightSlider, BorderLayout.CENTER);
 
-        edgeNumberLabel.setSize(this.getSize().width, 150);
+        edgeNumberLabel.setSize(this.getSize().width/3, 150);
 
-        add(edgeNumberLabel, BorderLayout.PAGE_END);
+        itemPanel.add(edgeNumberLabel, BorderLayout.LINE_END);
 
     }
 
     void PrintOutJsonEdges() {
 
+       // System.out.println("labelCount = " + labelCount);
         PrintWriter out = null;
         try {
             out = new PrintWriter(folder + "labels.json");
@@ -501,26 +548,46 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         out.println("\t],");
         out.println("\t\"links\":[");
 
-        TupleSet edges = graph.getEdges();
-        int edgesize = edges.getTupleCount();
-        Iterator s = edges.tuples();
-
-        while (s.hasNext()) {
-            Edge e = (Edge) s.next();
+        
+        
+       // System.out.println(graph.getEdgeCount());
+        for (int k=0; k<graph.getEdgeCount(); k++)
+        {
+            
+            Edge e =  graph.getEdge(k);
+            
+           // System.out.println(e);
+            
+            
             int i = (Integer) e.getSourceNode().get("id");
             int j = (Integer) e.getTargetNode().get("id");
 
-            out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + hellingerDis[i][j] + "},");
-
-//                int value = (int) (hellingerDis[i][j]>40?hellingerDis[i][j]:0);
-//                
-//                if (i == (number_of_nodes-2) && (j==number_of_nodes-1))
-//                {
-//                    out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + value + "}");                
-//                }
-//                else
-//                    out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + value + "},");                
+            if (k== graph.getEdgeCount()-1)
+                out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + hellingerDis[i][j] + "}");
+            else
+                out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + hellingerDis[i][j] + "},");
+            
         }
+//        TupleSet edges = graph.getEdges();
+//        int edgesize = edges.getTupleCount();
+//        Iterator s = edges.tuples();
+//
+//        while (s.hasNext()) {
+//            Edge e = (Edge) s.next();
+//            int i = (Integer) e.getSourceNode().get("id");
+//            int j = (Integer) e.getTargetNode().get("id");
+//
+//            out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + hellingerDis[i][j] + "},");
+//
+////                int value = (int) (hellingerDis[i][j]>40?hellingerDis[i][j]:0);
+////                
+////                if (i == (number_of_nodes-2) && (j==number_of_nodes-1))
+////                {
+////                    out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + value + "}");                
+////                }
+////                else
+////                    out.println("\t\t{\"source\":" + i + ",\"target\":" + j + ",\"value\":" + value + "},");                
+//        }
 
         out.println("\t]");
         out.println("}");
@@ -948,7 +1015,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                     int idx2 = (Integer) n2.get("id");
 
 //                    fsim.addForce(null);
-                    slen = hellingerDistance[idx1][idx2] * 1;
+                    slen = hellingerDistance[idx1][idx2] * global_edge_factor;
                     //fsim.addSpring(f1, f2,  -1.f, slen);
                     fsim.addSpring(f1, f2, (coeff >= 0 ? coeff : -1.f), slen);
 

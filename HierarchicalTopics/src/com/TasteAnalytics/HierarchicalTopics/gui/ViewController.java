@@ -245,16 +245,7 @@ public class ViewController {
         
         
         
-        if (ct != null && ct.getChildren().isEmpty())
-        {
-            TreeNode ttt = findMatchingNodeInTopicGraph(ct);
-            //ap.drawTopicWords(ttt);
-            ap.showingNode = ttt;
-        }
-        else
-        {
-            ap.showingNode = null;
-        }
+        
         
         
         
@@ -270,10 +261,23 @@ public class ViewController {
         //nodeKeywordHighlightMap.clear();
         
         
-              //if (currentNode == null)          
-                //currentNode = ap.currentNode;
-        if (currentNode!=null)    
+//              if (currentNode == null)          
+//                currentNode = ap.currentNode;
+              
+        
+        if (ct == null)
+        {
+              if (ap.multiTopicKeywordList!=null)
+                ap.multiTopicKeywordList.clear();
+            
+        }
+              
+        if (lastNode!=null && currentNode!=null)    
         if (selectedTimeColumn != previousTimeColumn || (!lastNode.equals(currentNode))) {
+            
+          
+            
+            
             TopicGraphViewFrame.customLabelTimecolumnKey key;
             //if (currentNode == null)          
                 //currentNode = ap.currentNode;
@@ -302,8 +306,10 @@ public class ViewController {
 //                TopicGraphViewFrame.customLabelTimecolumnKey k = (TopicGraphViewFrame.customLabelTimecolumnKey) it.next();
 //                System.out.println(k);
 //            }
+                
                 System.out.println(key);
                 System.out.println("no wordle cloud map ");
+                
             }
            else
             {
@@ -317,6 +323,20 @@ public class ViewController {
         lastNode = currentNode;
 
         // getTopicGraphViewPanel().updateLabelLocations();
+        
+        
+        if (ct != null && ct.getChildren().isEmpty())
+        {
+            //System.out.println("ctct");
+            TreeNode ttt = findMatchingNodeInTopicGraph(ct);
+            //ap.drawTopicWords(ttt);
+            ap.showingNode = ttt;
+        }
+        else
+        {
+            ap.showingNode = null;
+        }
+        
         
         
         if (tYK.isEmpty()) {

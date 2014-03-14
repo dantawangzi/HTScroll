@@ -917,7 +917,9 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
     JPanel testPanel = new JPanel();
     JScrollPane scrollPane;
-
+    JPanel menuPanel = new JPanel();
+    
+    
     public TemporalViewFrame(ViewController vc, int WW, int HH) throws IOException {
         super("Hierarchical ThemeRiver");
         setPreferredSize(new Dimension(WW, HH));
@@ -931,12 +933,15 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 //        }
 //        
         this.getContentPane().setLayout(new BorderLayout());
+        
+       // menuPanel.setSize(WW, HH/5);
+       //  this.getContentPane().add(menuPanel,BorderLayout.PAGE_START);
         scrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.getContentPane().add(scrollPane, BorderLayout.CENTER);
         scrollPane.setViewportView(testPanel);
 
-        myFrameWidth = 1000;//this.getContentPane().getWidth();
-        myFrameHeight = 1000;//this.getContentPane().getHeight();
+        myFrameWidth = 1000;//this.getContentPane().getWidth();//1000;//
+        myFrameHeight = 1000;//this.getContentPane().getHeight() - this.getContentPane().getHeight()/5;//1000;//
         //System.out.println("frame size " + myFrameWidth + " " + myFrameHeight);
 
         testPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight));
@@ -1128,10 +1133,11 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
     }
     public void loadData(String path, List<String[]> internalRecord,  List<Long> years,
             List<String[]> allDocs, List<String[]> termWeights, List<float[]> termWeights_norm, Map<String, Integer> termIndex,
-            List<String[]> allTopics, String csvpath, int contentIdx, DateFormat f, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub) throws FileNotFoundException, IOException {
+            List<String[]> allTopics, String csvpath, int contentIdx, DateFormat f, float incrementalDays, boolean b_readall, boolean b_recalculate, int NumOfTemporalBinsSub
+    ,List<HashMap<String, Integer>> content) throws FileNotFoundException, IOException {
 
         data = new CategoryBarElement(internalRecord, years, allDocs, termWeights, termWeights_norm, termIndex, allTopics, csvpath, contentIdx, f,
-                incrementalDays, b_readall, b_recalculate, NumOfTemporalBinsSub);
+                incrementalDays, b_readall, b_recalculate, NumOfTemporalBinsSub, content);
 
         myTree = new ArrayList<TreeNode>();
 

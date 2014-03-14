@@ -80,6 +80,9 @@ public class CSVFile extends SimpleParallelSpaceModel {
     Point2D minLocation;
     Point2D maxLocation;
 
+    public List<HashMap<String, Integer>> content = new ArrayList<HashMap<String, Integer>>();
+    
+    
     public Point2D getMediumLocation() {
         return mediumLocation;
     }
@@ -160,7 +163,9 @@ public class CSVFile extends SimpleParallelSpaceModel {
          */
         String tmpURL = filepath.replaceAll("_usage", "");
         
+       
         
+       
          
          
         
@@ -338,6 +343,33 @@ public class CSVFile extends SimpleParallelSpaceModel {
 
         }
 
+        
+        
+  
+         BufferedReader br = new BufferedReader(new FileReader(folderPath + "content.ctt"));
+        
+        String line1 = br.readLine();
+        while (line1!=null)
+        {
+            String[] tmp = line1.split(" ");
+            HashMap<String,Integer> singleContent = new HashMap<String, Integer>();
+            for (int i=0; i<tmp.length/2; i++)
+            {
+                String key = tmp[2*i];
+                String count = tmp[2*i+1];
+                
+                singleContent.put(key, Integer.parseInt(count));
+                                                                
+            }
+            content.add(singleContent);
+            line1 = br.readLine();
+        }
+        br.close();
+        
+        System.out.println("content " + content.size());
+        
+        
+        
         //System.out.println("Calculating topic dissimilarities of Cosine..");
         //calculateTopicSimilarityCosine();
         //System.out.println("Calculate individual document diversity");
@@ -786,13 +818,13 @@ public class CSVFile extends SimpleParallelSpaceModel {
                     //System.out.println( allDocs.get(idx)[dateColumn]);
                     String tmptime = allDocs.get(idx)[dateColumn]; //column for year info
 
-                    if (tmptime.length()>4 &&  StringUtils.isNumeric(tmptime))
-                    
-                     tmpT = Long.parseLong(tmptime)*1000;
-
-                    
-////
-                    else
+//                    if (tmptime.length()>4 &&  StringUtils.isNumeric(tmptime))
+//                    
+//                     tmpT = Long.parseLong(tmptime)*1000;
+//
+//                    
+//////
+//                    else
                     {
                         tmptime = tmptime.replaceAll("\\/", "-");
                         tmptime = tmptime.replaceAll(":", "-");

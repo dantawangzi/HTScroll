@@ -68,6 +68,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     
     
     
+    
+    
+    
     public MinimalismMainFrame() {
         
         
@@ -323,6 +326,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
                             viewController.setContentIdx(csvf.getContentIdx());
 
+                            
+                            
                             if (!viewController.b_readAll) {
                                 viewController.setContentIdx(0);
                             }
@@ -351,7 +356,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
                         temporalFrame.loadData(csvf.getFolderPath(), csvf.getInternalRecord(), csvf.getYears(),
                                 csvf.getInternalDocs(), csvf.getTermWeights(), csvf.getTermWeights_norm(), csvf.getTermIndex(), csvf.getAllTopics(),
-                                csvfilepath, csvf.getContentIdx(), csvf.getFormat(), viewController.intervalDays, viewController.b_readAll, viewController.b_recaluateValue, viewController.zoomSubBins);
+                                csvfilepath, csvf.getContentIdx(), csvf.getFormat(), viewController.intervalDays, viewController.b_readAll, viewController.b_recaluateValue, viewController.zoomSubBins
+                        ,csvf.content);
 
                         temporalFrame.setVisible(true);
                         temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);

@@ -972,6 +972,11 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                     }
                 }
 
+                
+                if (selected_node_index == -1)
+                    mouseOveredNode = null;
+                
+                
                 for (int i = 0; i < attachedPanel.getTimecolumns().size(); i++) {
                     TimeColumn timeColumn = attachedPanel.getTimecolumns().get(i);
                     if (timeColumn.getRenderRegion().contains(mouseX, mouseY)) {

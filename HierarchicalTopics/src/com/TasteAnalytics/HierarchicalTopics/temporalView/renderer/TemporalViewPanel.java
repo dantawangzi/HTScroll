@@ -1178,6 +1178,8 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         }
 
         renderAreas(curg2d);
+        
+       
         drawTimeLine(curg2d);
 
         curg2d.setColor(Color.BLACK);
@@ -1234,20 +1236,29 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             
             curg2d.drawString(currentTopics, 0, 50);
             
-            if (showingNode!=null)
+            
+                        
+            // System.out.println(drawPanelLabelId + "label id");
+        }
+        
+        if (showingNode!=null)
             {
+                
+               
                    String nodetopics = "";    
           
  
                 for (int i = 1; i < 10; i++) {
                     nodetopics += showingNode.getNodeTopics()[i] + " ";
-          }
-                    font = new Font("Arial", Font.ITALIC, 13);    
-                   curg2d.drawString(nodetopics, 0, 80);
+                }
+                
+                Font font = new Font("Arial", Font.ITALIC, 15);
+                    
+                    curg2d.setFont(font);
+                    //curg2d.setColor(showingNode.getColor());
+                   curg2d.drawString(nodetopics, 0, this.getHeight()-this.getHeight()/10);
             }           
-                        
-            // System.out.println(drawPanelLabelId + "label id");
-        }
+        
         curg2d.drawLine(0, 0, (int) width, 0);
         curg2d.drawLine(0, 0, 0, height);
         curg2d.drawLine(0, height, width, height);
@@ -1967,6 +1978,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
     protected void drawTimeLine(Graphics2D g2d) {
 
+         g2d.setComposite(labelcomposite);
         g2d.setColor(Color.LIGHT_GRAY);
         // g2d.fillRect(0, 0, width, margin / 2);
         g2d.fillRect(0, height - (margin / 2), width, margin / 2);
@@ -2400,7 +2412,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
          }
                  
                  
-    List<TopicGraphViewFrame.labelText> multiTopicKeywordList;
+    public List<TopicGraphViewFrame.labelText> multiTopicKeywordList;
 
     List<TopicGraphViewFrame.labelText> singleTopicKeywordList;
 
@@ -2540,7 +2552,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         //vi.setLocation(new Point2D.Double(location.getX(), location.getY()));
         //  vi.setLocation(new Point2D.Double(location.getX() + glyphBound.getX() + strBound.getWidth() / 2, location.getY() + fm.getDescent() - strBound.getHeight() / 2));
         double x = p.getX() + location.getX() - glyphBound.getX() / 2 - strBound.getWidth() / 2;
-        double y = location.getY() - glyphBound.getY() / 2 - strBound.getHeight() / 2;
+        double y = p.getY() + location.getY() - glyphBound.getY() / 2 - strBound.getHeight() / 2;
 
 //        if (x < 0) {
 //            x = x - bounds.getX();
