@@ -9,12 +9,14 @@ package com.TasteAnalytics.HierarchicalTopics.datahandler;
  * @author Hudie
  */
 
+import com.mongodb.util.JSON;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +31,6 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-
-import com.mongodb.util.JSON;
 
 
 public class LDAHTTPClient {
@@ -71,6 +71,33 @@ public class LDAHTTPClient {
 		httpclient.close();
 	}
         
+        public Object updateTree(String job_id, String treeString) throws ClientProtocolException, IOException{
+            
+            
+            	String url = this.protocol + "://" + this.host + ":" + this.port + "/" + "jt?job_id=" + job_id + "&tree_update="+URLEncoder.encode(treeString);
+            
+                
+                HttpClientContext localContext = HttpClientContext.create();
+		
+		// Bind custom cookie store to the local context
+		localContext.setCookieStore(cookieStore);
+		
+		HttpGet httpget = new HttpGet(url);
+
+		// Pass local context as a parameter
+		CloseableHttpResponse response = httpclient.execute(httpget, localContext);
+		
+		String result = "{}";
+		try{
+			result = EntityUtils.toString(response.getEntity());
+		} finally {
+			response.close();
+		}
+
+		return JSON.parse(result);
+                
+            
+        }
         
 	public Object apacheGet(String path, String parameters) throws ClientProtocolException, IOException{
 		String url = this.protocol + "://" + this.host + ":" + this.port + "/" + path + "?json=True&"+parameters;
@@ -241,6 +268,11 @@ public class LDAHTTPClient {
 
 		return get(path, job_id+"&"+t_id+"&"+s_id+"&"+thresh+"&"+in_db+"&"+in_table);
 	}
+        
+        
+        
+        
+        
         
         public static void main(String[] args) throws Exception {
 

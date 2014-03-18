@@ -456,7 +456,7 @@ public class ViewController {
     String password = "";
     String table = "";
     //String host = "152.15.99.7";
-    int port = 27107;
+    public int port = 2012;
     String database = "patents";
     public String collection = "patent";
     String collection2 = "unsorted_terms";

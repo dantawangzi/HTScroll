@@ -1,3 +1,6 @@
+
+
+
 /*
  */
 package com.TasteAnalytics.HierarchicalTopics.gui;
@@ -428,7 +431,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
     private void jConnectMongoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectMongoButtonActionPerformed
 
-        viewController.host = "10.18.202.126"; //"54.209.61.133";
+        viewController.host = "caprica.uncc.edu";//10.18.202.126"; //"54.209.61.133";
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
         
@@ -439,7 +442,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
         
         //"54.209.61.133"
-        LDAHTTPClient connection  = new LDAHTTPClient("http", viewController.host, "2012");
+        LDAHTTPClient connection  = new LDAHTTPClient("http", viewController.host, String.valueOf(viewController.port));
         try {
             connection.login();
         } catch (IOException ex) {
@@ -925,10 +928,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         
         
-//                        WorldMapProcessingFrame worldMapFrame = new WorldMapProcessingFrame(viewController,csvf.getTwitterGeoLocations(), csvf.getMediumLocation());
-//                        viewController.addWorldMapProcessingFrame(worldMapFrame);
-//                        worldMapFrame.setSize(1000, 1000);
-//                        worldMapFrame.setVisible(true);
+//        WorldMapProcessingFrame worldMapFrame = new WorldMapProcessingFrame(viewController,csvf.getTwitterGeoLocations(), csvf.getMediumLocation());
+//        viewController.addWorldMapProcessingFrame(worldMapFrame);
+//        worldMapFrame.setSize(1000, 1000);
+//        worldMapFrame.setVisible(true);
 ////
 //  
         

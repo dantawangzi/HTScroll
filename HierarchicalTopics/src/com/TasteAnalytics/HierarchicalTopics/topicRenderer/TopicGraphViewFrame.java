@@ -51,6 +51,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import com.TasteAnalytics.HierarchicalTopics.gui.ViewController;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.CategoryBarElement;
+import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
+import com.TasteAnalytics.HierarchicalTopics.gui.MinimalismMainFrame;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
 import java.util.Collection;
 import java.awt.Container;
@@ -1084,6 +1086,8 @@ public class TopicGraphViewFrame extends JFrame {
 
         processTree(everything);
 
+        
+//        if (!parent.b_readFromDB)
         try {
             int size = myTree.size();
             System.out.println(size);
@@ -1093,8 +1097,21 @@ public class TopicGraphViewFrame extends JFrame {
         } catch (IOException e) {
             System.out.println("Exception ");
 
+        }                
+         if (parent.b_readFromDB)//else
+        {
+        LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
+        try {
+            connection.login();
+        } catch (IOException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
+        connection.updateTree(parent.collection, everything);
+        
+        connection.close();
+        
+        }
         myTree.get(0).calculateNodeSize();
 
         myTree.get(0).calculateNodeString();
@@ -2935,6 +2952,8 @@ public class TopicGraphViewFrame extends JFrame {
 
         int size = m.size();
 
+        if (size != 0)
+        {
         int maxkeywordnumber = 50;
 
         int iterationRuns = maxkeywordnumber / size;
@@ -2961,6 +2980,8 @@ public class TopicGraphViewFrame extends JFrame {
         }
 
         return r;
+        }
+        else return null;
     }
 
 //    public HashMap< customLabelTimecolumnKey, HashMap<TreeNode, List<labelText>>> buildLabelMap(TreeNode currentNode, List<List<int[]>> tYK) {

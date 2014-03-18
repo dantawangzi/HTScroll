@@ -48,6 +48,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import com.TasteAnalytics.HierarchicalTopics.gui.DocumentViewer;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.CategoryBarElement;
+import java.net.UnknownHostException;
+import java.text.ParseException;
 
 /**
  * Mouse Behavior in ThemeRiver Interaction: Single Click will locate the time
@@ -566,6 +568,8 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                                             DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, j));
                                         } catch (IOException ex) {
                                             Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (ParseException ex) {
+                                            Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
                                         }
 
                                         selectedByYearTopic.clear();
@@ -602,8 +606,14 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 //                                attachedPanel.parent.fireYearTopicSelected(selectedByYearTopic);
                                     }
                                     try {
-                                        //                            DocumentViewer tempDV = new DocumentViewer(selectedByYearTopic, attachedPanel, null, new Point2D.Double(i, -99));
-                                        DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, -99));
+                                        try {
+                                            //                            DocumentViewer tempDV = new DocumentViewer(selectedByYearTopic, attachedPanel, null, new Point2D.Double(i, -99));
+                                            DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, -99));
+                                        } catch (UnknownHostException ex) {
+                                            Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (ParseException ex) {
+                                            Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
                                     } catch (IOException ex) {
                                         Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -732,31 +742,37 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
                                     attachedPanel.getFocusedSelectionList().add(new Point2D.Double(i, j));
                                     try {
-                                        //                                TreeNode t1;
-                                        //                                if (!attachedPanel.currentNode.getChildren().isEmpty()) {
-                                        //                                    t1 = (TreeNode) attachedPanel.currentNode.getChildren().get(j);
-                                        //                                } else {
-                                        //                                    t1 = (TreeNode) attachedPanel.currentNode;
-                                        //                                }
-                                        //                                //here
-                                        //                                size = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).size();
-                                        //                                idx = 0;
-                                        //                                for (int k = 0; k < size; k++) {
-                                        //                                    idx = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).get(k);
-                                        //                                    //currentT = attachedPanel.getData().getTopicSequences().get(j);
-                                        //
-                                        //                                    for (int l = 0; l < t1.getTopicsContainedIdx().size(); l++) {
-                                        //                                        int topicIndex = t1.getTopicsContainedIdx().get(l);
-                                        //                                        if (attachedPanel.getData().values_Norm.get(idx)[topicIndex/*j*/] > 0.25) {
-                                        //                                            selectedByYearTopic.add(idx);
-                                        //                                        }
-                                        //                                    }
-                                        //                                }
-
-                                        // if (!selectedByYearTopic.isEmpty()) --ww-old
-                                        //                                }
-                                        //DocumentViewer tempDV = new DocumentViewer(selectedByYearTopic, attachedPanel, t1.getColor(), new Point2D.Double(i, j));
-                                        DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, j));
+                                        try {
+                                            //                                TreeNode t1;
+                                            //                                if (!attachedPanel.currentNode.getChildren().isEmpty()) {
+                                            //                                    t1 = (TreeNode) attachedPanel.currentNode.getChildren().get(j);
+                                            //                                } else {
+                                            //                                    t1 = (TreeNode) attachedPanel.currentNode;
+                                            //                                }
+                                            //                                //here
+                                            //                                size = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).size();
+                                            //                                idx = 0;
+                                            //                                for (int k = 0; k < size; k++) {
+                                            //                                    idx = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).get(k);
+                                            //                                    //currentT = attachedPanel.getData().getTopicSequences().get(j);
+                                            //
+                                            //                                    for (int l = 0; l < t1.getTopicsContainedIdx().size(); l++) {
+                                            //                                        int topicIndex = t1.getTopicsContainedIdx().get(l);
+                                            //                                        if (attachedPanel.getData().values_Norm.get(idx)[topicIndex/*j*/] > 0.25) {
+                                            //                                            selectedByYearTopic.add(idx);
+                                            //                                        }
+                                            //                                    }
+                                            //                                }
+                                            
+                                            // if (!selectedByYearTopic.isEmpty()) --ww-old
+                                            //                                }
+                                            //DocumentViewer tempDV = new DocumentViewer(selectedByYearTopic, attachedPanel, t1.getColor(), new Point2D.Double(i, j));
+                                            DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, j));
+                                        } catch (UnknownHostException ex) {
+                                            Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (ParseException ex) {
+                                            Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
                                     } catch (IOException ex) {
                                         Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -795,8 +811,14 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 //                                attachedPanel.parent.fireYearTopicSelected(selectedByYearTopic);
                                 }
                                 try {
-                                    //                            DocumentViewer tempDV = new DocumentViewer(selectedByYearTopic, attachedPanel, null, new Point2D.Double(i, -99));
-                                    DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, -99));
+                                    try {
+                                        //                            DocumentViewer tempDV = new DocumentViewer(selectedByYearTopic, attachedPanel, null, new Point2D.Double(i, -99));
+                                        DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, -99));
+                                    } catch (UnknownHostException ex) {
+                                        Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (ParseException ex) {
+                                        Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
                                 } catch (IOException ex) {
                                     Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
                                 }

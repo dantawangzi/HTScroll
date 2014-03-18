@@ -11,6 +11,12 @@
 package com.TasteAnalytics.HierarchicalTopics.gui;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
+import com.TasteAnalytics.HierarchicalTopics.file.CSVReader;
+import com.TasteAnalytics.HierarchicalTopics.file.DataTable;
+import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewPanel;
+import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
+import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.ZoomedTemporalViewPanel;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -22,6 +28,7 @@ import com.mysql.jdbc.Connection;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -38,13 +45,20 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,21 +73,10 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.text.DefaultHighlighter;
-import com.TasteAnalytics.HierarchicalTopics.file.CSVReader;
-import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewPanel;
-import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
-import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.ZoomedTemporalViewPanel;
-import com.TasteAnalytics.HierarchicalTopics.file.DataTable;
-import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
-import java.awt.Component;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map.Entry;
-import java.util.Stack;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.DefaultHighlighter;
 
 /**
  *
@@ -112,7 +115,7 @@ public class DocumentViewer extends JFrame {
     }
 
     /*DXW: Simplify the Initializer*/
-    public DocumentViewer(final TemporalViewPanel p, final Point2D pt) throws IOException {
+    public DocumentViewer(final TemporalViewPanel p, final Point2D pt) throws IOException, UnknownHostException, ParseException {
 
         initComponents();
 
@@ -869,6 +872,8 @@ public class DocumentViewer extends JFrame {
                     this.updateDocViewContent(selectedDocuments, parent.host, parent.port, parent.database, parent.collection, parent.nameFields);
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException ex) {
+                    Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -997,6 +1002,8 @@ public class DocumentViewer extends JFrame {
 
         this.setVisible(true);
 
+        System.out.println(tmpDocs.size() + " " + tmpDocs.get(0).length);
+        System.out.println(tmpDocs.get(0)[0] + tmpDocs.get(0)[1] + tmpDocs.get(0)[2] + tmpDocs.get(0)[3] + tmpDocs.get(0)[4]);
         if (true) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // for  all data sets  reddit only
@@ -1236,7 +1243,7 @@ public class DocumentViewer extends JFrame {
         }
     }
 
-    final void updateDocViewContent(List<Integer> selectedDocIndexes, String DBURL, int DBPORT, String DBName, String collectionName, String[] fields) throws UnknownHostException {
+    final void updateDocViewContent(List<Integer> selectedDocIndexes, String DBURL, int DBPORT, String DBName, String collectionName, String[] fields) throws UnknownHostException, ParseException {
 
         int temprow = selectedDocIndexes.size();
 
@@ -1245,6 +1252,107 @@ public class DocumentViewer extends JFrame {
         Object[][] content;
         String[] columnFields;
 
+        
+        //for reddit  
+        if (true)
+        {
+            HashMap<String, List<Integer>> submissionMap = new HashMap<String, List<Integer>>();
+            for (int i = 0; i < selectedtweets.size(); i++) {
+             
+                String submission =(String) selectedtweets.get(i).get("submisson");
+
+                if (submissionMap.containsKey(submission)) {
+                    List<Integer> tmpi = submissionMap.get(submission);
+                    tmpi.add(i);
+                    submissionMap.put(submission, tmpi);
+                } else {
+                    List<Integer> tmpi = new ArrayList<Integer>();
+                    tmpi.add(i);
+                    submissionMap.put(submission, tmpi);
+
+                }
+            }
+            
+           
+            
+            String[] newNameFields = {"thresh", "name", "content", "time", "c_id", "scores", "is_root", "submisson", "subreddit", 
+            "submission_title", "submission_text", "subreddit_name", "label", "pos", "neg"};
+                       
+            parent.nameFields = newNameFields;
+            
+            int keysize = newNameFields.length;
+
+            int size = selectedtweets.size();
+            content = new Object[size][keysize];
+
+            columnFields = new String[keysize];;
+
+            //contentIdx = 2;
+        
+            int currentCount = 0;
+            for (Map.Entry<String, List<Integer>> entry : submissionMap.entrySet()) {
+                String key = entry.getKey();
+                List<Integer> docIdx = entry.getValue(); 
+                HashMap<Integer, Float> weightDoc = new HashMap<Integer, Float>();
+                HashMap<Integer, Long> timeDoc = new HashMap<Integer, Long>();
+                
+                for (int i = 0; i < docIdx.size(); i++) {
+
+                    int tempDocIdx = docIdx.get(i);
+
+                    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                    
+                    String s = (String) selectedtweets.get(tempDocIdx).get("time");
+                    Date T = f.parse(s);
+                    timeDoc.put(tempDocIdx, T.getTime());
+                }
+                
+                List<Entry<Integer, Long>> sortedEntries = entriesSortedByValues(timeDoc);
+         
+                
+                for (int i = 0; i < docIdx.size(); i++) {
+                    int tempDocIdx = sortedEntries.get(i).getKey();
+
+                        String[] s = new String[keysize];
+
+                        for (int j = 0; j < newNameFields.length; j++) {
+                            s[j] = String.valueOf(selectedtweets.get(tempDocIdx).get(newNameFields[j]));
+                        }
+                        content[i+currentCount] = s;
+                    }
+                    
+              currentCount += docIdx.size();
+                
+               
+                
+            }
+            
+            
+            
+            
+            
+            
+            
+            for (int i = 0; i < keysize; i++) {
+                columnFields[i] = newNameFields[i];
+                if (parent.text_id.equals(newNameFields[i])) {
+                    contentIdx = i;
+                }
+            }
+
+//            for (int j = 0; j < size; j++) {
+//
+//                String[] s = new String[keysize];
+//
+//                for (int i = 0; i < newNameFields.length; i++) {
+//                    s[i] = String.valueOf(selectedtweets.get(j).get(newNameFields[i]));
+//                }
+//                content[j] = s;
+//            }
+        }
+
+        else // not for reddit
+        {
         if (parent.nameFields == null) {
             int keysize = selectedtweets.get(0).keySet().size();
             int size = selectedtweets.size();
@@ -1318,7 +1426,12 @@ public class DocumentViewer extends JFrame {
             }
 
         }
-
+        }
+        
+        
+        
+        
+        
         if (dt == null) {
             model = new DefaultTableModel(content, columnFields);
             dt = new DataTable(content, columnFields);
@@ -1334,15 +1447,15 @@ public class DocumentViewer extends JFrame {
 
         int countRT = 0;
         if (parent.b_readFromDB) {
-            for (int i = 0; i < content.length; i++) {
-                String contentString = (String) content[i][contentIdx];
-                //System.out.println(contentString.length());
-                if (contentString.contains("RT ") || contentString.contains("rt ")) {
-                    countRT++;
-                    // System.out.println(contentString);
-                }
-
-            }
+//            for (int i = 0; i < content.length; i++) {
+//                String contentString = (String) content[i][contentIdx];
+//                //System.out.println(contentString.length());
+////                if (contentString.contains("RT ") || contentString.contains("rt ")) {
+////                    countRT++;
+////                    // System.out.println(contentString);
+////                }
+//
+//            }
 
         } else {
 
@@ -1357,6 +1470,9 @@ public class DocumentViewer extends JFrame {
 
             }
         }
+        
+        
+        
 
         if (parent.b_readFromDB) {
             float ratio = (float) countRT / (selectedtweets.size());

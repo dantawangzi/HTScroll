@@ -187,20 +187,22 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             
             String[]tmpDictString = dictString.split("\n");
             
-             labelCount = tmpDictString.length -2;
+             labelCount = tmpDictString.length ;
               System.out.println("label count is " + labelCount);
             for (int i=0; i<tmpDictString.length; i++)
             {
                 
                 
                  String labeltext = tmpDictString[i].split("\t")[0];
-                String labelint = tmpDictString[i].split("\t")[1];
-
+                 String labelint = tmpDictString[i].split("\t")[1];
+                 if("NONE".equals(labeltext))
+                         continue;
+                 
                 labelDictMap.put(Integer.parseInt(labelint), labeltext);
                 
                 
             }
-            
+            labelCount--;
               topicWeightPerLabel = new float[labelCount][];
             String labeltopicString = "";
              for (Object r : (ArrayList) c.getJobDocs(parent.collection,"label_topics"))
@@ -214,7 +216,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
              for (int i=0; i<labelCount; i++)
              {
                  
-                  String line = tmpLabelTopicString[2*i];
+                  String line = tmpLabelTopicString[2*i+1];
                 String labeltopicview[] = line.split("\\|");
 
                 topicWeightPerLabel[i] = new float[labeltopicview.length];
@@ -432,7 +434,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             Node n = graph.addNode();
             n.set("id", i);
             n.set("name", "Label" + Integer.toString(i));
-            n.set("LabelText", labelDictMap.get(i + 1));
+            n.set("LabelText", labelDictMap.get(i));
             n.set("selected", false);
 
         }

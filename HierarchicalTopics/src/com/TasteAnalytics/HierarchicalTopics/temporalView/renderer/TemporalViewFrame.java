@@ -1188,6 +1188,10 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
     public void updateData(List<TreeNode> tree) {
 
+        
+        
+        
+        
         //myTree.clear();
         myTree = tree;
 
