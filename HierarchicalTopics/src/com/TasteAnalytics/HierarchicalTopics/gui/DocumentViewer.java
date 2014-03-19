@@ -1327,10 +1327,7 @@ public class DocumentViewer extends JFrame {
                 
             }
             
-            
-            
-            
-            
+           
             
             
             for (int i = 0; i < keysize; i++) {
