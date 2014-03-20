@@ -5,8 +5,22 @@
  */
 package com.TasteAnalytics.HierarchicalTopics.gui;
 
+import com.google.gson.Gson;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
+import com.TasteAnalytics.HierarchicalTopics.eventsview.EventViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.file.CSVFile;
+import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
+import com.google.code.geocoder.Geocoder;
+import com.google.code.geocoder.GeocoderRequestBuilder;
+import com.google.code.geocoder.model.GeocodeResponse;
+import com.google.code.geocoder.model.GeocoderRequest;
+import com.google.code.geocoder.model.GeocoderResult;
+import com.google.code.geocoder.model.LatLng;
+
+
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -18,18 +32,18 @@ import com.mongodb.MongoException;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mysql.jdbc.Connection;
-import com.TasteAnalytics.HierarchicalTopics.eventsview.EventViewFrame;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.geom.Point2D;
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.*;
+import java.security.InvalidKeyException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +54,6 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.JTable;
 import org.apache.commons.io.IOUtils;
-import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewFrame;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
 import prefuse.data.Graph;
 import prefuse.data.io.*;
 
@@ -264,6 +274,21 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+        
+        
+        
+        
+        
+        final Geocoder geocoder = new Geocoder();
+        GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress("Charlotte, USA").setLanguage("en").getGeocoderRequest();
+        GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
+        List<GeocoderResult> gcr = geocoderResponse.getResults();
+        LatLng loc = gcr.get(0).getGeometry().getLocation();
+        BigDecimal lat = loc.getLat();
+        BigDecimal lng = loc.getLng();
+
+
+
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
             public boolean accept(File f) {
