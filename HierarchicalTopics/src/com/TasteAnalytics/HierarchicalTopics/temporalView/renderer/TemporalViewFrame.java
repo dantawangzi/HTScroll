@@ -61,7 +61,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
     private int myFrameHeight = 0;
     ViewController parent;
     private TemporalViewPanel mainPanel;
-    private TemporalViewPanel subPanel;
+    //private TemporalViewPanel subPanel;
     private CategoryBarElement data;
     
     private List<Float> topicSims;
@@ -101,17 +101,11 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         this.mainPanel = mainPanel;
     }
 
-    public TemporalViewPanel getSubPanel() {
-        return subPanel;
-    }
+//    public TemporalViewPanel getSubPanel() {
+//        return subPanel;
+//    }
 
-//    public List<TemporalViewPanel> getSecondColumn() {
-//        return secondColumn;
-//    }
-//
-//    public List<TemporalViewPanel> getThirdColumn() {
-//        return thirdColumn;
-//    }
+
     private boolean b_timeColumnMode;
 
     public boolean getTimeColumnMode() {
@@ -390,7 +384,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         cons.gridwidth = 1;
         cons.gridheight = 2;
 
-        cons.weighty = 0.66;
+        cons.weighty = 1.0f;//0.66;
         cons.weightx = 1.0f;
 
         cons.fill = GridBagConstraints.BOTH;
@@ -400,21 +394,21 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         mainPanel.setBorder(new LineBorder(Color.black, 1));
         layoutPanelMap.get(0).add(mainPanel);
 
-        cons = new GridBagConstraints();
-        cons.gridx = 0;
-        cons.gridy = 2;
-        cons.weighty = 0.33;
+//        cons = new GridBagConstraints();
+//        cons.gridx = 0;
+//        cons.gridy = 2;
+//        cons.weighty = 0.33;
+//
+//        cons.gridheight = 1;
+//        cons.gridwidth = 1;
+//        cons.weightx = 1.0f;
+//
+//        cons.fill = GridBagConstraints.BOTH;
+//        cons.anchor = GridBagConstraints.PAGE_END;
 
-        cons.gridheight = 1;
-        cons.gridwidth = 1;
-        cons.weightx = 1.0f;
-
-        cons.fill = GridBagConstraints.BOTH;
-        cons.anchor = GridBagConstraints.PAGE_END;
-
-        subPanel.setBorder(new LineBorder(Color.black, 1));
-        gridBag.setConstraints(subPanel, cons);
-        layoutPanelMap.get(0).add(subPanel);
+//        subPanel.setBorder(new LineBorder(Color.black, 1));
+//        gridBag.setConstraints(subPanel, cons);
+//        layoutPanelMap.get(0).add(subPanel);
         
         //layoutPanelMap.get(0).setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), frameheight));
         testPanel.add(layoutPanelMap.get(0), "gap 0 0");
@@ -839,8 +833,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
            
        // System.out.println("in update testpan " + testPanel.getWidth() + " " + testPanel.getHeight());
            
-        mainPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight * 2 / 3);
-        subPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight / 3);
+        mainPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight * 3 / 3);
+        //subPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight / 3);
 
         int maxSecondaryPanelHeight = testPanel.getHeight() / 3;
         
@@ -879,7 +873,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         //mainPanel.setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()));
 
         mainPanel.UpdateTemporalView(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()), mainPanel.getLocalNormalizingValue());
-        subPanel.UpdateTemporalView(new Dimension(subPanel.getMyPanelWidth(), subPanel.getMyPanelHeight()), subPanel.getLocalNormalizingValue());
+        //subPanel.UpdateTemporalView(new Dimension(subPanel.getMyPanelWidth(), subPanel.getMyPanelHeight()), subPanel.getLocalNormalizingValue());
 
         for (List<TemporalViewPanel> ltp : temporalPanelMap.values()) {
             float tempMaxNormalValue = -1;
@@ -947,17 +941,17 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         testPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight));
 
         mainPanel = new TemporalViewPanel(vc);
-        subPanel = new TemporalViewPanel(vc);
+        //subPanel = new TemporalViewPanel(vc);
 
         mainPanel.setName("Main");
-        subPanel.setName("Sub");
+        //subPanel.setName("Sub");
 
         mainPanel.setLevel(0);
-        subPanel.setLevel(0);
+        //subPanel.setLevel(0);
 
         //this.setSize(new Dimension(1800, 900));
-        mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 2);
-        subPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3);
+        mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 3);
+        //subPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3);
         
         layoutPanelMap.put(0, new JPanel());
         //List<TemporalViewPanel> ini = new ArrayList<TemporalViewPanel>();
@@ -1113,20 +1107,20 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         getMainPanel().computerZeroslopeAreasHierarchy(0);
         getMainPanel().detectEvents(getMainPanel().getEventThreshold());
 
-        getSubPanel().setData(data);
+//        getSubPanel().setData(data);
+//
+//        getSubPanel().currentNode = myTree.get(1);
+//        //calculateRenderControlPoints(data);
+//
+//        getSubPanel().setTree(myTree);
+//        getSubPanel().calculateLocalNormalizingValue(data, getSubPanel().currentNode);
+//        getSubPanel().calculateRenderControlPointsOfEachHierarchy(data, getSubPanel().currentNode, getSubPanel().getLocalNormalizingValue());
+//        getSubPanel().computerZeroslopeAreasHierarchy(0);
+//        getSubPanel().detectEvents(getMainPanel().getEventThreshold());
 
-        getSubPanel().currentNode = myTree.get(1);
-        //calculateRenderControlPoints(data);
-
-        getSubPanel().setTree(myTree);
-        getSubPanel().calculateLocalNormalizingValue(data, getSubPanel().currentNode);
-        getSubPanel().calculateRenderControlPointsOfEachHierarchy(data, getSubPanel().currentNode, getSubPanel().getLocalNormalizingValue());
-        getSubPanel().computerZeroslopeAreasHierarchy(0);
-        getSubPanel().detectEvents(getMainPanel().getEventThreshold());
-
-        getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
+        getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
         
-        getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
+        //getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
         System.out.println("initial calculating of main and subpanel done");
         
         
@@ -1167,20 +1161,20 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         getMainPanel().computerZeroslopeAreasHierarchy(0);
         getMainPanel().detectEvents(getMainPanel().getEventThreshold());
 
-        getSubPanel().setData(data);
+//        getSubPanel().setData(data);
+//
+//        getSubPanel().currentNode = myTree.get(1);
+//        //calculateRenderControlPoints(data);
+//
+//        getSubPanel().setTree(myTree);
+//        getSubPanel().calculateLocalNormalizingValue(data, getSubPanel().currentNode);
+//        getSubPanel().calculateRenderControlPointsOfEachHierarchy(data, getSubPanel().currentNode, getSubPanel().getLocalNormalizingValue());
+//        getSubPanel().computerZeroslopeAreasHierarchy(0);
+//        getSubPanel().detectEvents(getMainPanel().getEventThreshold());
 
-        getSubPanel().currentNode = myTree.get(1);
-        //calculateRenderControlPoints(data);
-
-        getSubPanel().setTree(myTree);
-        getSubPanel().calculateLocalNormalizingValue(data, getSubPanel().currentNode);
-        getSubPanel().calculateRenderControlPointsOfEachHierarchy(data, getSubPanel().currentNode, getSubPanel().getLocalNormalizingValue());
-        getSubPanel().computerZeroslopeAreasHierarchy(0);
-        getSubPanel().detectEvents(getMainPanel().getEventThreshold());
-
-        getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
+        getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
         
-        getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
+        //getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
         System.out.println("initial calculating of main and subpanel done");
         
 
@@ -1210,21 +1204,21 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
         getMainPanel().computerZeroslopeAreasHierarchy(0);
 
-        getSubPanel().currentNode = myTree.get(0);
-
-        getSubPanel().setTree(myTree);
-        getSubPanel().calculateLocalNormalizingValue(data, getSubPanel().currentNode);
-        getSubPanel().calculateRenderControlPointsOfEachHierarchy(data, getSubPanel().currentNode, getSubPanel().getLocalNormalizingValue());
-
-        getSubPanel().computerZeroslopeAreasHierarchy(0);
-
-        getMainPanel().getDrawLabels().clear();
-        getSubPanel().getDrawLabels().clear();
-        getMainPanel().getDrawLabelsLocation().clear();
-        getSubPanel().getDrawLabelsLocation().clear();
+//        getSubPanel().currentNode = myTree.get(0);
+//
+//        getSubPanel().setTree(myTree);
+//        getSubPanel().calculateLocalNormalizingValue(data, getSubPanel().currentNode);
+//        getSubPanel().calculateRenderControlPointsOfEachHierarchy(data, getSubPanel().currentNode, getSubPanel().getLocalNormalizingValue());
+//
+//        getSubPanel().computerZeroslopeAreasHierarchy(0);
+//
+//        getMainPanel().getDrawLabels().clear();
+//        getSubPanel().getDrawLabels().clear();
+//        getMainPanel().getDrawLabelsLocation().clear();
+//        getSubPanel().getDrawLabelsLocation().clear();
 
         getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
-        getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
+        //getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
 
         setMigLayoutForScrollPane();
         //setGridBagLayout();

@@ -4,26 +4,32 @@
  */
 package com.TasteAnalytics.HierarchicalTopics.topicRenderer;
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
-//import javax.swing.JFrame;
-import processing.core.PApplet;
-
-import processing.opengl.*;
 import codeanticode.glgraphics.*;
+import com.TasteAnalytics.HierarchicalTopics.gui.ViewController;
+import com.google.code.geocoder.Geocoder;
+import com.google.code.geocoder.GeocoderRequestBuilder;
+import com.google.code.geocoder.model.GeocodeResponse;
+import com.google.code.geocoder.model.GeocoderRequest;
+import com.google.code.geocoder.model.GeocoderResult;
+import com.google.code.geocoder.model.LatLng;
 
 import de.fhpotsdam.unfolding.*;
 import de.fhpotsdam.unfolding.geo.*;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.MarkerManager;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
-import de.fhpotsdam.unfolding.utils.*;
 import de.fhpotsdam.unfolding.providers.*;
+import de.fhpotsdam.unfolding.utils.*;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.geom.Point2D;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import com.TasteAnalytics.HierarchicalTopics.gui.ViewController;
+import processing.core.PApplet;
+import processing.opengl.*;
 
 /**
  *
@@ -39,6 +45,11 @@ public class WorldMapProcessingFrame extends Frame {
     Embedded embed;
     public WorldMapProcessingFrame(ViewController vc, List<Point2D> L, Point2D center) {
         super("Embedded PApplet");
+        
+        
+        
+        
+        
         this.geoLocations = new ArrayList<List<SimplePointMarker>>();
 
         parent = vc;
@@ -48,8 +59,84 @@ public class WorldMapProcessingFrame extends Frame {
         
         allLocations = L;
         add(embed, BorderLayout.CENTER);
+        embed.init();
 
 
+
+    }
+    
+    
+        public WorldMapProcessingFrame(ViewController vc, List<HashMap> M) {
+        super("Embedded PApplet");
+        this.geoLocations = new ArrayList<List<SimplePointMarker>>();
+
+        parent = vc;
+
+        setLayout(new BorderLayout());
+         List<Point2D> L = new ArrayList<Point2D>();
+         
+         
+         float max_x = -9999999.0f;  // lng
+         float max_y = -9999999.0f;  // lat
+         float min_x = 9999999.0f;
+         float min_y = 9999999.0f;
+         
+         
+        for (int i=0; i<M.size(); i++)
+        {
+        
+            
+            String country = (String) M.get(i).get("In what Country do you currently live?");
+            String state = (String) M.get(i).get("In what State or Province do you currently live?");
+            String city = (String) M.get(i).get("In what City do you currently live?");
+            String address = city + ", " + state + ","+ country;
+            
+            final Geocoder geocoder = new Geocoder();
+            GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(address).setLanguage("en").getGeocoderRequest();
+            GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
+            List<GeocoderResult> gcr = geocoderResponse.getResults();
+
+            System.out.println(gcr);
+            
+            if (gcr!=null && !gcr.isEmpty())
+            {
+                LatLng loc = gcr.get(0).getGeometry().getLocation();
+
+
+                BigDecimal lat = loc.getLat();
+                BigDecimal lng = loc.getLng();
+
+                L.add(new Point2D.Float( lat.floatValue(),lng.floatValue()));
+
+                if (lat.floatValue()>=max_y)
+                    max_y = lat.floatValue();
+                if (lat.floatValue()<=min_y)
+                    min_y = lat.floatValue();
+
+                if (lng.floatValue()>=max_x)
+                    max_x = lng.floatValue();
+                if (lng.floatValue()<=min_x)
+                    min_x = lng.floatValue();
+            
+            }
+        
+        
+        }
+        
+        
+        
+        
+        
+        
+        Point2D center = new Point2D.Double((min_y+max_y)/2, (min_x+max_x)/2);
+        System.out.println( M.size());
+        System.out.println( L.size());
+        System.out.println( center.getX() + " " + center.getY());
+        
+        embed = new Embedded(L, center);
+        
+        allLocations = L;
+        add(embed, BorderLayout.CENTER);
         embed.init();
 
 
@@ -90,16 +177,10 @@ public class WorldMapProcessingFrame extends Frame {
         List<Marker> Markers;
         
         
-        
-        
-        
-        
-        
+ 
         MarkerManager<Marker> markerManager = new MarkerManager<Marker>();
         
-        
-        
-        private Embedded(List<Point2D> L, Point2D c) {
+       private Embedded(List<Point2D> L, Point2D c) {
 
 
             //List<Location> Locations = new ArrayList<Location>();
@@ -114,15 +195,14 @@ public class WorldMapProcessingFrame extends Frame {
             }
 
 
-
-
         }
         
 
         public void setup() {
             // original setup code here ...
             size(1000, 1000);
-            mapDetail = new UnfoldingMap(this, new Microsoft.AerialProvider()/*, "detail", 10, 10, 585, 580*/);
+            mapDetail = new UnfoldingMap(this, new Microsoft.RoadProvider() );//new Microsoft.AerialProvider()/*, "detail", 10, 10, 585, 580*/);
+            
 //		mapDetail.zoomToLevel(4);
 //		mapDetail.setZoomRange(4, 10);
             MapUtils.createDefaultEventDispatcher(this, mapDetail);
@@ -130,7 +210,7 @@ public class WorldMapProcessingFrame extends Frame {
             // Static overview map
             //mapOverviewStatic = new UnfoldingMap(this, "overviewStatic", 605, 10, 185, 185);
 
-            mapDetail.zoomToLevel(10);
+            mapDetail.zoomToLevel(2);
             //mapDetail.zoom(40.0f);
             mapDetail.panTo(center);
 
@@ -143,11 +223,11 @@ public class WorldMapProcessingFrame extends Frame {
 //                    stroke(67, 211, 227, 100);
 //                    noFill();
 //                    ellipse(tPos.x, tPos.y, 36, 36);
-                Markers.get(i).setColor(color(255, 0, 0, 100));
+                Markers.get(i).setColor(color(12, 24, 255, 100));
                 
 
             }
-           // markerManager.addMarkers(Markers);
+            markerManager.addMarkers(Markers);
 
             //viewportRect = new ViewportRect();
              
@@ -197,12 +277,6 @@ public class WorldMapProcessingFrame extends Frame {
 		}
             
         }
-        
-        
-        
-        
-        
-        
         
         
 

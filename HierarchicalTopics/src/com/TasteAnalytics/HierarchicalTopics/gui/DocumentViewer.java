@@ -101,6 +101,10 @@ public class DocumentViewer extends JFrame {
     public List<Integer> getSelectedDocuments() {
         return selectedDocuments;
     }
+    
+    public List<HashMap>getSelectedtweets() {
+        return selectedtweets;
+    }
 
     /**
      * Creates new form DocumentViewer
@@ -1275,8 +1279,13 @@ public class DocumentViewer extends JFrame {
             
            
             
-            String[] newNameFields = {"thresh", "name", "content", "time", "c_id", "scores", "is_root", "submisson", "subreddit", 
-            "submission_title", "submission_text", "subreddit_name", "label", "pos", "neg"};
+            String[] newNameFields = {"thresh", "_id","name", "content", "time", "c_id", "scores", "is_root", "submisson", "subreddit", 
+            "submission_title", "submission_text", "subreddit_name", "label", "pos", "neg"
+            ,"In what Country do you currently live?"
+                    ,"In what State or Province do you currently live?"
+                    ,"In what City do you currently live?"
+            
+            };
                        
             parent.nameFields = newNameFields;
             

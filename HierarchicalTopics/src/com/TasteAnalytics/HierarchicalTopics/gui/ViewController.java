@@ -575,27 +575,18 @@ public class ViewController {
         currentNode = ct;
 
         // change temporal view frame
-        TemporalViewPanel targetPanel = getTemporalFrame().getSubPanel();
-        getTemporalFrame().getSubPanel().currentNode = currentNode;
-        targetPanel.currentNode = currentNode;
-        targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
-        //targetPanel.setbShowEvents(false);
-        targetPanel.getDetectionResults().clear();
-        targetPanel.detectEvents(targetPanel.getEventThreshold());
+       // TemporalViewPanel targetPanel = getTemporalFrame().getSubPanel();
+       // getTemporalFrame().getSubPanel().currentNode = currentNode;
+       // targetPanel.currentNode = currentNode;
+       // targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
+      //  targetPanel.getDetectionResults().clear();
+      //  targetPanel.detectEvents(targetPanel.getEventThreshold());
         
-        targetPanel.UpdateTemporalView(new Dimension(targetPanel.getMyPanelWidth(), targetPanel.getMyPanelHeight()), targetPanel.getLocalNormalizingValue());
+      //  targetPanel.UpdateTemporalView(new Dimension(targetPanel.getMyPanelWidth(), targetPanel.getMyPanelHeight()), targetPanel.getLocalNormalizingValue());
 
-        //                     targetPanel.calculateLocalNormalizingValue(attachedPanel.getData(), targetPanel.currentNode);
-//
-//                    targetPanel.calculateRenderControlPointsOfEachHierarchy(attachedPanel.getData(), targetPanel.currentNode, targetPanel.getLocalNormalizingValue());
-//                    targetPanel.computerZeroslopeAreasHierarchy(0);
-//                     targetPanel.detectEvents(targetPanel.getEventThreshold());
-//                    targetPanel.UpdateTemporalView(new Dimension(targetPanel.getWidth(), targetPanel.getHeight()), targetPanel.getLocalNormalizingValue());
-        // change topic graph view
+
         VisualizationViewer vv = getTopicGraphViewPanel().getVisualizationViewer();
         final PickedState<TreeNode> pickedState = vv.getPickedVertexState();
-        //  int graphSize = vv.getGraphLayout().getGraph().getVertexCount();
-        // vv.getLayout().getGraph() ;
         Collection<TreeNode> vertices = vv.getGraphLayout().getGraph().getVertices();
 
         pickedState.clear();

@@ -4,17 +4,15 @@
  */
 package com.TasteAnalytics.HierarchicalTopics.temporalView.renderer;
 
+import com.TasteAnalytics.HierarchicalTopics.datahandler.CategoryBarElement;
+import com.TasteAnalytics.HierarchicalTopics.gui.DocumentViewer;
+import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewPanel;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.List;
-import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewPanel;
 import java.awt.Dimension;
 
 import java.awt.FlowLayout;
@@ -22,34 +20,37 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JMenu;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
-import javax.swing.AbstractButton;
-import javax.swing.JMenuItem;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import com.TasteAnalytics.HierarchicalTopics.gui.DocumentViewer;
-import com.TasteAnalytics.HierarchicalTopics.datahandler.CategoryBarElement;
-import java.net.UnknownHostException;
-import java.text.ParseException;
 
 /**
  * Mouse Behavior in ThemeRiver Interaction: Single Click will locate the time
@@ -139,7 +140,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                     TemporalViewFrame tf = attachedPanel.parent.getTemporalFrame();
                     int selected_node_index = -1;
                     TemporalViewPanel p = tf.getMainPanel();
-                    if (attachedPanel.getName().equals(p.getName())) {
+                    if (attachedPanel.getName().equals("Main")) {
 
                         for (int j = 0; j < attachedPanel.getCurrentAreas().size(); j++) {
                             CategoryStream categoryStream = attachedPanel.getCurrentAreas().get(j);
@@ -178,7 +179,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                                 tp.currentNode = (TreeNode) attachedPanel.currentNode.getChildren().get(selected_node_index);
                             }
 
-                            Integer it = new Integer(selected_node_index);
+                            int it = selected_node_index;
                             attachedPanel.getDrawLabels().add(it);
 
                             Point2D pf = new Point2D.Float((float) me.getPoint().getX() / attachedPanel.getWidth(),
@@ -224,11 +225,9 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
                 }
 
-                if (!"Main".equals(attachedPanel.getName()) && !"Sub".equals(attachedPanel.getName())) {
+                if (!"Main".equals(attachedPanel.getName())) {
 
                     TemporalViewFrame tf = attachedPanel.parent.getTemporalFrame();
-
-
                     int selected_node_index = -1;
 
                     for (int j = 0; j < attachedPanel.getCurrentAreas().size(); j++) {
@@ -328,7 +327,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                 }
 
                 if (me.getClickCount() == 2) {
-                    targetPanel = attachedPanel.parent.getTemporalFrame().getSubPanel();
+                  //  targetPanel = attachedPanel.parent.getTemporalFrame().getSubPanel();
                     TreeNode tempN = targetPanel.currentNode.getParent();
                     if (tempN != null) {
                         targetPanel.currentNode = tempN;
@@ -338,92 +337,69 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
                     selectedNode = targetPanel.currentNode;
 
-//                    targetPanel.calculateLocalNormalizingValue(attachedPanel.getData(), targetPanel.currentNode);
+               } 
+//                else 
+//                {
 //
-//                    targetPanel.calculateRenderControlPointsOfEachHierarchy(attachedPanel.getData(), targetPanel.currentNode, targetPanel.getLocalNormalizingValue());
-//                    targetPanel.computerZeroslopeAreasHierarchy(0);
-//                     targetPanel.detectEvents(targetPanel.getEventThreshold());
-//                    targetPanel.UpdateTemporalView(new Dimension(targetPanel.getWidth(), targetPanel.getHeight()), targetPanel.getLocalNormalizingValue());
-                } else {
-
-                    targetPanel = attachedPanel.parent.getTemporalFrame().getSubPanel();
-                    if (attachedPanel.getName() == null ? targetPanel.getName() == null : attachedPanel.getName().equals(targetPanel.getName())) {
-                        for (int j = 0; j < attachedPanel.getCurrentAreas().size(); j++) {
-
-                            CategoryStream categoryStream = attachedPanel.getCurrentAreas().get(j);
-
-                            //System.out.println("mouse x and y " + mouseX + " " + mouseY);
-                            if (categoryStream.getRenderRegion().contains(mouseX, mouseY)) {
-
-                                //System.out.println(attachedPanel.getName());
-                                //targetPanel = attachedPanel.parent.getTemporalFrame().getSubPanel(); 
-                                if (!attachedPanel.currentNode.getChildren().isEmpty()) {
-                                    {
-                                        targetPanel.currentNode = (TreeNode) attachedPanel.currentNode.getChildren().get(j);
-                                    }
-                                } else {
-                                    {
-                                        targetPanel.currentNode = (TreeNode) attachedPanel.currentNode;
-                                    }
-                                }
-
-                                selectedNode = targetPanel.currentNode;
-
-//                                targetPanel.calculateLocalNormalizingValue(attachedPanel.getData(), targetPanel.currentNode);
+//                   // targetPanel = attachedPanel.parent.getTemporalFrame().getSubPanel();
+//                    if (attachedPanel.getName() == null ? targetPanel.getName() == null : attachedPanel.getName().equals(targetPanel.getName())) {
+//                        for (int j = 0; j < attachedPanel.getCurrentAreas().size(); j++) {
 //
+//                            CategoryStream categoryStream = attachedPanel.getCurrentAreas().get(j);
 //
-//                                targetPanel.calculateRenderControlPointsOfEachHierarchy(attachedPanel.getData(), targetPanel.currentNode, targetPanel.getLocalNormalizingValue());
-//                                targetPanel.computerZeroslopeAreasHierarchy(0);
-//                                 targetPanel.detectEvents(targetPanel.getEventThreshold());
-//                                targetPanel.UpdateTemporalView(new Dimension(targetPanel.getWidth(), targetPanel.getHeight()), targetPanel.getLocalNormalizingValue());
-                                break;
-                            }
-                        }
-                    } else {
-                        for (int j = 0; j < attachedPanel.getCurrentAreas().size(); j++) {
-
-                            CategoryStream categoryStream = attachedPanel.getCurrentAreas().get(j);
-
-                            //System.out.println("mouse x and y " + mouseX + " " + mouseY);
-                            if (categoryStream.getRenderRegion().contains(mouseX, mouseY)) {
-
-                                // System.out.println(attachedPanel.getName());
-                                //targetPanel = attachedPanel.parent.getTemporalFrame().getSubPanel(); 
-                                if (!attachedPanel.currentNode.getChildren().isEmpty()) {
-                                    {
-                                        targetPanel.currentNode = (TreeNode) attachedPanel.currentNode.getChildren().get(j);
-                                    }
-                                } else {
-                                    {
-                                        targetPanel.currentNode = (TreeNode) attachedPanel.currentNode;
-                                    }
-                                }
-
-                                selectedNode = targetPanel.currentNode;
-//                                targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
-//                                targetPanel.calculateRenderControlPointsOfEachHierarchy(attachedPanel.getData(), targetPanel.currentNode, targetPanel.getLocalNormalizingValue());
-//                                targetPanel.computerZeroslopeAreasHierarchy(0);
-//                                targetPanel.detectEvents(targetPanel.getEventThreshold());
-//                                targetPanel.UpdateTemporalView(new Dimension(targetPanel.getWidth(), targetPanel.getHeight()), targetPanel.getLocalNormalizingValue());
-
-                                //                            
-                                //                            TemporalViewPanel targetPanel = parent.getTemporalFrame().getSubPanel();
-                                break;
-                            }
-                        }
-
-                    }
-                }
+//                            //System.out.println("mouse x and y " + mouseX + " " + mouseY);
+//                            if (categoryStream.getRenderRegion().contains(mouseX, mouseY)) {
+//
+//                                //System.out.println(attachedPanel.getName());
+//                                //targetPanel = attachedPanel.parent.getTemporalFrame().getSubPanel(); 
+//                                if (!attachedPanel.currentNode.getChildren().isEmpty()) {
+//                                    {
+//                                        targetPanel.currentNode = (TreeNode) attachedPanel.currentNode.getChildren().get(j);
+//                                    }
+//                                } else {
+//                                    {
+//                                        targetPanel.currentNode = (TreeNode) attachedPanel.currentNode;
+//                                    }
+//                                }
+//
+//                                selectedNode = targetPanel.currentNode;
+//
+//                              break;
+//                            }
+//                        }
+//                    } else {
+//                        for (int j = 0; j < attachedPanel.getCurrentAreas().size(); j++) {
+//
+//                            CategoryStream categoryStream = attachedPanel.getCurrentAreas().get(j);
+//
+//                            //System.out.println("mouse x and y " + mouseX + " " + mouseY);
+//                            if (categoryStream.getRenderRegion().contains(mouseX, mouseY)) {
+//
+//                                // System.out.println(attachedPanel.getName());
+//                                //targetPanel = attachedPanel.parent.getTemporalFrame().getSubPanel(); 
+//                                if (!attachedPanel.currentNode.getChildren().isEmpty()) {
+//                                    {
+//                                        targetPanel.currentNode = (TreeNode) attachedPanel.currentNode.getChildren().get(j);
+//                                    }
+//                                } else {
+//                                    {
+//                                        targetPanel.currentNode = (TreeNode) attachedPanel.currentNode;
+//                                    }
+//                                }
+//
+//                                selectedNode = targetPanel.currentNode;
+//
+//                                break;
+//                            }
+//                        }
+//
+//                    }
+//                }
 
                 // System.out.println("this is "+ selectedNode.getValue() + " selected");
                 attachedPanel.parent.stateChanged(selectedNode);
 
-//                targetPanel.currentNode = selectedNode;
-//                targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
-//                targetPanel.calculateRenderControlPointsOfEachHierarchy(attachedPanel.getData(), targetPanel.currentNode, targetPanel.getLocalNormalizingValue());
-//                targetPanel.computerZeroslopeAreasHierarchy(0);
-//                targetPanel.UpdateTemporalView(new Dimension(targetPanel.getWidth(), targetPanel.getHeight()), targetPanel.getLocalNormalizingValue());
-            }
+           }
         } else { //timecolumn mode
 
             if (SwingUtilities.isLeftMouseButton(me)) {
@@ -541,31 +517,20 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
                                         attachedPanel.getFocusedSelectionList().add(new Point2D.Double(i, j));
                                         try {
-                                        //                                TreeNode t1;
-                                            //                                if (!attachedPanel.currentNode.getChildren().isEmpty()) {
-                                            //                                    t1 = (TreeNode) attachedPanel.currentNode.getChildren().get(j);
-                                            //                                } else {
-                                            //                                    t1 = (TreeNode) attachedPanel.currentNode;
-                                            //                                }
-                                            //                                //here
-                                            //                                size = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).size();
-                                            //                                idx = 0;
-                                            //                                for (int k = 0; k < size; k++) {
-                                            //                                    idx = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).get(k);
-                                            //                                    //currentT = attachedPanel.getData().getTopicSequences().get(j);
-                                            //
-                                            //                                    for (int l = 0; l < t1.getTopicsContainedIdx().size(); l++) {
-                                            //                                        int topicIndex = t1.getTopicsContainedIdx().get(l);
-                                            //                                        if (attachedPanel.getData().values_Norm.get(idx)[topicIndex/*j*/] > 0.25) {
-                                            //                                            selectedByYearTopic.add(idx);
-                                            //                                        }
-                                            //                                    }
-                                            //                                }
-
-                                        // if (!selectedByYearTopic.isEmpty()) --ww-old
-                                            //                                }
-                                            //DocumentViewer tempDV = new DocumentViewer(selectedByYearTopic, attachedPanel, t1.getColor(), new Point2D.Double(i, j));
-                                            DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, j));
+                                        DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, j));
+                                         
+                                        WorldMapProcessingFrame worldMapFrame = new WorldMapProcessingFrame(attachedPanel.parent,
+                                                 dv.getSelectedtweets());
+                                        attachedPanel.parent.addWorldMapProcessingFrame(worldMapFrame);
+                                        worldMapFrame.setSize(1000, 1000);
+                                        worldMapFrame.setVisible(true);
+                                        
+                                        
+                                                 
+                                         
+                                         
+                                         
+                                         
                                         } catch (IOException ex) {
                                             Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
                                         } catch (ParseException ex) {
@@ -588,22 +553,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
                                         attachedPanel.getFocusedSelectionList().add(new Point2D.Double(i, j));
 
-//                                TreeNode t1 = (TreeNode) attachedPanel.currentNode;
-//
-//                                size = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).size();
-//                                idx = 0;
-//                                for (int k = 0; k < size; k++) {
-//                                    idx = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).get(k);
-//                                    //currentT = attachedPanel.getData().getTopicSequences().get(j);
-//
-//                                    for (int l = 0; l < t1.getTopicsContainedIdx().size(); l++) {
-//                                        int topicIndex = t1.getTopicsContainedIdx().get(l);
-//                                        if (attachedPanel.getData().values_Norm.get(idx)[topicIndex/*j*/] > 0.25) {
-//                                            selectedByYearTopic.add(idx);
-//                                        }
-//                                    }
-//                                }
-//                                attachedPanel.parent.fireYearTopicSelected(selectedByYearTopic);
+
                                     }
                                     try {
                                         try {
@@ -743,31 +693,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                                     attachedPanel.getFocusedSelectionList().add(new Point2D.Double(i, j));
                                     try {
                                         try {
-                                            //                                TreeNode t1;
-                                            //                                if (!attachedPanel.currentNode.getChildren().isEmpty()) {
-                                            //                                    t1 = (TreeNode) attachedPanel.currentNode.getChildren().get(j);
-                                            //                                } else {
-                                            //                                    t1 = (TreeNode) attachedPanel.currentNode;
-                                            //                                }
-                                            //                                //here
-                                            //                                size = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).size();
-                                            //                                idx = 0;
-                                            //                                for (int k = 0; k < size; k++) {
-                                            //                                    idx = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).get(k);
-                                            //                                    //currentT = attachedPanel.getData().getTopicSequences().get(j);
-                                            //
-                                            //                                    for (int l = 0; l < t1.getTopicsContainedIdx().size(); l++) {
-                                            //                                        int topicIndex = t1.getTopicsContainedIdx().get(l);
-                                            //                                        if (attachedPanel.getData().values_Norm.get(idx)[topicIndex/*j*/] > 0.25) {
-                                            //                                            selectedByYearTopic.add(idx);
-                                            //                                        }
-                                            //                                    }
-                                            //                                }
-                                            
-                                            // if (!selectedByYearTopic.isEmpty()) --ww-old
-                                            //                                }
-                                            //DocumentViewer tempDV = new DocumentViewer(selectedByYearTopic, attachedPanel, t1.getColor(), new Point2D.Double(i, j));
-                                            DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, j));
+                                           DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, j));
                                         } catch (UnknownHostException ex) {
                                             Logger.getLogger(TemporalViewInteractions.class.getName()).log(Level.SEVERE, null, ex);
                                         } catch (ParseException ex) {
@@ -793,22 +719,6 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
                                     attachedPanel.getFocusedSelectionList().add(new Point2D.Double(i, j));
 
-//                                TreeNode t1 = (TreeNode) attachedPanel.currentNode;
-//
-//                                size = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).size();
-//                                idx = 0;
-//                                for (int k = 0; k < size; k++) {
-//                                    idx = attachedPanel.getData().idxOfDocumentPerSlot.get(currentYear).get(k);
-//                                    //currentT = attachedPanel.getData().getTopicSequences().get(j);
-//
-//                                    for (int l = 0; l < t1.getTopicsContainedIdx().size(); l++) {
-//                                        int topicIndex = t1.getTopicsContainedIdx().get(l);
-//                                        if (attachedPanel.getData().values_Norm.get(idx)[topicIndex/*j*/] > 0.25) {
-//                                            selectedByYearTopic.add(idx);
-//                                        }
-//                                    }
-//                                }
-//                                attachedPanel.parent.fireYearTopicSelected(selectedByYearTopic);
                                 }
                                 try {
                                     try {
@@ -897,9 +807,9 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
             }
 
 //               attachedPanel.repaintView();
-            TemporalViewPanel p = attachedPanel.parent.getTemporalFrame().getMainPanel();
+           // TemporalViewPanel p = attachedPanel.parent.getTemporalFrame().getMainPanel();
 
-            if (attachedPanel.getName().equals(p.getName())) {
+            if (attachedPanel.getName().equals("Main")) {
 
                 boolean movedToOneStream = false;
                 int selected_node_index = -1;
@@ -924,42 +834,13 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
                 TreeNode tempt = attachedPanel.currentNode;
 
-//                TemporalViewPanel targetPanel = attachedPanel.parent.getTemporalFrame().getSubPanel();
-//                 attachedPanel.parent.getTemporalFrame().getSubPanel().currentNode = (TreeNode)tempt.getChildren().get(selected_node_index);
-//                     targetPanel.currentNode = (TreeNode)tempt.getChildren().get(selected_node_index);
-//                          targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
-//                          //targetPanel.setbShowEvents(false);
-//                          targetPanel.getDetectionResults().clear();
-//                         targetPanel.detectEvents(targetPanel.getEventThreshold());
-//                                 // popUp.cbEventMenuItem.setSelected(false);
-//                          
-//                     targetPanel.UpdateTemporalView(new Dimension(targetPanel.getWidth(), targetPanel.getHeight()), targetPanel.getLocalNormalizingValue());
-                //   System.out.println(attachedPanel.parent.getTemporalFrame().getSubPanel().currentNode.getValue());
+
                 if (!tempt.getChildren().isEmpty() && selected_node_index != -1) {
                     TreeNode selectedNode = (TreeNode) tempt.getChildren().get(selected_node_index);
 
                     attachedPanel.parent.stateChanged(selectedNode);
 
-//                    VisualizationViewer vv = attachedPanel.parent.getTopicGraphViewPanel().getVisualizationViewer();
-//                    final PickedState<TreeNode> pickedState = vv.getPickedVertexState();
-//                    //  int graphSize = vv.getGraphLayout().getGraph().getVertexCount();
-//                    // vv.getLayout().getGraph() ;
-//                    Collection<TreeNode> vertices = vv.getGraphLayout().getGraph().getVertices();
-//
-//                    pickedState.clear();
-//                    //System.out.println(selectedNode.toString());
-//                    int in = selectedNode.getIndex();
-//                    String sla = selectedNode.getValue();
-//                    //  System.out.println("selectedNode = " + in + " " + sla); 
-//                    for (Iterator<TreeNode> it = vertices.iterator(); it.hasNext();) {
-//                        TreeNode t = it.next();
-//                        if (in == t.getIndex() && (sla == null ? t.getValue() == null : sla.equals(t.getValue()))) {
-//                            pickedState.pick(t, true);
-//                            // System.out.println(t.toString() + "is matched" );
-//                            break;
-//                        }
-//                    }
-//                    attachedPanel.parent.getTopicGraphViewPanel().getVisualizationViewer().setPickedVertexState(pickedState);
+
                 }
 
                 attachedPanel.setNeedDoLayout(false);
@@ -967,7 +848,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
             }
 
-            if (timecolumn/*attachedPanel.getPanelTimeColumnMode()*/) {
+            if (timecolumn) {
 
                 int selected_node_index = -1;
 

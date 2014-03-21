@@ -5,7 +5,6 @@
  */
 package com.TasteAnalytics.HierarchicalTopics.gui;
 
-import com.google.gson.Gson;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
 import com.TasteAnalytics.HierarchicalTopics.eventsview.EventViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.file.CSVFile;
@@ -13,12 +12,17 @@ import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewF
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
-import com.google.code.geocoder.Geocoder;
-import com.google.code.geocoder.GeocoderRequestBuilder;
-import com.google.code.geocoder.model.GeocodeResponse;
-import com.google.code.geocoder.model.GeocoderRequest;
-import com.google.code.geocoder.model.GeocoderResult;
-import com.google.code.geocoder.model.LatLng;
+import com.explodingpixels.macwidgets.HudWidgetFactory;
+import com.explodingpixels.macwidgets.HudWindow;
+import com.explodingpixels.macwidgets.MacButtonFactory;
+import com.explodingpixels.macwidgets.MacUtils;
+import com.explodingpixels.macwidgets.SourceList;
+import com.explodingpixels.macwidgets.SourceListCategory;
+import com.explodingpixels.macwidgets.SourceListDarkColorScheme;
+import com.explodingpixels.macwidgets.SourceListItem;
+import com.explodingpixels.macwidgets.SourceListModel;
+import com.google.gson.Gson;
+
 
 
 import com.mongodb.BasicDBList;
@@ -32,7 +36,9 @@ import com.mongodb.MongoException;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mysql.jdbc.Connection;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.geom.Point2D;
 import java.io.*;
@@ -87,7 +93,35 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     public MinimalismMainFrame() {
         
         
+        
+        //this.setSize(null);
+        
         initComponents();
+        JButton button = HudWidgetFactory.createHudButton("Button");
+        
+        mButtonPanel.add(button);
+        
+       // MacUtils.makeWindowLeopardStyle(this.getRootPane());
+
+//        UnifiedToolBar toolBar =  UnifiedToolBar();
+//        JButton button = new JButton("My Button");
+//        button.putClientProperty("JButton.buttonType", "textured");
+//
+//// Create a new mac button based on the JButton.
+//        AbstractButton macButton = MacButtonFactory.makeUnifiedToolBarButton(button);
+//        // Add the button to the left side of the toolbar.
+//        toolBar.addComponentToLeft(button);
+//
+//        // This is so that the window can be dragged from anywhere on the toolbar.
+//        // This is optional, but will make your Java application feel more like an OSX app.
+//        macMainMenu.installWindowDraggerOnWindow(MainFrame);
+//
+//        // Add the toolbar to the frame.
+//        this.add(toolBar.getComponent(), BorderLayout.NORTH);
+        
+        
+        
+        
         
         
         Thread thread = new Thread(this);  
@@ -110,8 +144,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         menuEditGroup = new javax.swing.ButtonGroup();
         buttonEditGroup = new javax.swing.ButtonGroup();
-        jButton1 = new javax.swing.JButton();
+        mButtonPanel = new javax.swing.JPanel();
+        jButtonLoadData = new javax.swing.JButton();
         jConnectMongoButton = new javax.swing.JButton();
+        mViewPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenu = new javax.swing.JMenuItem();
@@ -133,16 +169,16 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
-        jButton1.setText("Load Data");
-        jButton1.setActionCommand("Load Data...");
-        jButton1.setMargin(new java.awt.Insets(0, 5, 0, 0));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonLoadData.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
+        jButtonLoadData.setText("Load Data");
+        jButtonLoadData.setActionCommand("Load Data...");
+        jButtonLoadData.setMargin(new java.awt.Insets(0, 5, 0, 0));
+        jButtonLoadData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openItemActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, java.awt.BorderLayout.CENTER);
+        mButtonPanel.add(jButtonLoadData);
 
         jConnectMongoButton.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
         jConnectMongoButton.setText("Connect Mongo");
@@ -151,7 +187,22 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
                 jConnectMongoButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(jConnectMongoButton, java.awt.BorderLayout.LINE_END);
+        mButtonPanel.add(jConnectMongoButton);
+
+        getContentPane().add(mButtonPanel, java.awt.BorderLayout.PAGE_START);
+
+        javax.swing.GroupLayout mViewPanelLayout = new javax.swing.GroupLayout(mViewPanel);
+        mViewPanel.setLayout(mViewPanelLayout);
+        mViewPanelLayout.setHorizontalGroup(
+            mViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1087, Short.MAX_VALUE)
+        );
+        mViewPanelLayout.setVerticalGroup(
+            mViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 582, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(mViewPanel, java.awt.BorderLayout.CENTER);
 
         menuBar.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
 
@@ -279,15 +330,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
         
         
-        final Geocoder geocoder = new Geocoder();
-        GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress("Charlotte, USA").setLanguage("en").getGeocoderRequest();
-        GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
-        List<GeocoderResult> gcr = geocoderResponse.getResults();
-        LatLng loc = gcr.get(0).getGeometry().getLocation();
-        BigDecimal lat = loc.getLat();
-        BigDecimal lng = loc.getLng();
-
-
+       
 
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
@@ -486,37 +529,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-//        MongoClient mongoClient = null;
-//        try {
-//            mongoClient = new MongoClient("10.18.203.211", 27017);
-//        } catch (UnknownHostException ex) {
-//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//        DB db = mongoClient.getDB("lda_results");
-//
-//        Set<String> colls = db.getCollectionNames();
-//
-////        for (String s1 : colls) {
-////            System.out.println(s1);
-////        }
-//
-//        DBCollection coll = db.getCollection("job_index");
-//        System.out.println("database count : " + coll.getCount());
-//
-//       
-//
-//        DBCursor cursor = coll.find();
-//        try {
-//            while (cursor.hasNext()) {
-//                BasicDBObject dbo = (BasicDBObject) cursor.next();
-//                String s = dbo.getString("_id");
-//                jobNames.add(s);
-//                //System.out.println(dbo);
-//            }
-//        } finally {
-//            cursor.close();
-//        }
 
         Object[][] data = new Object[jobNames.size()][];
         for (int i = 0; i < jobNames.size(); i++) {
@@ -527,9 +539,43 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         }
         JTable table = new JTable(data, columnName);
 
+        
+        HudWindow hud = new HudWindow("Select Dataset");
+        hud.getJDialog().setSize(400, 650);
+        hud.getJDialog().setLocationRelativeTo(null);
+        hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        hud.getJDialog().setVisible(true);
+        hud.hideCloseButton();
+        
+       
+       
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
+        
+        
+        JButton button = HudWidgetFactory.createHudButton("Button");
+        hud.getContentPane().setLayout(new FlowLayout());
+        hud.getContentPane().add(button);
+        
+//        JPanel jp = new JPanel();
+//        jp.add(scrollPane);
+//        jp.setPreferredSize(new Dimension(300,400));
+        hud.getContentPane().add(scrollPane);
 
+        
+        
+        SourceListModel model = new SourceListModel();
+        SourceListCategory category = new SourceListCategory("Category");
+        model.addCategory(category);
+        model.addItemToCategory(new SourceListItem("Item"), category);
+        SourceList sourceList = new SourceList(model);     
+        
+        
+        sourceList.setColorScheme(new SourceListDarkColorScheme());
+        
+        //hud.getContentPane().add(sourceList.getComponent());
+        
+        
         JOptionPane.showMessageDialog(null, scrollPane,
                 "select", JOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -802,7 +848,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
 
         temporalFrame.getMainPanel().buildLabelTimeMap();
-        temporalFrame.getSubPanel().buildLabelTimeMap();
+        //temporalFrame.getSubPanel().buildLabelTimeMap();
 
         viewController.setLeafNodeSequence(topicFrame.getLeafSequence());
 
@@ -964,17 +1010,17 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 //        viewController.twitterPointMax = csvf.getMaxLocation();
  //       viewController.twitterPointMin = csvf.getMinLocation();
 
-        vcGeoFrame = new VastGeoFrame(viewController, csvf.getFolderPath(), csvf.getTwitterGeoLocations());
-
-        viewController.setVCGF(vcGeoFrame);
-
-        if (viewController.geoLocations!=null)
-            vcGeoFrame.setVisible(true);
-        else
-            vcGeoFrame.setVisible(false);
+//        vcGeoFrame = new VastGeoFrame(viewController, csvf.getFolderPath(), csvf.getTwitterGeoLocations());
 //
+//        viewController.setVCGF(vcGeoFrame);
+//
+//        if (viewController.geoLocations!=null)
+//            vcGeoFrame.setVisible(true);
+//        else
+//            vcGeoFrame.setVisible(false);
 ////
-        System.out.println("GeoFrame done");
+//////
+//        System.out.println("GeoFrame done");
 
         eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
                 viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, csvf.getFolderPath(), csvf.getSimilarityMatrix());
@@ -992,12 +1038,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         });
         
         
-        vcGeoFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                jCheckBoxGeoFrame.setState(false);
-            }
-        });
+//        vcGeoFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+//            @Override
+//            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+//                jCheckBoxGeoFrame.setState(false);
+//            }
+//        });
 
         eventViewFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -1035,7 +1081,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem helpItem;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonLoadData;
     private javax.swing.JCheckBoxMenuItem jCheckBoxConsoleMenu;
     private javax.swing.JCheckBoxMenuItem jCheckBoxGeoFrame;
     private javax.swing.JCheckBoxMenuItem jCheckBoxLabelTopicFrame;
@@ -1043,6 +1089,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     private javax.swing.JCheckBoxMenuItem jCheckBoxTopicGraph;
     private javax.swing.JButton jConnectMongoButton;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JPanel mButtonPanel;
+    private javax.swing.JPanel mViewPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.ButtonGroup menuEditGroup;
     private javax.swing.JMenuItem openMenu;

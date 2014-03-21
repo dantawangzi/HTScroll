@@ -1203,23 +1203,22 @@ public class TopicGraphViewFrame extends JFrame {
                         int in = s.getIndex();
                         String sla = s.getValue();
                         if (parent.getTemporalFrame() != null) {
-                            TemporalViewPanel targetPanel = parent.getTemporalFrame().getSubPanel();
+                           // TemporalViewPanel targetPanel = parent.getTemporalFrame().getSubPanel();
 
-                            for (int i = 0; i < targetPanel.getTree().size(); i++) {
-                                TreeNode ttt = targetPanel.getTree().get(i);
-                                if (ttt.getIndex() == in && (ttt.getValue() == null ? sla == null : ttt.getValue().equals(sla))) {
-                                    targetPanel.currentNode = ttt;
-                                    //selectedNode = ttt;
-                                }
-                            }
-
-                            // System.out.println("from topics " + targetPanel.currentNode.getValue());
-                            // parent.stateChanged(selectedNode);
-                            targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
-                            targetPanel.calculateRenderControlPointsOfEachHierarchy(targetPanel.getData(), targetPanel.currentNode, targetPanel.getLocalNormalizingValue());
-                            targetPanel.detectEvents(targetPanel.getEventThreshold());
-
-                            targetPanel.UpdateTemporalView(new Dimension(targetPanel.getMyPanelWidth(), targetPanel.getMyPanelHeight()), targetPanel.getLocalNormalizingValue());
+//                            for (int i = 0; i < targetPanel.getTree().size(); i++) {
+//                                TreeNode ttt = targetPanel.getTree().get(i);
+//                                if (ttt.getIndex() == in && (ttt.getValue() == null ? sla == null : ttt.getValue().equals(sla))) {
+//                                    targetPanel.currentNode = ttt;
+//                                    //selectedNode = ttt;
+//                                }
+//                            }
+//
+//             
+//                            targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
+//                            targetPanel.calculateRenderControlPointsOfEachHierarchy(targetPanel.getData(), targetPanel.currentNode, targetPanel.getLocalNormalizingValue());
+//                            targetPanel.detectEvents(targetPanel.getEventThreshold());
+//
+//                            targetPanel.UpdateTemporalView(new Dimension(targetPanel.getMyPanelWidth(), targetPanel.getMyPanelHeight()), targetPanel.getLocalNormalizingValue());
 
                             int highlight_index = -1;
                             //
@@ -1249,21 +1248,21 @@ public class TopicGraphViewFrame extends JFrame {
                         int in = t.getIndex();
                         String sla = t.getValue();
                         if (parent.getTemporalFrame() != null) {
-                            TemporalViewPanel targetPanel = parent.getTemporalFrame().getSubPanel();
-                            for (int i = 0; i < targetPanel.getTree().size(); i++) {
-                                TreeNode ttt = targetPanel.getTree().get(i);
-                                if (ttt.getIndex() == in && (ttt.getValue() == null ? sla == null : ttt.getValue().equals(sla))) {
-                                    targetPanel.currentNode = ttt;
-
-                                    //selectedNode = ttt;
-                                }
-                            }
-
-                            //parent.stateChanged(selectedNode);
-                            targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
-
-                            //targetPanel.calculateRenderControlPointsOfEachHierarchy(targetPanel.getData(), targetPanel.currentNode);
-                            targetPanel.UpdateTemporalView(new Dimension(targetPanel.getMyPanelWidth(), targetPanel.getMyPanelHeight()), targetPanel.getLocalNormalizingValue());
+                        //    TemporalViewPanel targetPanel = parent.getTemporalFrame().getSubPanel();
+//                            for (int i = 0; i < targetPanel.getTree().size(); i++) {
+//                                TreeNode ttt = targetPanel.getTree().get(i);
+//                                if (ttt.getIndex() == in && (ttt.getValue() == null ? sla == null : ttt.getValue().equals(sla))) {
+//                                    targetPanel.currentNode = ttt;
+//
+//                                    //selectedNode = ttt;
+//                                }
+//                            }
+//
+//                            //parent.stateChanged(selectedNode);
+//                            targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
+//
+//                            //targetPanel.calculateRenderControlPointsOfEachHierarchy(targetPanel.getData(), targetPanel.currentNode);
+//                            targetPanel.UpdateTemporalView(new Dimension(targetPanel.getMyPanelWidth(), targetPanel.getMyPanelHeight()), targetPanel.getLocalNormalizingValue());
 
 //calculateNormalizingValue(data, currentNode);
 //                        targetPanel.calculateRenderControlPointsOfEachHierarchy(targetPanel.getData(), targetPanel.currentNode);
