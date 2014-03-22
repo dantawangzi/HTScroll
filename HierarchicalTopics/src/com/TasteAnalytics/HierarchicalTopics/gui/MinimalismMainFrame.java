@@ -553,27 +553,27 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         table.setFillsViewportHeight(true);
         
         
-        JButton button = HudWidgetFactory.createHudButton("Button");
-        hud.getContentPane().setLayout(new FlowLayout());
-        hud.getContentPane().add(button);
-        
-//        JPanel jp = new JPanel();
-//        jp.add(scrollPane);
-//        jp.setPreferredSize(new Dimension(300,400));
-        hud.getContentPane().add(scrollPane);
-
-        
-        
-        SourceListModel model = new SourceListModel();
-        SourceListCategory category = new SourceListCategory("Category");
-        model.addCategory(category);
-        model.addItemToCategory(new SourceListItem("Item"), category);
-        SourceList sourceList = new SourceList(model);     
-        
-        
-        sourceList.setColorScheme(new SourceListDarkColorScheme());
-        
-        //hud.getContentPane().add(sourceList.getComponent());
+//        JButton button = HudWidgetFactory.createHudButton("Button");
+//        hud.getContentPane().setLayout(new FlowLayout());
+//        hud.getContentPane().add(button);
+//        
+////        JPanel jp = new JPanel();
+////        jp.add(scrollPane);
+////        jp.setPreferredSize(new Dimension(300,400));
+//        hud.getContentPane().add(scrollPane);
+//
+//        
+//        
+//        SourceListModel model = new SourceListModel();
+//        SourceListCategory category = new SourceListCategory("Category");
+//        model.addCategory(category);
+//        model.addItemToCategory(new SourceListItem("Item"), category);
+//        SourceList sourceList = new SourceList(model);     
+//        
+//        
+//        sourceList.setColorScheme(new SourceListDarkColorScheme());
+//        
+//        //hud.getContentPane().add(sourceList.getComponent());
         
         
         JOptionPane.showMessageDialog(null, scrollPane,

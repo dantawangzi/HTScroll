@@ -1284,10 +1284,12 @@ public class DocumentViewer extends JFrame {
             ,"In what Country do you currently live?"
                     ,"In what State or Province do you currently live?"
                     ,"In what City do you currently live?"
+                    ,"latitude"
+                    ,"longitude"
             
             };
                        
-            parent.nameFields = newNameFields;
+           // parent.nameFields = newNameFields;
             
             int keysize = newNameFields.length;
 

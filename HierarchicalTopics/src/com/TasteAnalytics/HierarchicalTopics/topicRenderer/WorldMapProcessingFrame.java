@@ -85,40 +85,55 @@ public class WorldMapProcessingFrame extends Frame {
         for (int i=0; i<M.size(); i++)
         {
         
+            float lat = Float.parseFloat((String)M.get(i).get("latitude"));
+            float lng = Float.parseFloat((String)M.get(i).get("longitude"));
             
-            String country = (String) M.get(i).get("In what Country do you currently live?");
-            String state = (String) M.get(i).get("In what State or Province do you currently live?");
-            String city = (String) M.get(i).get("In what City do you currently live?");
-            String address = city + ", " + state + ","+ country;
             
-            final Geocoder geocoder = new Geocoder();
-            GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(address).setLanguage("en").getGeocoderRequest();
-            GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
-            List<GeocoderResult> gcr = geocoderResponse.getResults();
+             L.add(new Point2D.Float(lat,lng));
+//
+                if (lat>=max_y)
+                    max_y = lat;
+                if (lat<=min_y)
+                    min_y = lat;
 
-            System.out.println(gcr);
+                if (lng>=max_x)
+                    max_x = lng;
+                if (lng<=min_x)
+                    min_x = lng;
             
-            if (gcr!=null && !gcr.isEmpty())
-            {
-                LatLng loc = gcr.get(0).getGeometry().getLocation();
-
-
-                BigDecimal lat = loc.getLat();
-                BigDecimal lng = loc.getLng();
-
-                L.add(new Point2D.Float( lat.floatValue(),lng.floatValue()));
-
-                if (lat.floatValue()>=max_y)
-                    max_y = lat.floatValue();
-                if (lat.floatValue()<=min_y)
-                    min_y = lat.floatValue();
-
-                if (lng.floatValue()>=max_x)
-                    max_x = lng.floatValue();
-                if (lng.floatValue()<=min_x)
-                    min_x = lng.floatValue();
-            
-            }
+//            String country = (String) M.get(i).get("In what Country do you currently live?");
+//            String state = (String) M.get(i).get("In what State or Province do you currently live?");
+//            String city = (String) M.get(i).get("In what City do you currently live?");
+//            String address = city + ", " + state + ","+ country;
+//            
+//            final Geocoder geocoder = new Geocoder();
+//            GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(address).setLanguage("en").getGeocoderRequest();
+//            GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
+//            List<GeocoderResult> gcr = geocoderResponse.getResults();
+//
+//            System.out.println(gcr);
+//            
+//            if (gcr!=null && !gcr.isEmpty())
+//            {
+//                LatLng loc = gcr.get(0).getGeometry().getLocation();
+//
+//
+//                BigDecimal lat = loc.getLat();
+//                BigDecimal lng = loc.getLng();
+//
+//                L.add(new Point2D.Float( lat.floatValue(),lng.floatValue()));
+//
+//                if (lat.floatValue()>=max_y)
+//                    max_y = lat.floatValue();
+//                if (lat.floatValue()<=min_y)
+//                    min_y = lat.floatValue();
+//
+//                if (lng.floatValue()>=max_x)
+//                    max_x = lng.floatValue();
+//                if (lng.floatValue()<=min_x)
+//                    min_x = lng.floatValue();
+//            
+//            }
         
         
         }
@@ -129,8 +144,8 @@ public class WorldMapProcessingFrame extends Frame {
         
         
         Point2D center = new Point2D.Double((min_y+max_y)/2, (min_x+max_x)/2);
-        System.out.println( M.size());
-        System.out.println( L.size());
+//        System.out.println( M.size());
+//        System.out.println( L.size());
         System.out.println( center.getX() + " " + center.getY());
         
         embed = new Embedded(L, center);
