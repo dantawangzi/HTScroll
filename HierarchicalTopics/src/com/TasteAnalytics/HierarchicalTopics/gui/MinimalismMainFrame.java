@@ -37,6 +37,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mysql.jdbc.Connection;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
@@ -59,6 +60,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.JTable;
+import javax.swing.border.Border;
 import org.apache.commons.io.IOUtils;
 import prefuse.data.Graph;
 import prefuse.data.io.*;
@@ -86,7 +88,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     ConsoleFrame consoleFrame = null;
     
     
+     JSplitPane mainSplit;
     
+    JSplitPane leftSplit, rightSplit;
+        
+    JScrollPane leftTopScrollPane, leftBottomScrollPane;
+    JScrollPane rightTopScrollPane, rightBottomScrollPane;
     
     
     
@@ -118,8 +125,74 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 //        this.add(toolBar.getComponent(), BorderLayout.NORTH);
         
         
+         JPanel testPanel = new JPanel();
+        testPanel.setBackground(Color.red);
+        testPanel.setPreferredSize(new Dimension(1500,1000));
+        
+        JPanel testPanel2 = new JPanel();
+        testPanel2.setBackground(Color.black);
+        testPanel2.setPreferredSize(new Dimension(1500,1000));
+        
+        JPanel testPanel3 = new JPanel();
+        testPanel3.setBackground(Color.green);
+        testPanel3.setPreferredSize(new Dimension(1500,1000));
+        
+        JPanel testPanel4 = new JPanel();
+        testPanel4.setBackground(Color.yellow);
+        testPanel4.setPreferredSize(new Dimension(1500,1000));
         
         
+        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
+        mButtonPanel.setBorder(orangeLine);
+        
+            rightTopScrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        rightTopScrollPane.setViewportView(testPanel);
+        
+        rightBottomScrollPane = new JScrollPane(testPanel4, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);        
+        rightBottomScrollPane.setViewportView(testPanel4);
+        
+           
+        leftTopScrollPane = new JScrollPane(testPanel2, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        leftTopScrollPane.setViewportView(testPanel2);
+        
+        leftBottomScrollPane = new JScrollPane(testPanel3, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);        
+        leftBottomScrollPane.setViewportView(testPanel3);
+        
+        
+        
+        leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                           leftTopScrollPane, leftBottomScrollPane);
+        leftSplit.setOneTouchExpandable(true);
+        leftSplit.setDividerLocation(150);
+        
+        
+        rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                           rightTopScrollPane, rightBottomScrollPane);
+        rightSplit.setOneTouchExpandable(true);
+        rightSplit.setDividerLocation(150);
+        
+        
+        
+        mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                           leftSplit, rightSplit);
+        mainSplit.setOneTouchExpandable(true);
+        mainSplit.setDividerLocation(150);
+       mainSplit.setContinuousLayout(true);
+        
+        
+        //Provide minimum sizes for the two components in the split pane
+        Dimension minimumSize = new Dimension(100, 50);
+        leftTopScrollPane.setMinimumSize(minimumSize);
+        leftBottomScrollPane.setMinimumSize(minimumSize);
+        
+        rightTopScrollPane.setMinimumSize(minimumSize);
+        rightBottomScrollPane.setMinimumSize(minimumSize);
+        
+        Border blackline = BorderFactory.createLineBorder(Color.black);
+        mViewPanel.setBorder(blackline);
+        mViewPanel.add(mainSplit);
         
         
         Thread thread = new Thread(this);  
@@ -189,17 +262,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         getContentPane().add(mButtonPanel, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout mViewPanelLayout = new javax.swing.GroupLayout(mViewPanel);
-        mViewPanel.setLayout(mViewPanelLayout);
-        mViewPanelLayout.setHorizontalGroup(
-            mViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1087, Short.MAX_VALUE)
-        );
-        mViewPanelLayout.setVerticalGroup(
-            mViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 582, Short.MAX_VALUE)
-        );
-
+        mViewPanel.setLayout(new java.awt.BorderLayout());
         getContentPane().add(mViewPanel, java.awt.BorderLayout.CENTER);
 
         menuBar.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
