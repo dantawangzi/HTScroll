@@ -17,6 +17,7 @@ import com.TasteAnalytics.HierarchicalTopics.file.DataTable;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.ZoomedTemporalViewPanel;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -69,6 +70,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -97,6 +99,7 @@ public class DocumentViewer extends JFrame {
     SelectionListener listener;//for document selection
     public Map<String, Integer> awardNum2docIdx;//identified award number as common ground
     TreeMap<Integer, Integer> sortedResults;
+    WorldMapProcessingPanel mapPanel ;
 
     public List<Integer> getSelectedDocuments() {
         return selectedDocuments;
@@ -122,6 +125,9 @@ public class DocumentViewer extends JFrame {
     public DocumentViewer(final TemporalViewPanel p, final Point2D pt) throws IOException, UnknownHostException, ParseException {
 
         initComponents();
+        
+        
+        
 
         //Set this frame just to close itself
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -191,6 +197,11 @@ public class DocumentViewer extends JFrame {
         } else {
             this.updateDocViewContent(selectedDocuments, p.parent.host, p.parent.port, p.parent.database, p.parent.collection, p.parent.nameFields);
         }
+        
+        
+         mapPanel = new WorldMapProcessingPanel(parent, selectedtweets, parent.getTemporalFrame().getWidth(), parent.getTemporalFrame().getHeight()/3);
+                                       
+        jTabbedPane.addTab("Map", mapPanel);
 
 ////        geoHeatMapPanel.setLayout(null/*new CardLayout()*/);
 ////        geoHeatMapPanel.setPreferredSize(new Dimension(520, 264));
@@ -204,13 +215,7 @@ public class DocumentViewer extends JFrame {
 ////        Label.setBounds(0, 0, 520, 264);
 ////        // Label.setBackground(new Color(0, 0, 0, .5f));  
 ////        // Label.setOpaque(true);
-////
-////
-////
-////
-////
-//        
-//        
+     
 //        
 //        BufferedImage htimage = createHeatMap(1000, 500);
 //        parent.getVCGF().setHeatmapImg(htimage);
@@ -673,8 +678,6 @@ public class DocumentViewer extends JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
         searchKeywordWithinDoc = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         acrossCorpusWordSearchText = new javax.swing.JTextField();
@@ -684,6 +687,9 @@ public class DocumentViewer extends JFrame {
         RTRatio = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         JExportButton = new javax.swing.JButton();
+        jTabbedPane = new javax.swing.JTabbedPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Document Viewer");
@@ -700,12 +706,6 @@ public class DocumentViewer extends JFrame {
             }
         ));
         jScrollPane1.setViewportView(jTable1);
-
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
 
         searchKeywordWithinDoc.setText("Highlight Keywords with in Selected Document");
         searchKeywordWithinDoc.addActionListener(new java.awt.event.ActionListener() {
@@ -771,38 +771,48 @@ public class DocumentViewer extends JFrame {
             }
         });
 
+        jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
+
+        jTabbedPane.addTab("Text", jScrollPane2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
                     .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(101, 101, 101))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(docSelectionThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(thresholdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(44, 44, 44)
-                                .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(JExportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel1)
-                        .addGap(128, 128, 128)))
+                        .addGap(128, 128, 128))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(101, 101, 101))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(docSelectionThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(thresholdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(44, 44, 44)
+                                        .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(JExportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTabbedPane))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -825,7 +835,7 @@ public class DocumentViewer extends JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -874,6 +884,11 @@ public class DocumentViewer extends JFrame {
             } else {
                 try {
                     this.updateDocViewContent(selectedDocuments, parent.host, parent.port, parent.database, parent.collection, parent.nameFields);
+                    
+                    
+                    mapPanel.UpdateGeoLocationsFromDoc(null, selectedtweets);
+                    
+                    
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ParseException ex) {
@@ -971,6 +986,7 @@ public class DocumentViewer extends JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField searchKeywordWithinDoc;

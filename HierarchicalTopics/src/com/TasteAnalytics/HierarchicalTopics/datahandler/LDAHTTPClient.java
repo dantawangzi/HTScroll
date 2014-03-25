@@ -99,6 +99,12 @@ public class LDAHTTPClient {
             
         }
         
+        
+        
+        
+        
+        
+        
 	public Object apacheGet(String path, String parameters) throws ClientProtocolException, IOException{
 		String url = this.protocol + "://" + this.host + ":" + this.port + "/" + path + "?json=True&"+parameters;
 
@@ -201,6 +207,19 @@ public class LDAHTTPClient {
 
 
 		return apacheGet(path, job_id+"&"+doc_type+"&"+field);
+	}
+        
+        
+        public Object getGroupbyDocs(String group_id, String in_db, String in_table, String latfield, String lngfield) throws IOException{
+		
+
+		String path = "gd";
+    	
+
+                
+                
+                return apacheGet(path, "gb=" + group_id + "&db=" + in_db+"&col="+in_table + "&lat=" + latfield + "&lon=" + lngfield);
+		
 	}
 
 	public Object getTopicSlotDocs(String job_id, int topic_id, int slot_id, double threshold, String in_db, String in_table, String fields[], String id_type) throws IOException{

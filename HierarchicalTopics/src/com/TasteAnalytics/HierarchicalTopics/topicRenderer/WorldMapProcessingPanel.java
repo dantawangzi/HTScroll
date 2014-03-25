@@ -22,12 +22,14 @@ import de.fhpotsdam.unfolding.providers.*;
 import de.fhpotsdam.unfolding.utils.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.geom.Point2D;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JPanel;
 import processing.core.PApplet;
 import processing.opengl.*;
 
@@ -35,22 +37,21 @@ import processing.opengl.*;
  *
  * @author Li
  */
-public class WorldMapProcessingFrame extends Frame {
+public class WorldMapProcessingPanel extends JPanel {
 
     ViewController parent;
     List<Color> geoLocationColors = new ArrayList<Color>();
-    List<List<SimplePointMarker>> geoLocations;
+    ;
 
     List<Point2D> allLocations;
+    List<Integer> counts = new ArrayList<Integer>();
+    
+    int countMax = -1;
     Embedded embed;
-    public WorldMapProcessingFrame(ViewController vc, List<Point2D> L, Point2D center) {
-        super("Embedded PApplet");
-        
-        
-        
-        
-        
-        this.geoLocations = new ArrayList<List<SimplePointMarker>>();
+    public WorldMapProcessingPanel(ViewController vc, List<Point2D> L, Point2D center) {
+        //super("Embedded PApplet");
+       super();
+
 
         parent = vc;
 
@@ -60,22 +61,38 @@ public class WorldMapProcessingFrame extends Frame {
         allLocations = L;
         add(embed, BorderLayout.CENTER);
         embed.init();
+        
 
-
-
+    }
+     
+    
+    @Override
+    public void resize(int w, int h)
+    {
+        embed.size(w, h);
+        
+    }
+    
+  
+    public WorldMapProcessingPanel()
+    {
+        super();
+   
     }
     
     
-        public WorldMapProcessingFrame(ViewController vc, List<HashMap> M) {
-        super("Embedded PApplet");
-        this.geoLocations = new ArrayList<List<SimplePointMarker>>();
+        public WorldMapProcessingPanel(ViewController vc, List<HashMap> M, int w, int h) {
+        //super("Embedded PApplet");
+         super();
+        
+         this.setPreferredSize(new Dimension(w,h));
+         
 
         parent = vc;
 
         setLayout(new BorderLayout());
          List<Point2D> L = new ArrayList<Point2D>();
-         
-         
+                  
          float max_x = -9999999.0f;  // lng
          float max_y = -9999999.0f;  // lat
          float min_x = 9999999.0f;
@@ -100,6 +117,16 @@ public class WorldMapProcessingFrame extends Frame {
                     max_x = lng;
                 if (lng<=min_x)
                     min_x = lng;
+                
+                
+                if (M.get(i).containsKey("count"))
+                {
+                    
+                    counts.add((Integer) M.get(i).get("count"));
+                    
+                    if (counts.get(i)>=countMax)
+                        countMax = counts.get(i);
+                }
             
 //            String country = (String) M.get(i).get("In what Country do you currently live?");
 //            String state = (String) M.get(i).get("In what State or Province do you currently live?");
@@ -138,10 +165,7 @@ public class WorldMapProcessingFrame extends Frame {
         
         }
         
-        
-        
-        
-        
+   
         
         Point2D center = new Point2D.Double((min_y+max_y)/2, (min_x+max_x)/2);
 //        System.out.println( M.size());
@@ -151,35 +175,67 @@ public class WorldMapProcessingFrame extends Frame {
         embed = new Embedded(L, center);
         
         allLocations = L;
-        add(embed, BorderLayout.CENTER);
         embed.init();
+        add(embed, BorderLayout.CENTER);
+        
 
 
 
     }
 //
-
-    public void UpdateGeoLocations(Color c, List<Integer> l) {
+        
+        
+      public void UpdateGeoLocationsFromDoc(Color c, List<HashMap> M) {
         geoLocationColors.add(c);
 
-        List<SimplePointMarker> tmp = new ArrayList<SimplePointMarker>();
-        for (int i = 0; i < l.size(); i++) {
+         List<Point2D> L = new ArrayList<Point2D>();
+         
+         
+         float max_x = -9999999.0f;  // lng
+         float max_y = -9999999.0f;  // lat
+         float min_x = 9999999.0f;
+         float min_y = 9999999.0f;
+         
+         
+         for (int i=0; i<M.size(); i++)
+        {
+        
+            float lat = Float.parseFloat((String)M.get(i).get("latitude"));
+            float lng = Float.parseFloat((String)M.get(i).get("longitude"));
             
-            int index = l.get(i);                       
-                    
-            Location temp = new Location(allLocations.get(index).getX(), -allLocations.get(index).getY());
+             L.add(new Point2D.Float(lat,lng));
+
+                if (lat>=max_y)
+                    max_y = lat;
+                if (lat<=min_y)
+                    min_y = lat;
+
+                if (lng>=max_x)
+                    max_x = lng;
+                if (lng<=min_x)
+                    min_x = lng;
+            
+        }
+         
+         
+        List<SimplePointMarker> tmp = new ArrayList<SimplePointMarker>();
+        for (int i = 0; i < L.size(); i++) {
+                                                        
+            Location temp = new Location(L.get(i).getX(), L.get(i).getY());
 
             SimplePointMarker tempMarker = new SimplePointMarker(temp);
             tmp.add(tempMarker);
 
         }
 
-        geoLocations.add(tmp);
+       
+        allLocations = L;
         
-        
-        embed.updateDocMarkers(geoLocationColors, geoLocations);
+        embed.updateMarkers(geoLocationColors, tmp);
 
     }
+      
+    
 
     public class Embedded extends PApplet {
 
@@ -187,12 +243,14 @@ public class WorldMapProcessingFrame extends Frame {
         // Small map showing the overview, i.e. the world
         UnfoldingMap mapOverviewStatic;
         // Interactive finder box atop the overview map.
-        ViewportRect viewportRect;
+        //ViewportRect viewportRect;
         Location center;
         List<Marker> Markers;
         
-        
- 
+        float oldWidth;
+        float oldHeight;
+
+                 
         MarkerManager<Marker> markerManager = new MarkerManager<Marker>();
         
        private Embedded(List<Point2D> L, Point2D c) {
@@ -213,20 +271,28 @@ public class WorldMapProcessingFrame extends Frame {
         }
         
 
+   
+        @Override
         public void setup() {
-            // original setup code here ...
-            size(1000, 1000);
-            mapDetail = new UnfoldingMap(this, new Microsoft.RoadProvider() );//new Microsoft.AerialProvider()/*, "detail", 10, 10, 585, 580*/);
             
+            
+            // original setup code here ...
+            //size(800,800);
+            size(1600, 1000);
+            //this.frame.setResizable(redraw);
+              //  frame.setResizable(true);
+                
+            mapDetail = new UnfoldingMap(this, new Google.GoogleMapProvider() );//new Microsoft.AerialProvider()/*, "detail", 10, 10, 585, 580*/);
+            //new Microsoft.RoadProvider()
 //		mapDetail.zoomToLevel(4);
-//		mapDetail.setZoomRange(4, 10);
+            mapDetail.setZoomRange(1, 12);
             MapUtils.createDefaultEventDispatcher(this, mapDetail);
 
             // Static overview map
             //mapOverviewStatic = new UnfoldingMap(this, "overviewStatic", 605, 10, 185, 185);
 
             mapDetail.zoomToLevel(2);
-            //mapDetail.zoom(40.0f);
+            
             mapDetail.panTo(center);
 
             
@@ -238,22 +304,45 @@ public class WorldMapProcessingFrame extends Frame {
 //                    stroke(67, 211, 227, 100);
 //                    noFill();
 //                    ellipse(tPos.x, tPos.y, 36, 36);
-                Markers.get(i).setColor(color(12, 24, 255, 100));
+                Markers.get(i).setColor(color(141,160,203, 100));
                 
+                if (!counts.isEmpty())
+                {
+                    float weight = (float)counts.get(i)/(float)countMax;
+                
+                    Markers.get(i).setStrokeColor(color(252,141,98, 100));
+                    Markers.get(i).setStrokeWeight((int) (weight*15));
+                }
 
             }
             markerManager.addMarkers(Markers);
 
+            oldWidth = width;
+                oldHeight = height;
+                
             //viewportRect = new ViewportRect();
              
             
 
         }
 
+        @Override
         public void draw() {
             //background(0);
 
-            mapDetail.draw();
+            
+
+
+                background(0);
+                mapDetail.draw();
+                
+                
+            //mapDetail.draw();
+            
+            
+            
+            
+            
             //mapOverviewStatic.draw();
 
             // Viewport is updated by the actual area of the detail map
@@ -263,8 +352,24 @@ public class WorldMapProcessingFrame extends Frame {
 //		viewportRect.draw();
         }
         
-        
-        
+       
+          
+        public void updateMarkers(List<Color> lc,List<SimplePointMarker> llsm)
+        {
+           markerManager.clearMarkers();
+           
+           for (int j=0;j<llsm.size(); j++)
+           {
+            
+                
+                //Color c = lc.get(j);
+               // llsm.get(j).setColor(color(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha()));
+                markerManager.addMarker(llsm.get(j));
+                            
+            
+           }            
+            
+        }
         
         public void updateDocMarkers(List<Color> lc,List<List<SimplePointMarker>> llsm)
         {
@@ -274,8 +379,8 @@ public class WorldMapProcessingFrame extends Frame {
            {
             for (int i = 0; i < llsm.get(j).size(); i+=10) {
                 
-                Color c = lc.get(j);
-                llsm.get(j).get(i).setColor(color(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha()));
+                //Color c = lc.get(j);
+                //llsm.get(j).get(i).setColor(color(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha()));
                 markerManager.addMarker(llsm.get(j).get(i));
                             
             }
@@ -283,56 +388,57 @@ public class WorldMapProcessingFrame extends Frame {
             
         }
         
+   
         
         @Override
         public void keyPressed() {
             
             if (key == 'c') {
-			markerManager.clearMarkers();
+                markerManager.clearMarkers();
 		}
             
         }
         
         
 
-        public void panViewportOnDetailMap() {
-            float x = viewportRect.x + viewportRect.w / 2;
-            float y = viewportRect.y + viewportRect.h / 2;
-            Location newLocation = mapOverviewStatic.mapDisplay.getLocation(x, y);
-            mapDetail.panTo(newLocation);
-        }
-
-//        public void mousePressed() {
-//            // do something based on mouse movement
-//
-//            // update the screen (run draw once)
-//            redraw();
+//        public void panViewportOnDetailMap() {
+//            float x = viewportRect.x + viewportRect.w / 2;
+//            float y = viewportRect.y + viewportRect.h / 2;
+//            Location newLocation = mapOverviewStatic.mapDisplay.getLocation(x, y);
+//            mapDetail.panTo(newLocation);
 //        }
-        class ViewportRect {
-
-            float x;
-            float y;
-            float w;
-            float h;
-            boolean dragged = false;
-
-            public boolean isOver(float checkX, float checkY) {
-                return checkX > x && checkY > y && checkX < x + w && checkY < y + h;
-            }
-
-            public void setDimension(ScreenPosition tl, ScreenPosition br) {
-                this.x = tl.x;
-                this.y = tl.y;
-                this.w = br.x - tl.x;
-                this.h = br.y - tl.y;
-            }
-
-            public void draw() {
-                noFill();
-                stroke(251, 114, 0, 240);
-                rect(x, y, w, h);
-            }
-        }
+//
+////        public void mousePressed() {
+////            // do something based on mouse movement
+////
+////            // update the screen (run draw once)
+////            redraw();
+////        }
+//        class ViewportRect {
+//
+//            float x;
+//            float y;
+//            float w;
+//            float h;
+//            boolean dragged = false;
+//
+//            public boolean isOver(float checkX, float checkY) {
+//                return checkX > x && checkY > y && checkX < x + w && checkY < y + h;
+//            }
+//
+//            public void setDimension(ScreenPosition tl, ScreenPosition br) {
+//                this.x = tl.x;
+//                this.y = tl.y;
+//                this.w = br.x - tl.x;
+//                this.h = br.y - tl.y;
+//            }
+//
+//            public void draw() {
+//                noFill();
+//                stroke(251, 114, 0, 240);
+//                rect(x, y, w, h);
+//            }
+//        }
         float oldX;
         float oldY;
 //	public void mousePressed() {

@@ -35,7 +35,7 @@ import java.util.Scanner;
 import java.util.Stack;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame.customLabelTimecolumnKey;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
 import java.awt.Point;
 
 import prefuse.data.Edge;
@@ -67,7 +67,7 @@ public class ViewController {
     private DateFormat format;
     public String csvfFolderPath;
     public VastGeoFrame VCGF;
-    public WorldMapProcessingFrame worldMapProcessingFrame;
+    public WorldMapProcessingPanel worldMapProcessingFrame;
     public List<Point2D> geoLocations;
     
      
@@ -221,11 +221,11 @@ public class ViewController {
         eventViewFrame = ev;
     }
 
-    public void addWorldMapProcessingFrame(WorldMapProcessingFrame wf) {
+    public void addWorldMapProcessingFrame(WorldMapProcessingPanel wf) {
         worldMapProcessingFrame = wf;
     }
 
-    public WorldMapProcessingFrame getWorldMapProcessingFrame() {
+    public WorldMapProcessingPanel getWorldMapProcessingFrame() {
         if (worldMapProcessingFrame != null) {
             return this.worldMapProcessingFrame;
         }
@@ -429,7 +429,7 @@ public class ViewController {
 
     void updateGeoView(Color c, List<Integer> l) {
         if (getWorldMapProcessingFrame() != null) {
-            getWorldMapProcessingFrame().UpdateGeoLocations(c, l);
+            //getWorldMapProcessingFrame().UpdateGeoLocations(c, l);
         }
 
     }

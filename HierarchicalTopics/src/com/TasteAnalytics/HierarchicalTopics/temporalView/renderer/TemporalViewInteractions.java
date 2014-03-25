@@ -7,7 +7,7 @@ package com.TasteAnalytics.HierarchicalTopics.temporalView.renderer;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.CategoryBarElement;
 import com.TasteAnalytics.HierarchicalTopics.gui.DocumentViewer;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewPanel;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import java.awt.BorderLayout;
@@ -519,11 +519,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                                         try {
                                         DocumentViewer dv = new DocumentViewer(attachedPanel, new Point2D.Double(i, j));
                                          
-                                        WorldMapProcessingFrame worldMapFrame = new WorldMapProcessingFrame(attachedPanel.parent,
-                                                 dv.getSelectedtweets());
-                                        attachedPanel.parent.addWorldMapProcessingFrame(worldMapFrame);
-                                        worldMapFrame.setSize(1000, 1000);
-                                        worldMapFrame.setVisible(true);
+                                        
                                         
                                         
                                                  

@@ -11,7 +11,7 @@ import com.TasteAnalytics.HierarchicalTopics.file.CSVFile;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.MacButtonFactory;
@@ -97,9 +97,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         //this.setSize(null);
         
         initComponents();
-        JButton button = HudWidgetFactory.createHudButton("Button");
-        
-        mButtonPanel.add(button);
+       
         
        // MacUtils.makeWindowLeopardStyle(this.getRootPane());
 
@@ -540,13 +538,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         JTable table = new JTable(data, columnName);
 
         
-        HudWindow hud = new HudWindow("Select Dataset");
-        hud.getJDialog().setSize(400, 650);
-        hud.getJDialog().setLocationRelativeTo(null);
-        hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        hud.getJDialog().setVisible(true);
-        hud.hideCloseButton();
-        
+//        HudWindow hud = new HudWindow("Select Dataset");
+//        hud.getJDialog().setSize(400, 650);
+//        hud.getJDialog().setLocationRelativeTo(null);
+//        hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//        hud.getJDialog().setVisible(true);
+//        hud.hideCloseButton();
+//        
        
        
         JScrollPane scrollPane = new JScrollPane(table);
@@ -605,9 +603,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             
             String Key =(String)   ((HashMap)r).get("_id");
             String terms = (String) ((HashMap)r).get("terms");
-            
-            
-            
+                                    
             String[] tmps = terms.split(",");
             String[] tmpdest = new String[tmps.length+2];
             tmpdest[0] = "Group";
@@ -666,7 +662,21 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
         
         for (Object r : (ArrayList) connection.getJobDocs(job, "flat"))
-        {System.out.println(r);TreeString = (String) ((HashMap) r).get("tree");}
+        {
+            //System.out.println(r);
+            TreeString = (String) ((HashMap) r).get("tree");
+        }
+        
+        
+        
+        List<HashMap> maplocations = new ArrayList<HashMap>();
+        
+        for (Object r : (ArrayList) connection.getGroupbyDocs("name", viewController.database,viewController.table,"latitude","longitude"))
+        {
+            maplocations.add((HashMap) r);
+        }
+        
+        
                         
 //        q1 = new BasicDBObject("type", "flat");
 //        cursorfind = currentColl.find(q1);
@@ -687,7 +697,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             viewController.addTemporalFrame(temporalFrame);
 
             temporalFrame.loadCacheData(job, TreeString, viewController.host);
-            
+            temporalFrame.createWorldMap(maplocations); 
          
             temporalFrame.setVisible(true);
             temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
@@ -999,7 +1009,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         
         
-//        WorldMapProcessingFrame worldMapFrame = new WorldMapProcessingFrame(viewController,csvf.getTwitterGeoLocations(), csvf.getMediumLocation());
+//        WorldMapProcessingPanel worldMapFrame = new WorldMapProcessingPanel(viewController,csvf.getTwitterGeoLocations(), csvf.getMediumLocation());
 //        viewController.addWorldMapProcessingFrame(worldMapFrame);
 //        worldMapFrame.setSize(1000, 1000);
 //        worldMapFrame.setVisible(true);

@@ -143,7 +143,7 @@ public class EventViewFrame extends JFrame {
     private List<TreeNode> nodeNodes = new ArrayList<TreeNode>();
     
     public EventViewFrame(ViewController vc, List<TreeNode> thisTree, CategoryBarElement data, List<Integer> seq, DelegateForest<Object, TopicGraphViewFrame.MyLink> g, Graph pgh, String everything, String folderPath, List<List<Float>> disMatrix) throws FileNotFoundException, IOException {
-        super("Events View");
+        super("Tag Relationship");
         
         parent = vc;
         

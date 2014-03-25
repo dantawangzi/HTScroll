@@ -4,49 +4,47 @@
  */
 package com.TasteAnalytics.HierarchicalTopics.temporalView.renderer;
 
+import com.TasteAnalytics.HierarchicalTopics.datahandler.CategoryBarElement;
+import com.TasteAnalytics.HierarchicalTopics.gui.ViewController;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Dimension2D;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import com.TasteAnalytics.HierarchicalTopics.gui.ViewController;
-import java.io.IOException;
-
-import java.awt.event.MouseListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.geom.Dimension2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import org.apache.commons.io.IOUtils;
-import com.TasteAnalytics.HierarchicalTopics.datahandler.CategoryBarElement;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-
-import java.awt.Color;
-import java.awt.Component;
 import javax.swing.BorderFactory;
-import javax.swing.border.Border;
-import java.awt.GridLayout;
-import java.text.DateFormat;
-import java.util.HashMap;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 import javax.swing.border.Border;
+import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
-
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -61,6 +59,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
     private int myFrameHeight = 0;
     ViewController parent;
     private TemporalViewPanel mainPanel;
+    private WorldMapProcessingPanel worldPanel;
     //private TemporalViewPanel subPanel;
     private CategoryBarElement data;
     
@@ -104,7 +103,16 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 //    public TemporalViewPanel getSubPanel() {
 //        return subPanel;
 //    }
+    public WorldMapProcessingPanel getWorldPanel() {
+        return worldPanel;
+    }
 
+    public void setWorldPanel(WorldMapProcessingPanel worldPanel) {
+        this.worldPanel = worldPanel;
+    }
+
+    
+    
 
     private boolean b_timeColumnMode;
 
@@ -384,7 +392,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         cons.gridwidth = 1;
         cons.gridheight = 2;
 
-        cons.weighty = 1.0f;//0.66;
+        cons.weighty = 0.66;
         cons.weightx = 1.0f;
 
         cons.fill = GridBagConstraints.BOTH;
@@ -394,21 +402,21 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         mainPanel.setBorder(new LineBorder(Color.black, 1));
         layoutPanelMap.get(0).add(mainPanel);
 
-//        cons = new GridBagConstraints();
-//        cons.gridx = 0;
-//        cons.gridy = 2;
-//        cons.weighty = 0.33;
-//
-//        cons.gridheight = 1;
-//        cons.gridwidth = 1;
-//        cons.weightx = 1.0f;
-//
-//        cons.fill = GridBagConstraints.BOTH;
-//        cons.anchor = GridBagConstraints.PAGE_END;
+        cons = new GridBagConstraints();
+        cons.gridx = 0;
+        cons.gridy = 2;
+        cons.weighty = 0.33;
 
-//        subPanel.setBorder(new LineBorder(Color.black, 1));
-//        gridBag.setConstraints(subPanel, cons);
-//        layoutPanelMap.get(0).add(subPanel);
+        cons.gridheight = 1;
+        cons.gridwidth = 1;
+        cons.weightx = 1.0f;
+
+        cons.fill = GridBagConstraints.BOTH;
+        cons.anchor = GridBagConstraints.PAGE_END;
+
+        worldPanel.setBorder(new LineBorder(Color.black, 1));
+        gridBag.setConstraints(worldPanel, cons);
+        layoutPanelMap.get(0).add(worldPanel);
         
         //layoutPanelMap.get(0).setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), frameheight));
         testPanel.add(layoutPanelMap.get(0), "gap 0 0");
@@ -833,7 +841,9 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
            
        // System.out.println("in update testpan " + testPanel.getWidth() + " " + testPanel.getHeight());
            
-        mainPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight * 3 / 3);
+        mainPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight * 2 / 3);
+        worldPanel.resize(tempWidth / (1 + mainSizeFactor),tempHeight / 3);
+        //worldPanel.setPreferredSize(new Dimension(tempWidth / (1 + mainSizeFactor), tempHeight / 3));
         //subPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight / 3);
 
         int maxSecondaryPanelHeight = testPanel.getHeight() / 3;
@@ -872,9 +882,15 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
         //mainPanel.setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()));
 
-        mainPanel.UpdateTemporalView(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()), mainPanel.getLocalNormalizingValue());
+        
+        
+        
+        
+        mainPanel.UpdateTemporalView(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()*3/3), mainPanel.getLocalNormalizingValue());
         //subPanel.UpdateTemporalView(new Dimension(subPanel.getMyPanelWidth(), subPanel.getMyPanelHeight()), subPanel.getLocalNormalizingValue());
-
+        worldPanel.setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()/2));
+        worldPanel.resize(mainPanel.getMyPanelWidth(),mainPanel.getMyPanelHeight()/2);
+        
         for (List<TemporalViewPanel> ltp : temporalPanelMap.values()) {
             float tempMaxNormalValue = -1;
 
@@ -892,6 +908,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
             }
 
             testPanel.invalidate();
+            worldPanel.invalidate();
 //        tempMaxNormalValue = -1;
 //        for (TemporalViewPanel p : thirdColumn) {
 //            if (p.getLocalNormalizingValue() >= tempMaxNormalValue) {
@@ -941,6 +958,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         testPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight));
 
         mainPanel = new TemporalViewPanel(vc);
+        worldPanel = new WorldMapProcessingPanel();
+        
         //subPanel = new TemporalViewPanel(vc);
 
         mainPanel.setName("Main");
@@ -950,7 +969,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         //subPanel.setLevel(0);
 
         //this.setSize(new Dimension(1800, 900));
-        mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 3);
+        mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 2);
+        worldPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight / 3 ));
         //subPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3);
         
         layoutPanelMap.put(0, new JPanel());
@@ -1081,6 +1101,15 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
     }
 
+    public void createWorldMap(List<HashMap> m)
+    {
+        worldPanel = new WorldMapProcessingPanel(parent , m, this.myFrameWidth, this.myFrameHeight/3);
+        
+        
+        
+        
+    }
+    
     
     public void loadCacheData(String databaseName, String TreeString, String host) throws IOException
     {
@@ -1119,6 +1148,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 //        getSubPanel().detectEvents(getMainPanel().getEventThreshold());
 
         getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
+        this.getWorldPanel().invalidate();
         
         //getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
         System.out.println("initial calculating of main and subpanel done");
