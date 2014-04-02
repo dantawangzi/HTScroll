@@ -677,7 +677,7 @@ public class ViewController {
     /**
      * When selecting a year in the Temporal View
      *
-     * @param get
+     * @param s
      */
     public void fireYearTopicSelected(List<Integer> s) {
         int[] tmp = new int[s.size()];
@@ -709,17 +709,6 @@ public class ViewController {
         tvl = null;
     }
 
-//    public void sendToSPChart(int[] selected){
-//        spChart.updateView(selected);
-//    }
-    /**
-     * Setter for current selected documents in the parallel coordinate view.
-     *
-     * @param seletedRecord seleted ids in parallel coordinate.
-     */
-    public void setDocumentViewData(int[] selectedRecord) {
-        docViewer.updateDocContent(selectedRecord);
-    }
 
     public void setTopicSimilarities(List<Float> sim) {
         topicSimilarities = new ArrayList<Float>();

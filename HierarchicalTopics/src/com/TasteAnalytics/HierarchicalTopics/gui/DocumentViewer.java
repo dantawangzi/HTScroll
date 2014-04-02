@@ -1295,13 +1295,24 @@ public class DocumentViewer extends JFrame {
             
            
             
-            String[] newNameFields = {"thresh", "_id","name", "content", "time", "c_id", "scores", "is_root", "submisson", "subreddit", 
-            "submission_title", "submission_text", "subreddit_name", "label", "pos", "neg"
-            ,"In what Country do you currently live?"
-                    ,"In what State or Province do you currently live?"
-                    ,"In what City do you currently live?"
-                    ,"latitude"
-                    ,"longitude"
+            String[] newNameFields = {"thresh", 
+                //"_id",
+                "name", 
+                "content",
+                "time",
+                //"c_id",
+                //"scores",
+                //"is_root",
+                "submisson", "subreddit", 
+            "submission_title", 
+            "submission_text", 
+            "subreddit_name", 
+            "label", "pos", "neg"
+            //,"In what Country do you currently live?"
+                    //,"In what State or Province do you currently live?"
+                    //,"In what City do you currently live?"
+                   // ,"latitude"
+                  //  ,"longitude"
             
             };
                        
@@ -1664,6 +1675,9 @@ public class DocumentViewer extends JFrame {
 
     }
 
+    
+    HashMap selectedRecord = new HashMap();
+    
     private class SelectionListener implements ListSelectionListener {
 
         JTable tab;
@@ -1682,8 +1696,22 @@ public class DocumentViewer extends JFrame {
                         jTextArea1.append((String) jTable1.getValueAt(selectedRow, i));
                         jTextArea1.append("\n");
                     }
-                    System.out.println(selectedRow);
+                    //System.out.println(selectedRow);
 
+                    
+                    String id = jTable1.getValueAt(selectedRow, 1).toString();
+                    for (int i=0; i<selectedtweets.size(); i++)
+                    {
+                        if (id.equals(selectedtweets.get(i).get("_id")))
+                        {
+                            selectedRecord = selectedtweets.get(i);
+                            //System.out.println("selected record " + selectedRecord);
+                            mapPanel.updateSelectedTweet(selectedRecord);
+                            break;
+                        }
+                        
+                       
+                    }
                     // parent.getScatterPlotChart().setViewingDoc(paraSelectedRecords[selectedRow]);
                 }
                 if (e.getValueIsAdjusting()) {

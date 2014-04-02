@@ -749,6 +749,9 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                     labelHighlightColorMap.remove(name);
 
                     parent.stateChangedFromLabelToTopic(highlightedLabelsMap, labelHighlightWeightMap, labelHighlightColorMap);
+                    
+                    
+                    
                 } else {
                     if (labelHighlightWeightMap.size() < 5) {
 
@@ -819,8 +822,8 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                             labelHighlightWeightMap.put(name, tmpLabelHighlightWeight);
                             highlightedLabelsMap.put(name, tmplabelHighlight);
 
-                            jpub.show(e.getComponent(), (int) item.getX(),
-                                    (int) item.getY());
+//                            jpub.show(e.getComponent(), (int) item.getX(),
+//                                    (int) item.getY());
                         }
 
                         parent.stateChangedFromLabelToTopic(highlightedLabelsMap, labelHighlightWeightMap, labelHighlightColorMap);
@@ -921,7 +924,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             double width = 0;
 
             if (item instanceof EdgeItem) {
-                width = 7;
+                width = 4;
             }
 
             return width;

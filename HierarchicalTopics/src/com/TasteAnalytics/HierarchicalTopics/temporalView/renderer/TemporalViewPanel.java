@@ -1241,23 +1241,25 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             // System.out.println(drawPanelLabelId + "label id");
         }
         
-        if (showingNode!=null)
-            {
-                
-               
-                   String nodetopics = "";    
-          
- 
-                for (int i = 1; i < 10; i++) {
-                    nodetopics += showingNode.getNodeTopics()[i] + " ";
-                }
-                
-                Font font = new Font("Arial", Font.ITALIC, 15);
-                    
-                    curg2d.setFont(font);
-                    //curg2d.setColor(showingNode.getColor());
-                   curg2d.drawString(nodetopics, 0, this.getHeight()-this.getHeight()/10);
-            }           
+        
+        // display topic words
+//        if (showingNode!=null)
+//            {
+//                
+//               
+//                   String nodetopics = "";    
+//          
+// 
+//                for (int i = 1; i < 10; i++) {
+//                    nodetopics += showingNode.getNodeTopics()[i] + " ";
+//                }
+//                
+//                Font font = new Font("Arial", Font.ITALIC, 15);
+//                    
+//                    curg2d.setFont(font);
+//                    //curg2d.setColor(showingNode.getColor());
+//                   curg2d.drawString(nodetopics, 0, this.getHeight()-this.getHeight()/10);
+//            }           
         
         curg2d.drawLine(0, 0, (int) width, 0);
         curg2d.drawLine(0, 0, 0, height);
@@ -1604,9 +1606,9 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //        }
     }
     private AlphaComposite highlightcomposite = AlphaComposite.getInstance(
-            AlphaComposite.SRC_OVER, 0.2f);
+            AlphaComposite.SRC_OVER, 0.4f);
     private AlphaComposite topicDehighlightcomposite = AlphaComposite.getInstance(
-            AlphaComposite.SRC_OVER, 0.1f); //0.4
+            AlphaComposite.SRC_OVER, 0.4f); //0.4
     private AlphaComposite labelcomposite = AlphaComposite.getInstance(
             AlphaComposite.SRC, 1.0f);
     private AlphaComposite backgroundcomposite = AlphaComposite.getInstance(
@@ -2106,7 +2108,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
                 //multiTopicKeywordList.get(i).drawRect(g2d);
 
                 g2d.setFont(multiTopicKeywordList.get(i).getFont());
-                g2d.setColor(Color.BLACK);
+                g2d.setColor(Color.DARK_GRAY);
                 g2d.drawString(s, (float) p.getX(), (float) p.getY());
 
             }
@@ -2441,12 +2443,14 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             }
 
             Font font = lt.getFont();
+            
+           //      Font font = new Font("Helvetica-Condensed-Bold", Font.BOLD, 10);
             LabelWordleLite word = new LabelWordleLite(text, font, 0, lt);
             list.add(word);
 
         }
 
-        WordleAlgorithmLite alg = new WordleAlgorithmLite(new Rectangle2D.Double(0, 0, this.getWidth(), this.getHeight()));
+        WordleAlgorithmLite alg = new WordleAlgorithmLite(new Rectangle2D.Double(0, 0, 1200,600));//this.getWidth(), this.getHeight()));
         //alg.displayParameters();
         alg.place(list);
 

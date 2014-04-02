@@ -392,7 +392,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         cons.gridwidth = 1;
         cons.gridheight = 2;
 
-        cons.weighty = 0.66;
+        cons.weighty = 1;//0.66;
         cons.weightx = 1.0f;
 
         cons.fill = GridBagConstraints.BOTH;
@@ -414,10 +414,10 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         cons.fill = GridBagConstraints.BOTH;
         cons.anchor = GridBagConstraints.PAGE_END;
 
-        worldPanel.setBorder(new LineBorder(Color.black, 1));
-        gridBag.setConstraints(worldPanel, cons);
-        layoutPanelMap.get(0).add(worldPanel);
-        
+//        worldPanel.setBorder(new LineBorder(Color.black, 1));
+//        gridBag.setConstraints(worldPanel, cons);
+//        layoutPanelMap.get(0).add(worldPanel);
+//        
         //layoutPanelMap.get(0).setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), frameheight));
         testPanel.add(layoutPanelMap.get(0), "gap 0 0");
         
@@ -841,8 +841,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
            
        // System.out.println("in update testpan " + testPanel.getWidth() + " " + testPanel.getHeight());
            
-        mainPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight * 2 / 3);
-        worldPanel.resize(tempWidth / (1 + mainSizeFactor),tempHeight / 3);
+        mainPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight * 3 / 3);
+      //  worldPanel.resize(tempWidth / (1 + mainSizeFactor),tempHeight / 3);
         //worldPanel.setPreferredSize(new Dimension(tempWidth / (1 + mainSizeFactor), tempHeight / 3));
         //subPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight / 3);
 
@@ -888,8 +888,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
         
         mainPanel.UpdateTemporalView(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()*3/3), mainPanel.getLocalNormalizingValue());
         //subPanel.UpdateTemporalView(new Dimension(subPanel.getMyPanelWidth(), subPanel.getMyPanelHeight()), subPanel.getLocalNormalizingValue());
-        worldPanel.setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()/2));
-        worldPanel.resize(mainPanel.getMyPanelWidth(),mainPanel.getMyPanelHeight()/2);
+       // worldPanel.setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()/2));
+       
         
         for (List<TemporalViewPanel> ltp : temporalPanelMap.values()) {
             float tempMaxNormalValue = -1;

@@ -9,6 +9,7 @@ import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
 import com.TasteAnalytics.HierarchicalTopics.eventsview.EventViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.file.CSVFile;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.PrefuseLabelTopicGraphPanel;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
@@ -125,74 +126,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 //        this.add(toolBar.getComponent(), BorderLayout.NORTH);
         
         
-         JPanel testPanel = new JPanel();
-        testPanel.setBackground(Color.red);
-        testPanel.setPreferredSize(new Dimension(1500,1000));
-        
-        JPanel testPanel2 = new JPanel();
-        testPanel2.setBackground(Color.black);
-        testPanel2.setPreferredSize(new Dimension(1500,1000));
-        
-        JPanel testPanel3 = new JPanel();
-        testPanel3.setBackground(Color.green);
-        testPanel3.setPreferredSize(new Dimension(1500,1000));
-        
-        JPanel testPanel4 = new JPanel();
-        testPanel4.setBackground(Color.yellow);
-        testPanel4.setPreferredSize(new Dimension(1500,1000));
-        
-        
-        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
-        mButtonPanel.setBorder(orangeLine);
-        
-            rightTopScrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        rightTopScrollPane.setViewportView(testPanel);
-        
-        rightBottomScrollPane = new JScrollPane(testPanel4, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);        
-        rightBottomScrollPane.setViewportView(testPanel4);
-        
-           
-        leftTopScrollPane = new JScrollPane(testPanel2, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        leftTopScrollPane.setViewportView(testPanel2);
-        
-        leftBottomScrollPane = new JScrollPane(testPanel3, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);        
-        leftBottomScrollPane.setViewportView(testPanel3);
-        
-        
-        
-        leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                           leftTopScrollPane, leftBottomScrollPane);
-        leftSplit.setOneTouchExpandable(true);
-        leftSplit.setDividerLocation(150);
-        
-        
-        rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                           rightTopScrollPane, rightBottomScrollPane);
-        rightSplit.setOneTouchExpandable(true);
-        rightSplit.setDividerLocation(150);
-        
-        
-        
-        mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                           leftSplit, rightSplit);
-        mainSplit.setOneTouchExpandable(true);
-        mainSplit.setDividerLocation(150);
-       mainSplit.setContinuousLayout(true);
-        
-        
-        //Provide minimum sizes for the two components in the split pane
-        Dimension minimumSize = new Dimension(100, 50);
-        leftTopScrollPane.setMinimumSize(minimumSize);
-        leftBottomScrollPane.setMinimumSize(minimumSize);
-        
-        rightTopScrollPane.setMinimumSize(minimumSize);
-        rightBottomScrollPane.setMinimumSize(minimumSize);
-        
-        Border blackline = BorderFactory.createLineBorder(Color.black);
-        mViewPanel.setBorder(blackline);
-        mViewPanel.add(mainSplit);
+       
         
         
         Thread thread = new Thread(this);  
@@ -202,7 +136,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         "the id is: " + Thread.currentThread().getId());  
         
         
-
     }
 
     /**
@@ -755,16 +688,16 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         String csvfilepath = csvf.getFolderPath();
         viewController.csvfFolderPath = csvfilepath;
         
-            temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
+        temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
 
-            viewController.addTemporalFrame(temporalFrame);
+        viewController.addTemporalFrame(temporalFrame);
 
-            temporalFrame.loadCacheData(job, TreeString, viewController.host);
-            temporalFrame.createWorldMap(maplocations); 
+        temporalFrame.loadCacheData(job, TreeString, viewController.host);
+        //temporalFrame.createWorldMap(maplocations); 
          
-            temporalFrame.setVisible(true);
-            temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
-            temporalFrame.setLocation(0, 0);
+        temporalFrame.setVisible(true);
+        temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
+        temporalFrame.setLocation(0, 0);
 
             
             HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
@@ -833,33 +766,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
                 }
                 
                 csvf.setSimilarityMatrix(topicSim);
-//                
-                
-//                dbo = new BasicDBObject("type", "topic_terms");
-//                cursorfind = currentColl.find(dbo);
-//               
-//                while (cursorfind.hasNext())
-//                {
-//                    BasicDBObject tmpDBO = (BasicDBObject) cursorfind.next();
-//                    String key = tmpDBO.getString("_id");
-//                    String weights = tmpDBO.getString("weight");
-//                    
-//                    float tmpvalue = Float.parseFloat(weights);
-//                    
-//                    termWeightMongo.put(key, tmpvalue);                       
-//                }               
-//                
-//                for (int i=0; i<topicsByMongo.size(); i++)
-//                {
-//                    List<Float> tmpL = new ArrayList<Float>();
-//                    for (int j=0; j<50; j++) // hard code
-//                    {                                
-//                        String key = "dist_top" + (new Integer(i)).toString() + "term" + (new Integer(j)).toString();
-//                        tmpL.add(termWeightMongo.get(key));   
-//                    }
-//                    topkTermWeightMongo.add(tmpL);
-//
-//                }
+
                 
                 
             }
@@ -885,6 +792,77 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         System.out.println("Topics Graph done!");
         
             initializeViews(csvf);
+            
+
+            
+            
+        JPanel testPanel = new JPanel();
+        testPanel.setBackground(Color.red);
+        testPanel.setPreferredSize(new Dimension(1500,1000));
+        
+        JPanel testPanel2 = new JPanel();
+        testPanel2.setBackground(Color.black);
+        testPanel2.setPreferredSize(new Dimension(1500,1000));
+        
+        JPanel testPanel3 = new JPanel();
+        testPanel3.setBackground(Color.green);
+        testPanel3.setPreferredSize(new Dimension(1500,1000));
+                
+        
+        PrefuseLabelTopicGraphPanel labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
+
+        
+        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
+        mButtonPanel.setBorder(orangeLine);
+        
+            rightTopScrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        rightTopScrollPane.setViewportView(testPanel);
+        
+        rightBottomScrollPane = new JScrollPane( labelTopicGraphPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);        
+        rightBottomScrollPane.setViewportView( labelTopicGraphPanel);
+        
+           
+        leftTopScrollPane = new JScrollPane(testPanel2, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        leftTopScrollPane.setViewportView(testPanel2);
+        
+        leftBottomScrollPane = new JScrollPane(testPanel3, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);        
+        leftBottomScrollPane.setViewportView(testPanel3);
+        
+        
+        
+        leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                           leftTopScrollPane, leftBottomScrollPane);
+        leftSplit.setOneTouchExpandable(true);
+        leftSplit.setDividerLocation(150);
+        
+        
+        rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                           rightTopScrollPane, rightBottomScrollPane);
+        rightSplit.setOneTouchExpandable(true);
+        rightSplit.setDividerLocation(150);
+        
+        
+        
+        mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                           leftSplit, rightSplit);
+        mainSplit.setOneTouchExpandable(true);
+        mainSplit.setDividerLocation(150);
+        mainSplit.setContinuousLayout(true);
+        
+        
+        //Provide minimum sizes for the two components in the split pane
+        Dimension minimumSize = new Dimension(100, 50);
+        leftTopScrollPane.setMinimumSize(minimumSize);
+        leftBottomScrollPane.setMinimumSize(minimumSize);
+        
+        rightTopScrollPane.setMinimumSize(minimumSize);
+        rightBottomScrollPane.setMinimumSize(minimumSize);
+        
+        Border blackline = BorderFactory.createLineBorder(Color.black);
+        mViewPanel.setBorder(blackline);
+        mViewPanel.add(mainSplit);
             
             
         } catch (IOException ex) {
@@ -916,20 +894,22 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         String csvfilepath = csvf.getFolderPath();
 
-       
-
-        
 
         temporalFrame.getMainPanel().buildLabelTimeMap();
         //temporalFrame.getSubPanel().buildLabelTimeMap();
 
-        viewController.setLeafNodeSequence(topicFrame.getLeafSequence());
+     //   viewController.setLeafNodeSequence(topicFrame.getLeafSequence());
 
-        int s = viewController.getTopicGraphViewPanel().getTree().size();
+       // int s = viewController.getTopicGraphViewPanel().getTree().size();
 
-        FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
+       // FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
 
-        String treeString = IOUtils.toString(inputStream);
+        //String treeString = IOUtils.toString(inputStream);
+        //        Graph pgh = null;//(viewController.makePrefuseGraph(treeString));
+//
+
+//        System.out.println("get geo locations done");
+        //viewController.geoLocations = csvf.getTwitterGeoLocations();
 
 //
 //                        MongoClient mongoClient = new MongoClient("152.15.99.7", 27017);
@@ -1064,11 +1044,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 ////    } catch (Exception e) {
 ////      e.printStackTrace();
 ////    }
-        Graph pgh = null;//(viewController.makePrefuseGraph(treeString));
-//
 
-        System.out.println("get geo locations done");
-        viewController.geoLocations = csvf.getTwitterGeoLocations();
 
         
         
@@ -1095,12 +1071,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 //////
 //        System.out.println("GeoFrame done");
 
-        eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
-                viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, csvf.getFolderPath(), csvf.getSimilarityMatrix());
-//                       
-        eventViewFrame.setVisible(true);
-
-        System.out.println("label graph done");
+  //      eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
+   //             viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, csvf.getFolderPath(), csvf.getSimilarityMatrix());
+//                eventViewFrame.setVisible(true);          
+     
+//eventViewFrame = null;
+        //System.out.println("label graph done");
 
         
         consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -1118,12 +1094,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 //            }
 //        });
 
-        eventViewFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                jCheckBoxLabelTopicFrame.setState(false);
-            }
-        });
+//        eventViewFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+//            @Override
+//            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+//                jCheckBoxLabelTopicFrame.setState(false);
+//            }
+//        });
 
         topicFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

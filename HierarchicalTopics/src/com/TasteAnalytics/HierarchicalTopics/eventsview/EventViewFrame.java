@@ -74,6 +74,12 @@ public class EventViewFrame extends JFrame {
     private EventGraphViewPanel graphPanel;
     private EventsPanelPrefuse prefuseEventPanel;
     private PrefuseLabelTopicGraphPanel labelTopicGraphPanel;
+
+    public PrefuseLabelTopicGraphPanel getLabelTopicGraphPanel() {
+        return labelTopicGraphPanel;
+    }
+    
+    
     
     
     
