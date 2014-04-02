@@ -50,7 +50,7 @@ import org.apache.commons.io.IOUtils;
  *
  * @author xwang
  */
-public class TemporalViewFrame extends JFrame implements TemporalViewListener, MouseListener, KeyListener {
+public class TemporalViewFrame extends JPanel implements TemporalViewListener, MouseListener, KeyListener {
 
     /**
      * The ParallelDisplay component we are assigned to.
@@ -932,7 +932,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
     
     
     public TemporalViewFrame(ViewController vc, int WW, int HH) throws IOException {
-        super("Hierarchical ThemeRiver");
+        super();
         setPreferredSize(new Dimension(WW, HH));
 
 //        for (int i=0; i<2; i++)
@@ -943,12 +943,12 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 //            layoutPanelMap.put(i,tmpjp);
 //        }
 //        
-        this.getContentPane().setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
         
        // menuPanel.setSize(WW, HH/5);
        //  this.getContentPane().add(menuPanel,BorderLayout.PAGE_START);
         scrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.getContentPane().add(scrollPane, BorderLayout.CENTER);
+        this.add(scrollPane, BorderLayout.CENTER);
         scrollPane.setViewportView(testPanel);
 
         myFrameWidth = 1000;//this.getContentPane().getWidth();//1000;//
@@ -994,8 +994,8 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
 
                 
                 
-                myFrameWidth = ((TemporalViewFrame)e.getComponent()).getContentPane().getWidth();//e.getComponent().getSize().width;
-                myFrameHeight = ((TemporalViewFrame)e.getComponent()).getContentPane().getHeight();//e.getComponent().getSize().height;
+                myFrameWidth = ((TemporalViewFrame)e.getComponent()).getWidth();//e.getComponent().getSize().width;
+                myFrameHeight = ((TemporalViewFrame)e.getComponent()).getHeight();//e.getComponent().getSize().height;
 
 //                int sizeFactor = -1;
 //                int mainSizeFactor = 0;
@@ -1097,7 +1097,7 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
                 //throw new UnsupportedOperationException("Not supported yet.");
             }
         });
-        pack();
+        //pack();
 
     }
 

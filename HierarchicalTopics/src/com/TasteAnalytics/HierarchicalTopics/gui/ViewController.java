@@ -15,7 +15,7 @@ import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewL
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.eventsview.EventViewFrame;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -33,7 +33,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame.customLabelTimecolumnKey;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel.customLabelTimecolumnKey;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
 import java.awt.Point;
@@ -58,7 +58,7 @@ public class ViewController {
     public DocumentViewer docViewer;
     int contentIdx;
     public TemporalViewFrame tf;
-    public TopicGraphViewFrame topicGraphicPanel;
+    public TopicGraphViewPanel topicGraphicPanel;
     private List<String[]> InternalUsageRecord;
     private List<String[]> InternalDocs;
     private List<Float> topicSimilarities;
@@ -190,7 +190,7 @@ public class ViewController {
     
     
     
-    public TopicGraphViewFrame getTopicGraphViewPanel() {
+    public TopicGraphViewPanel getTopicGraphViewPanel() {
 
         if (topicGraphicPanel != null) {
             return topicGraphicPanel;
@@ -212,7 +212,7 @@ public class ViewController {
         return null;
     }
 
-    public void addTopicGraphViewPanel(TopicGraphViewFrame t) {
+    public void addTopicGraphViewPanel(TopicGraphViewPanel t) {
         topicGraphicPanel = t;
     }
 
@@ -232,14 +232,14 @@ public class ViewController {
         return null;
     }
 
-    List<TopicGraphViewFrame.labelText> highlightedTextLabels;
+    List<TopicGraphViewPanel.labelText> highlightedTextLabels;
 
     int previousTimeColumn = -1;
     TreeNode lastNode = new TreeNode();
     boolean isShowingSingleTopic = false;
    
 
-    HashMap<TreeNode, List<TopicGraphViewFrame.labelText>> nodeKeywordHighlightMap = new HashMap<TreeNode, List<TopicGraphViewFrame.labelText>>();
+    HashMap<TreeNode, List<TopicGraphViewPanel.labelText>> nodeKeywordHighlightMap = new HashMap<TreeNode, List<TopicGraphViewPanel.labelText>>();
 
     public void stateChangedSecond(TreeNode ct, int selectedTimeColumn, TemporalViewPanel ap, boolean isSingle) {
         
@@ -278,7 +278,7 @@ public class ViewController {
           
             
             
-            TopicGraphViewFrame.customLabelTimecolumnKey key;
+            TopicGraphViewPanel.customLabelTimecolumnKey key;
             //if (currentNode == null)          
                 //currentNode = ap.currentNode;
             
@@ -286,7 +286,7 @@ public class ViewController {
             //key = new customLabelTimecolumnKey( ttt, selectedTimeColumn);
             
             
-            key = new TopicGraphViewFrame.customLabelTimecolumnKey(currentNode.getValue(), String.valueOf(selectedTimeColumn));
+            key = new TopicGraphViewPanel.customLabelTimecolumnKey(currentNode.getValue(), String.valueOf(selectedTimeColumn));
             
             //System.out.println( ap.getLabelTimeMap().size());
             
@@ -303,7 +303,7 @@ public class ViewController {
 //                Iterator it = ap.getLabelTimeMap().keySet().iterator();
 //            while(it.hasNext())
 //            {
-//                TopicGraphViewFrame.customLabelTimecolumnKey k = (TopicGraphViewFrame.customLabelTimecolumnKey) it.next();
+//                TopicGraphViewPanel.customLabelTimecolumnKey k = (TopicGraphViewPanel.customLabelTimecolumnKey) it.next();
 //                System.out.println(k);
 //            }
                 
@@ -405,8 +405,8 @@ public class ViewController {
   
     }
 
-    List<TopicGraphViewFrame.labelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<TopicGraphViewFrame.labelText>> m) {
-        List<TopicGraphViewFrame.labelText> r = new ArrayList<TopicGraphViewFrame.labelText>();
+    List<TopicGraphViewPanel.labelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<TopicGraphViewPanel.labelText>> m) {
+        List<TopicGraphViewPanel.labelText> r = new ArrayList<TopicGraphViewPanel.labelText>();
 
         int size = m.size();
 
@@ -420,7 +420,7 @@ public class ViewController {
 
         for (int i = 0; i < iterationRuns; i++) {
             for (Object o : m.values()) {
-                r.add((TopicGraphViewFrame.labelText) ((List<TopicGraphViewFrame.labelText>) o).get(i));
+                r.add((TopicGraphViewPanel.labelText) ((List<TopicGraphViewPanel.labelText>) o).get(i));
             }
         }
 
@@ -464,6 +464,8 @@ public class ViewController {
     String nameField2;
     String text_id;
     String id_type="";
+    
+    boolean tagLDA = false;
     
     public void readHeaderFile(String headerpath) throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(headerpath));

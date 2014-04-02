@@ -44,7 +44,7 @@ import com.TasteAnalytics.HierarchicalTopics.gui.ViewController;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.CategoryBarElement;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
 import net.miginfocom.swing.MigLayout;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel;
 import prefuse.data.Graph;
 
 /**
@@ -53,7 +53,7 @@ import prefuse.data.Graph;
  */
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.EventsPanelPrefuse;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.PrefuseLabelTopicGraphPanel;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame.MyLink;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel.MyLink;
 
 public class EventViewFrame extends JFrame {
     
@@ -148,7 +148,7 @@ public class EventViewFrame extends JFrame {
     private List<JLabel> NodeLabels = new ArrayList<JLabel>();
     private List<TreeNode> nodeNodes = new ArrayList<TreeNode>();
     
-    public EventViewFrame(ViewController vc, List<TreeNode> thisTree, CategoryBarElement data, List<Integer> seq, DelegateForest<Object, TopicGraphViewFrame.MyLink> g, Graph pgh, String everything, String folderPath, List<List<Float>> disMatrix) throws FileNotFoundException, IOException {
+    public EventViewFrame(ViewController vc, List<TreeNode> thisTree, CategoryBarElement data, List<Integer> seq, DelegateForest<Object, TopicGraphViewPanel.MyLink> g, Graph pgh, String everything, String folderPath, List<List<Float>> disMatrix) throws FileNotFoundException, IOException {
         super("Tag Relationship");
         
         parent = vc;
@@ -509,7 +509,7 @@ public class EventViewFrame extends JFrame {
         
         String edges = sc.next();
 
-//        gh = new DelegateForest<Object, TopicGraphViewFrame.MyLink>(new DirectedOrderedSparseMultigraph<Object, TopicGraphViewFrame.MyLink>());
+//        gh = new DelegateForest<Object, TopicGraphViewPanel.MyLink>(new DirectedOrderedSparseMultigraph<Object, TopicGraphViewPanel.MyLink>());
 
         //     Graph<Integer,Number> g =     	MixedRandomGraphGenerator.<Integer,Number>generateMixedRandomGraph(edge_weight);
 

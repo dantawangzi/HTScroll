@@ -124,9 +124,7 @@ public class DocumentViewer extends JFrame {
     /*DXW: Simplify the Initializer*/
     public DocumentViewer(final TemporalViewPanel p, final Point2D pt) throws IOException, UnknownHostException, ParseException {
 
-        initComponents();
-        
-        
+        initComponents();                
         
 
         //Set this frame just to close itself
@@ -198,8 +196,11 @@ public class DocumentViewer extends JFrame {
             this.updateDocViewContent(selectedDocuments, p.parent.host, p.parent.port, p.parent.database, p.parent.collection, p.parent.nameFields);
         }
         
-        
+        if (selectedtweets.contains("latitude"))
          mapPanel = new WorldMapProcessingPanel(parent, selectedtweets, parent.getTemporalFrame().getWidth(), parent.getTemporalFrame().getHeight()/3);
+        else
+            mapPanel = null;
+        
                                        
         jTabbedPane.addTab("Map", mapPanel);
 
@@ -1024,7 +1025,7 @@ public class DocumentViewer extends JFrame {
 
         System.out.println(tmpDocs.size() + " " + tmpDocs.get(0).length);
         System.out.println(tmpDocs.get(0)[0] + tmpDocs.get(0)[1] + tmpDocs.get(0)[2] + tmpDocs.get(0)[3] + tmpDocs.get(0)[4]);
-        if (true) {
+        if (false) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // for  all data sets  reddit only
             final HashMap<String, Color> randomColor = new HashMap<String, Color>();
@@ -1274,7 +1275,7 @@ public class DocumentViewer extends JFrame {
 
         
         //for reddit  
-        if (true)
+        if (false)
         {
             HashMap<String, List<Integer>> submissionMap = new HashMap<String, List<Integer>>();
             for (int i = 0; i < selectedtweets.size(); i++) {
@@ -1388,7 +1389,7 @@ public class DocumentViewer extends JFrame {
 
         else // not for reddit
         {
-        if (parent.nameFields == null) {
+        if (parent.nameFields == null || parent.nameFields.length==0) {
             int keysize = selectedtweets.get(0).keySet().size();
             int size = selectedtweets.size();
             content = new Object[size][keysize];

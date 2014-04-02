@@ -247,6 +247,7 @@ public class LDAHTTPClient {
                 else
                      id_type = "&id_type=" + id_type;
                 
+               // System.out.println( path + " " +  job_id+"&"+t_id+"&"+s_id+"&"+thresh+"&"+in_db+"&"+in_table +field + id_type);
                 return apacheGet(path, job_id+"&"+t_id+"&"+s_id+"&"+thresh+"&"+in_db+"&"+in_table +field + id_type);
                     
 	}

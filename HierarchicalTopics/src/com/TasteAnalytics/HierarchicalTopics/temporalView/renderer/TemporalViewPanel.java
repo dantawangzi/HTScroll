@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import java.util.concurrent.TimeUnit;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel;
 import static prefuse.render.Renderer.DEFAULT_GRAPHICS;
 import wordle.layout.LabelWordleLite;
 import wordle.layout.WordleAlgorithmLite;
@@ -2376,12 +2376,12 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         repaintView();
     }
 
-    public HashMap<TopicGraphViewFrame.customLabelTimecolumnKey, List<TopicGraphViewFrame.labelText>> getLabelTimeMap() {
+    public HashMap<TopicGraphViewPanel.customLabelTimecolumnKey, List<TopicGraphViewPanel.labelText>> getLabelTimeMap() {
         return labelTimeMap;
     }
 
-    HashMap< TopicGraphViewFrame.customLabelTimecolumnKey, List<TopicGraphViewFrame.labelText>> labelTimeMap
-            = new HashMap< TopicGraphViewFrame.customLabelTimecolumnKey, List<TopicGraphViewFrame.labelText>>();
+    HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<TopicGraphViewPanel.labelText>> labelTimeMap
+            = new HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<TopicGraphViewPanel.labelText>>();
 
     /**
      * Wenwen: comment here if not want word cloud
@@ -2404,7 +2404,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     public Point2D currentMouseLocation = new Point2D.Double();
 
     
-         public void DrawTopicWord(Point2D p, List<TopicGraphViewFrame.labelText> ls) 
+         public void DrawTopicWord(Point2D p, List<TopicGraphViewPanel.labelText> ls) 
          {
              
              
@@ -2414,16 +2414,16 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
          }
                  
                  
-    public List<TopicGraphViewFrame.labelText> multiTopicKeywordList;
+    public List<TopicGraphViewPanel.labelText> multiTopicKeywordList;
 
-    List<TopicGraphViewFrame.labelText> singleTopicKeywordList;
+    List<TopicGraphViewPanel.labelText> singleTopicKeywordList;
 
     
     
     
     
     
-    public void DrawWordleCloud(Point2D p, List<TopicGraphViewFrame.labelText> ls) {
+    public void DrawWordleCloud(Point2D p, List<TopicGraphViewPanel.labelText> ls) {
 
         List<LabelWordleLite> list = new ArrayList<LabelWordleLite>();
 
@@ -2435,7 +2435,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         size = ls.size();
 
         for (int i = 0; i < size; i++) {
-            TopicGraphViewFrame.labelText lt = ls.get(i);
+            TopicGraphViewPanel.labelText lt = ls.get(i);
 
             String text = lt.getString();
             if (text == null) {
@@ -2462,7 +2462,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         for (LabelWordleLite word : list) {
 
             setLabelVisualPos(word, p, bounds);
-            //System.out.println(((TopicGraphViewFrame.labelText)word.data).getRect());
+            //System.out.println(((TopicGraphViewPanel.labelText)word.data).getRect());
         }
 
         multiTopicKeywordList = ls;
@@ -2482,7 +2482,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             Point2D location = label.getLocation();
             Rectangle2D glyphBound = label.getShape().getBounds2D();
             //Rectangle2D strBound = fm.getStringBounds(label.text, this.curg2d);
-            TopicGraphViewFrame.labelText vi = (TopicGraphViewFrame.labelText) label.data;
+            TopicGraphViewPanel.labelText vi = (TopicGraphViewPanel.labelText) label.data;
 
             float size = (float) (vi.getFont().getSize2D() /**
                      * vi.getOccurance()
@@ -2534,7 +2534,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     private void setLabelVisualPos(WordleLite symbol, Point2D p, Rectangle2D bounds) {
         LabelWordleLite label = (LabelWordleLite) symbol;
         Point2D location = label.getLocation();
-        TopicGraphViewFrame.labelText vi = (TopicGraphViewFrame.labelText) label.data;
+        TopicGraphViewPanel.labelText vi = (TopicGraphViewPanel.labelText) label.data;
         Rectangle2D glyphBound = label.getShape().getBounds2D();
 
         float size = (float) (vi.getFont().getSize2D() /**

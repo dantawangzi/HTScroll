@@ -128,7 +128,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.lang.StringUtils;
 
-public class TopicGraphViewFrame extends JFrame {
+public class TopicGraphViewPanel extends JPanel {
 
 //private static HudWindow mainFloatingHUDWindow = new HudWindow();
     public class labelTextComparer implements Comparator<labelText> {
@@ -433,8 +433,8 @@ public class TopicGraphViewFrame extends JFrame {
     private int highlightedRow;
     private boolean bMagnified = false;
 
-    public TopicGraphViewFrame() {
-        super("Hierarchical Topics");
+    public TopicGraphViewPanel() {
+        super();
     }
 
     public VisualizationViewer getVisualizationViewer() {
@@ -449,7 +449,7 @@ public class TopicGraphViewFrame extends JFrame {
     
     List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
 
-    public TopicGraphViewFrame(ViewController viewController, Map<String, Integer> termIndex, List<String[]> termWeight, List<List<Float>> TermWeightMongo) throws FileNotFoundException, IOException {
+    public TopicGraphViewPanel(ViewController viewController, Map<String, Integer> termIndex, List<String[]> termWeight, List<List<Float>> TermWeightMongo) throws FileNotFoundException, IOException {
         this.parent = viewController;
         wordTermIndex = termIndex;
         wordTermWeightsF = termWeight;
@@ -468,8 +468,8 @@ public class TopicGraphViewFrame extends JFrame {
         annotation_locations = new ArrayList<Point2D>();
         annotation = new ArrayList<JLabel>();
 
-        mainPanel = new javax.swing.JPanel();
-        this.setTitle("Hierarchical Topics");
+       
+       
         width = 1200;
         height = 1000;
 
@@ -491,7 +491,7 @@ public class TopicGraphViewFrame extends JFrame {
         this.addComponentListener(new ComponentListener() {
             public void componentResized(ComponentEvent e) {
 
-                ((TopicGraphViewFrame) e.getComponent()).UpdateTopicGraphicView(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                ((TopicGraphViewPanel) e.getComponent()).UpdateTopicGraphicView(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
             }
 
             public void componentMoved(ComponentEvent e) {
@@ -506,7 +506,7 @@ public class TopicGraphViewFrame extends JFrame {
                 //throw new UnsupportedOperationException("Not supported yet.");
             }
         });
-        pack();
+      
 
     }
     VisualizationViewer<Object, MyLink> vv;
@@ -1139,10 +1139,13 @@ public class TopicGraphViewFrame extends JFrame {
 
         collapser = new TreeCollapser();
 
-        content = this.getContentPane();
-        GraphZoomScrollPane zoompanel = new GraphZoomScrollPane(vv);
+        
+        this.setLayout(new BorderLayout());
+        
+        content = this;//.getContentPane();
+        //GraphZoomScrollPane zoompanel = new GraphZoomScrollPane(vv);
 
-        content.add(zoompanel);
+        //content.add(zoompanel);
 
         final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
         vv.setGraphMouse(graphMouse);
@@ -1636,9 +1639,9 @@ public class TopicGraphViewFrame extends JFrame {
                         }
 
                     } catch (FileNotFoundException ex) {
-                        Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(TopicGraphViewPanel.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
-                        Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(TopicGraphViewPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
                 }
@@ -2022,7 +2025,7 @@ public class TopicGraphViewFrame extends JFrame {
         magnifyLabelRightRight.setBackground(Color.white);
         magnifyLabelRightRight.setOpaque(true);
 
-        content.add(vv);
+        content.add(vv,BorderLayout.NORTH);
 
     }
 
@@ -2937,7 +2940,7 @@ public class TopicGraphViewFrame extends JFrame {
     }
 
     List<labelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<labelText>> m) {
-        List<labelText> r = new ArrayList<TopicGraphViewFrame.labelText>();
+        List<labelText> r = new ArrayList<TopicGraphViewPanel.labelText>();
 
         int size = m.size();
 
@@ -3398,7 +3401,7 @@ public class TopicGraphViewFrame extends JFrame {
     public void UpdateTopicGraphicView(Dimension size) {
         width = size.width;
         height = size.height;
-        // calculateRenderControlPoints(data);
+        
 
         repaintView();
     }
@@ -3417,9 +3420,7 @@ public class TopicGraphViewFrame extends JFrame {
 
     private void extractFrequency() {
         //Re-organize topics based on the similarities
-        reorganizedTopics = new ArrayList<String[]>();
-        
-         
+        reorganizedTopics = new ArrayList<String[]>();                 
          
         reorganizedTopics.add(allTopics.get(0));
         for (int i = parent.getGlobalReadIndex(); i < allTopics.size(); i++) {
@@ -3478,11 +3479,6 @@ public class TopicGraphViewFrame extends JFrame {
         }
         
        
-        
-        
-        
-        
-        
         
         
         
@@ -4423,14 +4419,14 @@ public class TopicGraphViewFrame extends JFrame {
                                             buildLabelLocations();
                                             System.out.println("topic merged ");
 
-                                            // TemporalViewFrame _tvf = ((TopicGraphViewFrame)(((VisualizationViewer) e.getComponent()).getParent().getParent()).getParent()).parent.getTemporalFrame();
+                                            // TemporalViewFrame _tvf = ((TopicGraphViewPanel)(((VisualizationViewer) e.getComponent()).getParent().getParent()).getParent()).parent.getTemporalFrame();
                                             if (tvf != null) {
                                                 tvf.updateData(myTree);
                                             }
                                         } catch (FileNotFoundException ex) {
-                                            Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            Logger.getLogger(TopicGraphViewPanel.class.getName()).log(Level.SEVERE, null, ex);
                                         } catch (IOException ex) {
-                                            Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            Logger.getLogger(TopicGraphViewPanel.class.getName()).log(Level.SEVERE, null, ex);
                                         }
 
                                     } else {
@@ -4452,9 +4448,9 @@ public class TopicGraphViewFrame extends JFrame {
 
                                             newNodeIdx++;
                                         } catch (FileNotFoundException ex) {
-                                            Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            Logger.getLogger(TopicGraphViewPanel.class.getName()).log(Level.SEVERE, null, ex);
                                         } catch (IOException ex) {
-                                            Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                            Logger.getLogger(TopicGraphViewPanel.class.getName()).log(Level.SEVERE, null, ex);
                                         }
 
                                     }
@@ -4527,9 +4523,9 @@ public class TopicGraphViewFrame extends JFrame {
                                 }
                             }
                         } catch (FileNotFoundException ex) {
-                            Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(TopicGraphViewPanel.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (IOException ex) {
-                            Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(TopicGraphViewPanel.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
                     }
@@ -4562,7 +4558,7 @@ public class TopicGraphViewFrame extends JFrame {
                         try {
                             tp = new TemporalViewPanel(parent);
                         } catch (IOException ex) {
-                            Logger.getLogger(TopicGraphViewFrame.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(TopicGraphViewPanel.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
                         if (!tvf.getTemporalPanelMap().containsKey(1)) {

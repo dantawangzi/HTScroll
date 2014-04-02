@@ -109,32 +109,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.apache.commons.collections15.Transformer;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame.HorizontalOverlappingTreeLayout;
-//import javax.swing.KeyStroke;
-//import javax.swing.SwingConstants;
-//import org.mediavirus.parvis.gui.temporalView.renderer.TreeNode;
-//import prefuse.action.assignment.DataColorAction;
-//import prefuse.action.assignment.DataSizeAction;
-//import prefuse.action.layout.graph.ForceDirectedLayout;
-//import prefuse.activity.Activity;
-//import prefuse.controls.DragControl;
-//import prefuse.data.Graph;
-//import prefuse.data.Node;
-//import prefuse.demos.TreeMap.NodeRenderer;
-//import prefuse.render.LabelRenderer;
-//import prefuse.render.Renderer;
-//import prefuse.render.ShapeRenderer;
-//
-//
-//import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
-//import edu.berkeley.guir.prefuse.render.ImageFactory;
-//import prefuse.util.PrefuseLib;
-//import prefuse.visual.NodeItem;
-//
-//
-//
-//
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel.HorizontalOverlappingTreeLayout;
 
 /**
  *
@@ -142,25 +118,25 @@ import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame.H
  */
 public class EventGraphViewPanel extends JPanel {
 
-    VisualizationViewer<Object, TopicGraphViewFrame.MyLink> vv;
+    VisualizationViewer<Object, TopicGraphViewPanel.MyLink> vv;
     HorizontalOverlappingTreeLayout HtreeLayout;
     private int node_width_interval = 150;
     private int node_height_interval = 40;
-    private DelegateForest<Object, TopicGraphViewFrame.MyLink> gh;
+    private DelegateForest<Object, TopicGraphViewPanel.MyLink> gh;
 
-    public VisualizationViewer<Object, TopicGraphViewFrame.MyLink> getVv() {
+    public VisualizationViewer<Object, TopicGraphViewPanel.MyLink> getVv() {
         return vv;
     }
 
-    public EventGraphViewPanel(DelegateForest<Object, TopicGraphViewFrame.MyLink> gg, List<TreeNode> tree, HashMap hm) {
+    public EventGraphViewPanel(DelegateForest<Object, TopicGraphViewPanel.MyLink> gg, List<TreeNode> tree, HashMap hm) {
 
         gh = gg;
 
         this.setPreferredSize(new Dimension(1000, 1000));
 
-        HtreeLayout = new HorizontalOverlappingTreeLayout<Object, TopicGraphViewFrame.MyLink>(gh, node_width_interval, node_height_interval);
+        HtreeLayout = new HorizontalOverlappingTreeLayout<Object, TopicGraphViewPanel.MyLink>(gh, node_width_interval, node_height_interval);
 
-        vv = new VisualizationViewer<Object, TopicGraphViewFrame.MyLink>(HtreeLayout, new Dimension(this.getWidth(), this.getHeight()));
+        vv = new VisualizationViewer<Object, TopicGraphViewPanel.MyLink>(HtreeLayout, new Dimension(this.getWidth(), this.getHeight()));
         
         //vv.setBackground(Color.white);
 
@@ -295,13 +271,13 @@ public class EventGraphViewPanel extends JPanel {
 
     }
     
-//    static class MyRenderer extends JPanel implements Renderer.Vertex<Object, TopicGraphViewFrame.MyLink>
+//    static class MyRenderer extends JPanel implements Renderer.Vertex<Object, TopicGraphViewPanel.MyLink>
 //    {
 //        static final long serialVersionUID = 420000L;
 //
 //        @Override
-//        public void paintVertex(RenderContext<Object, TopicGraphViewFrame.MyLink> rc,
-//                                Layout<Object, TopicGraphViewFrame.MyLink> layout, Object vertex)
+//        public void paintVertex(RenderContext<Object, TopicGraphViewPanel.MyLink> rc,
+//                                Layout<Object, TopicGraphViewPanel.MyLink> layout, Object vertex)
 //        {
 //           // System.out.println("MY RENDER");
 //            try
@@ -336,7 +312,7 @@ public class EventGraphViewPanel extends JPanel {
 //            }
 //        }
 //
-////        public void paintVertex(RenderContext<Object, TopicGraphViewFrame.MyLink> rc, Layout<Object, TopicGraphViewFrame.MyLink> layout, Object v) {
+////        public void paintVertex(RenderContext<Object, TopicGraphViewPanel.MyLink> rc, Layout<Object, TopicGraphViewPanel.MyLink> layout, Object v) {
 ////            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 ////        }
 //    }

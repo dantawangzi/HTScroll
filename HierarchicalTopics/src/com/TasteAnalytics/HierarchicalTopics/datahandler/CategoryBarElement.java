@@ -33,7 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.TasteAnalytics.HierarchicalTopics.file.CSVReader;
 import com.TasteAnalytics.HierarchicalTopics.gui.MinimalismMainFrame;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
 /**
  *

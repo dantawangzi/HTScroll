@@ -10,7 +10,7 @@ import com.TasteAnalytics.HierarchicalTopics.eventsview.EventViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.file.CSVFile;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.PrefuseLabelTopicGraphPanel;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
 import com.explodingpixels.macwidgets.HudWidgetFactory;
@@ -80,9 +80,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     //Defined by wdou
     private com.TasteAnalytics.HierarchicalTopics.gui.ViewController viewController;
 
+    
+    
     DocumentViewer documentViewer = null;
     TemporalViewFrame temporalFrame = null;
-    TopicGraphViewFrame topicFrame = null;
+    TopicGraphViewPanel topicFrame = null;
     VastGeoFrame vcGeoFrame = null;
     EventViewFrame eventViewFrame = null;
 
@@ -428,7 +430,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
                         temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
                         temporalFrame.setLocation(0, 0);
 
-                        topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights(), null);
+                        topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), null);
                         viewController.addTopicGraphViewPanel(topicFrame);
                         viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
                         System.out.println("topic frame load topics done.");
@@ -493,7 +495,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
     private void jConnectMongoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectMongoButtonActionPerformed
 
-        viewController.host = "caprica.uncc.edu";//10.18.202.126"; //"54.209.61.133";
+        viewController.host = "10.18.203.130";//"caprica.uncc.edu";//10.18.202.126"; //"54.209.61.133"; 10.18.203.130
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
         
@@ -645,6 +647,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
                viewController.database = ((String)(((HashMap)(hr.get("mongo_input"))).get("db")));
                viewController.table = ((String)(((HashMap)(hr.get("mongo_input"))).get("table")));
                viewController.id_type = ((String)(((HashMap)(hr.get("mongo_input"))).get("_id_type")));
+               
+                viewController.id_type = ((String)(((HashMap)(hr.get("mongo_input"))).get("_id_type")));
+                viewController.tagLDA = Boolean.parseBoolean( String.valueOf(((HashMap)(hr.get("meta"))).get("tlda")));
+               
            }
             
      
@@ -695,9 +701,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         temporalFrame.loadCacheData(job, TreeString, viewController.host);
         //temporalFrame.createWorldMap(maplocations); 
          
-        temporalFrame.setVisible(true);
+        //temporalFrame.setVisible(true);
         temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
-        temporalFrame.setLocation(0, 0);
+        //temporalFrame.setLocation(0, 0);
 
             
             HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
@@ -774,7 +780,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             
             
             
-        topicFrame = new TopicGraphViewFrame(viewController, csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
+        topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
         viewController.addTopicGraphViewPanel(topicFrame);
         viewController.getTopicGraphViewPanel().loadTopic(topics);
         System.out.println("topic frame load topics done.");
@@ -793,39 +799,33 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
             initializeViews(csvf);
             
+                        
+     
 
-            
-            
-        JPanel testPanel = new JPanel();
-        testPanel.setBackground(Color.red);
-        testPanel.setPreferredSize(new Dimension(1500,1000));
-        
-        JPanel testPanel2 = new JPanel();
-        testPanel2.setBackground(Color.black);
-        testPanel2.setPreferredSize(new Dimension(1500,1000));
-        
         JPanel testPanel3 = new JPanel();
         testPanel3.setBackground(Color.green);
         testPanel3.setPreferredSize(new Dimension(1500,1000));
                 
         
-        PrefuseLabelTopicGraphPanel labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
+        PrefuseLabelTopicGraphPanel labelTopicGraphPanel = null;
+        if (viewController.tagLDA)
+        labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
 
         
         Border orangeLine = BorderFactory.createLineBorder(Color.orange);
         mButtonPanel.setBorder(orangeLine);
         
-            rightTopScrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
+            rightTopScrollPane = new JScrollPane(topicFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        rightTopScrollPane.setViewportView(testPanel);
+        rightTopScrollPane.setViewportView(topicFrame);
         
         rightBottomScrollPane = new JScrollPane( labelTopicGraphPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);        
         rightBottomScrollPane.setViewportView( labelTopicGraphPanel);
         
            
-        leftTopScrollPane = new JScrollPane(testPanel2, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
+        leftTopScrollPane = new JScrollPane(temporalFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        leftTopScrollPane.setViewportView(testPanel2);
+        leftTopScrollPane.setViewportView(temporalFrame);
         
         leftBottomScrollPane = new JScrollPane(testPanel3, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);        
         leftBottomScrollPane.setViewportView(testPanel3);
@@ -1101,19 +1101,19 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 //            }
 //        });
 
-        topicFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                jCheckBoxTopicGraph.setState(false);
-            }
-        });
+//        topicFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+//            @Override
+//            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+//                jCheckBoxTopicGraph.setState(false);
+//            }
+//        });
 
-        temporalFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                jCheckBoxTemporalFrame.setState(false);
-            }
-        });
+//        temporalFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+//            @Override
+//            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+//                jCheckBoxTemporalFrame.setState(false);
+//            }
+//        });
 
     }
 
