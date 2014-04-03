@@ -3440,12 +3440,20 @@ public class TopicGraphViewPanel extends JPanel {
             int count = 1;
             Dimension keyPos, tempPos;
             List<Dimension> tmpDim = null;
+            
+                  for (int i = parent.getGlobalReadIndex(); i < reorganizedTopics.size(); i++) 
+               // for (int j = parent.getGlobalReadIndex()+1; j < reorganizedTopics.get(i).length; j++)
+                {
+                    System.out.println(reorganizedTopics.get(i).length);
+                    
+                }
+                    
             for (int i = parent.getGlobalReadIndex(); i < reorganizedTopics.size(); i++) {
-                for (int j = parent.getGlobalReadIndex()+1; j < reorganizedTopics.get(0).length; j++) {
+                for (int j = parent.getGlobalReadIndex()+1; j < reorganizedTopics.get(i).length/*30*/; j++) {
                     //Compare every word with other words
                     keyPos = new Dimension(i, j);
                     for (int m = parent.getGlobalReadIndex(); m < reorganizedTopics.size(); m++) {
-                        for (int n = parent.getGlobalReadIndex()+1; n < reorganizedTopics.get(0).length; n++) {
+                        for (int n = parent.getGlobalReadIndex()+1; n < /*30*/reorganizedTopics.get(m).length; n++) {
                             if (m == i && n == j) {
                                 //Skip the word itself
                             } else {

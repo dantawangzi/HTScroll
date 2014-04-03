@@ -600,18 +600,44 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             
             
             String Key =(String)   ((HashMap)r).get("_id");
-            String terms = (String) ((HashMap)r).get("terms");
-                                    
-            String[] tmps = terms.split(",");
-            String[] tmpdest = new String[tmps.length+2];
-            tmpdest[0] = "Group";
-            tmpdest[1] = Key;
-            for (int i=0; i<tmps.length; i++)
+            
+            if (((HashMap)r).get("terms") instanceof BasicDBList)
             {
-                tmpdest[2+i] = tmps[i];
+                BasicDBList terms = ((BasicDBList) ((HashMap)r).get("terms"));
+                
+                
+                  
+                String[] tmpdest = new String[terms.size()+2];
+                tmpdest[0] = "Group";
+                tmpdest[1] = Key;
+                for (int i=0; i<terms.size(); i++)
+                {
+                    tmpdest[2+i] = (String) terms.get(i);
+
+                }
+                topicsByMongo.put(Key, tmpdest); 
+                
                 
             }
-            topicsByMongo.put(Key, tmpdest); 
+            else
+            {
+            
+                String terms = (String) ((HashMap)r).get("terms");
+            
+                    
+                    
+                    
+                String[] tmps = terms.split(",");
+                String[] tmpdest = new String[tmps.length+2];
+                tmpdest[0] = "Group";
+                tmpdest[1] = Key;
+                for (int i=0; i<tmps.length; i++)
+                {
+                    tmpdest[2+i] = tmps[i];
+
+                }
+                topicsByMongo.put(Key, tmpdest); 
+            }
         }
          for (int i=0; i<topicsByMongo.size(); i++)
         {
