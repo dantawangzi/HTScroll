@@ -14,8 +14,11 @@ public class HirarchicalTopicsMain{
     * @param args the command line arguments (currently none available)
     */
     public static void main (String args[]) {
-       //UIManager.put("org.mediavirus.parvis.gui.ParallelDisplayUI", "org.mediavirus.parvis.gui.BasicParallelDisplayUI");
-        new MinimalismMainFrame().show();
+       
+        MinimalismMainFrame mmframe = new MinimalismMainFrame();
+        mmframe.setVisible(true);
+        mmframe.setExtendedState(mmframe.getExtendedState()|JFrame.MAXIMIZED_BOTH);
+            
     }
 
 }

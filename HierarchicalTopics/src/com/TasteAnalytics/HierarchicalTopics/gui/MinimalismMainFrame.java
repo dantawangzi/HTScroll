@@ -12,75 +12,36 @@ import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewF
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.PrefuseLabelTopicGraphPanel;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
-import com.explodingpixels.macwidgets.HudWidgetFactory;
-import com.explodingpixels.macwidgets.HudWindow;
-import com.explodingpixels.macwidgets.MacButtonFactory;
-import com.explodingpixels.macwidgets.MacUtils;
-import com.explodingpixels.macwidgets.SourceList;
-import com.explodingpixels.macwidgets.SourceListCategory;
-import com.explodingpixels.macwidgets.SourceListDarkColorScheme;
-import com.explodingpixels.macwidgets.SourceListItem;
-import com.explodingpixels.macwidgets.SourceListModel;
-import com.google.gson.Gson;
 
 
 
 import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoException;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
-import com.mysql.jdbc.Connection;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Toolkit;
-import java.awt.geom.Point2D;
 import java.io.*;
-import java.math.BigDecimal;
-import java.net.*;
-import java.security.InvalidKeyException;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.JTable;
 import javax.swing.border.Border;
-import org.apache.commons.io.IOUtils;
-import prefuse.data.Graph;
-import prefuse.data.io.*;
-
-import prefuse.data.io.AbstractGraphWriter;
-import prefuse.data.io.GraphWriter;
-import prefuse.data.io.TreeMLWriter;
 
 /**
  *
- * @authors Derek Xiaoyu Wang, Wenwen Dou, Li Yu
+ * @authors Taste Analytics, LLC
+ * @version 1000
+ * All rights reserved, Taste Analytics, LLC, 2014
  */
 public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
     //private ViewController viewcontroller;
     //Defined by wdou
     private com.TasteAnalytics.HierarchicalTopics.gui.ViewController viewController;
-
-    
     
     DocumentViewer documentViewer = null;
     TemporalViewFrame temporalFrame = null;
@@ -90,8 +51,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
     ConsoleFrame consoleFrame = null;
     
-    
-     JSplitPane mainSplit;
+    JSplitPane mainSplit;
     
     JSplitPane leftSplit, rightSplit;
         
@@ -107,6 +67,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         //this.setSize(null);
         
         initComponents();
+        
+        
        
         
        // MacUtils.makeWindowLeopardStyle(this.getRootPane());
@@ -134,6 +96,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         Thread thread = new Thread(this);  
         thread.start();  
     
+        
+        //TODO: Remove this
         System.out.println("This is currently running on the main thread, " +  
         "the id is: " + Thread.currentThread().getId());  
         
@@ -150,13 +114,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         menuEditGroup = new javax.swing.ButtonGroup();
         buttonEditGroup = new javax.swing.ButtonGroup();
-        mButtonPanel = new javax.swing.JPanel();
-        jButtonLoadData = new javax.swing.JButton();
-        jConnectMongoButton = new javax.swing.JButton();
         mViewPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenu = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jCheckBoxTemporalFrame = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxTopicGraph = new javax.swing.JCheckBoxMenuItem();
@@ -175,28 +137,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             }
         });
 
-        jButtonLoadData.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
-        jButtonLoadData.setText("Load Data");
-        jButtonLoadData.setActionCommand("Load Data...");
-        jButtonLoadData.setMargin(new java.awt.Insets(0, 5, 0, 0));
-        jButtonLoadData.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openItemActionPerformed(evt);
-            }
-        });
-        mButtonPanel.add(jButtonLoadData);
-
-        jConnectMongoButton.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
-        jConnectMongoButton.setText("Connect Mongo");
-        jConnectMongoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jConnectMongoButtonActionPerformed(evt);
-            }
-        });
-        mButtonPanel.add(jConnectMongoButton);
-
-        getContentPane().add(mButtonPanel, java.awt.BorderLayout.PAGE_START);
-
         mViewPanel.setLayout(new java.awt.BorderLayout());
         getContentPane().add(mViewPanel, java.awt.BorderLayout.CENTER);
 
@@ -204,13 +144,22 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         fileMenu.setText("File");
 
-        openMenu.setText("Open File...");
+        openMenu.setText("Connect to Server");
+        openMenu.setToolTipText("Connect to Remote Server and Checkout Data Analytics Results");
         openMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jConnectMongoButtonActionPerformed(evt);
+            }
+        });
+        fileMenu.add(openMenu);
+
+        jMenuItem1.setText("Load Local Data File");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openItemActionPerformed(evt);
             }
         });
-        fileMenu.add(openMenu);
+        fileMenu.add(jMenuItem1);
 
         menuBar.add(fileMenu);
 
@@ -280,187 +229,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     }// </editor-fold>//GEN-END:initComponents
     File currentPath = null;
     static public Map<Integer, Integer> parIdx2docIdx;
-
-    private void openItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openItemActionPerformed
-
-//               System.out.println("MySQL Connect Example.");
-//        Connection conn = null;
-//        String url = "jdbc:mysql://152.15.99.7/";
-//        String dbName = "lda_results";
-//        String driver = "com.mysql.jdbc.Driver";
-//        String userName = "lee";
-//        String password = "uncc_lee";
-//        try {
-//            Class.forName(driver).newInstance();
-//            conn = (Connection) DriverManager.getConnection(url + dbName, userName, password);
-//            System.out.println("Connected to the database");
-//            
-//            
-//            String selectSQL = "select description, id from patents limit 1000";
-//            
-//            
-//            
-//            PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
-//            //preparedStatement.setInt(1, 1001);
-//            ResultSet rs = preparedStatement.executeQuery(selectSQL);
-//
-//
-//            while (rs.next()) {
-//
-//                String userid = rs.getString("description");
-//                String usernamea = rs.getString("id");
-//
-//                System.out.println("longitude : " + userid);
-//                System.out.println("latitude : " + usernamea);
-//
-//            }
-//
-//
-//            conn.close();
-//            System.out.println("Disconnected from database");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        
-        
-        
-        
-        
-       
-
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-            public boolean accept(File f) {
-                return (f.isDirectory() || f.getName().endsWith(".csv"));
-            }
-
-            public String getDescription() {
-                return "CSV Files";
-            }
-        });
-
-        if (currentPath == null) {
-            chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-        } else {
-            chooser.setCurrentDirectory(currentPath);
-        }
-
-        int option = chooser.showOpenDialog(this);
-
-        if (option == JFileChooser.APPROVE_OPTION) {
-            if (chooser.getSelectedFile() != null) {
-                currentPath = chooser.getSelectedFile().getParentFile();
-                String tmpURL = chooser.getSelectedFile().getAbsolutePath();
-
-                String urltext = "file:///" + chooser.getSelectedFile().getAbsolutePath();
-                urltext = urltext.replace('\\', '/');
-
-                try {
-
-                    if (tmpURL.endsWith("csv")) {
-
-                        int idx = tmpURL.lastIndexOf("\\");
-                        if (idx == -1) {
-                            idx = tmpURL.lastIndexOf("/");
-                        }
-                        String folderPath = tmpURL.substring(0, idx + 1);
-
-                        String headerPath = folderPath + "header.txt";
-
-                        viewController.readHeaderFile(headerPath);
-
-                        CSVFile csvf = new CSVFile(tmpURL);
-                        
-                        
-                        if (viewController.b_readAll)
-                        {
-
-                            csvf.readContents(viewController.b_readAll, viewController.b_readFromDB,
-                                    viewController.host, viewController.port, viewController.database, viewController.collection2, viewController.nameField2
-                            );
-
-                            viewController.setUsageRecord(csvf.getInternalRecord());
-
-                            viewController.setInternalDocs(csvf.getInternalDocs());
-
-                            viewController.setTopicSimilarities(csvf.getTopicSimilarities());
-
-                            //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
-
-                            viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
-
-                            viewController.setFormat(csvf.getFormat());
-
-                            viewController.setContentIdx(csvf.getContentIdx());
-
-                            
-                            
-                            if (!viewController.b_readAll) {
-                                viewController.setContentIdx(0);
-                            }
-
-                            viewController.setGlobalReadIndex(1);
-                        }
-                        else
-                        {
-                            csvf.readContents(viewController.b_readAll);
-                             //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
-                             //SimpleDateFormat f = new SimpleDateFormat("YYYY-hh-dd");
-                              viewController.setFormat(csvf.getFormat());
-                            
-                        }
-                        setTitle("HirarchicalTopics" + csvf.getName());
-                        viewController.setNewHueColors();
-
-                        Toolkit toolkit = Toolkit.getDefaultToolkit();
-
-                        Dimension scrnsize = toolkit.getScreenSize();
-
-                        String csvfilepath = csvf.getFolderPath();
-                        viewController.csvfFolderPath = csvfilepath;
-                        temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
-                        viewController.addTemporalFrame(temporalFrame);
-
-                        temporalFrame.loadData(csvf.getFolderPath(), csvf.getInternalRecord(), csvf.getYears(),
-                                csvf.getInternalDocs(), csvf.getTermWeights(), csvf.getTermWeights_norm(), csvf.getTermIndex(), csvf.getAllTopics(),
-                                csvfilepath, csvf.getContentIdx(), csvf.getFormat(), viewController.intervalDays, viewController.b_readAll, viewController.b_recaluateValue, viewController.zoomSubBins
-                        ,csvf.content);
-
-                        temporalFrame.setVisible(true);
-                        temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
-                        temporalFrame.setLocation(0, 0);
-
-                        topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), null);
-                        viewController.addTopicGraphViewPanel(topicFrame);
-                        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
-                        System.out.println("topic frame load topics done.");
-
-                        viewController.getTopicGraphViewPanel().buildTree(csvf.getFolderPath());
-
-                        System.out.println("topic frame build tree done..");
-
-                        topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
-                        topicFrame.setLocation(scrnsize.width / 2, 0);
-
-                        viewController.getTopicGraphViewPanel().generateLayout();
-                        topicFrame.setVisible(true);
-
-                        System.out.println("Topics Graph done!");
-        
-        
-                        initializeViews(csvf);
-                        /**
-                         * Initialize temporal view*
-                         */
-
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.toString() + e.getMessage());
-                }
-
-            }
-        }
-    }//GEN-LAST:event_openItemActionPerformed
 
     /**
      * Exit the Application
@@ -623,10 +391,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             {
             
                 String terms = (String) ((HashMap)r).get("terms");
-            
-                    
-                    
-                    
                 String[] tmps = terms.split(",");
                 String[] tmpdest = new String[tmps.length+2];
                 tmpdest[0] = "Group";
@@ -838,8 +602,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
 
         
-        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
-        mButtonPanel.setBorder(orangeLine);
+//        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
+//        mButtonPanel.setBorder(orangeLine);
         
             rightTopScrollPane = new JScrollPane(topicFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, 
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -911,6 +675,177 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
 // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBoxConsoleMenuActionPerformed
+
+    private void openItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openItemActionPerformed
+
+        //               System.out.println("MySQL Connect Example.");
+        //        Connection conn = null;
+        //        String url = "jdbc:mysql://152.15.99.7/";
+        //        String dbName = "lda_results";
+        //        String driver = "com.mysql.jdbc.Driver";
+        //        String userName = "lee";
+        //        String password = "uncc_lee";
+        //        try {
+            //            Class.forName(driver).newInstance();
+            //            conn = (Connection) DriverManager.getConnection(url + dbName, userName, password);
+            //            System.out.println("Connected to the database");
+            //
+            //
+            //            String selectSQL = "select description, id from patents limit 1000";
+            //
+            //
+            //
+            //            PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
+            //            //preparedStatement.setInt(1, 1001);
+            //            ResultSet rs = preparedStatement.executeQuery(selectSQL);
+            //
+            //
+            //            while (rs.next()) {
+                //
+                //                String userid = rs.getString("description");
+                //                String usernamea = rs.getString("id");
+                //
+                //                System.out.println("longitude : " + userid);
+                //                System.out.println("latitude : " + usernamea);
+                //
+                //            }
+            //
+            //
+            //            conn.close();
+            //            System.out.println("Disconnected from database");
+            //        } catch (Exception e) {
+            //            e.printStackTrace();
+            //        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+            public boolean accept(File f) {
+                return (f.isDirectory() || f.getName().endsWith(".csv"));
+            }
+
+            public String getDescription() {
+                return "CSV Files";
+            }
+        });
+
+        if (currentPath == null) {
+            chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        } else {
+            chooser.setCurrentDirectory(currentPath);
+        }
+
+        int option = chooser.showOpenDialog(this);
+
+        if (option == JFileChooser.APPROVE_OPTION) {
+            if (chooser.getSelectedFile() != null) {
+                currentPath = chooser.getSelectedFile().getParentFile();
+                String tmpURL = chooser.getSelectedFile().getAbsolutePath();
+
+                String urltext = "file:///" + chooser.getSelectedFile().getAbsolutePath();
+                urltext = urltext.replace('\\', '/');
+
+                try {
+
+                    if (tmpURL.endsWith("csv")) {
+
+                        int idx = tmpURL.lastIndexOf("\\");
+                            if (idx == -1) {
+                                idx = tmpURL.lastIndexOf("/");
+                            }
+                            String folderPath = tmpURL.substring(0, idx + 1);
+
+                            String headerPath = folderPath + "header.txt";
+
+                            viewController.readHeaderFile(headerPath);
+
+                            CSVFile csvf = new CSVFile(tmpURL);
+
+                            if (viewController.b_readAll)
+                            {
+
+                                csvf.readContents(viewController.b_readAll, viewController.b_readFromDB,
+                                    viewController.host, viewController.port, viewController.database, viewController.collection2, viewController.nameField2
+                                );
+
+                                viewController.setUsageRecord(csvf.getInternalRecord());
+
+                                viewController.setInternalDocs(csvf.getInternalDocs());
+
+                                viewController.setTopicSimilarities(csvf.getTopicSimilarities());
+
+                                //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
+
+                                viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
+
+                                viewController.setFormat(csvf.getFormat());
+
+                                viewController.setContentIdx(csvf.getContentIdx());
+
+                                if (!viewController.b_readAll) {
+                                    viewController.setContentIdx(0);
+                                }
+
+                                viewController.setGlobalReadIndex(1);
+                            }
+                            else
+                            {
+                                csvf.readContents(viewController.b_readAll);
+                                //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
+                                //SimpleDateFormat f = new SimpleDateFormat("YYYY-hh-dd");
+                                viewController.setFormat(csvf.getFormat());
+
+                            }
+                            setTitle("HirarchicalTopics" + csvf.getName());
+                            viewController.setNewHueColors();
+
+                            Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+                            Dimension scrnsize = toolkit.getScreenSize();
+
+                            String csvfilepath = csvf.getFolderPath();
+                            viewController.csvfFolderPath = csvfilepath;
+                            temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
+                            viewController.addTemporalFrame(temporalFrame);
+
+                            temporalFrame.loadData(csvf.getFolderPath(), csvf.getInternalRecord(), csvf.getYears(),
+                                csvf.getInternalDocs(), csvf.getTermWeights(), csvf.getTermWeights_norm(), csvf.getTermIndex(), csvf.getAllTopics(),
+                                csvfilepath, csvf.getContentIdx(), csvf.getFormat(), viewController.intervalDays, viewController.b_readAll, viewController.b_recaluateValue, viewController.zoomSubBins
+                                ,csvf.content);
+
+                            temporalFrame.setVisible(true);
+                            temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
+                            temporalFrame.setLocation(0, 0);
+
+                            topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), null);
+                            viewController.addTopicGraphViewPanel(topicFrame);
+                            viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
+                            System.out.println("topic frame load topics done.");
+
+                            viewController.getTopicGraphViewPanel().buildTree(csvf.getFolderPath());
+
+                            System.out.println("topic frame build tree done..");
+
+                            topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
+                            topicFrame.setLocation(scrnsize.width / 2, 0);
+
+                            viewController.getTopicGraphViewPanel().generateLayout();
+                            topicFrame.setVisible(true);
+
+                            System.out.println("Topics Graph done!");
+
+                            initializeViews(csvf);
+                            /**
+                            * Initialize temporal view*
+                            */
+
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.toString() + e.getMessage());
+                    }
+
+                }
+            }
+    }//GEN-LAST:event_openItemActionPerformed
 
     void initializeViews(CSVFile csvf) throws IOException {
 
@@ -1156,15 +1091,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem helpItem;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JButton jButtonLoadData;
     private javax.swing.JCheckBoxMenuItem jCheckBoxConsoleMenu;
     private javax.swing.JCheckBoxMenuItem jCheckBoxGeoFrame;
     private javax.swing.JCheckBoxMenuItem jCheckBoxLabelTopicFrame;
     private javax.swing.JCheckBoxMenuItem jCheckBoxTemporalFrame;
     private javax.swing.JCheckBoxMenuItem jCheckBoxTopicGraph;
-    private javax.swing.JButton jConnectMongoButton;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JPanel mButtonPanel;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel mViewPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.ButtonGroup menuEditGroup;
