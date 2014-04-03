@@ -1,11 +1,11 @@
-package com.TasteAnalytics.HierarchicalTopics;
+package com.TasteAnalytics.Apollo;
 
 import com.TasteAnalytics.HierarchicalTopics.gui.MinimalismMainFrame;
 
 import javax.swing.*;
 
 
-public class HirarchicalTopicsMain{
+public class Apollo{
 
 
     /**
@@ -18,7 +18,7 @@ public class HirarchicalTopicsMain{
         MinimalismMainFrame mmframe = new MinimalismMainFrame();
         mmframe.setVisible(true);
         mmframe.setExtendedState(mmframe.getExtendedState()|JFrame.MAXIMIZED_BOTH);
-            
+   
     }
 
 }

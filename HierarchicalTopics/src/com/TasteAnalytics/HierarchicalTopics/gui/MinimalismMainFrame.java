@@ -37,6 +37,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     //Defined by wdou
     private com.TasteAnalytics.HierarchicalTopics.gui.ViewController viewController;
 
+    File currentPath = null;
+    static public Map<Integer, Integer> parIdx2docIdx;
+
     DocumentViewer documentViewer = null;
     TemporalViewFrame temporalFrame = null;
     TopicGraphViewPanel topicFrame = null;
@@ -55,6 +58,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     public MinimalismMainFrame() {
 
         initComponents();
+        this.setTitle("Apollo");
 
         Thread thread = new Thread(this);
         thread.start();
@@ -186,8 +190,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    File currentPath = null;
-    static public Map<Integer, Integer> parIdx2docIdx;
 
     /**
      * Exit the Application
@@ -258,41 +260,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             data[i] = tmp;
 
         }
+        
         JTable table = new JTable(data, columnName);
-
-//        HudWindow hud = new HudWindow("Select Dataset");
-//        hud.getJDialog().setSize(400, 650);
-//        hud.getJDialog().setLocationRelativeTo(null);
-//        hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//        hud.getJDialog().setVisible(true);
-//        hud.hideCloseButton();
-//        
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
 
-//        JButton button = HudWidgetFactory.createHudButton("Button");
-//        hud.getContentPane().setLayout(new FlowLayout());
-//        hud.getContentPane().add(button);
-//        
-////        JPanel jp = new JPanel();
-////        jp.add(scrollPane);
-////        jp.setPreferredSize(new Dimension(300,400));
-//        hud.getContentPane().add(scrollPane);
-//
-//        
-//        
-//        SourceListModel model = new SourceListModel();
-//        SourceListCategory category = new SourceListCategory("Category");
-//        model.addCategory(category);
-//        model.addItemToCategory(new SourceListItem("Item"), category);
-//        SourceList sourceList = new SourceList(model);     
-//        
-//        
-//        sourceList.setColorScheme(new SourceListDarkColorScheme());
-//        
-//        //hud.getContentPane().add(sourceList.getComponent());
         JOptionPane.showMessageDialog(null, scrollPane,
-                "select", JOptionPane.YES_NO_CANCEL_OPTION);
+                "Choose an analytics result you like to investigate", JOptionPane.YES_NO_CANCEL_OPTION);
 
         String job = jobNames.get(table.getSelectedRow());
         viewController.collection = job;
@@ -301,8 +275,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         try {
 
        // viewController.setUsageRecord(csvf.getInternalRecord());
-        //viewController.setInternalDocs(csvf.getInternalDocs());
-       // viewController.setTopicSimilarities(csvf.getTopicSimilarities());
+            //viewController.setInternalDocs(csvf.getInternalDocs());
+            // viewController.setTopicSimilarities(csvf.getTopicSimilarities());
             List<String[]> topics = new ArrayList<String[]>();
 
             HashMap<String, String[]> topicsByMongo = new HashMap<String, String[]>();
@@ -412,7 +386,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
             //temporalFrame.setVisible(true);
             temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
-        //temporalFrame.setLocation(0, 0);
+            //temporalFrame.setLocation(0, 0);
 
             HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
             List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
@@ -540,6 +514,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             Border blackline = BorderFactory.createLineBorder(Color.black);
             mViewPanel.setBorder(blackline);
             mViewPanel.add(mainSplit);
+            
+           
 
         } catch (IOException ex) {
             Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -569,6 +545,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             public boolean accept(File f) {
                 return (f.isDirectory() || f.getName().endsWith(".csv"));
             }
+
             public String getDescription() {
                 return "CSV Files";
             }
@@ -618,7 +595,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                             viewController.setTopicSimilarities(csvf.getTopicSimilarities());
 
-                                //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
+                            //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
                             viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
 
                             viewController.setFormat(csvf.getFormat());
@@ -632,7 +609,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                             viewController.setGlobalReadIndex(1);
                         } else {
                             csvf.readContents(viewController.b_readAll);
-                                //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
+                            //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
                             //SimpleDateFormat f = new SimpleDateFormat("YYYY-hh-dd");
                             viewController.setFormat(csvf.getFormat());
 
@@ -691,17 +668,15 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     void initializeViews(CSVFile csvf) throws IOException {
 
 //        Toolkit toolkit = Toolkit.getDefaultToolkit();
-
 //        Dimension scrnsize = toolkit.getScreenSize();
 //
 //        String csvfilepath = csvf.getFolderPath();
-
         temporalFrame.getMainPanel().buildLabelTimeMap();
         //temporalFrame.getSubPanel().buildLabelTimeMap();
 
      //   viewController.setLeafNodeSequence(topicFrame.getLeafSequence());
-       // int s = viewController.getTopicGraphViewPanel().getTree().size();
-       // FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
+        // int s = viewController.getTopicGraphViewPanel().getTree().size();
+        // FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
         //String treeString = IOUtils.toString(inputStream);
         //        Graph pgh = null;//(viewController.makePrefuseGraph(treeString));
 //
@@ -859,7 +834,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 ////
 //////
 //        System.out.println("GeoFrame done");
-  //      eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
+        //      eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
         //             viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, csvf.getFolderPath(), csvf.getSimilarityMatrix());
 //                eventViewFrame.setVisible(true);          
 //eventViewFrame = null;
