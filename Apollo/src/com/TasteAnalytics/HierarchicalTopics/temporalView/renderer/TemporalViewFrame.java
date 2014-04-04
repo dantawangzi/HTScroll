@@ -138,16 +138,12 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         //System.out.println("all panel size set");
         testPanel.removeAll();
         int framewidth = testPanel.getWidth();
-<<<<<<< HEAD:HierarchicalTopics/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
+
         int frameheight = testPanel.getHeight();
         int dummyHeight = frameheight/3;
         
         
-=======
-        int frameheight = testPanel.getHeight() - 12;
-        int dummyHeight = frameheight / 3;
 
->>>>>>> 66cb8bb4f3647ed81f0e76bc862dc7075a8adc38:Apollo/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
         int num_of_extra_columns = temporalPanelMap.size();
         int sizec1 = num_of_extra_columns > 0 ? 1 : 0;
         layoutPanelMap.clear();
@@ -696,20 +692,13 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         this.setLayout(new BorderLayout());
 
        // menuPanel.setSize(WW, HH/5);
-<<<<<<< HEAD:HierarchicalTopics/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
        //  this.getContentPane().add(menuPanel,BorderLayout.PAGE_START);
         //scrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         //this.add(scrollPane, BorderLayout.CENTER);
         //scrollPane.setViewportView(testPanel);
         this.add(testPanel);
         
-=======
-        //  this.getContentPane().add(menuPanel,BorderLayout.PAGE_START);
-        scrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.add(scrollPane, BorderLayout.CENTER);
-        scrollPane.setViewportView(testPanel);
 
->>>>>>> 66cb8bb4f3647ed81f0e76bc862dc7075a8adc38:Apollo/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
         myFrameWidth = 1000;//this.getContentPane().getWidth();//1000;//
         myFrameHeight = 1000;//this.getContentPane().getHeight() - this.getContentPane().getHeight()/5;//1000;//
         //System.out.println("frame size " + myFrameWidth + " " + myFrameHeight);
@@ -717,13 +706,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         testPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight));
 
         mainPanel = new TemporalViewPanel(vc);
-<<<<<<< HEAD:HierarchicalTopics/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
-        //worldPanel = new WorldMapProcessingPanel();
-        
-        //subPanel = new TemporalViewPanel(vc);
-=======
-        worldPanel = new WorldMapProcessingPanel();
->>>>>>> 66cb8bb4f3647ed81f0e76bc862dc7075a8adc38:Apollo/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
+
 
         //subPanel = new TemporalViewPanel(vc);
         mainPanel.setName("Main");
@@ -733,13 +716,10 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         //subPanel.setLevel(0);
 
         //this.setSize(new Dimension(1800, 900));
-<<<<<<< HEAD:HierarchicalTopics/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
+
         mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 3);
         //worldPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight / 3 ));
-=======
-        mainPanel.setMyPanelSize(myFrameWidth, myFrameHeight / 3 * 2);
-        worldPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight / 3));
->>>>>>> 66cb8bb4f3647ed81f0e76bc862dc7075a8adc38:Apollo/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
+
         //subPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3);
 
         layoutPanelMap.put(0, new JPanel());
@@ -864,25 +844,12 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
     }
 
-<<<<<<< HEAD:HierarchicalTopics/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
-//    public void createWorldMap(List<HashMap> m)
-//    {
-//        worldPanel = new WorldMapProcessingPanel(parent , m, this.myFrameWidth, this.myFrameHeight/3);
-//        
-//   
-//    }
+
     
     
     public void loadCacheData(String databaseName, String TreeString, String host) throws IOException
     {
-=======
-    public void createWorldMap(List<HashMap> m) {
-        worldPanel = new WorldMapProcessingPanel(parent, m, this.myFrameWidth, this.myFrameHeight / 3);
 
-    }
-
-    public void loadCacheData(String databaseName, String TreeString, String host) throws IOException {
->>>>>>> 66cb8bb4f3647ed81f0e76bc862dc7075a8adc38:Apollo/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
         data = new CategoryBarElement(databaseName, host);
         myTree = new ArrayList<TreeNode>();
         buildTreeWithString(TreeString);
@@ -917,13 +884,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 //        getSubPanel().computerZeroslopeAreasHierarchy(0);
 //        getSubPanel().detectEvents(getMainPanel().getEventThreshold());
         getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
-<<<<<<< HEAD:HierarchicalTopics/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
-        //this.getWorldPanel().invalidate();
-        
-=======
-        this.getWorldPanel().invalidate();
 
->>>>>>> 66cb8bb4f3647ed81f0e76bc862dc7075a8adc38:Apollo/src/com/TasteAnalytics/HierarchicalTopics/temporalView/renderer/TemporalViewFrame.java
         //getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
         System.out.println("initial calculating of main and subpanel done");
 

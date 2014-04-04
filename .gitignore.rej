@@ -1,0 +1,10 @@
+diff a/.gitignore b/.gitignore	(rejected hunks)
+@@ -19,6 +19,5 @@
+ *.txt
+ 
+ *.txt
+-/Apollo/nbproject/private/
+\ No newline at end of file
+ /Apollo/nbproject/private/
+ /Apollo/build/
+\ No newline at end of file
