@@ -15,7 +15,7 @@
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="fileMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
+            <Property name="text" type="java.lang.String" value="Data Handlers"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="openMenu">

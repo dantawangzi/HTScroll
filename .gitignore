@@ -19,3 +19,4 @@ HierarchicalTopics/build/classes/.netbeans_update_resources
 *.txt
 
 *.txt
+/Apollo/nbproject/private/

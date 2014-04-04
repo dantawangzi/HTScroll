@@ -105,7 +105,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
         menuBar.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
 
-        fileMenu.setText("File");
+        fileMenu.setText("Data Handlers");
 
         openMenu.setText("Connect to Server");
         openMenu.setToolTipText("Connect to Remote Server and Checkout Data Analytics Results");
