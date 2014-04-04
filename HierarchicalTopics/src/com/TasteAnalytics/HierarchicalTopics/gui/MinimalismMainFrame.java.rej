@@ -1,0 +1,9 @@
+diff a/HierarchicalTopics/src/com/TasteAnalytics/HierarchicalTopics/gui/MinimalismMainFrame.java b/HierarchicalTopics/src/com/TasteAnalytics/HierarchicalTopics/gui/MinimalismMainFrame.java	(rejected hunks)
+@@ -719,6 +719,7 @@
+ 
+         String csvfilepath = csvf.getFolderPath();
+         viewController.csvfFolderPath = csvfilepath;
++        viewController.csvfFolderPath = ".\\";
+         
+         temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
+ 
