@@ -50,7 +50,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
     private int myFrameHeight = 0;
     ViewController parent;
     private TemporalViewPanel mainPanel;
-    private WorldMapProcessingPanel worldPanel;
+    //private WorldMapProcessingPanel worldPanel;
     //private TemporalViewPanel subPanel;
     private CategoryBarElement data;
     
@@ -94,13 +94,13 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 //    public TemporalViewPanel getSubPanel() {
 //        return subPanel;
 //    }
-    public WorldMapProcessingPanel getWorldPanel() {
-        return worldPanel;
-    }
-
-    public void setWorldPanel(WorldMapProcessingPanel worldPanel) {
-        this.worldPanel = worldPanel;
-    }
+//    public WorldMapProcessingPanel getWorldPanel() {
+//        return worldPanel;
+//    }
+//
+//    public void setWorldPanel(WorldMapProcessingPanel worldPanel) {
+//        this.worldPanel = worldPanel;
+//    }
 
     
     
@@ -339,7 +339,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         
         testPanel.removeAll();
         int framewidth = testPanel.getWidth();
-        int frameheight = testPanel.getHeight()-12;
+        int frameheight = testPanel.getHeight();
         int dummyHeight = frameheight/3;
         
         
@@ -899,7 +899,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
             }
 
             testPanel.invalidate();
-            worldPanel.invalidate();
+            //worldPanel.invalidate();
 //        tempMaxNormalValue = -1;
 //        for (TemporalViewPanel p : thirdColumn) {
 //            if (p.getLocalNormalizingValue() >= tempMaxNormalValue) {
@@ -918,7 +918,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
     }
 
     JPanel testPanel = new JPanel();
-    JScrollPane scrollPane;
+    //JScrollPane scrollPane;
     JPanel menuPanel = new JPanel();
     
     
@@ -938,10 +938,11 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         
        // menuPanel.setSize(WW, HH/5);
        //  this.getContentPane().add(menuPanel,BorderLayout.PAGE_START);
-        scrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.add(scrollPane, BorderLayout.CENTER);
-        scrollPane.setViewportView(testPanel);
-
+        //scrollPane = new JScrollPane(testPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        //this.add(scrollPane, BorderLayout.CENTER);
+        //scrollPane.setViewportView(testPanel);
+        this.add(testPanel);
+        
         myFrameWidth = 1000;//this.getContentPane().getWidth();//1000;//
         myFrameHeight = 1000;//this.getContentPane().getHeight() - this.getContentPane().getHeight()/5;//1000;//
         //System.out.println("frame size " + myFrameWidth + " " + myFrameHeight);
@@ -949,7 +950,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         testPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight));
 
         mainPanel = new TemporalViewPanel(vc);
-        worldPanel = new WorldMapProcessingPanel();
+        //worldPanel = new WorldMapProcessingPanel();
         
         //subPanel = new TemporalViewPanel(vc);
 
@@ -960,8 +961,8 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         //subPanel.setLevel(0);
 
         //this.setSize(new Dimension(1800, 900));
-        mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 2);
-        worldPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight / 3 ));
+        mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 3);
+        //worldPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight / 3 ));
         //subPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3);
         
         layoutPanelMap.put(0, new JPanel());
@@ -980,7 +981,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         this.addComponentListener(new ComponentListener() {
             public void componentResized(ComponentEvent e) {
 
-                scrollPane.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                //scrollPane.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
                 ((TemporalViewFrame) e.getComponent()).setSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
 
                 
@@ -1092,14 +1093,12 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
     }
 
-    public void createWorldMap(List<HashMap> m)
-    {
-        worldPanel = new WorldMapProcessingPanel(parent , m, this.myFrameWidth, this.myFrameHeight/3);
-        
-        
-        
-        
-    }
+//    public void createWorldMap(List<HashMap> m)
+//    {
+//        worldPanel = new WorldMapProcessingPanel(parent , m, this.myFrameWidth, this.myFrameHeight/3);
+//        
+//   
+//    }
     
     
     public void loadCacheData(String databaseName, String TreeString, String host) throws IOException
@@ -1139,7 +1138,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 //        getSubPanel().detectEvents(getMainPanel().getEventThreshold());
 
         getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
-        this.getWorldPanel().invalidate();
+        //this.getWorldPanel().invalidate();
         
         //getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
         System.out.println("initial calculating of main and subpanel done");

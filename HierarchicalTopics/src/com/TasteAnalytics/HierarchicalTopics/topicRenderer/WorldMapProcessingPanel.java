@@ -81,6 +81,7 @@ public class WorldMapProcessingPanel extends JPanel {
         float min_x = 9999999.0f;
         float min_y = 9999999.0f;
 
+        if (M.size()>1)
         for (int i = 0; i < M.size(); i++) {
 
             float lat = Float.parseFloat((String) M.get(i).get("latitude"));

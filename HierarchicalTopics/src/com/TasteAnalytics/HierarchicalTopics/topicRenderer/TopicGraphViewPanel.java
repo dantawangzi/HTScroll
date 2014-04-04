@@ -467,27 +467,20 @@ public class TopicGraphViewPanel extends JPanel {
         popupMenu = new myAnnotationMenu();
         annotation_locations = new ArrayList<Point2D>();
         annotation = new ArrayList<JLabel>();
-
-       
+    
        
         width = 1200;
         height = 1000;
 
         this.isCollapsed = false;
 
-        setPreferredSize(new Dimension(width, height));
-        //setSize(600, 500);
-
-        // setSize(width, height);
+        //setPreferredSize(new Dimension(width, height));
+     
         labelsToDisplay = 51;
 
         tvf = this.parent.getTemporalFrame();
 
-        // this.getContentPane().setLayout(new BorderLayout());
-        //this.getContentPane().add(mainPanel);
-        //  TemporalViewInteractions interactions = new TemporalViewInteractions(this);
-        // addMouseListener(interactions);
-        // addMouseMotionListener(interactions);
+
         this.addComponentListener(new ComponentListener() {
             public void componentResized(ComponentEvent e) {
 
@@ -1119,6 +1112,9 @@ public class TopicGraphViewPanel extends JPanel {
         setNodeColor();
 
     }
+    
+    
+    int controlPanelHeight = 100;
 
     public void generateLayout() {
 
@@ -1133,7 +1129,7 @@ public class TopicGraphViewPanel extends JPanel {
 
         ewcs = new EdgeWeightStrokeFunction<MyLink>();
 
-        vv = new VisualizationViewer<Object, MyLink>(HtreeLayout, new Dimension(width, height));
+        vv = new VisualizationViewer<Object, MyLink>(HtreeLayout, new Dimension(width, height-controlPanelHeight));
         // vv.setSize(new Dimension(width, height));
         vv.setBackground(Color.white);
 
@@ -1847,6 +1843,7 @@ public class TopicGraphViewPanel extends JPanel {
         JPanel scaleGrid = new JPanel(new GridLayout(1, 0));
         scaleGrid.setBorder(BorderFactory.createTitledBorder("Zoom"));
         JPanel controls = new JPanel();
+        controls.setPreferredSize(new Dimension(width,controlPanelHeight));
         scaleGrid.add(plus);
         scaleGrid.add(minus);
 
@@ -1861,7 +1858,7 @@ public class TopicGraphViewPanel extends JPanel {
         controls.add(merge);
 
         controls.add(fontSliderPanel);
-        content.add(controls, BorderLayout.SOUTH);
+        content.add(controls, BorderLayout.NORTH);
 
         final JTextField searchField = new JTextField("Enter Keyword");
         searchField.setSize(300, 24);
@@ -1945,68 +1942,18 @@ public class TopicGraphViewPanel extends JPanel {
                 }
             }
         });
-
-//        JButton searchButton = new JButton("search");
-//        controls.add(searchButton);
-//        
-//        searchButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//
-//                String searchString = searchField.getText();
-//
-//                if (searchString.length() > 1) {
-//
-//
-//                    int numberOfTopics = allTopics.size();
-//
-//                    for (int i = 0; i < numberOfTopics; i++) {
-//                        for (int j = 0; j < labelsToDisplay; j++) {
-//                            labelIsSelected[i][j] = false;
-//
-//                        }
-//                    }
-//
-//                    searchString = searchString.replaceAll(" ", "");
-//
-//                    for (int i = 0; i < numberOfTopics; i++) {
-//                        for (int j = 1; j < (labelsToDisplay); j++) {
-//
-//                            //System.out.println("i " + i + " j " + j + " " + labeltexts[i][j-1].getString());
-//                            if (labeltexts[i][j - 1].getString() != null) {
-//                                if (labeltexts[i][j - 1].getString().equals(searchString)) {
-//                                    labelIsSelected[i][j - 1] = true;
-//
-////                                        labeltexts[i][j-1].setColor(Color.black);
-////                                        Font font = new Font(Font.SERIF, Font.BOLD, 15);
-////                                        labeltexts[i][j-1].setFont(font);
-////                                 
-////                                System.out.println(true);
-//                                }
-//                            }
-//
-//
-//                        }
-//                    }
-//
-//
-//
-//
-//                }
-//
-//                updateLabelLocations();
-//                vv.repaint();
-//
-//            }
-//        });
-        // magnifyLabel.setBorder(LineBorder.createGrayLineBorder());
-        // magnifyLabel.setBackground(Color.red);
+        content.add(vv,BorderLayout.SOUTH);
+        
+        //content.setLayout(null);
         content.add(magnifyLabel);
         content.add(magnifyLabelLeft);
         content.add(magnifyLabelRight);
         content.add(magnifyLabelLeftLeft);
         content.add(magnifyLabelRightRight);
         content.add(tooltipLabel);
-
+        
+        
+        
         tooltipLabel.setBackground(Color.LIGHT_GRAY);
         tooltipLabel.setOpaque(true);
 
@@ -2025,7 +1972,7 @@ public class TopicGraphViewPanel extends JPanel {
         magnifyLabelRightRight.setBackground(Color.white);
         magnifyLabelRightRight.setOpaque(true);
 
-        content.add(vv,BorderLayout.NORTH);
+        
 
     }
 
@@ -4688,6 +4635,7 @@ public class TopicGraphViewPanel extends JPanel {
         @Override
         public void mouseMoved(MouseEvent e) {
 
+           // content.setLayout(null);
             tooltipLabel.setVisible(false);
 
             if (!SwingUtilities.isRightMouseButton(e) && !SwingUtilities.isLeftMouseButton(e) && b_showText) {
@@ -4792,6 +4740,7 @@ public class TopicGraphViewPanel extends JPanel {
                 vv.repaint();
 
             }
+            //content.setLayout(new BorderLayout());
         }
 
         public MyGraphMousePlugin() {

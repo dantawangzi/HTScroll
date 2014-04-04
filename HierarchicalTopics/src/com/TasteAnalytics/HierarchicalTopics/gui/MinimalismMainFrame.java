@@ -9,7 +9,7 @@ import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewF
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.PrefuseLabelTopicGraphPanel;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
-
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingPanel;
 import com.mongodb.BasicDBList;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,6 +45,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     TopicGraphViewPanel topicFrame = null;
     VastGeoFrame vcGeoFrame = null;
     EventViewFrame eventViewFrame = null;
+    WorldMapProcessingPanel worldPanel =  null;
 
     ConsoleFrame consoleFrame = null;
 
@@ -388,7 +389,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         //temporalFrame.createWorldMap(maplocations); 
 
             //temporalFrame.setVisible(true);
-            temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
+            //temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
             //temporalFrame.setLocation(0, 0);
 
             HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
@@ -457,14 +458,15 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             viewController.getTopicGraphViewPanel().generateLayout();
             topicFrame.setVisible(true);
 
+            
+            worldPanel = new WorldMapProcessingPanel(viewController , maplocations, 1000, 1000);
+            
+            
             System.out.println("Topics Graph done!");
 
             initializeViews(csvf);
 
-            JPanel testPanel3 = new JPanel();
-            testPanel3.setBackground(Color.green);
-            //testPanel3.setPreferredSize(new Dimension(1500, 1000));
-
+        
             PrefuseLabelTopicGraphPanel labelTopicGraphPanel = null;
             if (viewController.tagLDA) {
                 labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
@@ -483,8 +485,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             leftTopScrollPane.setViewportView(temporalFrame);
 
-            leftBottomScrollPane = new JScrollPane(testPanel3, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            leftBottomScrollPane.setViewportView(testPanel3);
+            leftBottomScrollPane = new JScrollPane(worldPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            leftBottomScrollPane.setViewportView(worldPanel);
 
             leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                     leftTopScrollPane, leftBottomScrollPane);
@@ -518,7 +520,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             mViewPanel.setBorder(blackline);
             mViewPanel.add(mainSplit);
             
-            topicFrame.invalidate();
+            
             
            
 
