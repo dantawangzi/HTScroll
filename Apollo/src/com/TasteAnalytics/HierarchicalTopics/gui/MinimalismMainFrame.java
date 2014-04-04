@@ -79,19 +79,22 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         menuEditGroup = new javax.swing.ButtonGroup();
         buttonEditGroup = new javax.swing.ButtonGroup();
         mViewPanel = new javax.swing.JPanel();
-        menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        openMenu = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        jCheckBoxTemporalFrame = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxTopicGraph = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxGeoFrame = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxLabelTopicFrame = new javax.swing.JCheckBoxMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        helpItem = new javax.swing.JMenuItem();
-        jCheckBoxConsoleMenu = new javax.swing.JCheckBoxMenuItem();
-        aboutItem = new javax.swing.JMenuItem();
+        MenuPanel = new javax.swing.JPanel();
+        jButtonConnectServer = new javax.swing.JButton();
+        jCheckBoxConsoleMenu = new javax.swing.JCheckBox();
+        jProgressBarSystem = new javax.swing.JProgressBar();
+        MenuPanel = new javax.swing.JPanel();
+        jButtonConnectServer = new javax.swing.JButton();
+        jCheckBoxConsoleMenu = new javax.swing.JCheckBox();
+        jProgressBarSystem = new javax.swing.JProgressBar();
+        MenuPanel = new javax.swing.JPanel();
+        jButtonConnectServer = new javax.swing.JButton();
+        jCheckBoxConsoleMenu = new javax.swing.JCheckBox();
+        jProgressBarSystem = new javax.swing.JProgressBar();
+        MenuPanel = new javax.swing.JPanel();
+        jButtonConnectServer = new javax.swing.JButton();
+        jCheckBoxConsoleMenu = new javax.swing.JCheckBox();
+        jProgressBarSystem = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("HirarchicalTopics");
@@ -102,92 +105,76 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         });
 
         mViewPanel.setLayout(new java.awt.BorderLayout());
-        getContentPane().add(mViewPanel, java.awt.BorderLayout.CENTER);
 
-        menuBar.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        MenuPanel.setLayout(new javax.swing.BoxLayout(MenuPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        fileMenu.setText("Data Handlers");
-
-        openMenu.setText("Connect to Server");
-        openMenu.setToolTipText("Connect to Remote Server and Checkout Data Analytics Results");
-        openMenu.addActionListener(new java.awt.event.ActionListener() {
+        jButtonConnectServer.setText("Connect to Server");
+        jButtonConnectServer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jConnectMongoButtonActionPerformed(evt);
             }
         });
-        fileMenu.add(openMenu);
-
-        jMenuItem1.setText("Load Local Data File");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(jMenuItem1);
-
-        menuBar.add(fileMenu);
-
-        jMenu1.setText("Panels");
-
-        jCheckBoxTemporalFrame.setSelected(true);
-        jCheckBoxTemporalFrame.setText("Themeriver Frame");
-        jCheckBoxTemporalFrame.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxTemporalFrameActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jCheckBoxTemporalFrame);
-
-        jCheckBoxTopicGraph.setSelected(true);
-        jCheckBoxTopicGraph.setText("HierarchicalTopics Frame");
-        jCheckBoxTopicGraph.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxTopicGraphActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jCheckBoxTopicGraph);
-
-        jCheckBoxGeoFrame.setSelected(true);
-        jCheckBoxGeoFrame.setText("GeoSpatial Frame");
-        jCheckBoxGeoFrame.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxGeoFrameActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jCheckBoxGeoFrame);
-
-        jCheckBoxLabelTopicFrame.setSelected(true);
-        jCheckBoxLabelTopicFrame.setText("Label/Topic Graph Frame");
-        jCheckBoxLabelTopicFrame.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxLabelTopicFrameActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jCheckBoxLabelTopicFrame);
-
-        menuBar.add(jMenu1);
-
-        helpMenu.setText("Help");
-
-        helpItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        helpItem.setText("Help");
-        helpMenu.add(helpItem);
+        MenuPanel.add(jButtonConnectServer);
 
         jCheckBoxConsoleMenu.setSelected(true);
-        jCheckBoxConsoleMenu.setText("Console");
-        jCheckBoxConsoleMenu.addActionListener(new java.awt.event.ActionListener() {
+        jCheckBoxConsoleMenu.setText("Show Console");
+        MenuPanel.add(jCheckBoxConsoleMenu);
+        MenuPanel.add(jProgressBarSystem);
+
+        mViewPanel.add(MenuPanel, java.awt.BorderLayout.PAGE_START);
+
+        getContentPane().add(mViewPanel, java.awt.BorderLayout.CENTER);
+
+        MenuPanel.setLayout(new javax.swing.BoxLayout(MenuPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        jButtonConnectServer.setText("Connect to Server");
+        jButtonConnectServer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxConsoleMenuActionPerformed(evt);
+                jConnectMongoButtonActionPerformed(evt);
             }
         });
-        helpMenu.add(jCheckBoxConsoleMenu);
+        MenuPanel.add(jButtonConnectServer);
 
-        aboutItem.setText("About...");
-        helpMenu.add(aboutItem);
+        jCheckBoxConsoleMenu.setSelected(true);
+        jCheckBoxConsoleMenu.setText("Show Console");
+        MenuPanel.add(jCheckBoxConsoleMenu);
+        MenuPanel.add(jProgressBarSystem);
 
-        menuBar.add(helpMenu);
+        mViewPanel.add(MenuPanel, java.awt.BorderLayout.PAGE_START);
 
-        setJMenuBar(menuBar);
+        MenuPanel.setLayout(new javax.swing.BoxLayout(MenuPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        jButtonConnectServer.setText("Connect to Server");
+        jButtonConnectServer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jConnectMongoButtonActionPerformed(evt);
+            }
+        });
+        MenuPanel.add(jButtonConnectServer);
+
+        jCheckBoxConsoleMenu.setSelected(true);
+        jCheckBoxConsoleMenu.setText("Show Console");
+        MenuPanel.add(jCheckBoxConsoleMenu);
+        MenuPanel.add(jProgressBarSystem);
+
+        mViewPanel.add(MenuPanel, java.awt.BorderLayout.PAGE_START);
+
+        MenuPanel.setLayout(new javax.swing.BoxLayout(MenuPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        jButtonConnectServer.setText("Connect to Server");
+        jButtonConnectServer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jConnectMongoButtonActionPerformed(evt);
+            }
+        });
+        MenuPanel.add(jButtonConnectServer);
+
+        jCheckBoxConsoleMenu.setSelected(true);
+        jCheckBoxConsoleMenu.setText("Show Console");
+        MenuPanel.add(jCheckBoxConsoleMenu);
+        MenuPanel.add(jProgressBarSystem);
+
+        mViewPanel.add(MenuPanel, java.awt.BorderLayout.PAGE_START);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -199,31 +186,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         System.exit(0);
     }//GEN-LAST:event_exitForm
 
-
-    private void jCheckBoxTemporalFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTemporalFrameActionPerformed
-        // Show or Disable Temporal Frame
-        boolean currentState = jCheckBoxTemporalFrame.getState();
-        temporalFrame.setVisible(currentState);
-    }//GEN-LAST:event_jCheckBoxTemporalFrameActionPerformed
-
-    private void jCheckBoxTopicGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxTopicGraphActionPerformed
-        // Show or Disable Topics Frame
-        boolean currentState = jCheckBoxTopicGraph.getState();
-        topicFrame.setVisible(currentState);
-    }//GEN-LAST:event_jCheckBoxTopicGraphActionPerformed
-
-    private void jCheckBoxGeoFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxGeoFrameActionPerformed
-        // Show or Disable Geographics Frame
-        boolean currentState = jCheckBoxGeoFrame.getState();
-        vcGeoFrame.setVisible(currentState);
-    }//GEN-LAST:event_jCheckBoxGeoFrameActionPerformed
-
-    private void jCheckBoxLabelTopicFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLabelTopicFrameActionPerformed
-        // Show or Disable Label Frame
-        boolean currentState = jCheckBoxLabelTopicFrame.getState();
-        eventViewFrame.setVisible(currentState);
-    }//GEN-LAST:event_jCheckBoxLabelTopicFrameActionPerformed
-
     @SuppressWarnings("empty-statement")
     private void jConnectMongoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectMongoButtonActionPerformed
 
@@ -232,7 +194,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
 
-//        JOptionPane p = new JOptionPane();
         String[] columnName = {"Data"};
         List<String> jobNames = new ArrayList<String>();
 
@@ -261,13 +222,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             data[i] = tmp;
 
         }
-        
+
         JTable table = new JTable(data, columnName);
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
 
         JOptionPane.showMessageDialog(null, scrollPane,
-                "Choose an analytics result you like to investigate", JOptionPane.YES_NO_CANCEL_OPTION);
+            "Choose an analytics result you like to investigate", JOptionPane.YES_NO_CANCEL_OPTION);
 
         String job = jobNames.get(table.getSelectedRow());
         viewController.collection = job;
@@ -275,7 +236,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         CSVFile csvf = new CSVFile("");
         try {
 
-       // viewController.setUsageRecord(csvf.getInternalRecord());
+            // viewController.setUsageRecord(csvf.getInternalRecord());
             //viewController.setInternalDocs(csvf.getInternalDocs());
             // viewController.setTopicSimilarities(csvf.getTopicSimilarities());
             List<String[]> topics = new ArrayList<String[]>();
@@ -331,12 +292,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     viewController.nameFields = null;
                 }
 
-//               String field = String.valueOf(hr.get("field"));
-//               field = field.replaceAll("\\[","");
-//               field = field.replaceAll("\\]","");
-//                       field = field.replaceAll("\"","");
-//                        field = field.replaceAll(" ","");
-//               viewController.nameFields = field.split(",");
+                //               String field = String.valueOf(hr.get("field"));
+                //               field = field.replaceAll("\\[","");
+                //               field = field.replaceAll("\\]","");
+                //                       field = field.replaceAll("\"","");
+                //                        field = field.replaceAll(" ","");
+                //               viewController.nameFields = field.split(",");
                 viewController.text_id = ((String) (((HashMap) (hr.get("mongo_input"))).get("text_index")));
                 viewController.database = ((String) (((HashMap) (hr.get("mongo_input"))).get("db")));
                 viewController.table = ((String) (((HashMap) (hr.get("mongo_input"))).get("table")));
@@ -365,28 +326,26 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                 maplocations.add((HashMap) r);
             }
 
-//        q1 = new BasicDBObject("type", "flat");
-//        cursorfind = currentColl.find(q1);
-//        BasicDBObject dbo1 = (BasicDBObject) cursorfind.next();
-//        TreeString = dbo1.getString("tree");
+            //        q1 = new BasicDBObject("type", "flat");
+            //        cursorfind = currentColl.find(q1);
+            //        BasicDBObject dbo1 = (BasicDBObject) cursorfind.next();
+            //        TreeString = dbo1.getString("tree");
             viewController.setNewHueColors();
 
             Toolkit toolkit = Toolkit.getDefaultToolkit();
 
             Dimension scrnsize = toolkit.getScreenSize();
 
+            String csvfilepath = csvf.getFolderPath();
+            viewController.csvfFolderPath = csvfilepath;
+            viewController.csvfFolderPath = ".\\";
 
-        String csvfilepath = csvf.getFolderPath();
-        viewController.csvfFolderPath = csvfilepath;
-        viewController.csvfFolderPath = ".\\";
-        
-        temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
-
+            temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
 
             viewController.addTemporalFrame(temporalFrame);
 
             temporalFrame.loadCacheData(job, TreeString, viewController.host);
-        //temporalFrame.createWorldMap(maplocations); 
+            //temporalFrame.createWorldMap(maplocations);
 
             //temporalFrame.setVisible(true);
             //temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
@@ -458,50 +417,47 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             viewController.getTopicGraphViewPanel().generateLayout();
             topicFrame.setVisible(true);
 
-            
             worldPanel = new WorldMapProcessingPanel(viewController , maplocations, 1000, 1000);
-            
-            
+
             System.out.println("Topics Graph done!");
 
             initializeViews(csvf);
 
-        
             PrefuseLabelTopicGraphPanel labelTopicGraphPanel = null;
             if (viewController.tagLDA) {
                 labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
             }
 
-//        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
-//        mButtonPanel.setBorder(orangeLine);
+            //        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
+            //        mButtonPanel.setBorder(orangeLine);
             rightTopScrollPane = new JScrollPane(topicFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             rightTopScrollPane.setViewportView(topicFrame);
 
             rightBottomScrollPane = new JScrollPane(labelTopicGraphPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             rightBottomScrollPane.setViewportView(labelTopicGraphPanel);
 
             leftTopScrollPane = new JScrollPane(temporalFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             leftTopScrollPane.setViewportView(temporalFrame);
 
             leftBottomScrollPane = new JScrollPane(worldPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             leftBottomScrollPane.setViewportView(worldPanel);
 
             leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                    leftTopScrollPane, leftBottomScrollPane);
+                leftTopScrollPane, leftBottomScrollPane);
             leftSplit.setOneTouchExpandable(true);
             leftSplit.setDividerLocation(0.8d);
             leftSplit.setResizeWeight(0.8d);
 
             rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                    rightTopScrollPane, rightBottomScrollPane);
+                rightTopScrollPane, rightBottomScrollPane);
             rightSplit.setOneTouchExpandable(true);
             rightSplit.setDividerLocation(0.8d);
             leftSplit.setResizeWeight(0.8d);
 
             mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                    leftSplit, rightSplit);
+                leftSplit, rightSplit);
             mainSplit.setOneTouchExpandable(true);
             mainSplit.setDividerLocation(0.5d);
             mainSplit.setResizeWeight(0.5d);
@@ -519,10 +475,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             Border blackline = BorderFactory.createLineBorder(Color.black);
             mViewPanel.setBorder(blackline);
             mViewPanel.add(mainSplit);
-            
-            
-            
-           
 
         } catch (IOException ex) {
             Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -530,147 +482,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         try {
             connection.close();
 
-// TODO add your handling code here:
+            // TODO add your handling code here:
         } catch (IOException ex) {
             Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }//GEN-LAST:event_jConnectMongoButtonActionPerformed
 
-    private void jCheckBoxConsoleMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxConsoleMenuActionPerformed
-
-        boolean currentState = jCheckBoxConsoleMenu.getState();
-        consoleFrame.setVisible(currentState);
-
-// TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBoxConsoleMenuActionPerformed
-
-    private void openItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openItemActionPerformed
-
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-            public boolean accept(File f) {
-                return (f.isDirectory() || f.getName().endsWith(".csv"));
-            }
-
-            public String getDescription() {
-                return "CSV Files";
-            }
-        });
-
-        if (currentPath == null) {
-            chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-        } else {
-            chooser.setCurrentDirectory(currentPath);
-        }
-
-        int option = chooser.showOpenDialog(this);
-
-        if (option == JFileChooser.APPROVE_OPTION) {
-            if (chooser.getSelectedFile() != null) {
-                currentPath = chooser.getSelectedFile().getParentFile();
-                String tmpURL = chooser.getSelectedFile().getAbsolutePath();
-
-                String urltext = "file:///" + chooser.getSelectedFile().getAbsolutePath();
-                urltext = urltext.replace('\\', '/');
-
-                try {
-
-                    if (tmpURL.endsWith("csv")) {
-
-                        int idx = tmpURL.lastIndexOf("\\");
-                        if (idx == -1) {
-                            idx = tmpURL.lastIndexOf("/");
-                        }
-                        String folderPath = tmpURL.substring(0, idx + 1);
-
-                        String headerPath = folderPath + "header.txt";
-
-                        viewController.readHeaderFile(headerPath);
-
-                        CSVFile csvf = new CSVFile(tmpURL);
-
-                        if (viewController.b_readAll) {
-
-                            csvf.readContents(viewController.b_readAll, viewController.b_readFromDB,
-                                    viewController.host, viewController.port, viewController.database, viewController.collection2, viewController.nameField2
-                            );
-
-                            viewController.setUsageRecord(csvf.getInternalRecord());
-
-                            viewController.setInternalDocs(csvf.getInternalDocs());
-
-                            viewController.setTopicSimilarities(csvf.getTopicSimilarities());
-
-                            //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
-                            viewController.getDocumentViewer().loadDocs(csvf.getInternalDocs());
-
-                            viewController.setFormat(csvf.getFormat());
-
-                            viewController.setContentIdx(csvf.getContentIdx());
-
-                            if (!viewController.b_readAll) {
-                                viewController.setContentIdx(0);
-                            }
-
-                            viewController.setGlobalReadIndex(1);
-                        } else {
-                            csvf.readContents(viewController.b_readAll);
-                            //viewController.getTopicDisplay().loadTopic(csvf.getAllTopics());
-                            //SimpleDateFormat f = new SimpleDateFormat("YYYY-hh-dd");
-                            viewController.setFormat(csvf.getFormat());
-
-                        }
-                        setTitle("HirarchicalTopics" + csvf.getName());
-                        viewController.setNewHueColors();
-
-                        Toolkit toolkit = Toolkit.getDefaultToolkit();
-
-                        Dimension scrnsize = toolkit.getScreenSize();
-
-                        String csvfilepath = csvf.getFolderPath();
-                        viewController.csvfFolderPath = csvfilepath;
-                        temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
-                        viewController.addTemporalFrame(temporalFrame);
-
-                        temporalFrame.loadData(csvf.getFolderPath(), csvf.getInternalRecord(), csvf.getYears(),
-                                csvf.getInternalDocs(), csvf.getTermWeights(), csvf.getTermWeights_norm(), csvf.getTermIndex(), csvf.getAllTopics(),
-                                csvfilepath, csvf.getContentIdx(), csvf.getFormat(), viewController.intervalDays, viewController.b_readAll, viewController.b_recaluateValue, viewController.zoomSubBins, csvf.content);
-
-                        temporalFrame.setVisible(true);
-                        temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
-                        temporalFrame.setLocation(0, 0);
-
-                        topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), null);
-                        viewController.addTopicGraphViewPanel(topicFrame);
-                        viewController.getTopicGraphViewPanel().loadTopic(csvf.getAllTopics());
-                        System.out.println("topic frame load topics done.");
-
-                        viewController.getTopicGraphViewPanel().buildTree(csvf.getFolderPath());
-
-                        System.out.println("topic frame build tree done..");
-
-                        topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
-                        topicFrame.setLocation(scrnsize.width / 2, 0);
-
-                        viewController.getTopicGraphViewPanel().generateLayout();
-                        topicFrame.setVisible(true);
-
-                        System.out.println("Topics Graph done!");
-
-                        initializeViews(csvf);
-                        /**
-                         * Initialize temporal view*
-                         */
-
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.toString() + e.getMessage());
-                }
-
-            }
-        }
-    }//GEN-LAST:event_openItemActionPerformed
 
     void initializeViews(CSVFile csvf) throws IOException {
 
@@ -849,7 +666,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                jCheckBoxConsoleMenu.setState(false);
+                jCheckBoxConsoleMenu.setSelected(false);
             }
         });
 
@@ -879,28 +696,19 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //        });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutItem;
+    private javax.swing.JPanel MenuPanel;
     private javax.swing.ButtonGroup buttonEditGroup;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenuItem helpItem;
-    private javax.swing.JMenu helpMenu;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxConsoleMenu;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxGeoFrame;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxLabelTopicFrame;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxTemporalFrame;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxTopicGraph;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JButton jButtonConnectServer;
+    private javax.swing.JCheckBox jCheckBoxConsoleMenu;
+    private javax.swing.JProgressBar jProgressBarSystem;
     private javax.swing.JPanel mViewPanel;
-    private javax.swing.JMenuBar menuBar;
     private javax.swing.ButtonGroup menuEditGroup;
-    private javax.swing.JMenuItem openMenu;
     // End of variables declaration//GEN-END:variables
 
     public void run() {
         viewController = new ViewController();
 
-        jCheckBoxConsoleMenu.setState(false);
+        jCheckBoxConsoleMenu.setSelected(false);
         consoleFrame = new ConsoleFrame();
         consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         documentViewer = new DocumentViewer(viewController);
