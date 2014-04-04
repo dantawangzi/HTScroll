@@ -1,0 +1,22 @@
+{
+	"nodes":[
+		{"name":"37657315592","group":0},
+		{"name":"140224616013022","group":1},
+		{"name":"111916564193","group":2},
+		{"name":"226868634064171","group":3},
+		{"name":"false","group":4},
+		{"name":"84398256230","group":5},
+		{"name":"106485550030","group":6},
+		{"name":"146326746661","group":7},
+		{"name":"144748475550037","group":8},
+		{"name":"null","group":9}
+	],
+	"links":[
+		{"source":1,"target":8,"value":160.63371},
+		{"source":2,"target":7,"value":196.39383},
+		{"source":4,"target":7,"value":189.76443},
+		{"source":5,"target":7,"value":193.63124},
+		{"source":7,"target":8,"value":222.93948},
+		{"source":7,"target":9,"value":186.77957}
+	]
+}

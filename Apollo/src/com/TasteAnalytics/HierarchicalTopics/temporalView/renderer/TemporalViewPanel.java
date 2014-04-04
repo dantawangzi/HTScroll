@@ -17,7 +17,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -29,14 +28,12 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.DateFormat;
 import java.util.ArrayList;
 
 import java.util.List;
-import java.util.Map;
 import javax.swing.JPanel;
 import com.TasteAnalytics.HierarchicalTopics.gui.ViewController;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.CategoryBarElement;
@@ -47,13 +44,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import org.apache.commons.io.IOUtils;
-import java.awt.geom.PathIterator;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import java.util.concurrent.TimeUnit;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewPanel;
-import static prefuse.render.Renderer.DEFAULT_GRAPHICS;
 import wordle.layout.LabelWordleLite;
 import wordle.layout.WordleAlgorithmLite;
 import wordle.layout.WordleLite;
@@ -1074,18 +1068,17 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
             // List<float[]> values = data.getCategoryBarSub();
             currentPoint = new Point[numofYears + 2][numberOfCategories + 1];
-            int h = (this.height);
 
-            double verticalratio = (double) h / 1;//localmaxValue;//maxValue;
+            double verticalratio = (double) this.height / 1;//localmaxValue;//maxValue;
             double horizontalratio = (double) width / (double) numofYears;
 
             for (int icol = 0; icol < numberOfCategories; icol++) {
-                currentPoint[0][icol] = new Point(0, (int) (h / 1 * 0.5));
-                currentPoint[numofYears + 1][icol] = new Point(width, (int) (h * 0.5));
+                currentPoint[0][icol] = new Point(0, (int) (this.height / 1 * 0.5));
+                currentPoint[numofYears + 1][icol] = new Point(width, (int) (this.height * 0.5));
             }
 
-            currentPoint[0][numberOfCategories] = new Point(0, (int) (h / 1 * 0.5));
-            currentPoint[numofYears + 1][numberOfCategories] = new Point(width, (int) (h / 1 * 0.5));
+            currentPoint[0][numberOfCategories] = new Point(0, (int) (this.height / 1 * 0.5));
+            currentPoint[numofYears + 1][numberOfCategories] = new Point(width, (int) (this.height / 1 * 0.5));
 
             for (int i = 0; i < numofYears; i++) {
 
