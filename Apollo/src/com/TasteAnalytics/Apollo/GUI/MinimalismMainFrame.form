@@ -54,7 +54,7 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="jButtonConnectServer">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Connect to Server"/>
+                <Property name="text" type="java.lang.String" value="Choose Analytics"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jConnectMongoButtonActionPerformed"/>
@@ -62,91 +62,13 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="jCheckBoxConsoleMenu">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Show Console"/>
+                <Property name="text" type="java.lang.String" value="Console"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JProgressBar" name="jProgressBarSystem">
             </Component>
           </SubComponents>
         </Container>
-      </SubComponents>
-    </Container>
-    <Container class="javax.swing.JPanel" name="MenuPanel1">
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-          <BorderConstraints direction="First"/>
-        </Constraint>
-      </Constraints>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JButton" name="jButtonConnectServer1">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Connect to Server"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jConnectMongoButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxConsoleMenu1">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Show Console"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JProgressBar" name="jProgressBarSystem1">
-        </Component>
-      </SubComponents>
-    </Container>
-    <Container class="javax.swing.JPanel" name="MenuPanel2">
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-          <BorderConstraints direction="First"/>
-        </Constraint>
-      </Constraints>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JButton" name="jButtonConnectServer2">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Connect to Server"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jConnectMongoButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxConsoleMenu2">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Show Console"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JProgressBar" name="jProgressBarSystem2">
-        </Component>
-      </SubComponents>
-    </Container>
-    <Container class="javax.swing.JPanel" name="MenuPanel3">
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-          <BorderConstraints direction="First"/>
-        </Constraint>
-      </Constraints>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JButton" name="jButtonConnectServer3">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Connect to Server"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jConnectMongoButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxConsoleMenu3">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Show Console"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JProgressBar" name="jProgressBarSystem3">
-        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

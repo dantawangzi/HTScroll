@@ -83,18 +83,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         jButtonConnectServer = new javax.swing.JButton();
         jCheckBoxConsoleMenu = new javax.swing.JCheckBox();
         jProgressBarSystem = new javax.swing.JProgressBar();
-        MenuPanel1 = new javax.swing.JPanel();
-        jButtonConnectServer1 = new javax.swing.JButton();
-        jCheckBoxConsoleMenu1 = new javax.swing.JCheckBox();
-        jProgressBarSystem1 = new javax.swing.JProgressBar();
-        MenuPanel2 = new javax.swing.JPanel();
-        jButtonConnectServer2 = new javax.swing.JButton();
-        jCheckBoxConsoleMenu2 = new javax.swing.JCheckBox();
-        jProgressBarSystem2 = new javax.swing.JProgressBar();
-        MenuPanel3 = new javax.swing.JPanel();
-        jButtonConnectServer3 = new javax.swing.JButton();
-        jCheckBoxConsoleMenu3 = new javax.swing.JCheckBox();
-        jProgressBarSystem3 = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("HirarchicalTopics");
@@ -108,7 +96,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
         MenuPanel.setLayout(new javax.swing.BoxLayout(MenuPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        jButtonConnectServer.setText("Connect to Server");
+        jButtonConnectServer.setText("Choose Analytics");
         jButtonConnectServer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jConnectMongoButtonActionPerformed(evt);
@@ -116,61 +104,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         });
         MenuPanel.add(jButtonConnectServer);
 
-        jCheckBoxConsoleMenu.setText("Show Console");
+        jCheckBoxConsoleMenu.setText("Console");
         MenuPanel.add(jCheckBoxConsoleMenu);
         MenuPanel.add(jProgressBarSystem);
 
         mViewPanel.add(MenuPanel, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(mViewPanel, java.awt.BorderLayout.CENTER);
-
-        MenuPanel1.setLayout(new javax.swing.BoxLayout(MenuPanel1, javax.swing.BoxLayout.LINE_AXIS));
-
-        jButtonConnectServer1.setText("Connect to Server");
-        jButtonConnectServer1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jConnectMongoButtonActionPerformed(evt);
-            }
-        });
-        MenuPanel1.add(jButtonConnectServer1);
-
-        jCheckBoxConsoleMenu1.setText("Show Console");
-        MenuPanel1.add(jCheckBoxConsoleMenu1);
-        MenuPanel1.add(jProgressBarSystem1);
-
-        getContentPane().add(MenuPanel1, java.awt.BorderLayout.PAGE_START);
-
-        MenuPanel2.setLayout(new javax.swing.BoxLayout(MenuPanel2, javax.swing.BoxLayout.LINE_AXIS));
-
-        jButtonConnectServer2.setText("Connect to Server");
-        jButtonConnectServer2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jConnectMongoButtonActionPerformed(evt);
-            }
-        });
-        MenuPanel2.add(jButtonConnectServer2);
-
-        jCheckBoxConsoleMenu2.setText("Show Console");
-        MenuPanel2.add(jCheckBoxConsoleMenu2);
-        MenuPanel2.add(jProgressBarSystem2);
-
-        getContentPane().add(MenuPanel2, java.awt.BorderLayout.PAGE_START);
-
-        MenuPanel3.setLayout(new javax.swing.BoxLayout(MenuPanel3, javax.swing.BoxLayout.LINE_AXIS));
-
-        jButtonConnectServer3.setText("Connect to Server");
-        jButtonConnectServer3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jConnectMongoButtonActionPerformed(evt);
-            }
-        });
-        MenuPanel3.add(jButtonConnectServer3);
-
-        jCheckBoxConsoleMenu3.setText("Show Console");
-        MenuPanel3.add(jCheckBoxConsoleMenu3);
-        MenuPanel3.add(jProgressBarSystem3);
-
-        getContentPane().add(MenuPanel3, java.awt.BorderLayout.PAGE_START);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -693,22 +633,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel MenuPanel;
-    private javax.swing.JPanel MenuPanel1;
-    private javax.swing.JPanel MenuPanel2;
-    private javax.swing.JPanel MenuPanel3;
     private javax.swing.ButtonGroup buttonEditGroup;
     private javax.swing.JButton jButtonConnectServer;
-    private javax.swing.JButton jButtonConnectServer1;
-    private javax.swing.JButton jButtonConnectServer2;
-    private javax.swing.JButton jButtonConnectServer3;
     private javax.swing.JCheckBox jCheckBoxConsoleMenu;
-    private javax.swing.JCheckBox jCheckBoxConsoleMenu1;
-    private javax.swing.JCheckBox jCheckBoxConsoleMenu2;
-    private javax.swing.JCheckBox jCheckBoxConsoleMenu3;
     private javax.swing.JProgressBar jProgressBarSystem;
-    private javax.swing.JProgressBar jProgressBarSystem1;
-    private javax.swing.JProgressBar jProgressBarSystem2;
-    private javax.swing.JProgressBar jProgressBarSystem3;
     private javax.swing.JPanel mViewPanel;
     private javax.swing.ButtonGroup menuEditGroup;
     // End of variables declaration//GEN-END:variables
