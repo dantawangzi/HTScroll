@@ -1,6 +1,6 @@
 package com.TasteAnalytics.Apollo;
 
-import com.TasteAnalytics.HierarchicalTopics.gui.MinimalismMainFrame;
+import com.TasteAnalytics.Apollo.GUI.MinimalismMainFrame;
 
 import javax.swing.*;
 
