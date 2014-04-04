@@ -719,6 +719,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         String csvfilepath = csvf.getFolderPath();
         viewController.csvfFolderPath = csvfilepath;
+        viewController.csvfFolderPath = ".\\";
         
         temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
 
