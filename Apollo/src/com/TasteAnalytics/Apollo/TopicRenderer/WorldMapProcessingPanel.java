@@ -264,6 +264,10 @@ public class WorldMapProcessingPanel extends JPanel {
 
             oldWidth = width;
             oldHeight = height;
+            
+            smooth();
+
+            noLoop();
 
             //viewportRect = new ViewportRect();
         }
