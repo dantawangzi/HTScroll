@@ -4,35 +4,16 @@
  */
 package com.TasteAnalytics.Apollo.TemporalView;
 
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
-
-
-//import org.apache.commons.lang3.ArrayUtils;
-/**
- *
- * @author sasa
- */
-/**
- * <p>This class creates a tree structure that maps inheritance hierarchies of
- * classes. A developer can place any number of classes into this object and
- * retrieve the closest super class or the class itself.</p>
- *
- *
- * Copyright 2001 Sapient
- * @since EJFW 2.7
- * @author Greg Hinkle, January 2001
- * @version $Revision: 1.4 $($Author: dvoet $ / $Date: 2003/05/05 21:21:23 $)
- */
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.awt.Color;
+import processing.core.PApplet;
 
 /*
  * 
@@ -50,7 +31,7 @@ import java.awt.Color;
 /**
  * Tree Node for the for a general tree of Objects
  */
-public class TreeNode {
+public class TreeNode extends PApplet{
 
   private TreeNode parent = null;
   private List children = null;

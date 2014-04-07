@@ -2,14 +2,15 @@
  */
 package com.TasteAnalytics.Apollo.GUI;
 
-import com.TasteAnalytics.Apollo.datahandler.LDAHTTPClient;
-import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
-import com.TasteAnalytics.Apollo.file.CSVFile;
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.PrefuseLabelTopicGraphPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
+import com.TasteAnalytics.Apollo.TopicRenderer.TreeMapProcessingPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
+import com.TasteAnalytics.Apollo.datahandler.LDAHTTPClient;
+import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
+import com.TasteAnalytics.Apollo.file.CSVFile;
 import com.mongodb.BasicDBList;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -46,7 +47,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     VastGeoFrame vcGeoFrame = null;
     EventViewFrame eventViewFrame = null;
     WorldMapProcessingPanel worldPanel =  null;
-
+    TreeMapProcessingPanel treemapPanel = null;
+    
+    
+    
     ConsoleFrame consoleFrame = null;
 
     JSplitPane mainSplit;
@@ -354,7 +358,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             topicFrame.setVisible(true);
 
             worldPanel = new WorldMapProcessingPanel(viewController , maplocations, 1000, 1000);
-
+            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());
+            
+            
+            treemapPanel.setVisible(true);
+            
+            
             System.out.println("Topics Graph done!");
 
             initializeViews(csvf);
@@ -427,178 +436,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
     void initializeViews(CSVFile csvf) throws IOException {
 
-//        Toolkit toolkit = Toolkit.getDefaultToolkit();
-//        Dimension scrnsize = toolkit.getScreenSize();
-//
-//        String csvfilepath = csvf.getFolderPath();
-        temporalFrame.getMainPanel().buildLabelTimeMap();
-        //temporalFrame.getSubPanel().buildLabelTimeMap();
 
-     //   viewController.setLeafNodeSequence(topicFrame.getLeafSequence());
-        // int s = viewController.getTopicGraphViewPanel().getTree().size();
-        // FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
-        //String treeString = IOUtils.toString(inputStream);
-        //        Graph pgh = null;//(viewController.makePrefuseGraph(treeString));
-//
-//        System.out.println("get geo locations done");
-        //viewController.geoLocations = csvf.getTwitterGeoLocations();
-//
-//                        MongoClient mongoClient = new MongoClient("152.15.99.7", 27017);
-//                        DB db = mongoClient.getDB("patents");
-//                        Set<String> colls = db.getCollectionNames();
-//
-//                        for (String s1 : colls) {
-//                            System.out.println(s1);
-//                        }
-//
-//                        DBCollection coll = db.getCollection("patent");
-//                        System.out.println("database count : " + coll.getCount());
-////                        
-//                      
-////                       DBCursor cursor = coll.find()
-////                                BasicDBObject query = new BasicDBObject("_id", 71);
-//                        
-//                        List<Integer> abc = new ArrayList<Integer>();
-//                        
-//                        abc.add(1);
-//                        
-//                        abc.add(13);
-//                        
-//                        abc.add(1124);
-//                        
-//                        BasicDBObject query = new BasicDBObject("_id", new BasicDBObject("$in",abc));
-//                                DBCursor cursor = coll.find(query);
-//                      
-//                                BasicDBObject dbo = (BasicDBObject)cursor.next();
-//                                 System.out.println( dbo.get("_id"));
-//                                 System.out.println(dbo.get("doc_id:"));
-//                                 System.out.println( dbo.get("description"));
-//                                //BasicDBList l = (BasicDBList)((BasicDBObject) cursor.next()).get("_id");
-//                                //System.out.println(l);
-////                       
-//                                
-//                                             
-//                                                               
-//                                                               
-//                                
-//                        
-//                        
-//                        try {
-//                            while (cursor.hasNext()) {
-//                                BasicDBList l = (BasicDBList)((BasicDBObject) cursor.next()).get("geo_extracted");
-//                                //System.out.println(l);
-//                                if (l == null)
-//                                    continue;
-//                                
-//                                if (((String)(l.get(0))).length() == 0)
-//                                    continue;
-//                               
-//                                if ( ((String)(l.get(1))).length() == 0)
-//                                    continue;
-//                                
-//                                
-//                                if (((String)(l.get(0))) == null)
-//                                    continue;
-//                               
-//                                if ( ((String)(l.get(1))) == null)
-//                                    continue;
-//                                
-//                                
-//                                Point2D tempP = new Point2D.Double(Double.parseDouble((String)l.get(0)), Double.parseDouble((String)l.get(1)));
-//                                geoLocations.add(tempP);
-//                               // System.out.println((String)(l.get(0)) + "  " + (String)(l.get(1)));
-//                               // System.out.println(tempP);
-//                                
-//                                if (geoLocations.size()>=10)
-//                                    break;
-//                              
-//                            }
-//                        } finally {
-//                            cursor.close();
-//                        }
-//                        
-        //System.out.println(geoLocations.size());
-        //MongoClient.close();
-        //DBCursor cursor = coll.find();
-//                        try {
-//                           while(cursor.hasNext()) {
-//                               System.out.println(cursor.next());
-//                           }
-//                        } finally {
-//                           cursor.close();
-//                        }
-//                        
-//                        BasicDBObject allQuery = new BasicDBObject();
-//                        BasicDBObject fields = new BasicDBObject();
-//                        fields.put("geo_extracted", 1);
-//        
-//        
-//                        
-//                        DBCursor cursor = coll.find(allQuery, fields);
-//
-//                       
-//
-//
-////                        System.out.println("MySQL Connect Example.");
-////                        Connection conn = null;
-////                        String url = "jdbc:mysql://152.15.106.31/";
-////                        String dbName = "streamingApr15";
-////                        String driver = "com.mysql.jdbc.Driver";
-////                        String userName = "data";
-////                        String password = "uncc_ldav";
-////    
-////    
-////    
-////    try {
-////      Class.forName(driver).newInstance();
-////      conn = (Connection) DriverManager.getConnection(url+dbName,userName,password);
-////       System.out.println("Connected to the database");
-////      String selectSQL = "select longitude, latitude from location_entity limit 100";
-////        PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
-////        //preparedStatement.setInt(1, 1001);
-////        ResultSet rs = preparedStatement.executeQuery(selectSQL );
-////
-////
-////      while (rs.next()) {
-//// 
-////				String userid = rs.getString("longitude");
-////				String username = rs.getString("latitude");
-//// 
-////				System.out.println("longitude : " + userid);
-////				System.out.println("latitude : " + username);
-//// 
-////			}
-////      
-////     
-////      conn.close();
-////      System.out.println("Disconnected from database");
-////    } catch (Exception e) {
-////      e.printStackTrace();
-////    }
-//        WorldMapProcessingPanel worldMapFrame = new WorldMapProcessingPanel(viewController,csvf.getTwitterGeoLocations(), csvf.getMediumLocation());
-//        viewController.addWorldMapProcessingFrame(worldMapFrame);
-//        worldMapFrame.setSize(1000, 1000);
-//        worldMapFrame.setVisible(true);
-////
-//  
-//        viewController.twitterPointMax = csvf.getMaxLocation();
-        //       viewController.twitterPointMin = csvf.getMinLocation();
-//        vcGeoFrame = new VastGeoFrame(viewController, csvf.getFolderPath(), csvf.getTwitterGeoLocations());
-//
-//        viewController.setVCGF(vcGeoFrame);
-//
-//        if (viewController.geoLocations!=null)
-//            vcGeoFrame.setVisible(true);
-//        else
-//            vcGeoFrame.setVisible(false);
-////
-//////
-//        System.out.println("GeoFrame done");
-        //      eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
-        //             viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, csvf.getFolderPath(), csvf.getSimilarityMatrix());
-//                eventViewFrame.setVisible(true);          
-//eventViewFrame = null;
-        //System.out.println("label graph done");
+        temporalFrame.getMainPanel().buildLabelTimeMap();
+     
         consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -642,13 +482,17 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     // End of variables declaration//GEN-END:variables
 
     public void run() {
+        
         viewController = new ViewController();
-
         jCheckBoxConsoleMenu.setSelected(false);
         consoleFrame = new ConsoleFrame();
         consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        consoleFrame.setVisible(true);
+        
         documentViewer = new DocumentViewer(viewController);
         documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         viewController.addDocumentViewer(documentViewer);
+    
     }
 }

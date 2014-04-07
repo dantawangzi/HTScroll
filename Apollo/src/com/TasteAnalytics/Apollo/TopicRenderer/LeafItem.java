@@ -8,16 +8,19 @@ package com.TasteAnalytics.Apollo.TopicRenderer;
 
 
 
-import static javafx.scene.paint.Color.color;
-import static javafx.scene.paint.Color.color;
-import static javafx.scene.paint.Color.color;
-import static javafx.scene.paint.Color.color;
-import static javafx.scene.paint.Color.color;
-import static javax.swing.Spring.width;
+import java.awt.Color;
+
 import static processing.core.PApplet.map;
 import static processing.core.PConstants.HSB;
 import static processing.core.PConstants.RGB;
 import treemap.SimpleMapItem;
+import treemap.*;
+import processing.core.PApplet;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
+import static processing.core.PApplet.RECT;
+
 
 /**
  *
@@ -26,12 +29,11 @@ import treemap.SimpleMapItem;
 
 
 
-
-public class LeafItem extends SimpleMapItem{
+public class LeafItem extends SimpleMapItem {
     
-    NodeItem parent;
+  NodeItem parent;
     
-    String name;
+  String name;
   int level;
   
   //color c;
@@ -42,53 +44,64 @@ public class LeafItem extends SimpleMapItem{
     
   float boxLeft, boxTop;
   float boxRight, boxBottom;
+  TreeMapProcessingPanel parentTM;   
+   List<Mappable> item = new ArrayList<Mappable>();
+    LeafItem(NodeItem parent, int level, int order, TreeMapProcessingPanel parentTMap) {
     
-    LeafItem(NodeItem parent, int level, int order) {
-    this.parent = parent;
-   
+    this.parent = parent;   
     this.order = order;
     this.level = level;
-      
+    this.parentTM =   parentTMap;
    
 
   }
-//  void updateColors() {
-//    if (parent != null) {
-//      hue = map(order, 0, parent.getItemCount(), 0, 360);
-//    }
-//    brightness = modTimes.percentile(file.lastModified()) * 100;
-//
-//    colorMode(HSB, 360, 100, 100);
+    
+    
+    public void setParent(NodeItem n)
+    {
+        
+        this.parent = n;
+    }
+    
+  void updateColors() {
+    if (parent != null) {
+      hue = map(order, 0, parent.getItemCount(), 0, 360);
+    }
+    brightness = 200.0f;//modTimes.percentile(file.lastModified()) * 100;
+
+    //colorMode(HSB, 360, 100, 100);
 //    if (parent == zoomItem) {
 //      c = color(hue, 80, 80);
 //    } else if (parent != null) {
 //      c = color(parent.hue, 80, brightness);
 //    }
 //    colorMode(RGB, 255);
-//  }
-//    
-//    void calcBox() {
-//    boxLeft = zoomBounds.spanX(x, 0, width);
-//    boxRight = zoomBounds.spanX(x+w, 0, width);
-//    boxTop = zoomBounds.spanY(y, 0, height);
-//    boxBottom = zoomBounds.spanY(y+h, 0, height);
-//  }
-//
-//
-//  public void draw() {
-//    calcBox();
-//
+  }
+    
+    void calcBox() {
+    boxLeft = parentTM.zoomBounds.spanX(x, 0, parentTM.getWidth());
+    boxRight = parentTM.zoomBounds.spanX(x+w, 0, parentTM.getWidth());
+    boxTop = parentTM.zoomBounds.spanY(y, 0, parentTM.getHeight());
+    boxBottom = parentTM.zoomBounds.spanY(y+h, 0,parentTM.getHeight());
+  }
+
+
+  @Override
+  public void draw() {
+    calcBox();
+
+    Color c = null;
 //    fill(c);
 //    rect(boxLeft, boxTop, boxRight, boxBottom);
-//
+
 //    if (textFits()) {
 //      drawTitle();
 //    } else if (mouseInside()) {
 //      rolloverItem = this;
 //    }
-//   }
-//    
-//    
+   }
+    
+    
 //  void drawTitle() {
 //    fill(255, 200);
 //    
@@ -104,15 +117,15 @@ public class LeafItem extends SimpleMapItem{
 //      }
 //    }
 //  }
-//
-//
+
+
 //  boolean textFits() {
 //    float wide = textWidth(name) + textPadding*2;
 //    float high = textAscent() + textDescent() + textPadding*2;
 //    return (boxRight - boxLeft > wide) && (boxBottom - boxTop > high); 
 //  }
-//    
-// 
+    
+ 
 //  boolean mouseInside() {
 //    return (mouseX > boxLeft && mouseX < boxRight && 
 //            mouseY > boxTop && mouseY < boxBottom);    
