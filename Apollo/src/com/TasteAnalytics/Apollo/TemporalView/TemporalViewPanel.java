@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import com.TasteAnalytics.Apollo.GUI.ViewController;
+import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -2369,12 +2370,12 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         repaintView();
     }
 
-    public HashMap<TopicGraphViewPanel.customLabelTimecolumnKey, List<TopicGraphViewPanel.labelText>> getLabelTimeMap() {
+    public HashMap<TopicGraphViewPanel.customLabelTimecolumnKey, List<LabelText>> getLabelTimeMap() {
         return labelTimeMap;
     }
 
-    HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<TopicGraphViewPanel.labelText>> labelTimeMap
-            = new HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<TopicGraphViewPanel.labelText>>();
+    HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<LabelText>> labelTimeMap
+            = new HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<LabelText>>();
 
     /**
      * Wenwen: comment here if not want word cloud
@@ -2397,26 +2398,19 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     public Point2D currentMouseLocation = new Point2D.Double();
 
     
-         public void DrawTopicWord(Point2D p, List<TopicGraphViewPanel.labelText> ls) 
-         {
-             
-             
-             
-             
-             
-         }
-                 
-                 
-    public List<TopicGraphViewPanel.labelText> multiTopicKeywordList;
 
-    List<TopicGraphViewPanel.labelText> singleTopicKeywordList;
+                 
+                 
+    public List<LabelText> multiTopicKeywordList;
+
+    List<LabelText> singleTopicKeywordList;
 
     
     
     
     
     
-    public void DrawWordleCloud(Point2D p, List<TopicGraphViewPanel.labelText> ls) {
+    public void DrawWordleCloud(Point2D p, List<LabelText> ls) {
 
         List<LabelWordleLite> list = new ArrayList<LabelWordleLite>();
 
@@ -2428,7 +2422,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         size = ls.size();
 
         for (int i = 0; i < size; i++) {
-            TopicGraphViewPanel.labelText lt = ls.get(i);
+            LabelText lt = ls.get(i);
 
             String text = lt.getString();
             if (text == null) {
@@ -2475,7 +2469,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             Point2D location = label.getLocation();
             Rectangle2D glyphBound = label.getShape().getBounds2D();
             //Rectangle2D strBound = fm.getStringBounds(label.text, this.curg2d);
-            TopicGraphViewPanel.labelText vi = (TopicGraphViewPanel.labelText) label.data;
+            LabelText vi = (LabelText) label.data;
 
             float size = (float) (vi.getFont().getSize2D() /**
                      * vi.getOccurance()
@@ -2527,7 +2521,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     private void setLabelVisualPos(WordleLite symbol, Point2D p, Rectangle2D bounds) {
         LabelWordleLite label = (LabelWordleLite) symbol;
         Point2D location = label.getLocation();
-        TopicGraphViewPanel.labelText vi = (TopicGraphViewPanel.labelText) label.data;
+        LabelText vi = (LabelText) label.data;
         Rectangle2D glyphBound = label.getShape().getBounds2D();
 
         float size = (float) (vi.getFont().getSize2D() /**
@@ -2568,7 +2562,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
         vi.setLocation(vilocation);// + fm.getDescent() - strBound.getHeight() / 2));
         //System.out.println(p + " " +location);
-
+        
         //System.out.println("xxx" + fm.getDescent());
         //Rectangle2D ss = new Rectangle2D.Double(vilocation.getX(), vilocation.getY(), glyphBound.getWidth(), glyphBound.getHeight());
         //vi.setRect(ss);

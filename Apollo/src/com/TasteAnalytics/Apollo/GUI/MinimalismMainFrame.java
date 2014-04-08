@@ -364,11 +364,15 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //            
 //            treemapPanel.setVisible(true);
             
-            treeMapPanel = new TopicTreeMapPanel(topicFrame.getTree());
+             initializeViews(csvf);
+             
+             
+             
+            treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), 1000,1000);
             
             System.out.println("Topics Graph done!");
 
-            initializeViews(csvf);
+           
 
             PrefuseLabelTopicGraphPanel labelTopicGraphPanel = null;
             if (viewController.tagLDA) {
@@ -377,28 +381,24 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
             //        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
             //        mButtonPanel.setBorder(orangeLine);
-            rightTopScrollPane = new JScrollPane(topicFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            rightTopScrollPane = new JScrollPane(topicFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             rightTopScrollPane.setViewportView(topicFrame);
 
             rightBottomScrollPane = new JScrollPane(labelTopicGraphPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             rightBottomScrollPane.setViewportView(labelTopicGraphPanel);
 
-            leftTopScrollPane = new JScrollPane(temporalFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            leftTopScrollPane = new JScrollPane(temporalFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             leftTopScrollPane.setViewportView(temporalFrame);
 
-            leftBottomScrollPane = new JScrollPane(worldPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            leftBottomScrollPane.setViewportView(worldPanel);
+            leftBottomScrollPane = new JScrollPane(treeMapPanel/*worldPanel*/, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            leftBottomScrollPane.setViewportView(treeMapPanel/*worldPanel*/);
 
-            leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                leftTopScrollPane, leftBottomScrollPane);
+            leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,leftTopScrollPane, leftBottomScrollPane);
             leftSplit.setOneTouchExpandable(true);
             leftSplit.setDividerLocation(0.8d);
             leftSplit.setResizeWeight(0.8d);
 
-            rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                rightTopScrollPane, rightBottomScrollPane);
+            rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,rightTopScrollPane, rightBottomScrollPane);
             rightSplit.setOneTouchExpandable(true);
             rightSplit.setDividerLocation(0.8d);
             leftSplit.setResizeWeight(0.8d);
@@ -412,13 +412,18 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             mainSplit.setContinuousLayout(true);
 
             //Provide minimum sizes for the two components in the split pane
-            Dimension minimumSize = new Dimension(100, 50);
+            Dimension minimumSize = new Dimension(200, 100);
             leftTopScrollPane.setMinimumSize(minimumSize);
             leftBottomScrollPane.setMinimumSize(minimumSize);
 
             rightTopScrollPane.setMinimumSize(minimumSize);
             rightBottomScrollPane.setMinimumSize(minimumSize);
 
+            Dimension maximumSize = new Dimension(1000, 1000);
+            leftBottomScrollPane.setMaximumSize(maximumSize);
+            rightTopScrollPane.setMaximumSize(maximumSize);
+            rightBottomScrollPane.setMaximumSize(maximumSize);
+            
             Border blackline = BorderFactory.createLineBorder(Color.black);
             mViewPanel.setBorder(blackline);
             mViewPanel.add(mainSplit);

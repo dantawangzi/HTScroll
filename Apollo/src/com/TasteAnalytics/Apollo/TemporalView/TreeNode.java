@@ -4,8 +4,15 @@
  */
 package com.TasteAnalytics.Apollo.TemporalView;
 
+import com.TasteAnalytics.Apollo.TreeMapView.MapLayout;
+import com.TasteAnalytics.Apollo.TreeMapView.MapModel;
+import com.TasteAnalytics.Apollo.TreeMapView.Mappable;
+import com.TasteAnalytics.Apollo.TreeMapView.RandomMap;
+import com.TasteAnalytics.Apollo.TreeMapView.Rect;
+import com.TasteAnalytics.Apollo.TreeMapView.SquarifiedLayout;
 import com.TasteAnalytics.Apollo.TreeMapView.TreeModel;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +58,26 @@ public class TreeNode extends TreeModel{
   private Color baseColor;
   
   private float leafNodeWeight;
+  
+  double size = 1;
+  int order = 0;
+
+    public double getSize() {
+        return size;
+    }
+
+    public void setSize(double size) {
+        this.size = size;
+    }
+  
+  public int getOrder() {
+        return order;
+    }
+
+  @Override
+    public void setOrder(int order) {
+        this.order = order;
+    }
   
   
   private List<Float> valueSub;
@@ -379,6 +406,55 @@ public List<Integer> getTopicsContainedIdx()
   
   
   
+   public Rectangle calculateRect(Rectangle bound)
+  {
+      Rectangle result = null;
+      
+      if (this.children.isEmpty())
+      {
+//          Rectangle r = new Rectangle( (int)this.getItems()[order].getBounds().x, 
+//                      (int)this.getItems()[order].getBounds().y, 
+//                      (int)this.getItems()[order].getBounds().w, 
+//                      (int)this.getItems()[order].getBounds().h);
+          result = bound;
+          this.setMyRect(result);
+      }
+      else
+      {
+          
+        Mappable[] leaves = this.getItems();
+        
+        MapModel map = new RandomMap(leaves);
+       
+	//Mappable[] items = map.getItems();
+	    
+	MapLayout algorithm = new SquarifiedLayout();
+        
+	algorithm.layout(map, new Rect(bound.x,bound.y,bound.width,bound.height));
+                    
+          for (int i=0; i<this.children.size(); i++)
+          {
+              Rectangle r = new Rectangle( (int)this.getItems()[i].getBounds().x, 
+                      (int)this.getItems()[i].getBounds().y, 
+                      (int)this.getItems()[i].getBounds().w, 
+                      (int)this.getItems()[i].getBounds().h);
+              
+              result = ((TreeNode)this.children.get(i)).calculateRect(r);
+              ((TreeNode)this.children.get(i)).setMyRect( r);
+              
+              
+              
+              
+          }
+          
+      }      
+      
+      //this.myRect = result;
+      return result;
+  }
+  
+  
+  
   
   
   public float calculateNodeWeight()
@@ -461,6 +537,38 @@ public List<Integer> getTopicsContainedIdx()
       }
     
   }
+    
+    
+    
+    
+  @Override
+     public Mappable[] getItems()
+     {
+         Mappable[] mp = new Mappable[this.getChildren().size()];
+         
+         for (int i=0; i<this.getChildren().size(); i++)
+         {
+            
+             mp[i] = ((TreeNode)getChildren().get(i)).getMapItem();
+         }
+         
+         return mp;
+         
+     }
+     
+     Rectangle myRect;
+
+    public Rectangle getMyRect() {
+        return myRect;
+    }
+
+    public void setMyRect(Rectangle myRect) {
+        this.myRect = myRect;
+    }
+     
+     
+     
+     
 
   /**
    * walk through children subtrees of this node

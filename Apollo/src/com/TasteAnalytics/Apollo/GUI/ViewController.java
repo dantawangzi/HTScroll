@@ -15,6 +15,7 @@ import com.TasteAnalytics.Apollo.TemporalView.TemporalViewListener;
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewPanel;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
+import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import java.awt.Dimension;
@@ -232,14 +233,14 @@ public class ViewController {
         return null;
     }
 
-    List<TopicGraphViewPanel.labelText> highlightedTextLabels;
+    List<LabelText> highlightedTextLabels;
 
     int previousTimeColumn = -1;
     TreeNode lastNode = new TreeNode();
     boolean isShowingSingleTopic = false;
    
 
-    HashMap<TreeNode, List<TopicGraphViewPanel.labelText>> nodeKeywordHighlightMap = new HashMap<TreeNode, List<TopicGraphViewPanel.labelText>>();
+    HashMap<TreeNode, List<LabelText>> nodeKeywordHighlightMap = new HashMap<TreeNode, List<LabelText>>();
 
     public void stateChangedSecond(TreeNode ct, int selectedTimeColumn, TemporalViewPanel ap, boolean isSingle) {
         
@@ -405,8 +406,8 @@ public class ViewController {
   
     }
 
-    List<TopicGraphViewPanel.labelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<TopicGraphViewPanel.labelText>> m) {
-        List<TopicGraphViewPanel.labelText> r = new ArrayList<TopicGraphViewPanel.labelText>();
+    List<LabelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<LabelText>> m) {
+        List<LabelText> r = new ArrayList<LabelText>();
 
         int size = m.size();
 
@@ -420,7 +421,7 @@ public class ViewController {
 
         for (int i = 0; i < iterationRuns; i++) {
             for (Object o : m.values()) {
-                r.add((TopicGraphViewPanel.labelText) ((List<TopicGraphViewPanel.labelText>) o).get(i));
+                r.add((LabelText) ((List<LabelText>) o).get(i));
             }
         }
 

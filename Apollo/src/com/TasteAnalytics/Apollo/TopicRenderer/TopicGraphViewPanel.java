@@ -131,30 +131,7 @@ import org.apache.commons.lang.StringUtils;
 public class TopicGraphViewPanel extends JPanel {
 
 //private static HudWindow mainFloatingHUDWindow = new HudWindow();
-    public class labelTextComparer implements Comparator<labelText> {
-        //@Override
-//  public int compare(labelText x, labelText y) {
-//    // TODO: Handle null x or y values
-//    int startComparison = compare(x.probablity, y.probablity);
-//    return startComparison != 0 ? startComparison
-//                                : compare(x.probablity, y.probablity);
-//  }
 
-        // I don't know why this isn't in Long...
-        private int compare(float a, float b) {
-            return a > b ? -1
-                    : a < b ? 1
-                    : 0;
-        }
-
-        public int compare(labelText x, labelText y) {
-            int startComparison = compare(x.probablity, y.probablity);
-            return startComparison != 0 ? startComparison
-                    : compare(x.probablity, y.probablity);
-
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
 
     public static class customLabelTimecolumnKey {
 
@@ -194,135 +171,7 @@ public class TopicGraphViewPanel extends JPanel {
 
     }
 
-    public class labelText {
-
-        int column, row;
-        Rectangle2D rect;
-        int posX, posY;
-        String s;
-        boolean isHighlighted;
-        boolean isMagnified;
-        Font font;
-        int stringSize;
-        Color rectColor;
-        int index;
-        TreeNode node;
-        boolean isDisplayed;
-        int occurance;
-        float probablity;
-        Point2D location;
-        boolean highlightFromLabelTopics = false;
-
-        Color stringColor;
-
-        public void setHighlightFromLabelTopics(boolean b) {
-
-            highlightFromLabelTopics = b;
-        }
-
-        public int getOccurance() {
-            return occurance;
-        }
-
-        public void setOccurance(int occurance) {
-            this.occurance = occurance;
-        }
-
-        public float getProbablity() {
-            return probablity;
-        }
-
-        public void setProbablity(float probablity) {
-            this.probablity = probablity;
-        }
-
-        labelText() {
-            isDisplayed = true;
-        }
-
-        public String getString() {
-
-            return s;
-        }
-
-        List<Color> labelColor = new ArrayList<Color>();
-        
-        public void drawLabelRect(Graphics g)
-        {
-            int size = labelColor.size();
-            for (int i = 0 ; i<labelColor.size(); i++)
-            {
-                g.setColor(labelColor.get(i));
-                
-                int w = (int) (rect.getWidth()/size);
-                
-                g.fillRect((int) rect.getX() + i*w, (int) rect.getY(), (int) w, (int) rect.getHeight());
-                                                
-            }
-            
-//            if (labelColor.isEmpty())
-//                drawRect(g);
-            
-            
-            
-            
-            
-        }
-        
-        public void drawRect(Graphics g) {
-            if (this.rectColor != null) {
-                g.setColor(this.rectColor);
-            } else {
-                g.setColor(Color.LIGHT_GRAY);
-            }
-
-            g.fillRect((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
-            // g.drawString(s, posX, posY);
-        }
-
-        public void drawString(Graphics g) {
-            g.setColor(this.stringColor);
-            g.setFont(font);
-
-            g.drawString(s, posX, posY);
-        }
-
-        public void setRect(Rectangle2D r) {
-            rect = r;
-        }
-
-        public void setLocation(Point2D r) {
-            location = r;
-        }
-
-        public Point2D getLocation() {
-            return location;
-        }
-
-        public Rectangle2D getRect() {
-            return rect;
-        }
-
-        public void setFont(Font f) {
-            font = f;
-        }
-
-        public Font getFont() {
-            return this.font;
-        }
-
-        public void setRectColor(Color f) {
-            rectColor = f;
-        }
-
-        public void setStringColor(Color f) {
-            stringColor = f;
-        }
-
-        public void setString(String ss) {
-            s = ss;
-        }
-    }
+    
 
     static public class MyLink {
 
@@ -399,7 +248,7 @@ public class TopicGraphViewPanel extends JPanel {
     static public TemporalViewFrame tvf;
     static private int totalEdges;
     public Container content;
-    HashMap<TreeNode, List<labelText>> allLabels = new HashMap<TreeNode, List<labelText>>();
+    HashMap<TreeNode, List<LabelText>> allLabels = new HashMap<TreeNode, List<LabelText>>();
     static private int MAXFONTSIZE = 30;
     static private int MINFONTSIZE = 10;
     private int labelFontSize = 18;
@@ -407,11 +256,11 @@ public class TopicGraphViewPanel extends JPanel {
     private int highlightFontSize = 26;
     static private int occuranceFontSizePara = 2;
 
-    public HashMap<TreeNode, List<labelText>> getAllLabels() {
+    public HashMap<TreeNode, List<LabelText>> getAllLabels() {
         return allLabels;
     }
 
-    public void setAllLabels(HashMap<TreeNode, List<labelText>> allLabels) {
+    public void setAllLabels(HashMap<TreeNode, List<LabelText>> allLabels) {
         this.allLabels = allLabels;
     }
 
@@ -1138,6 +987,13 @@ public class TopicGraphViewPanel extends JPanel {
         
         this.setLayout(new BorderLayout());
         
+        
+        JPanel contPanel = new JPanel();
+        contPanel.setPreferredSize(this.getSize());
+        contPanel.setLayout(new BorderLayout());
+        
+        
+        
         content = this;//.getContentPane();
         //GraphZoomScrollPane zoompanel = new GraphZoomScrollPane(vv);
 
@@ -1741,7 +1597,7 @@ public class TopicGraphViewPanel extends JPanel {
                                 
                                 for (int j = 0; j < allLabels.get(t).size(); j++) {
 
-                                    labelText temp = allLabels.get(t).get(j);
+                                    LabelText temp = allLabels.get(t).get(j);
 
                                     if (highlightOne == 1 && j!= 0) {
                                         temp.drawRect(g);
@@ -1765,7 +1621,7 @@ public class TopicGraphViewPanel extends JPanel {
 
                         if (allLabels.get(t) != null) {
                             for (int j = 0; j < allLabels.get(t).size(); j++) {
-                                labelText temp = allLabels.get(t).get(j);
+                                LabelText temp = allLabels.get(t).get(j);
 
                                 if (temp.isDisplayed) {
                                     temp.drawString(g);
@@ -1886,7 +1742,7 @@ public class TopicGraphViewPanel extends JPanel {
 
                     if (searchString.length() > 1) {
 
-                        for (List<labelText> value : allLabels.values()) {
+                        for (List<LabelText> value : allLabels.values()) {
                             for (int i = 0; i < value.size(); i++) {
 
                                 value.get(i).isHighlighted = false;
@@ -1896,7 +1752,7 @@ public class TopicGraphViewPanel extends JPanel {
 
                         searchString = searchString.replaceAll(" ", "");
 
-                        for (List<labelText> value : allLabels.values()) {
+                        for (List<LabelText> value : allLabels.values()) {
                             for (int i = 0; i < value.size(); i++) {
 
                                 if (value.get(i).s != null) {
@@ -1976,9 +1832,9 @@ public class TopicGraphViewPanel extends JPanel {
 
     }
 
-    HashMap<TreeNode, List<labelText>> highlightedMap = new HashMap<TreeNode, List<labelText>>();
+    HashMap<TreeNode, List<LabelText>> highlightedMap = new HashMap<TreeNode, List<LabelText>>();
 
-    public void highLightByYearIdxKwNode(TreeNode key, int selectedTimeColumnIdx, List<List<int[]>> tYK, HashMap<TreeNode, List<labelText>> hm) {
+    public void highLightByYearIdxKwNode(TreeNode key, int selectedTimeColumnIdx, List<List<int[]>> tYK, HashMap<TreeNode, List<LabelText>> hm) {
 
         if (tYK == null) {
             System.out.println("topic Year Keywords is null");
@@ -2006,11 +1862,11 @@ public class TopicGraphViewPanel extends JPanel {
             if (allLabels.get(t1) != null) {
 
                 if (!hm.containsKey(t1)) {
-                    List<labelText> aaa = new ArrayList<labelText>();
+                    List<LabelText> aaa = new ArrayList<LabelText>();
                     hm.put(t1, aaa);
                 }
 
-                List<labelText> ltl = allLabels.get(t1);
+                List<LabelText> ltl = allLabels.get(t1);
 
                 int[] index = tYK.get(t.getTopicsContainedIdx().get(ii)).get(selectedTimeColumnIdx);
 
@@ -2035,9 +1891,9 @@ public class TopicGraphViewPanel extends JPanel {
         //vv.repaint();
     }
 
-    public List<labelText> getCurrentNodeLabels(TreeNode t) {
+    public List<LabelText> getCurrentNodeLabels(TreeNode t) {
 
-        List<labelText> r = new ArrayList<labelText>();
+        List<LabelText> r = new ArrayList<LabelText>();
 
 //        ObservableCachingLayout lll = (ObservableCachingLayout) vv.getGraphLayout();
 //        
@@ -2086,7 +1942,7 @@ public class TopicGraphViewPanel extends JPanel {
     public void highLightByYearIdxKwNode(TreeNode key, int selectedTimeColumnIdx, List<List<int[]>> tYK) {
 
         //node will be two situtations 1. collapsed 2. not collapsed, highlight all children
-        for (List<labelText> v : allLabels.values()) {
+        for (List<LabelText> v : allLabels.values()) {
             for (int i = 0; i < v.size(); i++) {
                 v.get(i).isHighlighted = false;
             }
@@ -2126,7 +1982,7 @@ public class TopicGraphViewPanel extends JPanel {
         }
 
         if (situation == 1 && allLabels.get(t) != null) {
-            List<labelText> ltl = allLabels.get(t);
+            List<LabelText> ltl = allLabels.get(t);
 
             for (int i = 0; i < t.getTopicsContainedIdx().size(); i++) {
                 int leafIndex = key.getTopicsContainedIdx().get(i);
@@ -2166,7 +2022,7 @@ public class TopicGraphViewPanel extends JPanel {
 
                 //System.out.println("t1 " + t1.getValue() + " inde " + matchedNodeString);
                 if (allLabels.get(t1) != null) {
-                    List<labelText> ltl = allLabels.get(t1);
+                    List<LabelText> ltl = allLabels.get(t1);
 
                     int[] index = tYK.get(t.getTopicsContainedIdx().get(ii)).get(selectedTimeColumnIdx);
 
@@ -2191,7 +2047,7 @@ public class TopicGraphViewPanel extends JPanel {
 
     public void highLightByYearIdxKw(TreeNode key, int[] index) {
 
-        for (List<labelText> v : allLabels.values()) {
+        for (List<LabelText> v : allLabels.values()) {
             for (int i = 0; i < v.size(); i++) {
                 v.get(i).isHighlighted = false;
             }
@@ -2226,7 +2082,7 @@ public class TopicGraphViewPanel extends JPanel {
 //            }
 //        }
         if (allLabels.get(t) != null) {
-            List<labelText> ltl = allLabels.get(t);
+            List<LabelText> ltl = allLabels.get(t);
 
             for (int i = 0; i < index.length; i++) {
 
@@ -2246,8 +2102,8 @@ public class TopicGraphViewPanel extends JPanel {
 
     public void setHighlightLabelsFromLabelTopics(HashMap<String, List<Integer>> highindex, HashMap<String, List<Float>> highweight, HashMap<String, Color> highIndexNumber) {
         //Color []colorPlate = {Color.CYAN, Color.pink, Color.MAGENTA, Color.gray};
-        for (List<labelText> lt : allLabels.values()) {
-            for (labelText l : lt) {
+        for (List<LabelText> lt : allLabels.values()) {
+            for (LabelText l : lt) {
                 l.setHighlightFromLabelTopics(false);
                 l.labelColor.clear();
                 //l.setRectColor(Color.yellow);
@@ -2289,7 +2145,7 @@ public class TopicGraphViewPanel extends JPanel {
                     }
                 }
 
-                List<labelText> l = allLabels.get(found);
+                List<LabelText> l = allLabels.get(found);
 
                 if (index.size() != 1) {
                     convertColor = new Color(highlightColor.getRGB());
@@ -2349,7 +2205,7 @@ public class TopicGraphViewPanel extends JPanel {
             //System.out.println(i);
             Object o = lll.getGraph().getVertices().toArray()[i];
 
-            List<labelText> tempList = new ArrayList<labelText>();
+            List<LabelText> tempList = new ArrayList<LabelText>();
             Point2D loc = lll.transform(lll.getGraph().getVertices().toArray()[i]);
 
             if (o instanceof TreeNode) {
@@ -2366,7 +2222,7 @@ public class TopicGraphViewPanel extends JPanel {
 
                        
                         try{
-                        labelText tempLT = new labelText();
+                        LabelText tempLT = new LabelText();
 
                         int leng = t.getNodeTopics()[j].length();
                         Font font = null;//new Font("Arial", Font.PLAIN, labelFontSize);
@@ -2453,7 +2309,7 @@ public class TopicGraphViewPanel extends JPanel {
                         int px = (int) loc.getX();
                         int py = (int) loc.getY();
 
-                        labelText tempLT = tempList.get(kkk);
+                        LabelText tempLT = tempList.get(kkk);
                         if (tempLT.getProbablity() == 99999.0f) {
                             tempLT.setProbablity(0);
                         } else {
@@ -2499,7 +2355,7 @@ public class TopicGraphViewPanel extends JPanel {
 
                         int index1 = t.getTopicsContainedIdx().get(j);
                         String t1[] = allTopics.get(index1 + parent.getGlobalReadIndex());
-                        labelText tempLT = new labelText();
+                        LabelText tempLT = new LabelText();
 
                         int index = index1;
 
@@ -2589,7 +2445,7 @@ public class TopicGraphViewPanel extends JPanel {
                     int px = (int) loc.getX();
                     int py = (int) loc.getY();
 
-                    labelText tempLT = tempList.get(kkk);
+                    LabelText tempLT = tempList.get(kkk);
                     if (tempLT.getProbablity() == 99999.0f) {
                         tempLT.setProbablity(0);
                     } else {
@@ -2694,19 +2550,19 @@ public class TopicGraphViewPanel extends JPanel {
 
     }
 
-    public List<labelText> getTopicLabels(TreeNode t) {
+    public List<LabelText> getTopicLabels(TreeNode t) {
 
-        List<labelText> r = allLabels.get(t);
+        List<LabelText> r = allLabels.get(t);
 
         return r;
 
     }
 
-    public List<labelText> getHighligtedLabels() {
+    public List<LabelText> getHighligtedLabels() {
 
-        List<labelText> r = new ArrayList<labelText>();
+        List<LabelText> r = new ArrayList<LabelText>();
 
-        for (List<labelText> value : allLabels.values()) {
+        for (List<LabelText> value : allLabels.values()) {
             for (int i = 0; i < value.size(); i++) {
                 if (value.get(i).isHighlighted == true) {
                     r.add(value.get(i));
@@ -2721,14 +2577,14 @@ public class TopicGraphViewPanel extends JPanel {
     void updateLabelLocations() {
 
         if (b_showText == true) {
-            for (List<labelText> value : allLabels.values()) {
+            for (List<LabelText> value : allLabels.values()) {
                 for (int i = 0; i < value.size(); i++) {
                     value.get(i).isDisplayed = true;
                 }
             }
 
         } else {
-            for (List<labelText> value : allLabels.values()) {
+            for (List<LabelText> value : allLabels.values()) {
                 for (int i = 0; i < value.size(); i++) {
                     value.get(i).isDisplayed = false;
                 }
@@ -2754,7 +2610,7 @@ public class TopicGraphViewPanel extends JPanel {
                     if (allLabels.get(t) != null) {
                         for (int j = 0; j < allLabels.get(t).size(); j++) {
 
-                            labelText tempLT = allLabels.get(t).get(j);
+                            LabelText tempLT = allLabels.get(t).get(j);
 
                             int leng = tempLT.s.length();
 
@@ -2812,7 +2668,7 @@ public class TopicGraphViewPanel extends JPanel {
                     int countleng = 0;
                     for (int j = 0; j < allLabels.get(t).size(); j++) {
 
-                        labelText tempLT = allLabels.get(t).get(j);
+                        LabelText tempLT = allLabels.get(t).get(j);
 
                         int leng = tempLT.s.length();
 
@@ -2856,12 +2712,12 @@ public class TopicGraphViewPanel extends JPanel {
 
     }
 
-    public List<labelText> retriveLabelsOfNode(TreeNode t, int timecolumn, List<List<int[]>> tYK) {
-        List<labelText> r = new ArrayList<labelText>();
+    public List<LabelText> retriveLabelsOfNode(TreeNode t, int timecolumn, List<List<int[]>> tYK) {
+        List<LabelText> r = new ArrayList<LabelText>();
 
         if (t.getChildren().isEmpty()) {
 
-            List<labelText> ltl = allLabels.get(t);
+            List<LabelText> ltl = allLabels.get(t);
             //System.out.println(t);
             int[] index = tYK.get(t.getIndex()).get(timecolumn);
 
@@ -2874,7 +2730,7 @@ public class TopicGraphViewPanel extends JPanel {
         } else {
 
             //System.out.println("single here" );
-            HashMap<TreeNode, List<labelText>> highlightedOfthisNode = new HashMap<TreeNode, List<labelText>>();
+            HashMap<TreeNode, List<LabelText>> highlightedOfthisNode = new HashMap<TreeNode, List<LabelText>>();
             // System.out.println("single here" );
             highLightByYearIdxKwNode(t, timecolumn, tYK, highlightedOfthisNode);
 
@@ -2886,8 +2742,8 @@ public class TopicGraphViewPanel extends JPanel {
 
     }
 
-    List<labelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<labelText>> m) {
-        List<labelText> r = new ArrayList<TopicGraphViewPanel.labelText>();
+    List<LabelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<LabelText>> m) {
+        List<LabelText> r = new ArrayList<LabelText>();
 
         int size = m.size();
 
@@ -2910,8 +2766,8 @@ public class TopicGraphViewPanel extends JPanel {
 
             for (Object o : m.values()) {
 
-                if (i < ((List<labelText>) o).size()) {
-                    labelText k = ((List<labelText>) o).get(i);
+                if (i < ((List<LabelText>) o).size()) {
+                    LabelText k = ((List<LabelText>) o).get(i);
 
                     r.add(k);
                 }
@@ -2996,9 +2852,9 @@ public class TopicGraphViewPanel extends JPanel {
 //        return hmp;
 //        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-    public HashMap< customLabelTimecolumnKey, List<labelText>> buildLabelMap(TreeNode cNode, List<List<int[]>> tYK) {
+    public HashMap< customLabelTimecolumnKey, List<LabelText>> buildLabelMap(TreeNode cNode, List<List<int[]>> tYK) {
 
-        HashMap< customLabelTimecolumnKey, List<labelText>> hmp = new HashMap< customLabelTimecolumnKey, List<labelText>>();
+        HashMap< customLabelTimecolumnKey, List<LabelText>> hmp = new HashMap< customLabelTimecolumnKey, List<LabelText>>();
         ObservableCachingLayout lll = (ObservableCachingLayout) vv.getGraphLayout();
 
         System.out.println("building label maps in " + this.getName());
@@ -3015,7 +2871,7 @@ public class TopicGraphViewPanel extends JPanel {
 
             customLabelTimecolumnKey key = new customLabelTimecolumnKey(tk.getValue(), String.valueOf(i));
 
-            List<labelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
+            List<LabelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
             // System.out.println(tmpLabels.size());
             hmp.put(key, tmpLabels);
                 //System.out.println(key.toString());
@@ -3055,7 +2911,7 @@ public class TopicGraphViewPanel extends JPanel {
 //                    }
 
                     //System.out.println("single node" + i);
-                    List<labelText> tmpLabels = retriveLabelsOfNode(t1, i, tYK);
+                    List<LabelText> tmpLabels = retriveLabelsOfNode(t1, i, tYK);
                     //System.out.println("single node" + tmpLabels.size());
 
                     customLabelTimecolumnKey key = new customLabelTimecolumnKey(t1.getValue(), String.valueOf(i));
@@ -3388,13 +3244,7 @@ public class TopicGraphViewPanel extends JPanel {
             Dimension keyPos, tempPos;
             List<Dimension> tmpDim = null;
             
-                  for (int i = parent.getGlobalReadIndex(); i < reorganizedTopics.size(); i++) 
-               // for (int j = parent.getGlobalReadIndex()+1; j < reorganizedTopics.get(i).length; j++)
-                {
-                    System.out.println(reorganizedTopics.get(i).length);
-                    
-                }
-                    
+                                 
             for (int i = parent.getGlobalReadIndex(); i < reorganizedTopics.size(); i++) {
                 for (int j = parent.getGlobalReadIndex()+1; j < reorganizedTopics.get(i).length/*30*/; j++) {
                     //Compare every word with other words
@@ -4591,7 +4441,7 @@ public class TopicGraphViewPanel extends JPanel {
             }
 
 
-            for (List<labelText> v : allLabels.values()) {
+            for (List<LabelText> v : allLabels.values()) {
                 for (int i = 0; i < v.size(); i++) {
                     v.get(i).isHighlighted = false;
                 }
@@ -4641,7 +4491,7 @@ public class TopicGraphViewPanel extends JPanel {
             if (!SwingUtilities.isRightMouseButton(e) && !SwingUtilities.isLeftMouseButton(e) && b_showText) {
                 //tempLabel.setVisible(false);
 
-                for (List<labelText> value : allLabels.values()) {
+                for (List<LabelText> value : allLabels.values()) {
                     for (int i = 0; i < value.size(); i++) {
                         value.get(i).isHighlighted = false;
                     }
@@ -4760,7 +4610,7 @@ public class TopicGraphViewPanel extends JPanel {
 //                }
             for (Map.Entry pairs : allLabels.entrySet()) {
 
-                List<labelText> value = (List<labelText>) pairs.getValue();
+                List<LabelText> value = (List<LabelText>) pairs.getValue();
 
                 for (int j = 0; j < value.size(); j++) {
                     if (tmpString.equals(value.get(j).s)) { //&& (j != index || !pairs.getKey().equals(key))
@@ -4846,5 +4696,34 @@ public class TopicGraphViewPanel extends JPanel {
                 return f;
             }
         }
+    }
+    
+    
+    
+                public class labelTextComparer implements Comparator<LabelText> {
+        //@Override
+//  public int compare(labelText x, labelText y) {
+//    // TODO: Handle null x or y values
+//    int startComparison = compare(x.probablity, y.probablity);
+//    return startComparison != 0 ? startComparison
+//                                : compare(x.probablity, y.probablity);
+//  }
+
+        // I don't know why this isn't in Long...
+        private int compare(float a, float b) {
+            return a > b ? -1
+                    : a < b ? 1
+                    : 0;
+        }
+
+        public int compare(LabelText x, LabelText y) {
+            int startComparison = compare(x.probablity, y.probablity);
+            return startComparison != 0 ? startComparison
+                    : compare(x.probablity, y.probablity);
+
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+     
     }
 }
