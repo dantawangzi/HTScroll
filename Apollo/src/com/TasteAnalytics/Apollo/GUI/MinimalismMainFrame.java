@@ -8,6 +8,7 @@ import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.TreeMapProcessingPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
+import com.TasteAnalytics.Apollo.TreeMapView.TopicTreeMapPanel;
 import com.TasteAnalytics.Apollo.datahandler.LDAHTTPClient;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import com.TasteAnalytics.Apollo.file.CSVFile;
@@ -47,8 +48,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     VastGeoFrame vcGeoFrame = null;
     EventViewFrame eventViewFrame = null;
     WorldMapProcessingPanel worldPanel =  null;
-    TreeMapProcessingPanel treemapPanel = null;
-    
+    //TreeMapProcessingPanel treemapPanel = null;
+    TopicTreeMapPanel treeMapPanel = null;
     
     
     ConsoleFrame consoleFrame = null;
@@ -358,11 +359,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             topicFrame.setVisible(true);
 
             worldPanel = new WorldMapProcessingPanel(viewController , maplocations, 1000, 1000);
-            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());
+//            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());
+//            
+//            
+//            treemapPanel.setVisible(true);
             
-            
-            treemapPanel.setVisible(true);
-            
+            treeMapPanel = new TopicTreeMapPanel(topicFrame.getTree());
             
             System.out.println("Topics Graph done!");
 

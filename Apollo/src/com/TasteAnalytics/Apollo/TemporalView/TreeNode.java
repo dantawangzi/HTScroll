@@ -4,6 +4,7 @@
  */
 package com.TasteAnalytics.Apollo.TemporalView;
 
+import com.TasteAnalytics.Apollo.TreeMapView.TreeModel;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ import processing.core.PApplet;
 /**
  * Tree Node for the for a general tree of Objects
  */
-public class TreeNode extends PApplet{
+public class TreeNode extends TreeModel{
 
   private TreeNode parent = null;
   private List children = null;
