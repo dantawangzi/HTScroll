@@ -85,11 +85,6 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
     int globalMouseX;
     int globalMouseY;
 
-    /**
-     * Keep only one the mainFloatingHUDWindow This HUDWindow is used to show
-     * the Icons and Images.
-     */
-    // private static HudWindow mainFloatingHUDWindow = new HudWindow();
     public TemporalViewInteractions(TemporalViewPanel panel) {
         attachedPanel = panel;
         isClicked = false;
@@ -835,7 +830,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                     TreeNode selectedNode = (TreeNode) tempt.getChildren().get(selected_node_index);
 
                     attachedPanel.parent.stateChanged(selectedNode);
-
+                    attachedPanel.parent.stateChangedNew(selectedNode);
 
                 }
 

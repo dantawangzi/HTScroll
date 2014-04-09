@@ -40,12 +40,29 @@ public class TopicTreeMapPanel extends JPanel{
     
     HashMap<TreeNode,MapModel> NodeMap = new HashMap<TreeNode,MapModel>();
     HashMap<TreeNode,TreeMapNodePanel> nodePanel = new HashMap<TreeNode,TreeMapNodePanel>();
+
+    public HashMap<TreeNode, TreeMapNodePanel> getNodePanel() {
+        return nodePanel;
+    }
     
     
+    
+    
+    
+    
+    int wordsToDisplay = 20;
     
     
     public TopicTreeMapPanel(ViewController vc, List<TreeNode> tr, int w, int h)
     {
+        
+//        TopicTreeMapPanelInteractions interactions = new TopicTreeMapPanelInteractions();
+//        addMouseListener(interactions);
+//        addMouseMotionListener(interactions);
+        
+        
+        
+        
         parent = vc;
         this.tree = tr;
         setSize(w,h);
@@ -53,7 +70,7 @@ public class TopicTreeMapPanel extends JPanel{
         model = new TreeModel();
   
         
-        TreeMapNodePanel root = new TreeMapNodePanel(tree.get(0),tree.get(0).getLevel(), new Rectangle(0, 0, w, h));
+        TreeMapNodePanel root = new TreeMapNodePanel(vc, tree.get(0),tree.get(0).getLevel(), new Rectangle(0, 0, w, h));
         
         
         tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
@@ -71,7 +88,7 @@ public class TopicTreeMapPanel extends JPanel{
         {
          //Rect r = new Rect(tree.get(i).getMyRect().x,tree.get(i).getMyRect().y, tree.get(i).getMyRect().width, tree.get(i).getMyRect().height);   
          
-           TreeMapNodePanel tmp = new TreeMapNodePanel(tree.get(i),tree.get(i).getLevel(), tree.get(i).getMyRect());
+           TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i),tree.get(i).getLevel(), tree.get(i).getMyRect());
            
            nodePanel.put(tree.get(i), tmp);
             if (tree.get(i).getChildren().isEmpty())
@@ -85,7 +102,7 @@ public class TopicTreeMapPanel extends JPanel{
                 Border orangeLine = BorderFactory.createLineBorder(Color.white, 3);
 
                 tmp.setBorder(orangeLine);
-                tmp.setVisible(true);
+                tmp.setVisible(false);
                 tmp.setOpaque(false);
                 
                 
@@ -108,24 +125,26 @@ public class TopicTreeMapPanel extends JPanel{
 
             if ( nodePanel.containsKey(key) )
             {
-                nodePanel.get(key).setLabels(value);  
+                List<LabelText> tmplist = new ArrayList<LabelText>();
                 
-                nodePanel.get(key).DrawWordleCloud(new Point(0,0), value);
+                for (int i=0; i<wordsToDisplay; i++)
+                {
+                   tmplist.add(value.get(i));
+                }
+                                
+                nodePanel.get(key).setLabels(tmplist);                  
+                nodePanel.get(key).DrawWordleCloud(new Point(0,0), tmplist);
                 
             }
+            else
+                System.out.println("does not contain this node " + key.toString());
                     
                     
                     
         }
         
         
-        
-        
-        
-        
-        
-        
-        
+           
         
         
 //        JPanel testp = new JPanel();

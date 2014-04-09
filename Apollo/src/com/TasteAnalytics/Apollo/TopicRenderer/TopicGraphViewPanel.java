@@ -250,8 +250,8 @@ public class TopicGraphViewPanel extends JPanel {
     public Container content;
     HashMap<TreeNode, List<LabelText>> allLabels = new HashMap<TreeNode, List<LabelText>>();
     static private int MAXFONTSIZE = 30;
-    static private int MINFONTSIZE = 10;
-    private int labelFontSize = 18;
+    static private int MINFONTSIZE = 6;//10
+    private int labelFontSize = 10; //18
     static private int fontSizePerChar = 1;
     private int highlightFontSize = 26;
     static private int occuranceFontSizePara = 2;

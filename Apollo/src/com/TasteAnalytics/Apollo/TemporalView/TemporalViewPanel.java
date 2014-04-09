@@ -2560,7 +2560,8 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //        }
         Point2D vilocation = new Point2D.Double(x, y);
 
-        vi.setLocation(vilocation);// + fm.getDescent() - strBound.getHeight() / 2));
+        
+        vi.setLocation(new Point((int)vilocation.getX(), (int)vilocation.getY()));// + fm.getDescent() - strBound.getHeight() / 2));
         //System.out.println(p + " " +location);
         
         //System.out.println("xxx" + fm.getDescent());

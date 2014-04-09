@@ -6,18 +6,25 @@
 
 package com.TasteAnalytics.Apollo.TreeMapView;
 
+import com.TasteAnalytics.Apollo.GUI.ViewController;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import wordle.layout.LabelWordleLite;
 import wordle.layout.WordleAlgorithmLite;
 import wordle.layout.WordleLite;
@@ -29,12 +36,24 @@ import wordle.layout.WordleLite;
 public class TreeMapNodePanel extends JPanel{
     
     TreeNode node;
-    
+    ViewController parent;
     JLabel title = new JLabel();
     Rectangle myRect;
     int level;
     List<LabelText> labels;
     List<JLabel> mylabels = new ArrayList<JLabel>();
+    
+    
+    boolean mouseOvered = false;
+
+    public boolean isMouseOvered() {
+        return mouseOvered;
+    }
+
+    public void setMouseOvered(boolean mouseOvered) {
+        this.mouseOvered = mouseOvered;
+    }
+    
 
     public List<LabelText> getLabels() {
         return labels;
@@ -45,10 +64,26 @@ public class TreeMapNodePanel extends JPanel{
     }
     
 
-    
-    
-    TreeMapNodePanel(TreeNode t, int l, Rectangle r)
+    public void updateLayout()
     {
+        
+        Border bLine = BorderFactory.createLineBorder(Color.red, 2);
+        if (mouseOvered)
+        {
+            this.setBorder(bLine);
+            this.setBackground(Color.red);
+        }
+        else
+            this.setBorder(null);
+            this.setBackground(node.getColor());
+        
+        
+    }
+    
+    
+    TreeMapNodePanel(ViewController v, TreeNode t, int l, Rectangle r)
+    {
+        parent = v;
         level = l;
         node = t;
         myRect = r;
@@ -60,9 +95,17 @@ public class TreeMapNodePanel extends JPanel{
         title.setText(t.getValue());
         
         if (!t.getChildren().isEmpty())
+        {
             title.setVisible(false);
         
-        this.add(title);
+            this.add(title);
+        }
+        
+        
+         TopicTreeMapPanelInteractions interactions = new TopicTreeMapPanelInteractions(this);
+        addMouseListener(interactions);
+        addMouseMotionListener(interactions);
+        
         
     }
     
@@ -124,7 +167,7 @@ public class TreeMapNodePanel extends JPanel{
                 
                 //multiTopicKeywordList.get(i).drawRect(g2d);
                 jl.setFont(ls.get(i).getFont());
-                
+                jl.setBackground(Color.red);
             
             mylabels.add(jl);
             this.add(jl);
@@ -253,7 +296,7 @@ public class TreeMapNodePanel extends JPanel{
         
         Point2D vilocation = new Point2D.Double(x, y);
 
-        vi.setLocation(vilocation);// + fm.getDescent() - strBound.getHeight() / 2));
+        vi.setLocation(new Point((int)vilocation.getX(), (int)vilocation.getY()));// + fm.getDescent() - strBound.getHeight() / 2));
         //System.out.println(p + " " +location);
 
         //System.out.println("xxx" + fm.getDescent());
@@ -262,6 +305,8 @@ public class TreeMapNodePanel extends JPanel{
         // vi.setX(location.getX() + glyphBound.getX() + strBound.getWidth() / 2);
         // vi.setY(location.getY() + fm.getDescent() - strBound.getHeight() / 2);
     }
+
+    
     
     
 }

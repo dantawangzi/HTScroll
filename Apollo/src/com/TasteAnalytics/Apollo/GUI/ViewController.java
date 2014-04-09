@@ -4,23 +4,27 @@
  */
 package com.TasteAnalytics.Apollo.GUI;
 
-import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.picking.PickedState;
-import com.TasteAnalytics.Apollo.eventsview.EventsViewListener;
-import com.TasteAnalytics.Apollo.eventsview.EventsViewPanel;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import com.TasteAnalytics.Apollo.TemporalView.TemporalViewListener;
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
+import com.TasteAnalytics.Apollo.TemporalView.TemporalViewListener;
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewPanel;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
+import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel.customLabelTimecolumnKey;
+import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
+import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
+import com.TasteAnalytics.Apollo.TreeMapView.TopicTreeMapPanel;
+import com.TasteAnalytics.Apollo.TreeMapView.TreeMapNodePanel;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
+import com.TasteAnalytics.Apollo.eventsview.EventsViewListener;
+import com.TasteAnalytics.Apollo.eventsview.EventsViewPanel;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.picking.PickedState;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
@@ -28,17 +32,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
-import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel.customLabelTimecolumnKey;
-import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
-import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
-import java.awt.Point;
-
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
@@ -63,16 +64,13 @@ public class ViewController {
     private List<String[]> InternalUsageRecord;
     private List<String[]> InternalDocs;
     private List<Float> topicSimilarities;
-  
+
     public boolean topicChanged = false;
     private DateFormat format;
     public String csvfFolderPath;
     public VastGeoFrame VCGF;
     public WorldMapProcessingPanel worldMapProcessingFrame;
     public List<Point2D> geoLocations;
-    
-     
-     
 
     public VastGeoFrame getVCGF() {
         return VCGF;
@@ -121,28 +119,22 @@ public class ViewController {
     private TreeNode currentNode;
 
     // public List<Color> labelColor = new ArrayList<Color>(); 
-     public Stack labelColor = new Stack();
-     
+    public Stack labelColor = new Stack();
+
     public ViewController() {
         leafNodeSequence = new ArrayList<Integer>();
-        
-        
+
 //        labelColor.push(new Color(141,211,199));                
 //        labelColor.push(new Color(255,255,179));
 //        labelColor.push(new Color(190,186,218));
 //        labelColor.push(new Color(251,128,114));
-        
-          labelColor.push(new Color(228,26,28));                
-        labelColor.push(new Color(55,126,184));
-        labelColor.push(new Color(77,175,74));
-        labelColor.push(new Color(152,78,163));
-        
-        labelColor.push(new Color(255,127,0));
+        labelColor.push(new Color(228, 26, 28));
+        labelColor.push(new Color(55, 126, 184));
+        labelColor.push(new Color(77, 175, 74));
+        labelColor.push(new Color(152, 78, 163));
+
+        labelColor.push(new Color(255, 127, 0));
     }
-
- 
-
-  
 
     /**
      * No header
@@ -170,8 +162,6 @@ public class ViewController {
         return this.InternalDocs;
     }
 
-
-
     public void addDocumentViewer(DocumentViewer d) {
         docViewer = d;
     }
@@ -188,9 +178,16 @@ public class ViewController {
         return null;
     }
 
-    
-    
-    
+    TopicTreeMapPanel treemappanel;
+
+    public TopicTreeMapPanel getTmp() {
+        return treemappanel;
+    }
+
+    public void setTmp(TopicTreeMapPanel tmp) {
+        this.treemappanel = tmp;
+    }
+
     public TopicGraphViewPanel getTopicGraphViewPanel() {
 
         if (topicGraphicPanel != null) {
@@ -238,85 +235,60 @@ public class ViewController {
     int previousTimeColumn = -1;
     TreeNode lastNode = new TreeNode();
     boolean isShowingSingleTopic = false;
-   
 
     HashMap<TreeNode, List<LabelText>> nodeKeywordHighlightMap = new HashMap<TreeNode, List<LabelText>>();
 
     public void stateChangedSecond(TreeNode ct, int selectedTimeColumn, TemporalViewPanel ap, boolean isSingle) {
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
         currentNode = ct;
 
         List<List<int[]>> tYK = getTemporalFrame().getData().topicYearKwIdx;
         highlightedTextLabels = null;//.clear();
         //nodeKeywordHighlightMap = null;
         //nodeKeywordHighlightMap.clear();
-        
-        
+
 //              if (currentNode == null)          
 //                currentNode = ap.currentNode;
-              
-        
-        if (ct == null)
-        {
-              if (ap.multiTopicKeywordList!=null)
+        if (ct == null) {
+            if (ap.multiTopicKeywordList != null) {
                 ap.multiTopicKeywordList.clear();
-            
+            }
+
         }
-              
-        if (lastNode!=null && currentNode!=null)    
-        if (selectedTimeColumn != previousTimeColumn || (!lastNode.equals(currentNode))) {
-            
-          
-            
-            
-            TopicGraphViewPanel.customLabelTimecolumnKey key;
+
+        if (lastNode != null && currentNode != null) {
+            if (selectedTimeColumn != previousTimeColumn || (!lastNode.equals(currentNode))) {
+
+                TopicGraphViewPanel.customLabelTimecolumnKey key;
             //if (currentNode == null)          
                 //currentNode = ap.currentNode;
-            
-            TreeNode ttt = findMatchingNodeInTopicGraph(currentNode);
+
+                TreeNode ttt = findMatchingNodeInTopicGraph(currentNode);
             //key = new customLabelTimecolumnKey( ttt, selectedTimeColumn);
-            
-            
-            key = new TopicGraphViewPanel.customLabelTimecolumnKey(currentNode.getValue(), String.valueOf(selectedTimeColumn));
-            
+
+                key = new TopicGraphViewPanel.customLabelTimecolumnKey(currentNode.getValue(), String.valueOf(selectedTimeColumn));
+
             //System.out.println( ap.getLabelTimeMap().size());
-            
            // System.out.println(key.toString());
-            
             //System.out.println("you key? " + ap.getLabelTimeMap().containsKey(key));
-         
-            
-                       highlightedTextLabels = ap.getLabelTimeMap().get(key);
-            
-            if (highlightedTextLabels==null)
-            {
-                
+                highlightedTextLabels = ap.getLabelTimeMap().get(key);
+
+                if (highlightedTextLabels == null) {
+
 //                Iterator it = ap.getLabelTimeMap().keySet().iterator();
 //            while(it.hasNext())
 //            {
 //                TopicGraphViewPanel.customLabelTimecolumnKey k = (TopicGraphViewPanel.customLabelTimecolumnKey) it.next();
 //                System.out.println(k);
 //            }
-                
-                System.out.println(key);
-                System.out.println("no wordle cloud map ");
-                
-            }
-           else
-            {
-                Point tmp_p = new Point(ap.getWidth()/2, ap.getHeight()/2);
-                
-                ap.DrawWordleCloud(tmp_p/*ap.currentMouseLocation*/, highlightedTextLabels);
+                    System.out.println(key);
+                    System.out.println("no wordle cloud map ");
+
+                } else {
+                    Point tmp_p = new Point(ap.getWidth() / 2, ap.getHeight() / 2);
+
+                    ap.DrawWordleCloud(tmp_p/*ap.currentMouseLocation*/, highlightedTextLabels);
+                }
             }
         }
 
@@ -324,22 +296,15 @@ public class ViewController {
         lastNode = currentNode;
 
         // getTopicGraphViewPanel().updateLabelLocations();
-        
-        
-        if (ct != null && ct.getChildren().isEmpty())
-        {
+        if (ct != null && ct.getChildren().isEmpty()) {
             //System.out.println("ctct");
             TreeNode ttt = findMatchingNodeInTopicGraph(ct);
             //ap.drawTopicWords(ttt);
             ap.showingNode = ttt;
-        }
-        else
-        {
+        } else {
             ap.showingNode = null;
         }
-        
-        
-        
+
         if (tYK.isEmpty()) {
             // System.out.println("current Node is null");
 
@@ -359,7 +324,6 @@ public class ViewController {
                     getTopicGraphViewPanel().highLightByYearIdxKwNode(currentNode, selectedTimeColumn, tYK);
 
                     //getTopicGraphViewPanel().highLightByYearIdxKwNode(currentNode, selectedTimeColumn, tYK, nodeKeywordHighlightMap);
-
                 }
 
                 //getTopicGraphViewPanel().highLightByYearIdxKwNode(currentNode, selectedTimeColumn, tYK);
@@ -372,12 +336,10 @@ public class ViewController {
                 getTopicGraphViewPanel().highLightByYearIdxKwNode(currentNode, selectedTimeColumn, tYK);
 
                 //getTopicGraphViewPanel().highLightByYearIdxKwNode(currentNode, selectedTimeColumn, tYK, nodeKeywordHighlightMap);
-
             }
         }
 
    //     System.out.println(nodeKeywordHighlightMap.size());
-
 //        isShowingSingleTopic = isSingle;
 //
 //        if (isSingle) {
@@ -398,12 +360,8 @@ public class ViewController {
 //                highlightedTextLabels = putUpHighlightedKeywordList(nodeKeywordHighlightMap);
 //            }
 //        }
-        
         //highlightedTextLabels = getTopicGraphViewPanel().getHighligtedLabels();
-
         //System.out.println(highlightedTextLabels.size());
-        
-  
     }
 
     List<LabelText> putUpHighlightedKeywordList(HashMap<TreeNode, List<LabelText>> m) {
@@ -442,10 +400,7 @@ public class ViewController {
     public void setGlobalReadIndex(int globalReadIndex) {
         this.globalReadIndex = globalReadIndex;
     }
-    
-    
-    
-    
+
     int globalReadIndex = 0;
     float intervalDays = 7;
     boolean b_recaluateValue = false;
@@ -464,10 +419,10 @@ public class ViewController {
     String[] nameFields;
     String nameField2;
     String text_id;
-    String id_type="";
-    
+    String id_type = "";
+
     boolean tagLDA = false;
-    
+
     public void readHeaderFile(String headerpath) throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(headerpath));
 
@@ -564,29 +519,120 @@ public class ViewController {
 
     }
 
-    public void stateChangedFromLabelToTopic(HashMap<String, List<Integer>> highindex,HashMap<String, List<Float>> highWeight, HashMap<String, Color> highIndexNumber)
-    {
+    public void stateChangedFromLabelToTopic(HashMap<String, List<Integer>> highindex, HashMap<String, List<Float>> highWeight, HashMap<String, Color> highIndexNumber) {
         getTopicGraphViewPanel().setHighlightLabelsFromLabelTopics(highindex, highWeight, highIndexNumber);
-        
-        
+
     }
-    
-    
-    
-    
+
+    public void addThemeRiver(TreeNode ct) throws IOException {
+
+        TemporalViewPanel tp = null;
+
+        tp = new TemporalViewPanel(this);
+
+        if (!this.getTemporalFrame().getTemporalPanelMap().containsKey(1)) {
+            List<TemporalViewPanel> tvpl = new ArrayList<TemporalViewPanel>();
+            this.getTemporalFrame().getTemporalPanelMap().put(1, tvpl);
+
+        }
+
+        int index = this.getTemporalFrame().getTemporalPanelMap().get(1).size();
+        tp.setName("1" + index);
+        tp.setPanelLabelId(index);
+        tp.setLevel(1);
+        tp.setData(this.getTemporalFrame().getData());
+        tp.setTree(this.getTemporalFrame().getTree());
+        this.getTemporalFrame().getMainPanel().addChildPanel(tp);
+        tp.setFatherPanel(this.getTemporalFrame().getMainPanel());
+        TreeNode tempt = ct;
+
+        for (TreeNode n : this.getTemporalFrame().getTree()) {
+
+            if ((n.getIndex() == tempt.getIndex()) && n.getValue().equals(tempt.getValue())) //if ((n.getIndex() == tempt.getIndex()) && n.getChildren().isEmpty())
+            {
+                tp.currentNode = n;
+                break;
+            }
+        }
+
+        if (tp.currentNode == null) {
+            System.out.println("No node found matches");
+        }
+
+        Integer it = tempt.getIndex();
+        it = index;
+        this.getTemporalFrame().getMainPanel().getDrawLabels().add(it);
+
+        Point2D pf = new Point2D.Float(0, 0);
+
+        this.getTemporalFrame().getMainPanel().getDrawLabelsLocation().add(pf);
+        tp.setFatherPanel(this.getTemporalFrame().getMainPanel());
+        tp.calculateLocalNormalizingValue(tp.getData(), tp.currentNode);
+        tp.buildLabelTimeMap();
+
+        this.getTemporalFrame().getTemporalPanelMap().get(1).add(tp);
+        float normalizeValue = -1;
+        if (this.getTemporalFrame().getTemporalPanelMap().get(1).size() > 0) {
+            for (TemporalViewPanel ttp : this.getTemporalFrame().getTemporalPanelMap().get(1)) {
+                if (ttp.getLocalNormalizingValue() >= normalizeValue) {
+                    normalizeValue = ttp.getLocalNormalizingValue();
+                }
+            }
+            for (TemporalViewPanel ttp : this.getTemporalFrame().getTemporalPanelMap().get(1)) {
+                ttp.setGlobalNormalizingValue(normalizeValue);
+            }
+        }
+
+        // tp.UpdateTemporalView(new Dimension(tf.getWidth()/(1+secondColumnExist+thirdColumnExist),tf.getHeight()/3), tp.getGlobalNormalizingValue());
+        for (TemporalViewPanel ttp : this.getTemporalFrame().getTemporalPanelMap().get(1)) {
+            ttp.calculateRenderControlPointsOfEachHierarchy(tp.getData(), tp.currentNode, tp.getGlobalNormalizingValue());
+            ttp.computerZeroslopeAreasHierarchy(0);
+                                //ttp.detectEvents();
+
+            //ttp.UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), ttp.getGlobalNormalizingValue());
+        }
+
+                            //tvf.getMainPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() * 2 / 3), tvf.getMainPanel().getLocalNormalizingValue());
+        //tvf.getSubPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), tvf.getSubPanel().getLocalNormalizingValue());
+        System.out.println("second column panel added");
+        this.getTemporalFrame().setMigLayoutForScrollPane();
+
+    }
+
+    public void stateChangedNew(TreeNode ct) {
+
+        for ( TreeMapNodePanel p : treemappanel.getNodePanel().values())
+        {
+            p.setMouseOvered(false);  
+            p.updateLayout();
+            
+        }
+        
+        TreeNode a = findMatchingNodeInTopicGraph(ct);
+        
+        
+        if (a.getChildren().isEmpty())
+        {
+            treemappanel.getNodePanel().get(a).setMouseOvered(true);
+            treemappanel.getNodePanel().get(a).updateLayout();
+        }
+        else
+        {
+            for (int i=0; i<a.getChildren().size(); i++)
+            {
+                TreeNode t = (TreeNode) a.getChildren().get(i);
+                treemappanel.getNodePanel().get(t).setMouseOvered(true);
+                treemappanel.getNodePanel().get(t).updateLayout();
+            }
+            
+        }
+        
+       
+         //TopicTreeMap
+    }
+
     public void stateChanged(TreeNode ct) {
         currentNode = ct;
-
-        // change temporal view frame
-       // TemporalViewPanel targetPanel = getTemporalFrame().getSubPanel();
-       // getTemporalFrame().getSubPanel().currentNode = currentNode;
-       // targetPanel.currentNode = currentNode;
-       // targetPanel.calculateLocalNormalizingValue(targetPanel.getData(), targetPanel.currentNode);
-      //  targetPanel.getDetectionResults().clear();
-      //  targetPanel.detectEvents(targetPanel.getEventThreshold());
-        
-      //  targetPanel.UpdateTemporalView(new Dimension(targetPanel.getMyPanelWidth(), targetPanel.getMyPanelHeight()), targetPanel.getLocalNormalizingValue());
-
 
         VisualizationViewer vv = getTopicGraphViewPanel().getVisualizationViewer();
         final PickedState<TreeNode> pickedState = vv.getPickedVertexState();
@@ -712,7 +758,6 @@ public class ViewController {
         tvl = null;
     }
 
-
     public void setTopicSimilarities(List<Float> sim) {
         topicSimilarities = new ArrayList<Float>();
         topicSimilarities = sim;
@@ -746,28 +791,19 @@ public class ViewController {
     }
     private List<Float[]> hueColors;
 
-    
-    
     public List<Float[]> getHueColors() {
         return hueColors;
     }
-    
-    
-   
-    
-    public static Color[] labelColors = 
-    {
-        new Color(141,211,199),
-        new Color(255,255,179),
-        new Color(190,186,218),
-        new Color(251,128,114)
-        
-        
-        
-    };
-    
-    
-   
+
+    public static Color[] labelColors
+            = {
+                new Color(141, 211, 199),
+                new Color(255, 255, 179),
+                new Color(190, 186, 218),
+                new Color(251, 128, 114)
+
+            };
+
     public void setNewHueColors() {
         hueColors = new ArrayList<Float[]>();
 

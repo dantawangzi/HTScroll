@@ -369,6 +369,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
              
              
             treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), 1000,1000);
+            viewController.setTmp(treeMapPanel);
             
             System.out.println("Topics Graph done!");
 
