@@ -46,9 +46,7 @@ public class TopicTreeMapPanel extends JPanel{
     }
     
     
-    
-    
-    
+ 
     
     int wordsToDisplay = 20;
     
