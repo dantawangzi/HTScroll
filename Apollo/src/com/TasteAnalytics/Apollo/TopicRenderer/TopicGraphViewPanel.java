@@ -315,8 +315,7 @@ public class TopicGraphViewPanel extends JPanel {
 
         popupMenu = new myAnnotationMenu();
         annotation_locations = new ArrayList<Point2D>();
-        annotation = new ArrayList<JLabel>();
-    
+        annotation = new ArrayList<JLabel>();    
        
         width = 1200;
         height = 1000;
@@ -328,6 +327,7 @@ public class TopicGraphViewPanel extends JPanel {
         labelsToDisplay = 51;
 
         tvf = this.parent.getTemporalFrame();
+
 
 
         this.addComponentListener(new ComponentListener() {
@@ -449,6 +449,8 @@ public class TopicGraphViewPanel extends JPanel {
                 //      labels[1][2];
                 LeafArray[index] = t;
                 leafSequence.add(index);
+                t.setTopicWeight(parent.topicWeights.get(index));
+               // t.setNumberOfEvents(parent.topicEventsCount.get(index));
                 myTree.add(t);
             } else {
                 int c = 0;

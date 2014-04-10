@@ -72,6 +72,17 @@ public class ViewController {
     public WorldMapProcessingPanel worldMapProcessingFrame;
     public List<Point2D> geoLocations;
 
+    
+    public List<Float> topicWeights = new ArrayList<Float>();
+    public List<Float> topicEventsCount = new ArrayList<Float>();
+        
+    
+    
+    
+    
+        
+        
+     
     public VastGeoFrame getVCGF() {
         return VCGF;
     }

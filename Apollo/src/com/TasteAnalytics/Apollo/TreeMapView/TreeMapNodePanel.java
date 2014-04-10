@@ -94,7 +94,7 @@ public class TreeMapNodePanel extends JPanel{
         
         this.setBackground(node.getColor());
         
-         this.getRootPane().revalidate();
+        //this.getRootPane().revalidate();
         
     }
     

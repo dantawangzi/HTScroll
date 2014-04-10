@@ -59,16 +59,16 @@ public class TreeNode extends TreeModel{
   
   private float leafNodeWeight;
   
-  double size = 1;
+  //double size = 1;
   int order = 0;
 
-    public double getSize() {
-        return size;
-    }
-
-    public void setSize(double size) {
-        this.size = size;
-    }
+//    public double getSize() {
+//        return size;
+//    }
+//
+//    public void setSize(double size) {
+//        this.size = size;
+//    }
   
   public int getOrder() {
         return order;
@@ -453,9 +453,60 @@ public List<Integer> getTopicsContainedIdx()
       return result;
   }
   
+  double TreeMapTopicWeight = 0;
+
+    public double getTreeMapTopicWeight() {
+        return TreeMapTopicWeight;
+    }
+
+    public void setTreeMapTopicWeight(double TreeMapTopicWeight) {
+        this.TreeMapTopicWeight = TreeMapTopicWeight;
+    }
   
+  double topicWeight = 0;
+
+    public double getTopicWeight() {
+        return topicWeight;
+    }
+
+    public void setTopicWeight(double topicWeight) {
+        this.topicWeight = topicWeight;
+    }
   
+  float numberOfEvents = 0.5f;
+
+    public float getNumberOfEvents() {
+        return numberOfEvents;
+    }
+
+    public void setNumberOfEvents(float numberOfEvents) {
+        this.numberOfEvents = numberOfEvents;
+    }
   
+  public float calculateTreeMapTopicWeight()
+  {
+      float result = 0;
+      if (this.getChildren().isEmpty())
+      {
+          result = (float) Math.sqrt( this.numberOfEvents * this.topicWeight);
+                    
+      }
+      else
+      {
+          for (int i=0 ;i<this.getChildren().size(); i++)
+          {
+              
+              result += ((TreeNode)this.getChildren().get(i)).calculateTreeMapTopicWeight();
+          }          
+          
+      }
+      
+      
+      
+      this.TreeMapTopicWeight = result;
+      return result;
+      
+  }
   
   public float calculateNodeWeight()
   {
@@ -550,6 +601,7 @@ public List<Integer> getTopicsContainedIdx()
          {
             
              mp[i] = ((TreeNode)getChildren().get(i)).getMapItem();
+             mp[i].setSize(((TreeNode)getChildren().get(i)).getTreeMapTopicWeight());
          }
          
          return mp;

@@ -58,8 +58,7 @@ public class TopicTreeMapPanel extends JPanel{
 //        addMouseMotionListener(interactions);
         
         this.setBackground(Colors.mainBackgroundColor);
-        
-        
+   
         parent = vc;
         this.tree = tr;
         setSize(w,h);
@@ -68,6 +67,28 @@ public class TopicTreeMapPanel extends JPanel{
   
         
         TreeMapNodePanel root = new TreeMapNodePanel(vc, tree.get(0),tree.get(0).getLevel(), new Rectangle(0, 0, w, h));
+        
+        for (int i=0; i<tree.size(); i++)
+        {
+            if (tree.get(i).getValue().contains("L"))
+            {
+                int index = tree.get(i).getIndex();
+                  tree.get(i).setNumberOfEvents(parent.topicEventsCount.get(index));
+                
+            }
+            
+        }
+        
+      
+        
+        tree.get(0).calculateTreeMapTopicWeight();
+        
+        for (int i=0; i<tree.size(); i++)
+        {
+            System.out.println(tree.get(i).getValue() + " " + tree.get(i).getTreeMapTopicWeight());
+        // tree.get(i).size = tree.get(i).getTreeMapTopicWeight();
+        }
+        
         
         updateTreeLayout(w,h);
         
@@ -213,7 +234,7 @@ public class TopicTreeMapPanel extends JPanel{
      public void updateTreeLayout(int w, int h)
     {
         
-         tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
+        tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
         Mappable[] leaves = tree.get(0).getItems();
         map = new RandomMap(leaves);       	    
 	algorithm = new SquarifiedLayout();

@@ -447,7 +447,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         // this.setTitle("ThemeRiver");
         //  setPreferredSize(new Dimension(1200, 900));
         //setSize(600, 500);
-        eventThreshold = (float) 2.0;
+        eventThreshold = (float) 3.0;
         childPanel = new ArrayList<TemporalViewPanel>();
 
         focusedSelectionList = new ArrayList<Point2D>();
@@ -620,12 +620,15 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     }
 
     public void repaintView() {
+        
+        if (width!=0 && height!=0){
         area = new Rectangle(width, height);
         bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         curg2d = bi.createGraphics();
         curg2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         update(curg2d);
         this.repaint();
+        }
     }
 
     private void calculateRenderControlPoints(CategoryBarElement data) {
@@ -1156,6 +1159,8 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         }
 
         // Clears the rectangle that was previously drawn.
+        if (curg2d == null) return;
+        
         curg2d.setColor(Color.WHITE);
         //curg2d.setColor(Color.black);
         curg2d.fillRect(0, 0, area.width, area.height);
@@ -2129,7 +2134,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     public ArrayList<float[][]> getDetectionResults() {
         return detectionResults;
     }
-    private float eventThreshold = (float) 2.0;
+    private float eventThreshold = (float) 3.0;
 
     public float getEventThreshold() {
         return eventThreshold;
@@ -2139,7 +2144,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         this.eventThreshold = eventThreshold;
     }
 
-    public void detectEvents(float eThreshold) {
+    public float detectEvents(float eThreshold) {
 
         List<float[]> unormStreams = new ArrayList<float[]>();
         detectionResults.clear();
@@ -2180,7 +2185,25 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //             
 //         }
         //computeEventOutlineArea();
+        int count = 0;
+        for (float[][] detectionResult : detectionResults) {
+            for (float[] detectionResult1 : detectionResult) {
+                if ((detectionResult1[1] > 0)) {
+              
+              
+                    if (detectionResult1[1] == 1) {
+                        count++;
+                       
+                    }
+                }
+            }
+        }
+        
+        
+        return (float) (count==0?0.5:count);
     }
+    
+    
     CubicCurve2D[][][] contours;
     List<Point2D> testEventPoints = new ArrayList<Point2D>();
 
@@ -2197,15 +2220,23 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
                     if (!(detectionResults.get(i)[j][1] > 0)) {
                         flags[j][i] = -1;
                     }
+                    else
+                    {
+//                        int xx = 0;
+//                        System.out.println(detectionResults.get(i)[j][0] + " "  + detectionResults.get(i)[j][1]);
+                        
+                        
+                    }
                 }
             }
 
             testEventPoints.clear();
-
+int count = 0;
             for (int i = 0; i < currentPoint.length - 1; i++) {//number of time slots
                 for (int j = 0; j < currentPoint[i].length - 1; j++) {
-
+                        
                     if (flags[i][j] != -1) {
+                        count++;
                         testEventPoints.add(currentPoint[i][j]);
 
                         Point p1 = currentPoint[i][j];
@@ -2241,6 +2272,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
             }
 
+            
 //            for (int i = 0; i < currentPoint[0].length; i++) {
 //                //Set the start of the spline
 //                oldcurves[i] = new CubicCurve2D.Double();

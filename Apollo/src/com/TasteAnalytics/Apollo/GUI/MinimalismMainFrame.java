@@ -18,6 +18,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -177,6 +179,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
     public void run() {
 
+        
+        this.setExtendedState( JFrame.NORMAL );
+        this.setPreferredSize(new Dimension(1200,800));
+        this.setSize(1200,800);
+        
+        
         viewController = new ViewController();
         jCheckBoxConsoleMenu.setSelected(true);
 
@@ -200,6 +208,29 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
 
+        
+        
+        
+        viewController.topicWeights.add(14681.0f);
+        viewController.topicWeights.add(4294.0f);
+        viewController.topicWeights.add(22731.0f);
+        viewController.topicWeights.add(7367.0f);
+        viewController.topicWeights.add(2595.0f);
+        viewController.topicWeights.add(4817.0f);
+        viewController.topicWeights.add(21857.0f);
+        viewController.topicWeights.add(3717.0f);
+        viewController.topicWeights.add(16748.0f);
+        viewController.topicWeights.add(1230.0f);
+        viewController.topicWeights.add(3079.0f);
+        viewController.topicWeights.add(3265.0f);
+        viewController.topicWeights.add(3530.0f);
+        viewController.topicWeights.add(1849.0f);
+        viewController.topicWeights.add(3352.0f);
+        
+
+        
+        
+        
         connection = new LDAHTTPClient("http", viewController.host, String.valueOf(viewController.port));
         try {
             connection.login();
@@ -327,7 +358,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     viewController.csvfFolderPath = csvfilepath;
                     viewController.csvfFolderPath = ".\\";
 
-                    temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
+                    temporalFrame = new TemporalViewFrame(viewController, 600,800);//scrnsize.width / 2, scrnsize.height);
 
                     viewController.addTemporalFrame(temporalFrame);
 
@@ -388,6 +419,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                         csvf.setSimilarityMatrix(topicSim);
                     }
 
+                  
                     topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
                     viewController.addTopicGraphViewPanel(topicFrame);
                     viewController.getTopicGraphViewPanel().loadTopic(topics);
@@ -402,6 +434,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     viewController.getTopicGraphViewPanel().generateLayout();
                     topicFrame.setVisible(true);
+                    
+                      temporalFrame.PreDrawAllLeafs();
+                    
 
                     worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200);
 //            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());
@@ -411,7 +446,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     initializeViews(csvf);
 
-                    treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), scrnsize.width, scrnsize.height);
+                    treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), 600,800);//scrnsize.width/2, scrnsize.height);
                     viewController.setTmp(treeMapPanel);
 
                     System.out.println("Topics Graph done!");
@@ -444,13 +479,34 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //            rightSplit.setOneTouchExpandable(true);
 //            rightSplit.setDividerLocation(0.8d);
 //            leftSplit.setResizeWeight(0.8d);
-//            mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-//                leftSplit, rightSplit);
-//            mainSplit.setOneTouchExpandable(true);
-//            mainSplit.setDividerLocation(0.5d);
-//            mainSplit.setResizeWeight(0.5d);
-//
-//            mainSplit.setContinuousLayout(true);
+            mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeMapPanel, temporalFrame);
+                //leftSplit, rightSplit);
+            mainSplit.setOneTouchExpandable(true);
+            mainSplit.setDividerLocation(0.5d);
+            mainSplit.setResizeWeight(0.5d);
+
+            mainSplit.setContinuousLayout(true);
+            
+            
+            mainSplit.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+                        @Override
+                        public void propertyChange(PropertyChangeEvent pce) {
+                            // do here
+                            
+                           if (treeMapPanel!=null)
+                            {
+
+                             //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                             treeMapPanel.updateTreeLayout( mainSplit.getLeftComponent().getWidth(),   mainSplit.getLeftComponent().getHeight());
+                             treeMapPanel.invalidate();
+                             treeMapPanel.getRootPane().revalidate();
+                            }
+                        }
+
+//                        public void propertyChange(PropertyChangeEvent evt) {
+//                            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                        }
+                    });
 //
 //            //Provide minimum sizes for the two components in the split pane
 //            Dimension minimumSize = new Dimension(200, 100);
@@ -467,8 +523,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //            
                     Border blackline = BorderFactory.createLineBorder(Color.black);
                     mViewPanel.setBorder(blackline);
-                    //mViewPanel.add(mainSplit);
-                    mViewPanel.add(treeMapPanel);
+                    mViewPanel.add(mainSplit);
+                    //mViewPanel.add(treeMapPanel);
+                    
+                    
+                    
+                    
 
                 } catch (IOException ex) {
                     Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -486,6 +546,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
     public MinimalismMainFrame() {
         initComponents();
+        
+        
         this.setTitle("Apollo Analytics");
            thread = new Thread(this);
            
@@ -498,13 +560,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                 
                if (mViewPanel!=null)
                 mViewPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
-               if (treeMapPanel!=null)
+               
+               if (mainSplit!=null)
                {
-                treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
-                treeMapPanel.updateTreeLayout(e.getComponent().getSize().width, e.getComponent().getSize().height);
-                treeMapPanel.invalidate();
-                 treeMapPanel.getRootPane().revalidate();
+                   mainSplit.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
                }
+
                
                invalidate();
                
