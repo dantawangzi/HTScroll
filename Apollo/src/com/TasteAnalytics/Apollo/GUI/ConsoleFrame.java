@@ -102,7 +102,9 @@ public class ConsoleFrame extends javax.swing.JFrame implements WindowListener, 
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        textArea.setBackground(new java.awt.Color(39, 39, 39));
         textArea.setColumns(20);
+        textArea.setForeground(new java.awt.Color(255, 255, 255));
         textArea.setRows(5);
         jScrollPane1.setViewportView(textArea);
 

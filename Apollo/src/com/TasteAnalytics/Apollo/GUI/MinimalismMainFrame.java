@@ -3,9 +3,7 @@
 package com.TasteAnalytics.Apollo.GUI;
 
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
-import com.TasteAnalytics.Apollo.TopicRenderer.PrefuseLabelTopicGraphPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
-import com.TasteAnalytics.Apollo.TopicRenderer.TreeMapProcessingPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
 import com.TasteAnalytics.Apollo.TreeMapView.TopicTreeMapPanel;
@@ -16,6 +14,8 @@ import com.mongodb.BasicDBList;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import javax.swing.JTable;
 import javax.swing.border.Border;
 
 /**
@@ -35,43 +34,30 @@ import javax.swing.border.Border;
  */
 public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable {
 
-    //private ViewController viewcontroller;
-    //Defined by wdou
-    private com.TasteAnalytics.Apollo.GUI.ViewController viewController;
+    /// Main View Controller
+    private ViewController viewController;
+    /// Multi Thread Initiator
+    private final Thread thread;
+    /// Mongo Connector
+    private LDAHTTPClient connection = null;
+    /// Console Frame Declaration
+    private ConsoleFrame consoleFrame = null;
 
-    File currentPath = null;
-    static public Map<Integer, Integer> parIdx2docIdx;
-
+//    File currentPath = null;
+//    static public Map<Integer, Integer> parIdx2docIdx;
     DocumentViewer documentViewer = null;
     TemporalViewFrame temporalFrame = null;
     TopicGraphViewPanel topicFrame = null;
     VastGeoFrame vcGeoFrame = null;
     EventViewFrame eventViewFrame = null;
-    WorldMapProcessingPanel worldPanel =  null;
+    WorldMapProcessingPanel worldPanel = null;
     //TreeMapProcessingPanel treemapPanel = null;
     TopicTreeMapPanel treeMapPanel = null;
-    
-    
-    ConsoleFrame consoleFrame = null;
 
     JSplitPane mainSplit;
-
     JSplitPane leftSplit, rightSplit;
-
     JScrollPane leftTopScrollPane, leftBottomScrollPane;
     JScrollPane rightTopScrollPane, rightBottomScrollPane;
-
-    public MinimalismMainFrame() {
-
-        initComponents();
-        this.setTitle("Apollo");
-
-        Thread thread = new Thread(this);
-        thread.start();
-
-//        System.out.println("This is currently running on the main thread, " +  
-//        "the id is: " + Thread.currentThread().getId());  
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -85,7 +71,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         buttonEditGroup = new javax.swing.ButtonGroup();
         mViewPanel = new javax.swing.JPanel();
         MenuPanel = new javax.swing.JPanel();
-        jButtonConnectServer = new javax.swing.JButton();
+        jComboBoxAnalytics = new javax.swing.JComboBox();
         jCheckBoxConsoleMenu = new javax.swing.JCheckBox();
         jProgressBarSystem = new javax.swing.JProgressBar();
 
@@ -97,18 +83,21 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             }
         });
 
+        mViewPanel.setBackground(new java.awt.Color(39, 39, 39));
         mViewPanel.setLayout(new java.awt.BorderLayout());
 
-        MenuPanel.setLayout(new javax.swing.BoxLayout(MenuPanel, javax.swing.BoxLayout.LINE_AXIS));
+        MenuPanel.setBackground(new java.awt.Color(39, 39, 39));
+        MenuPanel.setLayout(new java.awt.GridLayout());
 
-        jButtonConnectServer.setText("Choose Analytics");
-        jButtonConnectServer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jConnectMongoButtonActionPerformed(evt);
-            }
-        });
-        MenuPanel.add(jButtonConnectServer);
+        jComboBoxAnalytics.setFont(new java.awt.Font("Gill Sans", 0, 14)); // NOI18N
+        jComboBoxAnalytics.setMaximumRowCount(12);
+        jComboBoxAnalytics.setToolTipText("Choose Analytics Results");
+        jComboBoxAnalytics.setMaximumSize(new java.awt.Dimension(52, 27));
+        MenuPanel.add(jComboBoxAnalytics);
 
+        jCheckBoxConsoleMenu.setBackground(new java.awt.Color(39, 39, 39));
+        jCheckBoxConsoleMenu.setFont(new java.awt.Font("Gill Sans", 0, 14)); // NOI18N
+        jCheckBoxConsoleMenu.setForeground(new java.awt.Color(255, 255, 255));
         jCheckBoxConsoleMenu.setText("Console");
         MenuPanel.add(jCheckBoxConsoleMenu);
         MenuPanel.add(jProgressBarSystem);
@@ -127,330 +116,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         System.exit(0);
     }//GEN-LAST:event_exitForm
 
-    @SuppressWarnings("empty-statement")
-    private void jConnectMongoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectMongoButtonActionPerformed
-
-        // TODO: This need to be placed in Setting Menu
-        viewController.host = "10.18.203.130";//"caprica.uncc.edu";//10.18.202.126"; //"54.209.61.133"; 10.18.203.130
-        viewController.b_readFromDB = true;
-        viewController.setGlobalReadIndex(0);
-
-        String[] columnName = {"Data"};
-        List<String> jobNames = new ArrayList<String>();
-
-        LDAHTTPClient connection = new LDAHTTPClient("http", viewController.host, String.valueOf(viewController.port));
-        try {
-            connection.login();
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            for (Object r : (ArrayList) connection.getJobs()) {
-                //String s = (String)((HashMap)r).get("field");
-                jobNames.add((String) ((HashMap) r).get("_id"));
-                // System.out.println(((HashMap)r).get("_id"));
-            }
-
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        Object[][] data = new Object[jobNames.size()][];
-        for (int i = 0; i < jobNames.size(); i++) {
-            Object[] tmp = new Object[1];
-            tmp[0] = (Object) jobNames.get(i);
-            data[i] = tmp;
-
-        }
-
-        JTable table = new JTable(data, columnName);
-        JScrollPane scrollPane = new JScrollPane(table);
-        table.setFillsViewportHeight(true);
-
-        JOptionPane.showMessageDialog(null, scrollPane,
-            "Choose an analytics result you like to investigate", JOptionPane.YES_NO_CANCEL_OPTION);
-
-        String job = jobNames.get(table.getSelectedRow());
-        viewController.collection = job;
-
-        CSVFile csvf = new CSVFile("");
-        try {
-
-            // viewController.setUsageRecord(csvf.getInternalRecord());
-            //viewController.setInternalDocs(csvf.getInternalDocs());
-            // viewController.setTopicSimilarities(csvf.getTopicSimilarities());
-            List<String[]> topics = new ArrayList<String[]>();
-
-            HashMap<String, String[]> topicsByMongo = new HashMap<String, String[]>();
-
-            for (Object r : (ArrayList) connection.getJobDocs(job, "topic")) {
-
-                String Key = (String) ((HashMap) r).get("_id");
-
-                if (((HashMap) r).get("terms") instanceof BasicDBList) {
-                    BasicDBList terms = ((BasicDBList) ((HashMap) r).get("terms"));
-
-                    String[] tmpdest = new String[terms.size() + 2];
-                    tmpdest[0] = "Group";
-                    tmpdest[1] = Key;
-                    for (int i = 0; i < terms.size(); i++) {
-                        tmpdest[2 + i] = (String) terms.get(i);
-
-                    }
-                    topicsByMongo.put(Key, tmpdest);
-
-                } else {
-
-                    String terms = (String) ((HashMap) r).get("terms");
-                    String[] tmps = terms.split(",");
-                    String[] tmpdest = new String[tmps.length + 2];
-                    tmpdest[0] = "Group";
-                    tmpdest[1] = Key;
-                    for (int i = 0; i < tmps.length; i++) {
-                        tmpdest[2 + i] = tmps[i];
-
-                    }
-                    topicsByMongo.put(Key, tmpdest);
-                }
-            }
-            for (int i = 0; i < topicsByMongo.size(); i++) {
-                String key = "t" + Integer.toString(i);
-                topics.add(topicsByMongo.get(key));
-            }
-
-            System.out.append("topk loaded");
-
-            for (Object r : (ArrayList) connection.getJob(job)) {
-                HashMap hr = (HashMap) r;
-                List<String> ls = ((List) hr.get("field"));
-                if (ls != null) {
-                    viewController.nameFields = new String[ls.size()];
-                    for (int i = 0; i < ls.size(); i++) {
-                        viewController.nameFields[i] = ls.get(i);
-                    }
-                } else {
-                    viewController.nameFields = null;
-                }
-
-                //               String field = String.valueOf(hr.get("field"));
-                //               field = field.replaceAll("\\[","");
-                //               field = field.replaceAll("\\]","");
-                //                       field = field.replaceAll("\"","");
-                //                        field = field.replaceAll(" ","");
-                //               viewController.nameFields = field.split(",");
-                viewController.text_id = ((String) (((HashMap) (hr.get("mongo_input"))).get("text_index")));
-                viewController.database = ((String) (((HashMap) (hr.get("mongo_input"))).get("db")));
-                viewController.table = ((String) (((HashMap) (hr.get("mongo_input"))).get("table")));
-                viewController.id_type = ((String) (((HashMap) (hr.get("mongo_input"))).get("_id_type")));
-
-                viewController.id_type = ((String) (((HashMap) (hr.get("mongo_input"))).get("_id_type")));
-                viewController.tagLDA = Boolean.parseBoolean(String.valueOf(((HashMap) (hr.get("meta"))).get("tlda")));
-
-            }
-
-            // Make sure all the backend and frontend are agreeing to this.
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            viewController.setFormat(format);
-
-            String TreeString = "";
-
-            for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
-                //System.out.println(r);
-                TreeString = (String) ((HashMap) r).get("tree");
-            }
-
-            List<HashMap> maplocations = new ArrayList<HashMap>();
-
-            for (Object r : (ArrayList) connection.getGroupbyDocs("name", viewController.database, viewController.table, "latitude", "longitude")) {
-                maplocations.add((HashMap) r);
-            }
-
-            //        q1 = new BasicDBObject("type", "flat");
-            //        cursorfind = currentColl.find(q1);
-            //        BasicDBObject dbo1 = (BasicDBObject) cursorfind.next();
-            //        TreeString = dbo1.getString("tree");
-            viewController.setNewHueColors();
-
-            Toolkit toolkit = Toolkit.getDefaultToolkit();
-
-            Dimension scrnsize = toolkit.getScreenSize();
-
-            String csvfilepath = csvf.getFolderPath();
-            viewController.csvfFolderPath = csvfilepath;
-            viewController.csvfFolderPath = ".\\";
-
-            temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
-
-            viewController.addTemporalFrame(temporalFrame);
-
-            temporalFrame.loadCacheData(job, TreeString, viewController.host);
-            //temporalFrame.createWorldMap(maplocations);
-
-            //temporalFrame.setVisible(true);
-            //temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
-            //temporalFrame.setLocation(0, 0);
-
-            HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
-            List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
-
-            HashMap<String, String> topicSimMongo = new HashMap<String, String>();
-            List<List<Float>> topicSim = new ArrayList<List<Float>>();
-
-            if (viewController.b_readFromDB) {
-
-                for (Object r : (ArrayList) connection.getJobDocs(job, "topic_terms")) {
-                    HashMap hr = (HashMap) r;
-
-                    String key = (String) hr.get("_id");
-                    double weights = (Double) hr.get("weight");
-
-                    // float tmpvalue = Float.parseFloat(weights);
-                    termWeightMongo.put(key, (float) weights);
-                }
-
-                for (int i = 0; i < topicsByMongo.size(); i++) {
-                    List<Float> tmpL = new ArrayList<Float>();
-                    for (int j = 0; j < 50; j++) // hard code
-                    {
-                        String key = "dist_top" + (new Integer(i)).toString() + "term" + (new Integer(j)).toString();
-                        tmpL.add(termWeightMongo.get(key));
-                    }
-                    topkTermWeightMongo.add(tmpL);
-
-                }
-
-                for (Object r : (ArrayList) connection.getJobDocs(job, "top_sim")) {
-                    HashMap hr = (HashMap) r;
-                    String key = (String) hr.get("_id");
-                    String weights = (String) hr.get("weights");
-                    // float tmpvalue = Float.parseFloat(weights);
-                    topicSimMongo.put(key, weights);
-
-                }
-
-                for (int i = 0; i < topicSimMongo.size(); i++) {
-                    List<Float> tmpL = new ArrayList<Float>();
-                    String key = "topsim" + (new Integer(i)).toString();
-                    String weights = topicSimMongo.get(key);
-                    String[] tmps = weights.split(",");
-                    for (String tmp : tmps) {
-                        tmpL.add(Float.parseFloat(tmp));
-                    }
-                    topicSim.add(tmpL);
-                }
-                csvf.setSimilarityMatrix(topicSim);
-            }
-
-            topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
-            viewController.addTopicGraphViewPanel(topicFrame);
-            viewController.getTopicGraphViewPanel().loadTopic(topics);
-            System.out.println("topic frame load topics done.");
-
-            viewController.getTopicGraphViewPanel().buildTreeWithTreeString(TreeString);
-
-            System.out.println("topic frame build tree done..");
-
-            topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
-            topicFrame.setLocation(scrnsize.width / 2, 0);
-
-            viewController.getTopicGraphViewPanel().generateLayout();
-            topicFrame.setVisible(true);
-
-            worldPanel = new WorldMapProcessingPanel(viewController , maplocations, 1200, 1200);
-//            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());
-//            
-//            
-//            treemapPanel.setVisible(true);
-            
-            initializeViews(csvf);
-             
-            
-            
-            
-            
-             
-            treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), 1000,1000);
-            viewController.setTmp(treeMapPanel);
-            
-            System.out.println("Topics Graph done!");
-
-           
-
-//            PrefuseLabelTopicGraphPanel labelTopicGraphPanel = null;
-//            if (viewController.tagLDA) {
-//                labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
-//            }
-//
-//            //        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
-//            //        mButtonPanel.setBorder(orangeLine);
-//            rightTopScrollPane = new JScrollPane(topicFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//            rightTopScrollPane.setViewportView(topicFrame);
-//
-//            rightBottomScrollPane = new JScrollPane(labelTopicGraphPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//            rightBottomScrollPane.setViewportView(labelTopicGraphPanel);
-//
-//            leftTopScrollPane = new JScrollPane(temporalFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//            leftTopScrollPane.setViewportView(temporalFrame);
-//
-//            leftBottomScrollPane = new JScrollPane(treeMapPanel/*worldPanel*/, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//            leftBottomScrollPane.setViewportView(treeMapPanel/*worldPanel*/);
-//
-//            leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,leftTopScrollPane, leftBottomScrollPane);
-//            leftSplit.setOneTouchExpandable(true);
-//            leftSplit.setDividerLocation(0.8d);
-//            leftSplit.setResizeWeight(0.8d);
-//
-//            rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,rightTopScrollPane, rightBottomScrollPane);
-//            rightSplit.setOneTouchExpandable(true);
-//            rightSplit.setDividerLocation(0.8d);
-//            leftSplit.setResizeWeight(0.8d);
-
-//            mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-//                leftSplit, rightSplit);
-//            mainSplit.setOneTouchExpandable(true);
-//            mainSplit.setDividerLocation(0.5d);
-//            mainSplit.setResizeWeight(0.5d);
-//
-//            mainSplit.setContinuousLayout(true);
-//
-//            //Provide minimum sizes for the two components in the split pane
-//            Dimension minimumSize = new Dimension(200, 100);
-//            leftTopScrollPane.setMinimumSize(minimumSize);
-//            leftBottomScrollPane.setMinimumSize(minimumSize);
-//
-//            rightTopScrollPane.setMinimumSize(minimumSize);
-//            rightBottomScrollPane.setMinimumSize(minimumSize);
-//
-//            Dimension maximumSize = new Dimension(1000, 1000);
-//            leftBottomScrollPane.setMaximumSize(maximumSize);
-//            rightTopScrollPane.setMaximumSize(maximumSize);
-//            rightBottomScrollPane.setMaximumSize(maximumSize);
-//            
-            Border blackline = BorderFactory.createLineBorder(Color.black);
-            mViewPanel.setBorder(blackline);
-            //mViewPanel.add(mainSplit);
-            mViewPanel.add(treeMapPanel);
-
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            connection.close();
-
-            // TODO add your handling code here:
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jConnectMongoButtonActionPerformed
-
-
     void initializeViews(CSVFile csvf) throws IOException {
 
-
         temporalFrame.getMainPanel().buildLabelTimeMap();
-     
+
         consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -486,25 +155,329 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel MenuPanel;
     private javax.swing.ButtonGroup buttonEditGroup;
-    private javax.swing.JButton jButtonConnectServer;
     private javax.swing.JCheckBox jCheckBoxConsoleMenu;
+    private javax.swing.JComboBox jComboBoxAnalytics;
     private javax.swing.JProgressBar jProgressBarSystem;
     private javax.swing.JPanel mViewPanel;
     private javax.swing.ButtonGroup menuEditGroup;
     // End of variables declaration//GEN-END:variables
 
     public void run() {
-        
+
         viewController = new ViewController();
         jCheckBoxConsoleMenu.setSelected(false);
+
         consoleFrame = new ConsoleFrame();
         consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
         consoleFrame.setVisible(true);
-        
+
         documentViewer = new DocumentViewer(viewController);
         documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         viewController.addDocumentViewer(documentViewer);
-    
+
+        /// Load the Analytics Data from the MongoDB
+        this.loadComboMenuItems();
+
+    }
+
+    private void loadComboMenuItems() {
+
+        // TODO: This need to be placed in Setting Menu
+        viewController.host = "10.18.203.130";//"caprica.uncc.edu";//10.18.202.126"; //"54.209.61.133"; 10.18.203.130
+        viewController.b_readFromDB = true;
+        viewController.setGlobalReadIndex(0);
+
+        connection = new LDAHTTPClient("http", viewController.host, String.valueOf(viewController.port));
+        try {
+            connection.login();
+        } catch (IOException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            for (Object r : (ArrayList) connection.getJobs()) {
+                this.jComboBoxAnalytics.addItem((Object) ((HashMap) r).get("_id"));
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        jComboBoxAnalytics.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                String job = (String) ((JComboBox) e.getSource()).getSelectedItem();
+                viewController.collection = job;
+
+                // TODO: Li, please comment on the use of the CSVFile? Export?
+                CSVFile csvf = new CSVFile("");
+                try {
+
+                    // viewController.setUsageRecord(csvf.getInternalRecord());
+                    //viewController.setInternalDocs(csvf.getInternalDocs());
+                    // viewController.setTopicSimilarities(csvf.getTopicSimilarities());
+                    List<String[]> topics = new ArrayList<String[]>();
+
+                    HashMap<String, String[]> topicsByMongo = new HashMap<String, String[]>();
+
+                    for (Object r : (ArrayList) connection.getJobDocs(job, "topic")) {
+
+                        String Key = (String) ((HashMap) r).get("_id");
+
+                        if (((HashMap) r).get("terms") instanceof BasicDBList) {
+                            BasicDBList terms = ((BasicDBList) ((HashMap) r).get("terms"));
+
+                            String[] tmpdest = new String[terms.size() + 2];
+                            tmpdest[0] = "Group";
+                            tmpdest[1] = Key;
+                            for (int i = 0; i < terms.size(); i++) {
+                                tmpdest[2 + i] = (String) terms.get(i);
+
+                            }
+                            topicsByMongo.put(Key, tmpdest);
+
+                        } else {
+
+                            String terms = (String) ((HashMap) r).get("terms");
+                            String[] tmps = terms.split(",");
+                            String[] tmpdest = new String[tmps.length + 2];
+                            tmpdest[0] = "Group";
+                            tmpdest[1] = Key;
+                            System.arraycopy(tmps, 0, tmpdest, 2, tmps.length);
+                            topicsByMongo.put(Key, tmpdest);
+                        }
+                    }
+                    for (int i = 0; i < topicsByMongo.size(); i++) {
+                        String key = "t" + Integer.toString(i);
+                        topics.add(topicsByMongo.get(key));
+                    }
+
+                    System.out.append("topk loaded");
+
+                    for (Object r : (ArrayList) connection.getJob(job)) {
+                        HashMap hr = (HashMap) r;
+                        List<String> ls = ((List) hr.get("field"));
+                        if (ls != null) {
+                            viewController.nameFields = new String[ls.size()];
+                            for (int i = 0; i < ls.size(); i++) {
+                                viewController.nameFields[i] = ls.get(i);
+                            }
+                        } else {
+                            viewController.nameFields = null;
+                        }
+
+                        //               String field = String.valueOf(hr.get("field"));
+                        //               field = field.replaceAll("\\[","");
+                        //               field = field.replaceAll("\\]","");
+                        //                       field = field.replaceAll("\"","");
+                        //                        field = field.replaceAll(" ","");
+                        //               viewController.nameFields = field.split(",");
+                        viewController.text_id = ((String) (((HashMap) (hr.get("mongo_input"))).get("text_index")));
+                        viewController.database = ((String) (((HashMap) (hr.get("mongo_input"))).get("db")));
+                        viewController.table = ((String) (((HashMap) (hr.get("mongo_input"))).get("table")));
+                        viewController.id_type = ((String) (((HashMap) (hr.get("mongo_input"))).get("_id_type")));
+
+                        viewController.id_type = ((String) (((HashMap) (hr.get("mongo_input"))).get("_id_type")));
+                        viewController.tagLDA = Boolean.parseBoolean(String.valueOf(((HashMap) (hr.get("meta"))).get("tlda")));
+
+                    }
+
+                    // Make sure all the backend and frontend are agreeing to this.
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                    viewController.setFormat(format);
+
+                    String TreeString = "";
+
+                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
+                        //System.out.println(r);
+                        TreeString = (String) ((HashMap) r).get("tree");
+                    }
+
+                    List<HashMap> maplocations = new ArrayList<HashMap>();
+
+                    for (Object r : (ArrayList) connection.getGroupbyDocs("name", viewController.database, viewController.table, "latitude", "longitude")) {
+                        maplocations.add((HashMap) r);
+                    }
+
+                    //        q1 = new BasicDBObject("type", "flat");
+                    //        cursorfind = currentColl.find(q1);
+                    //        BasicDBObject dbo1 = (BasicDBObject) cursorfind.next();
+                    //        TreeString = dbo1.getString("tree");
+                    viewController.setNewHueColors();
+
+                    Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+                    Dimension scrnsize = toolkit.getScreenSize();
+
+                    String csvfilepath = csvf.getFolderPath();
+                    viewController.csvfFolderPath = csvfilepath;
+                    viewController.csvfFolderPath = ".\\";
+
+                    temporalFrame = new TemporalViewFrame(viewController, scrnsize.width / 2, scrnsize.height);
+
+                    viewController.addTemporalFrame(temporalFrame);
+
+                    temporalFrame.loadCacheData(job, TreeString, viewController.host);
+            //temporalFrame.createWorldMap(maplocations);
+
+                    //temporalFrame.setVisible(true);
+                    //temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
+                    //temporalFrame.setLocation(0, 0);
+                    HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
+                    List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
+
+                    HashMap<String, String> topicSimMongo = new HashMap<String, String>();
+                    List<List<Float>> topicSim = new ArrayList<List<Float>>();
+
+                    if (viewController.b_readFromDB) {
+
+                        for (Object r : (ArrayList) connection.getJobDocs(job, "topic_terms")) {
+                            HashMap hr = (HashMap) r;
+
+                            String key = (String) hr.get("_id");
+                            double weights = (Double) hr.get("weight");
+
+                            // float tmpvalue = Float.parseFloat(weights);
+                            termWeightMongo.put(key, (float) weights);
+                        }
+
+                        for (int i = 0; i < topicsByMongo.size(); i++) {
+                            List<Float> tmpL = new ArrayList<Float>();
+                            for (int j = 0; j < 50; j++) // hard code
+                            {
+                                String key = "dist_top" + (new Integer(i)).toString() + "term" + (new Integer(j)).toString();
+                                tmpL.add(termWeightMongo.get(key));
+                            }
+                            topkTermWeightMongo.add(tmpL);
+
+                        }
+
+                        for (Object r : (ArrayList) connection.getJobDocs(job, "top_sim")) {
+                            HashMap hr = (HashMap) r;
+                            String key = (String) hr.get("_id");
+                            String weights = (String) hr.get("weights");
+                            // float tmpvalue = Float.parseFloat(weights);
+                            topicSimMongo.put(key, weights);
+
+                        }
+
+                        for (int i = 0; i < topicSimMongo.size(); i++) {
+                            List<Float> tmpL = new ArrayList<Float>();
+                            String key = "topsim" + (new Integer(i)).toString();
+                            String weights = topicSimMongo.get(key);
+                            String[] tmps = weights.split(",");
+                            for (String tmp : tmps) {
+                                tmpL.add(Float.parseFloat(tmp));
+                            }
+                            topicSim.add(tmpL);
+                        }
+                        csvf.setSimilarityMatrix(topicSim);
+                    }
+
+                    topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
+                    viewController.addTopicGraphViewPanel(topicFrame);
+                    viewController.getTopicGraphViewPanel().loadTopic(topics);
+                    System.out.println("topic frame load topics done.");
+
+                    viewController.getTopicGraphViewPanel().buildTreeWithTreeString(TreeString);
+
+                    System.out.println("topic frame build tree done..");
+
+                    topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
+                    topicFrame.setLocation(scrnsize.width / 2, 0);
+
+                    viewController.getTopicGraphViewPanel().generateLayout();
+                    topicFrame.setVisible(true);
+
+                    worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200);
+//            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());
+//            
+//            
+//            treemapPanel.setVisible(true);
+
+                    initializeViews(csvf);
+
+                    treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), 1000, 1000);
+                    viewController.setTmp(treeMapPanel);
+
+                    System.out.println("Topics Graph done!");
+
+//            PrefuseLabelTopicGraphPanel labelTopicGraphPanel = null;
+//            if (viewController.tagLDA) {
+//                labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
+//            }
+//
+//            //        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
+//            //        mButtonPanel.setBorder(orangeLine);
+//            rightTopScrollPane = new JScrollPane(topicFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//            rightTopScrollPane.setViewportView(topicFrame);
+//
+//            rightBottomScrollPane = new JScrollPane(labelTopicGraphPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//            rightBottomScrollPane.setViewportView(labelTopicGraphPanel);
+//
+//            leftTopScrollPane = new JScrollPane(temporalFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//            leftTopScrollPane.setViewportView(temporalFrame);
+//
+//            leftBottomScrollPane = new JScrollPane(treeMapPanel/*worldPanel*/, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//            leftBottomScrollPane.setViewportView(treeMapPanel/*worldPanel*/);
+//
+//            leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,leftTopScrollPane, leftBottomScrollPane);
+//            leftSplit.setOneTouchExpandable(true);
+//            leftSplit.setDividerLocation(0.8d);
+//            leftSplit.setResizeWeight(0.8d);
+//
+//            rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,rightTopScrollPane, rightBottomScrollPane);
+//            rightSplit.setOneTouchExpandable(true);
+//            rightSplit.setDividerLocation(0.8d);
+//            leftSplit.setResizeWeight(0.8d);
+//            mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+//                leftSplit, rightSplit);
+//            mainSplit.setOneTouchExpandable(true);
+//            mainSplit.setDividerLocation(0.5d);
+//            mainSplit.setResizeWeight(0.5d);
+//
+//            mainSplit.setContinuousLayout(true);
+//
+//            //Provide minimum sizes for the two components in the split pane
+//            Dimension minimumSize = new Dimension(200, 100);
+//            leftTopScrollPane.setMinimumSize(minimumSize);
+//            leftBottomScrollPane.setMinimumSize(minimumSize);
+//
+//            rightTopScrollPane.setMinimumSize(minimumSize);
+//            rightBottomScrollPane.setMinimumSize(minimumSize);
+//
+//            Dimension maximumSize = new Dimension(1000, 1000);
+//            leftBottomScrollPane.setMaximumSize(maximumSize);
+//            rightTopScrollPane.setMaximumSize(maximumSize);
+//            rightBottomScrollPane.setMaximumSize(maximumSize);
+//            
+                    Border blackline = BorderFactory.createLineBorder(Color.black);
+                    mViewPanel.setBorder(blackline);
+                    //mViewPanel.add(mainSplit);
+                    mViewPanel.add(treeMapPanel);
+
+                } catch (IOException ex) {
+                    Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    connection.close();
+
+                    // TODO add your handling code here:
+                } catch (IOException ex) {
+                    Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+
+    public MinimalismMainFrame() {
+        initComponents();
+        this.setTitle("Apollo Analytics");
+        thread = new Thread(this);
+    }
+
+    public void start() {
+        thread.start();
     }
 }

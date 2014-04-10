@@ -1,7 +1,5 @@
 package com.TasteAnalytics.Apollo;
-
 import com.TasteAnalytics.Apollo.GUI.MinimalismMainFrame;
-
 import javax.swing.*;
 
 
@@ -18,7 +16,7 @@ public class Apollo{
         MinimalismMainFrame mmframe = new MinimalismMainFrame();
         mmframe.setVisible(true);
         mmframe.setExtendedState(mmframe.getExtendedState()|JFrame.MAXIMIZED_BOTH);
-   
+        mmframe.start();
     }
 
 }
