@@ -439,6 +439,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     
 
                     worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200);
+                    
+                    JFrame jp = new JFrame();
+                    jp.setSize(new Dimension(1000, 1000));
+                    jp.add(worldPanel);
+                    jp.setVisible(true);
 //            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());
 //            
 //            

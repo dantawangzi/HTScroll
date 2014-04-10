@@ -4,6 +4,7 @@
  */
 package com.TasteAnalytics.Apollo.TopicRenderer;
 
+import au.com.bytecode.opencsv.CSVReader;
 import codeanticode.glgraphics.*;
 import com.TasteAnalytics.Apollo.GUI.ViewController;
 import com.google.code.geocoder.Geocoder;
@@ -15,6 +16,7 @@ import com.google.code.geocoder.model.LatLng;
 
 import de.fhpotsdam.unfolding.*;
 import de.fhpotsdam.unfolding.geo.*;
+import de.fhpotsdam.unfolding.marker.AbstractMarker;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.MarkerManager;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
@@ -24,14 +26,23 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.geom.Point2D;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.opengl.*;
 
 /**
@@ -49,7 +60,7 @@ public class WorldMapProcessingPanel extends JPanel {
 
     int countMax = -1;
     Embedded embed;
-
+ HashMap<Integer, Point2D> storeLocations;
     public WorldMapProcessingPanel(ViewController vc, List<Point2D> L, Point2D center) {
         //super("Embedded PApplet");
         super();
@@ -68,7 +79,7 @@ public class WorldMapProcessingPanel extends JPanel {
         super();
     }
 
-    public WorldMapProcessingPanel(ViewController vc, List<HashMap> M, int w, int h) {
+    public WorldMapProcessingPanel(ViewController vc, List<HashMap> M, int w, int h) throws IOException {
         //super("Embedded PApplet");
         super();
         parent = vc;
@@ -117,6 +128,32 @@ public class WorldMapProcessingPanel extends JPanel {
 //        System.out.println( M.size());
 //        System.out.println( L.size());
         //System.out.println(center.getX() + " " + center.getY());
+      
+         CSVReader storeLocationReader = null;
+        try {
+            storeLocationReader = new CSVReader(new FileReader("lowesStoreLatLong.csv"));
+            storeLocationReader.readNext();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(WorldMapProcessingPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        List<String[]> tmpData = storeLocationReader.readAll();
+         
+       storeLocations = new HashMap<Integer, Point2D>();
+        
+        for (int i=0; i<tmpData.size(); i++)
+        {
+            String[] s = tmpData.get(i);
+            
+            int storeindex = Integer.parseInt(s[0]);
+            float lon = Float.parseFloat( s[2]);
+            float lat = Float.parseFloat( s[3]);
+            
+            Point2D p = new Point2D.Float(lat, lon);
+            
+            storeLocations.put(storeindex, p);
+            
+        }
 
         embed = new Embedded(L, center);
 
@@ -186,6 +223,9 @@ public class WorldMapProcessingPanel extends JPanel {
     }
 
     public class Embedded extends PApplet {
+        
+        
+        HashMap<Integer, ImageMarker> storeMarker = new HashMap<Integer, ImageMarker>() ;
         
         
         MyMarker selectedMark;
@@ -264,10 +304,25 @@ public class WorldMapProcessingPanel extends JPanel {
 
             oldWidth = width;
             oldHeight = height;
+
+            PImage p = loadImage("logo_lowes_xxsmall.png");
+            
+            for (Iterator<java.util.Map.Entry<Integer, Point2D>> it = storeLocations.entrySet().iterator(); it.hasNext();) {
+                java.util.Map.Entry<Integer, Point2D> entry = it.next();
+                
+                int  key = entry.getKey();
+                Point2D value = entry.getValue();
+                
+                ImageMarker im = new ImageMarker(new Location(value.getX(), value.getY()) ,p);
+                storeMarker.put(key, im);
+                markerManager.addMarker(im);
+            }
+//            storeMarker
+//             markerManager.addMarkers(Markers);
             
             smooth();
 
-            noLoop();
+            //noLoop();
 
             //viewportRect = new ViewportRect();
         }
@@ -436,4 +491,33 @@ public class WorldMapProcessingPanel extends JPanel {
     pg.popStyle();
   }
 }
+    
+    
+    public class ImageMarker extends AbstractMarker {
+
+	PImage img;
+
+	public ImageMarker(Location location, PImage img) {
+		super(location);
+		this.img = img;
+	}
+
+	@Override
+	public void draw(PGraphics pg, float x, float y) {
+		pg.pushStyle();
+		pg.imageMode(PConstants.CORNER);
+                
+		// The image is drawn in object coordinates, i.e. the marker's origin (0,0) is at its geo-location.
+		pg.image(img, x - img.width/2, y - img.height/2);
+		pg.popStyle();
+	}
+
+	@Override
+	protected boolean isInside(float checkX, float checkY, float x, float y) {
+		return checkX > x && checkX < x + img.width && checkY > y && checkY < y + img.height;
+	}
+
+}
+    
+    
 }

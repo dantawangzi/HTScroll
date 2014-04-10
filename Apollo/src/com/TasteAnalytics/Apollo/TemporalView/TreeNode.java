@@ -583,7 +583,8 @@ public List<Integer> getTopicsContainedIdx()
       }
       else
       {
-         this.topicsContainedIdx.add(this.getIndex());
+          
+          this.topicsContainedIdx.add(this.getIndex());
           return this.topics;
       }
     
