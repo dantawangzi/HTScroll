@@ -1,6 +1,4 @@
-
 package com.TasteAnalytics.Apollo.TreeMapView;
-
 
 public class SquarifiedLayout extends AbstractMapLayout
 {
