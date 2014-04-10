@@ -6,6 +6,10 @@
 
 package com.TasteAnalytics.Apollo.TreeMapView;
 
+import com.explodingpixels.macwidgets.HudWindow;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -14,8 +18,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author lyu8
+ * @author Li Yu, Derek Wang
+ * @version 1.0
+ * @company Taste Analytics, LLC
  */
 public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotionListener{
     
@@ -39,6 +44,7 @@ public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotion
             
             
             
+            
             //build new theme river in temporal frame
             
             
@@ -49,13 +55,6 @@ public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotion
     }
 
     public void mousePressed(MouseEvent e) {
-        
-        
-        
-        
-        //
-        
-        
         
         
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -85,6 +84,8 @@ public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotion
         currentPanel.mouseOvered = false;
         currentPanel.updateLayout();
         
+       // If exit the treemap region. The main floating HUDWindow should dipose to clean the screen
+//        mainFloatingHUDWindow.getJDialog().dispose();
         
     }
 
@@ -95,7 +96,34 @@ public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotion
     }
 
     public void mouseMoved(MouseEvent e) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        createHudWindow(e, mainFloatingHUDWindow);
     }
     
+        /**
+     * Keep only one the mainFloatingHUDWindow
+     * This HUDWindow is used to show the Icons and Images.
+     */
+    private static final HudWindow mainFloatingHUDWindow = new HudWindow();
+    
+     private void createHudWindow(MouseEvent e, HudWindow _defaultHudWindow) {
+         
+         //TODO: This is running slow. Need update. 
+            _defaultHudWindow.hideCloseButton();
+            _defaultHudWindow.getContentPane().removeAll();
+            _defaultHudWindow.getJDialog().setFocusable(false);
+            _defaultHudWindow.getJDialog().setFocusableWindowState(false);
+            
+            _defaultHudWindow.getJDialog().setFocusable(false);
+            _defaultHudWindow.getJDialog().setAlwaysOnTop(true);
+            _defaultHudWindow.getJDialog().setVisible(true);
+//            _defaultHudWindow.getJDialog().setSize(new Dimension(500, 500));
+            
+            _defaultHudWindow.getJDialog().setTitle("Breakdown View");
+            
+            _defaultHudWindow.getJDialog().setPreferredSize(new Dimension(500, 500));
+            _defaultHudWindow.getJDialog().setLocation(new Point(e.getLocationOnScreen().x, e.getLocationOnScreen().y));
+            _defaultHudWindow.getJDialog().pack();
+           
+            
+    }
 }
