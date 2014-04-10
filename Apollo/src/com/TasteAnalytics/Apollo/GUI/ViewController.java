@@ -44,9 +44,9 @@ import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Table;
-import wordle.layout.LabelWordleLite;
-import wordle.layout.WordleAlgorithmLite;
-import wordle.layout.WordleLite;
+import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
+import com.TasteAnalytics.Apollo.Wordle.WordleAlgorithmLite;
+import com.TasteAnalytics.Apollo.Wordle.WordleLite;
 
 /**
  * To coordinate between views

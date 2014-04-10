@@ -25,9 +25,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import wordle.layout.LabelWordleLite;
-import wordle.layout.WordleAlgorithmLite;
-import wordle.layout.WordleLite;
+import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
+import com.TasteAnalytics.Apollo.Wordle.WordleAlgorithmLite;
+import com.TasteAnalytics.Apollo.Wordle.WordleLite;
 
 /**
  *
@@ -137,7 +137,8 @@ public class TreeMapNodePanel extends JPanel{
 
         }
 
-        WordleAlgorithmLite alg = new WordleAlgorithmLite(new Rectangle2D.Double(0, 0, 1200,600));//this.getWidth(), this.getHeight()));
+        
+        WordleAlgorithmLite alg = new WordleAlgorithmLite(new Rectangle2D.Double(0, 0, this.getWidth(), this.getHeight()));//this.getWidth(), this.getHeight()));
         //alg.displayParameters();
         alg.place(list);
 

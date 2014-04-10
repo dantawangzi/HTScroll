@@ -397,7 +397,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     initializeViews(csvf);
 
-                    treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), 1000, 1000);
+                    treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), scrnsize.width, scrnsize.height);
                     viewController.setTmp(treeMapPanel);
 
                     System.out.println("Topics Graph done!");

@@ -10,6 +10,7 @@ import com.TasteAnalytics.Apollo.GUI.ViewController;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
+import com.TasteAnalytics.Apollo.Util.Colors;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -58,7 +59,7 @@ public class TopicTreeMapPanel extends JPanel{
 //        addMouseListener(interactions);
 //        addMouseMotionListener(interactions);
         
-        
+        this.setBackground(Colors.mainBackgroundColor);
         
         
         parent = vc;

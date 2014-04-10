@@ -49,9 +49,9 @@ import java.util.HashMap;
 
 import java.util.concurrent.TimeUnit;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
-import wordle.layout.LabelWordleLite;
-import wordle.layout.WordleAlgorithmLite;
-import wordle.layout.WordleLite;
+import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
+import com.TasteAnalytics.Apollo.Wordle.WordleAlgorithmLite;
+import com.TasteAnalytics.Apollo.Wordle.WordleLite;
 
 /**
  *
