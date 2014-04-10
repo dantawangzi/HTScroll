@@ -45,9 +45,7 @@ public class TopicTreeMapPanel extends JPanel{
     public HashMap<TreeNode, TreeMapNodePanel> getNodePanel() {
         return nodePanel;
     }
-    
-    
- 
+         
     
     int wordsToDisplay = 20;
     
@@ -71,16 +69,18 @@ public class TopicTreeMapPanel extends JPanel{
         
         TreeMapNodePanel root = new TreeMapNodePanel(vc, tree.get(0),tree.get(0).getLevel(), new Rectangle(0, 0, w, h));
         
+        updateTreeLayout(w,h);
         
-        tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
-        Mappable[] leaves = tree.get(0).getItems();
-        map = new RandomMap(leaves);       	    
-	algorithm = new SquarifiedLayout();
         
-	algorithm.layout(map, new Rect(0, 0, w, h));
-        
-        tree.get(0).calculateRect(new Rectangle(0, 0, w, h));
-           setLayout(null);
+//        tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
+//        Mappable[] leaves = tree.get(0).getItems();
+//        map = new RandomMap(leaves);       	    
+//	algorithm = new SquarifiedLayout();
+//        
+//	algorithm.layout(map, new Rect(0, 0, w, h));
+//        
+//        tree.get(0).calculateRect(new Rectangle(0, 0, w, h));
+        setLayout(null);
            
            
         for (int i=1; i<tree.size();i++)
@@ -190,9 +190,9 @@ public class TopicTreeMapPanel extends JPanel{
        
 
 	//setBounds(0, 0  , 1000, 1000);
-	setVisible(true);
+	//setVisible(true);
 
-        updateLayout();
+        
  
 //        this.algorithm=algorithm;
 //        bounds=new Rect(0,0,1,1);
@@ -209,9 +209,36 @@ public class TopicTreeMapPanel extends JPanel{
     }
     
     
-     
-     final void updateLayout()
+    
+     public void updateTreeLayout(int w, int h)
     {
+        
+         tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
+        Mappable[] leaves = tree.get(0).getItems();
+        map = new RandomMap(leaves);       	    
+	algorithm = new SquarifiedLayout();
+        
+	algorithm.layout(map, new Rect(0, 0, w, h));
+        
+        tree.get(0).calculateRect(new Rectangle(0, 0, w, h));
+        
+        
+        for (int i=0; i<tree.size(); i++)
+        {
+            if (nodePanel.containsKey(tree.get(i)))
+            {
+                TreeMapNodePanel tmp = nodePanel.get(tree.get(i));
+                tmp.setMyRect(tree.get(i).getMyRect());
+                tmp.updateLayout();
+                //TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i),tree.get(i).getLevel(), tree.get(i).getMyRect());
+                
+                
+            }
+            
+        }
+        
+        
+        
         
         
         //if (model==null ) return;
@@ -241,6 +268,9 @@ public class TopicTreeMapPanel extends JPanel{
        
     }
     
+     
+     
+     
     
     
     

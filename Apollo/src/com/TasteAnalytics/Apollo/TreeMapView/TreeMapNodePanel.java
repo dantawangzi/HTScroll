@@ -46,6 +46,19 @@ public class TreeMapNodePanel extends JPanel{
     
     boolean mouseOvered = false;
 
+    public Rectangle getMyRect() {
+        return myRect;
+    }
+
+    public void setMyRect(Rectangle myRect) {
+        this.myRect = myRect;
+    }
+
+    
+    
+    
+    
+    
     public boolean isMouseOvered() {
         return mouseOvered;
     }
@@ -66,17 +79,22 @@ public class TreeMapNodePanel extends JPanel{
 
     public void updateLayout()
     {
-        
+        this.setBounds(this.myRect);
         Border bLine = BorderFactory.createLineBorder(Color.red, 2);
         if (mouseOvered)
         {
             this.setBorder(bLine);
-            this.setBackground(Color.red);
+            //this.setBackground(Color.red);
         }
         else
+        {
             this.setBorder(null);
-            this.setBackground(node.getColor());
+            
+        }
         
+        this.setBackground(node.getColor());
+        
+         this.getRootPane().revalidate();
         
     }
     

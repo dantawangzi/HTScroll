@@ -16,6 +16,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,7 +88,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         mViewPanel.setLayout(new java.awt.BorderLayout());
 
         MenuPanel.setBackground(new java.awt.Color(39, 39, 39));
-        MenuPanel.setLayout(new java.awt.GridLayout());
+        MenuPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         jComboBoxAnalytics.setFont(new java.awt.Font("Gill Sans", 0, 14)); // NOI18N
         jComboBoxAnalytics.setMaximumRowCount(12);
@@ -98,6 +100,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         jCheckBoxConsoleMenu.setFont(new java.awt.Font("Gill Sans", 0, 14)); // NOI18N
         jCheckBoxConsoleMenu.setForeground(new java.awt.Color(255, 255, 255));
         jCheckBoxConsoleMenu.setText("Console");
+        jCheckBoxConsoleMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxConsoleMenuActionPerformed(evt);
+            }
+        });
         MenuPanel.add(jCheckBoxConsoleMenu);
         MenuPanel.add(jProgressBarSystem);
 
@@ -114,6 +121,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
         System.exit(0);
     }//GEN-LAST:event_exitForm
+
+    private void jCheckBoxConsoleMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxConsoleMenuActionPerformed
+                                    
+        consoleFrame.setVisible(jCheckBoxConsoleMenu.isSelected());        
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxConsoleMenuActionPerformed
 
     void initializeViews(CSVFile csvf) throws IOException {
 
@@ -164,7 +178,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     public void run() {
 
         viewController = new ViewController();
-        jCheckBoxConsoleMenu.setSelected(false);
+        jCheckBoxConsoleMenu.setSelected(true);
 
         consoleFrame = new ConsoleFrame();
         consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -473,8 +487,45 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     public MinimalismMainFrame() {
         initComponents();
         this.setTitle("Apollo Analytics");
-        thread = new Thread(this);
-    }
+           thread = new Thread(this);
+           
+           
+           
+        this.addComponentListener(new ComponentListener() {
+            
+
+            public void componentResized(ComponentEvent e) {
+                
+               if (mViewPanel!=null)
+                mViewPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+               if (treeMapPanel!=null)
+               {
+                treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                treeMapPanel.updateTreeLayout(e.getComponent().getSize().width, e.getComponent().getSize().height);
+                treeMapPanel.invalidate();
+                 treeMapPanel.getRootPane().revalidate();
+               }
+               
+               invalidate();
+               
+            }
+     
+
+            public void componentMoved(ComponentEvent e) {
+               
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public void componentShown(ComponentEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public void componentHidden(ComponentEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        
+                }
 
     public void start() {
         thread.start();
