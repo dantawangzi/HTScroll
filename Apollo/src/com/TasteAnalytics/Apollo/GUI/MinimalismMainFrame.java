@@ -3,6 +3,7 @@
 package com.TasteAnalytics.Apollo.GUI;
 
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
+import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
@@ -11,6 +12,12 @@ import com.TasteAnalytics.Apollo.datahandler.LDAHTTPClient;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import com.TasteAnalytics.Apollo.file.CSVFile;
 import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -21,6 +28,7 @@ import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -212,38 +220,38 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             viewController.topicWeights.add(10000.0f);
         
         
-        viewController.topicWeights.add(14681.0f);
-        viewController.topicWeights.add(4294.0f);
-        viewController.topicWeights.add(22731.0f);
-        viewController.topicWeights.add(7367.0f);
-        viewController.topicWeights.add(2595.0f);
-        viewController.topicWeights.add(4817.0f);
-        viewController.topicWeights.add(21857.0f);
-        viewController.topicWeights.add(3717.0f);
-        viewController.topicWeights.add(16748.0f);
-        viewController.topicWeights.add(1230.0f);
-        viewController.topicWeights.add(3079.0f);
-        viewController.topicWeights.add(3265.0f);
-        viewController.topicWeights.add(3530.0f);
-        viewController.topicWeights.add(1849.0f);
-        viewController.topicWeights.add(3352.0f);
+//        viewController.topicWeights.add(14681.0f);
+//        viewController.topicWeights.add(4294.0f);
+//        viewController.topicWeights.add(22731.0f);
+//        viewController.topicWeights.add(7367.0f);
+//        viewController.topicWeights.add(2595.0f);
+//        viewController.topicWeights.add(4817.0f);
+//        viewController.topicWeights.add(21857.0f);
+//        viewController.topicWeights.add(3717.0f);
+//        viewController.topicWeights.add(16748.0f);
+//        viewController.topicWeights.add(1230.0f);
+//        viewController.topicWeights.add(3079.0f);
+//        viewController.topicWeights.add(3265.0f);
+//        viewController.topicWeights.add(3530.0f);
+//        viewController.topicWeights.add(1849.0f);
+//        viewController.topicWeights.add(3352.0f);
         
                
-//        viewController.topicWeights.add(1045752.0f);
-//        viewController.topicWeights.add(54990.0f);
-//        viewController.topicWeights.add(9929.0f);
-//        viewController.topicWeights.add(1364254.0f);
-//        viewController.topicWeights.add(381764.0f);
-//        viewController.topicWeights.add(1.0f);
-//        viewController.topicWeights.add(1656258.0f);
-//        viewController.topicWeights.add(18.0f);
-//        viewController.topicWeights.add(8867.0f);
-//        viewController.topicWeights.add(7912.0f);
-//        viewController.topicWeights.add(474409.0f);
-//        viewController.topicWeights.add(3.0f);
-//        viewController.topicWeights.add(10709.0f);
-//        viewController.topicWeights.add(715914.0f);
-//        viewController.topicWeights.add(79491.0f);
+        viewController.topicWeights.add(1045752.0f);
+        viewController.topicWeights.add(54990.0f);
+        viewController.topicWeights.add(9929.0f);
+        viewController.topicWeights.add(1364254.0f);
+        viewController.topicWeights.add(381764.0f);
+        viewController.topicWeights.add(1.0f);
+        viewController.topicWeights.add(1656258.0f);
+        viewController.topicWeights.add(18.0f);
+        viewController.topicWeights.add(8867.0f);
+        viewController.topicWeights.add(7912.0f);
+        viewController.topicWeights.add(474409.0f);
+        viewController.topicWeights.add(3.0f);
+        viewController.topicWeights.add(10709.0f);
+        viewController.topicWeights.add(715914.0f);
+        viewController.topicWeights.add(79491.0f);
         
 
         
@@ -351,22 +359,22 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     String TreeString = "";
 
-//                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
-//                        //System.out.println(r);
-//                        TreeString = "digraphgraph{\n" +
-//"'Node16','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14',\n" +
-//"('Node16','LeafTopic0'),('Node16','LeafTopic1'),('Node16','LeafTopic2'),('Node16','LeafTopic3'),('Node16','LeafTopic4'),('Node16','LeafTopic5'),('Node16','LeafTopic6'),('Node16','LeafTopic7'),('Node16','LeafTopic8'),('Node16','LeafTopic9'),('Node16','LeafTopic10'),('Node16','LeafTopic11'),('Node16','LeafTopic12'),('Node16','LeafTopic13'),('Node16','LeafTopic14'),}";
-////(String) ((HashMap) r).get("tree");
-//                    }
-                    
                     for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
-                    TreeString = "digraphgraph{\n" +
-"'Node21','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14','LeafTopic15','LeafTopic16','LeafTopic17','LeafTopic18','LeafTopic19',\n" +
-"('Node21','LeafTopic0'),('Node21','LeafTopic1'),('Node21','LeafTopic2'),('Node21','LeafTopic3'),('Node21','LeafTopic4'),('Node21','LeafTopic5'),('Node21','LeafTopic6'),('Node21','LeafTopic7'),('Node21','LeafTopic8'),('Node21','LeafTopic9'),('Node21','LeafTopic10'),('Node21','LeafTopic11'),('Node21','LeafTopic12'),('Node21','LeafTopic13'),('Node21','LeafTopic14'),('Node21','LeafTopic15'),('Node21','LeafTopic16'),('Node21','LeafTopic17'),('Node21','LeafTopic18'),('Node21','LeafTopic19'),}";
-
+                        //System.out.println(r);
+                        TreeString = "digraphgraph{\n" +
+"'Node16','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14',\n" +
+"('Node16','LeafTopic0'),('Node16','LeafTopic1'),('Node16','LeafTopic2'),('Node16','LeafTopic3'),('Node16','LeafTopic4'),('Node16','LeafTopic5'),('Node16','LeafTopic6'),('Node16','LeafTopic7'),('Node16','LeafTopic8'),('Node16','LeafTopic9'),('Node16','LeafTopic10'),('Node16','LeafTopic11'),('Node16','LeafTopic12'),('Node16','LeafTopic13'),('Node16','LeafTopic14'),}";
 //(String) ((HashMap) r).get("tree");
-
                     }
+                    
+//                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
+//                    TreeString = "digraphgraph{\n" +
+//"'Node21','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14','LeafTopic15','LeafTopic16','LeafTopic17','LeafTopic18','LeafTopic19',\n" +
+//"('Node21','LeafTopic0'),('Node21','LeafTopic1'),('Node21','LeafTopic2'),('Node21','LeafTopic3'),('Node21','LeafTopic4'),('Node21','LeafTopic5'),('Node21','LeafTopic6'),('Node21','LeafTopic7'),('Node21','LeafTopic8'),('Node21','LeafTopic9'),('Node21','LeafTopic10'),('Node21','LeafTopic11'),('Node21','LeafTopic12'),('Node21','LeafTopic13'),('Node21','LeafTopic14'),('Node21','LeafTopic15'),('Node21','LeafTopic16'),('Node21','LeafTopic17'),('Node21','LeafTopic18'),('Node21','LeafTopic19'),}";
+//
+////(String) ((HashMap) r).get("tree");
+//
+//                    }
 
                     List<HashMap> maplocations = new ArrayList<HashMap>();
 
@@ -485,6 +493,72 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //            treemapPanel.setVisible(true);
 
                     initializeViews(csvf);
+//                     for (Object r : (ArrayList) connection.getJobDocs(job, "sent_agg")) {
+//                         HashMap a = (HashMap ) r;
+//                         
+//                     }
+                    
+                    
+                    MongoClient mongoClient = null;
+                try {
+                        mongoClient = new MongoClient(viewController.host, 27017);
+                    } catch (UnknownHostException ex) {
+                        System.out.println("DB begin load cache error");
+                    }
+
+                DB db = mongoClient.getDB("lda_results");
+
+                db.authenticate("li", "li_user_2010".toCharArray());
+                DBCollection currentColl = db.getCollection(job);
+                DBCursor cursor = null;
+
+                DBObject dbo = null;
+                    
+                    BasicDBObject query = new BasicDBObject();
+//
+                    query.put("type", "sent_agg");
+
+//
+                    
+                    
+                    
+            cursor = currentColl.find(query);
+            while (cursor.hasNext())
+            {
+                      dbo = (DBObject) cursor.next();
+                      String c = String.valueOf( dbo.get("count"));
+                      String p = String.valueOf (dbo.get("pos"));
+                      String n = String.valueOf(dbo.get("neg"));
+                      TreeNode.SentimentModel sm ;
+                      
+                      sm = new TreeNode.SentimentModel(Integer.parseInt(p),Integer.parseInt(n), Integer.parseInt(c));
+                      String ids = String.valueOf(dbo.get("_id"));
+                     
+                      
+                      int index = Integer.parseInt(ids.substring(3));
+                viewController.sen.put(index, sm);
+                
+            }
+            
+            mongoClient.close();
+
+//
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
 
                     treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), 600,800);//scrnsize.width/2, scrnsize.height);
                     viewController.setTmp(treeMapPanel);

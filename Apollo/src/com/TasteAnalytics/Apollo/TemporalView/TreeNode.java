@@ -70,6 +70,17 @@ public class TreeNode extends TreeModel{
 //        this.size = size;
 //    }
   
+  SentimentModel sentiAgg;
+
+    public SentimentModel getSentiAgg() {
+        return sentiAgg;
+    }
+
+    public void setSentiAgg(SentimentModel sentiAgg) {
+        this.sentiAgg = sentiAgg;
+    }
+  
+  
   public int getOrder() {
         return order;
     }
@@ -620,6 +631,27 @@ public List<Integer> getTopicsContainedIdx()
     }
      
      
+    
+    public static  class SentimentModel
+    {
+        
+        public int pos;
+        public int neg;
+        public int count;
+        
+        public SentimentModel(int p, int n, int c)
+        {
+            this.pos = p;
+            this.neg = n;
+            this.count = c;
+            
+            
+        }
+        
+        
+        
+        
+    }
      
      
 

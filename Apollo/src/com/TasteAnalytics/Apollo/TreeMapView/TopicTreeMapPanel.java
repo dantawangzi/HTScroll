@@ -165,8 +165,14 @@ public class TopicTreeMapPanel extends JPanel{
         for (int i=0; i<tree.size(); i++)           
         {
             
+            
+            
             if (tree.get(i).getChildren().isEmpty())
             {
+                int key = tree.get(i).getIndex();
+                
+                tree.get(i).setSentiAgg(parent.sen.get(key));
+                
                 for (int j=0; j<tree.size(); j++)
                 {
                     TreeNode matchNode = parent.getTemporalFrame().getTree().get(j);

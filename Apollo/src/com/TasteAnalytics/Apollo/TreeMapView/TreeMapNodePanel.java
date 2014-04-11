@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -55,6 +56,38 @@ public class TreeMapNodePanel extends JPanel{
         this.myRect = myRect;
     }
 
+    class Slice {
+    double value;
+    Color color;
+    public Slice(double value, Color color) {  
+       this.value = value;
+       this.color = color;
+    }
+ }
+    
+    void drawPie(Graphics2D g, Rectangle area) {
+      double total = 0.0D;
+      Slice[] slices = { new Slice(this.node.getSentiAgg().pos, new Color(55,126,184)), 
+   new Slice(-this.node.getSentiAgg().neg, new Color(214,96,77))};
+      
+      for (int i = 0; i < slices.length; i++) {
+         total += slices[i].value;
+      }
+      
+      
+      double curValue = 0.0D;
+      int startAngle = 0;
+      for (int i = 0; i < 2; i++) {
+         startAngle = (int) (curValue * 360 / total);
+         int arcAngle = (int) (slices[i].value * 360 / total);
+         g.setColor(slices[i].color);
+         g.fillArc(area.x, area.y, area.width, area.height, 
+         startAngle, arcAngle);
+         curValue += slices[i].value;
+      }
+   }
+    
+    
      @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -62,6 +95,10 @@ public class TreeMapNodePanel extends JPanel{
             int width = this.getWidth();
             int height = this.getHeight();
             int size = node.getArrayValue().size();
+            
+            Rectangle area = new Rectangle(0,0, this.myRect.width/4, this.myRect.height/4);
+            drawPie((Graphics2D) g, area);
+            
             for (int i=0; i<size; i++)
             {
                 g.setColor(Color.black);
@@ -72,13 +109,16 @@ public class TreeMapNodePanel extends JPanel{
                     g.drawLine(0, height/2, width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
                 }
                 else
-                g.drawLine(width/size*i-1, height/2 - (int) (node.getArrayValue().get(i-1)*this.getHeight()), width/size*i, height/2 + (int) (node.getArrayValue().get(i)*this.getHeight()));
+                g.drawLine(width/size*i-1, height/2 - (int) (node.getArrayValue().get(i-1)*this.getHeight()), width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
                 
             }
             
             //g.drawString("BLAH", 20, 20);
             //g.drawRect(200, 200, 200, 200);
         }
+        
+        
+        
     
     
     

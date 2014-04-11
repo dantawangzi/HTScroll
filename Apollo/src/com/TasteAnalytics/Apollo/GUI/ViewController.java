@@ -75,7 +75,7 @@ public class ViewController {
     
     public List<Float> topicWeights = new ArrayList<Float>();
     public List<Float> topicEventsCount = new ArrayList<Float>();
-        
+        public HashMap<Integer, TreeNode.SentimentModel> sen = new HashMap<Integer, TreeNode.SentimentModel> ();
     
     
     
