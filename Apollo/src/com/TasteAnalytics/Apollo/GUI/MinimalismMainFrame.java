@@ -204,11 +204,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     private void loadComboMenuItems() {
 
         // TODO: This need to be placed in Setting Menu
-        viewController.host = "10.18.203.130";//"caprica.uncc.edu";//10.18.202.126"; //"54.209.61.133"; 10.18.203.130
+        viewController.host = "caprica.uncc.edu";//"10.18.203.130";//10.18.202.126"; //"54.209.61.133"; 10.18.203.130
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
 
-        
+        for (int i=0; i<35;i++)
+            viewController.topicWeights.add(10000.0f);
         
         
         viewController.topicWeights.add(14681.0f);
@@ -226,6 +227,23 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         viewController.topicWeights.add(3530.0f);
         viewController.topicWeights.add(1849.0f);
         viewController.topicWeights.add(3352.0f);
+        
+               
+//        viewController.topicWeights.add(1045752.0f);
+//        viewController.topicWeights.add(54990.0f);
+//        viewController.topicWeights.add(9929.0f);
+//        viewController.topicWeights.add(1364254.0f);
+//        viewController.topicWeights.add(381764.0f);
+//        viewController.topicWeights.add(1.0f);
+//        viewController.topicWeights.add(1656258.0f);
+//        viewController.topicWeights.add(18.0f);
+//        viewController.topicWeights.add(8867.0f);
+//        viewController.topicWeights.add(7912.0f);
+//        viewController.topicWeights.add(474409.0f);
+//        viewController.topicWeights.add(3.0f);
+//        viewController.topicWeights.add(10709.0f);
+//        viewController.topicWeights.add(715914.0f);
+//        viewController.topicWeights.add(79491.0f);
         
 
         
@@ -333,9 +351,21 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     String TreeString = "";
 
+//                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
+//                        //System.out.println(r);
+//                        TreeString = "digraphgraph{\n" +
+//"'Node16','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14',\n" +
+//"('Node16','LeafTopic0'),('Node16','LeafTopic1'),('Node16','LeafTopic2'),('Node16','LeafTopic3'),('Node16','LeafTopic4'),('Node16','LeafTopic5'),('Node16','LeafTopic6'),('Node16','LeafTopic7'),('Node16','LeafTopic8'),('Node16','LeafTopic9'),('Node16','LeafTopic10'),('Node16','LeafTopic11'),('Node16','LeafTopic12'),('Node16','LeafTopic13'),('Node16','LeafTopic14'),}";
+////(String) ((HashMap) r).get("tree");
+//                    }
+                    
                     for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
-                        //System.out.println(r);
-                        TreeString = (String) ((HashMap) r).get("tree");
+                    TreeString = "digraphgraph{\n" +
+"'Node21','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14','LeafTopic15','LeafTopic16','LeafTopic17','LeafTopic18','LeafTopic19',\n" +
+"('Node21','LeafTopic0'),('Node21','LeafTopic1'),('Node21','LeafTopic2'),('Node21','LeafTopic3'),('Node21','LeafTopic4'),('Node21','LeafTopic5'),('Node21','LeafTopic6'),('Node21','LeafTopic7'),('Node21','LeafTopic8'),('Node21','LeafTopic9'),('Node21','LeafTopic10'),('Node21','LeafTopic11'),('Node21','LeafTopic12'),('Node21','LeafTopic13'),('Node21','LeafTopic14'),('Node21','LeafTopic15'),('Node21','LeafTopic16'),('Node21','LeafTopic17'),('Node21','LeafTopic18'),('Node21','LeafTopic19'),}";
+
+//(String) ((HashMap) r).get("tree");
+
                     }
 
                     List<HashMap> maplocations = new ArrayList<HashMap>();
@@ -436,8 +466,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     topicFrame.setVisible(true);
                     
                       temporalFrame.PreDrawAllLeafs();
-                    
 
+
+//for (int i=0;i<35;i++)                    
+//    viewController.topicEventsCount.add(1.0f);
+                      
+                      
+                      
                     worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200);
                     
                     JFrame jp = new JFrame();

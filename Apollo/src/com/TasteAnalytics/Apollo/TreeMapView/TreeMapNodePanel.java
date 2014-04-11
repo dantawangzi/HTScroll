@@ -9,9 +9,13 @@ package com.TasteAnalytics.Apollo.TreeMapView;
 import com.TasteAnalytics.Apollo.GUI.ViewController;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
+import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
+import com.TasteAnalytics.Apollo.Wordle.WordleAlgorithmLite;
+import com.TasteAnalytics.Apollo.Wordle.WordleLite;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -25,9 +29,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
-import com.TasteAnalytics.Apollo.Wordle.WordleAlgorithmLite;
-import com.TasteAnalytics.Apollo.Wordle.WordleLite;
 
 /**
  *
@@ -54,7 +55,30 @@ public class TreeMapNodePanel extends JPanel{
         this.myRect = myRect;
     }
 
-    
+     @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            int width = this.getWidth();
+            int height = this.getHeight();
+            int size = node.getArrayValue().size();
+            for (int i=0; i<size; i++)
+            {
+                g.setColor(Color.black);
+                
+                if (i==0)
+                {
+                    
+                    g.drawLine(0, height/2, width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
+                }
+                else
+                g.drawLine(width/size*i-1, height/2 - (int) (node.getArrayValue().get(i-1)*this.getHeight()), width/size*i, height/2 + (int) (node.getArrayValue().get(i)*this.getHeight()));
+                
+            }
+            
+            //g.drawString("BLAH", 20, 20);
+            //g.drawRect(200, 200, 200, 200);
+        }
     
     
     

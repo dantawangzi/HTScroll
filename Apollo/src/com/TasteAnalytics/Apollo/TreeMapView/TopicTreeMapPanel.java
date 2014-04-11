@@ -37,7 +37,6 @@ public class TopicTreeMapPanel extends JPanel{
     
     MapModel map;
     List<TreeNode> tree;
-    List<Integer> leafOrder = new ArrayList<Integer>();
     
     HashMap<TreeNode,MapModel> NodeMap = new HashMap<TreeNode,MapModel>();
     HashMap<TreeNode,TreeMapNodePanel> nodePanel = new HashMap<TreeNode,TreeMapNodePanel>();
@@ -47,7 +46,7 @@ public class TopicTreeMapPanel extends JPanel{
     }
          
     
-    int wordsToDisplay = 20;
+    int wordsToDisplay = 50;
     
     
     public TopicTreeMapPanel(ViewController vc, List<TreeNode> tr, int w, int h)
@@ -83,11 +82,11 @@ public class TopicTreeMapPanel extends JPanel{
         
         tree.get(0).calculateTreeMapTopicWeight();
         
-        for (int i=0; i<tree.size(); i++)
-        {
-            System.out.println(tree.get(i).getValue() + " " + tree.get(i).getTreeMapTopicWeight());
-        // tree.get(i).size = tree.get(i).getTreeMapTopicWeight();
-        }
+//        for (int i=0; i<tree.size(); i++)
+//        {
+//            System.out.println(tree.get(i).getValue() + " " + tree.get(i).getTreeMapTopicWeight());
+//        // tree.get(i).size = tree.get(i).getTreeMapTopicWeight();
+//        }
         
         
         updateTreeLayout(w,h);
@@ -163,70 +162,37 @@ public class TopicTreeMapPanel extends JPanel{
                     
         }
         
-        
-           
-        
-        
-//        JPanel testp = new JPanel();
-//        testp.setBounds(0,0,100,100);
-//        testp.setBackground(Color.red);
-//        this.add(testp);
+        for (int i=0; i<tree.size(); i++)           
+        {
+            
+            if (tree.get(i).getChildren().isEmpty())
+            {
+                for (int j=0; j<tree.size(); j++)
+                {
+                    TreeNode matchNode = parent.getTemporalFrame().getTree().get(j);
+                    
+                    if (matchNode.getValue().equals(tree.get(i).getValue()) )
+                    {
+                        tree.get(i).setArrayValue(matchNode.getArrayValue());                        
+                        break;
+                    }
+                }
+                                
+                
+            }
+            
+            
+            
      
-        
-////        for (int i=1; i<tree.size(); i++)
-////        {
-////            
-////            if (tree.get(i).getChildren().isEmpty())
-////            {
-////                tree.get(i).setSize(1);            
-////                tree.get(i).setOrder(i);
-////                leafOrder.add(i);
-////                model.addChild(tree.get(i));
-////                
-////            }
-////        }
-//        
-//        for (int i=0; i<tree.get(0).getChildren().size(); i++)
-//        {
-//             TreeNode t = (TreeNode)tree.get(0).getChildren().get(i);
-//             leafOrder.add(i);
-//             model.addChild(t);
-//        }
-//          leafOrder.add(11);
-//          leafOrder.add(11);
-//          
-//          
-//        model.getChild(1).addChild(tree.get(10));
-//        model.getChild(1).addChild(tree.get(11));
-//        for (int i=0; i<tree.size(); i++)
-//        {
-//            TreeNode t = tree.get(i);
-//            
-//            model.addChild(t);TreeModel mp = tree.get(i);
-//            
-//            
-//            
-//        }
-        
-       
-
-	//setBounds(0, 0  , 1000, 1000);
-	//setVisible(true);
-
-        
- 
-//        this.algorithm=algorithm;
-//        bounds=new Rect(0,0,1,1);
-//   
-//       //   LayoutDifference measure=new LayoutDifference();
-//       
-//     //   measure.recordLayout(leaves);
-//        model.layout(algorithm, bounds);
-     
+            
+            
+            
     
         
         
         
+    
+        }
     }
     
     

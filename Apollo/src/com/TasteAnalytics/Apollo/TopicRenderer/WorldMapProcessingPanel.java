@@ -13,6 +13,12 @@ import com.google.code.geocoder.model.GeocodeResponse;
 import com.google.code.geocoder.model.GeocoderRequest;
 import com.google.code.geocoder.model.GeocoderResult;
 import com.google.code.geocoder.model.LatLng;
+import com.mongodb.BasicDBList;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 
 import de.fhpotsdam.unfolding.*;
 import de.fhpotsdam.unfolding.geo.*;
@@ -32,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -94,35 +101,52 @@ public class WorldMapProcessingPanel extends JPanel {
 
         if (M.size()>1)
         for (int i = 0; i < M.size(); i++) {
+            
+            if (M.get(i).containsKey("latitude"))
+            {
+                float lat = Float.parseFloat((String) M.get(i).get("latitude"));
+                float lng = Float.parseFloat((String) M.get(i).get("longitude"));
 
-            float lat = Float.parseFloat((String) M.get(i).get("latitude"));
-            float lng = Float.parseFloat((String) M.get(i).get("longitude"));
+                L.add(new Point2D.Float(lat, lng));
+    //
+                if (lat >= max_y) {
+                    max_y = lat;
+                }
+                if (lat <= min_y) {
+                    min_y = lat;
+                }
 
-            L.add(new Point2D.Float(lat, lng));
-//
-            if (lat >= max_y) {
-                max_y = lat;
-            }
-            if (lat <= min_y) {
-                min_y = lat;
-            }
+                if (lng >= max_x) {
+                    max_x = lng;
+                }
+                if (lng <= min_x) {
+                    min_x = lng;
+                }
 
-            if (lng >= max_x) {
-                max_x = lng;
-            }
-            if (lng <= min_x) {
-                min_x = lng;
-            }
+                if (M.get(i).containsKey("count")) {
 
-            if (M.get(i).containsKey("count")) {
+                    counts.add((Integer) M.get(i).get("count"));
 
-                counts.add((Integer) M.get(i).get("count"));
-
-                if (counts.get(i) >= countMax) {
-                    countMax = counts.get(i);
+                    if (counts.get(i) >= countMax) {
+                        countMax = counts.get(i);
+                    }
                 }
             }
+//            else if (M.get(i).containsKey("geo"))
+//            {
+//                BasicDBList dbl = (BasicDBList)M.get(i).get("geo");
+//                if (dbl.size() != 0)
+//                {
+//                    for (int j=0; j<dbl.size(); j++)
+//                    System.out.println(((HashMap)dbl.get(i)).get("geo"));
+//                }
+//                
+//                
+//            }
         }
+        
+        
+        //LoadAllData();
 
         Point2D center = new Point2D.Double((min_y + max_y) / 2, (min_x + max_x) / 2);
 //        System.out.println( M.size());
@@ -164,6 +188,26 @@ public class WorldMapProcessingPanel extends JPanel {
     }
     
     
+    void LoadallData()
+    {
+//        MongoClient mongoClient = null;
+//        try {
+//                mongoClient = new MongoClient("10.18.203.211", 27017);
+//            } catch (UnknownHostException ex) {
+//                System.out.println("DB begin load cache error");
+//            }
+//
+//        DB db = mongoClient.getDB("lowes");
+//            
+//        
+//        DBCollection currentColl = db.getCollection("lowes_tweets_job");
+//        DBCursor cursor = null;
+//        
+//        DBObject dbo = null;
+        
+        
+    }
+    
     public void updateSelectedTweet(HashMap m)
     {
         float lat = Float.parseFloat((String)m.get("latitude"));
@@ -185,6 +229,9 @@ public class WorldMapProcessingPanel extends JPanel {
 
         for (int i = 0; i < M.size(); i++) {
 
+            if ( M.get(i).containsKey("latitude"))
+                continue;
+            
             float lat = Float.parseFloat((String) M.get(i).get("latitude"));
             float lng = Float.parseFloat((String) M.get(i).get("longitude"));
 
@@ -264,6 +311,21 @@ public class WorldMapProcessingPanel extends JPanel {
             // original setup code here ...
             //size(800,800);
             size(1600, 1000);
+            
+                 PImage p = loadImage("logo_lowes_xxxsmall.png");
+            
+            for (Iterator<java.util.Map.Entry<Integer, Point2D>> it = storeLocations.entrySet().iterator(); it.hasNext();) {
+                java.util.Map.Entry<Integer, Point2D> entry = it.next();
+                
+                int  key = entry.getKey();
+                Point2D value = entry.getValue();
+                
+                ImageMarker im = new ImageMarker(new Location(value.getX(), value.getY()) ,p);
+                storeMarker.put(key, im);
+                markerManager.addMarker(im);
+            }
+            
+            
             //this.frame.setResizable(redraw);
             //  frame.setResizable(true);
 
@@ -290,7 +352,7 @@ public class WorldMapProcessingPanel extends JPanel {
 //                    stroke(67, 211, 227, 100);
 //                    noFill();
 //                    ellipse(tPos.x, tPos.y, 36, 36);
-                Markers.get(i).setColor(color(44, 127, 184, 100));
+                Markers.get(i).setColor(color(224,12,18,100));//(color(44, 127, 184, 100));
 
                 if (!counts.isEmpty()) {
                     float weight = (float) counts.get(i) / (float) countMax;
@@ -305,18 +367,7 @@ public class WorldMapProcessingPanel extends JPanel {
             oldWidth = width;
             oldHeight = height;
 
-            PImage p = loadImage("logo_lowes_xxsmall.png");
-            
-            for (Iterator<java.util.Map.Entry<Integer, Point2D>> it = storeLocations.entrySet().iterator(); it.hasNext();) {
-                java.util.Map.Entry<Integer, Point2D> entry = it.next();
-                
-                int  key = entry.getKey();
-                Point2D value = entry.getValue();
-                
-                ImageMarker im = new ImageMarker(new Location(value.getX(), value.getY()) ,p);
-                storeMarker.put(key, im);
-                markerManager.addMarker(im);
-            }
+       
 //            storeMarker
 //             markerManager.addMarkers(Markers);
             

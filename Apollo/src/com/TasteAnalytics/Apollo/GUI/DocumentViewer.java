@@ -196,7 +196,7 @@ public class DocumentViewer extends JFrame {
             this.updateDocViewContent(selectedDocuments, p.parent.host, p.parent.port, p.parent.database, p.parent.collection, p.parent.nameFields);
         }
         
-        if (selectedtweets.contains("latitude"))
+        if (selectedtweets.contains("latitude") || selectedtweets.get(0).containsKey("geo"))
          mapPanel = new WorldMapProcessingPanel(parent, selectedtweets, parent.getTemporalFrame().getWidth(), parent.getTemporalFrame().getHeight()/3);
         else
             mapPanel = null;
@@ -1389,79 +1389,100 @@ public class DocumentViewer extends JFrame {
 
         else // not for reddit
         {
-        if (parent.nameFields == null || parent.nameFields.length==0) {
-            int keysize = selectedtweets.get(0).keySet().size();
-            int size = selectedtweets.size();
-            content = new Object[size][keysize];
-
-            columnFields = new String[keysize];;
-
-            int currentIdx = 0;
-            //List<String> currentfields = new ArrayList<String>();
-
-            for (Object entry : selectedtweets.get(0).entrySet()) {
-                Map.Entry<Object, Object> entrykey = (Map.Entry<Object, Object>) entry;
-                String key = String.valueOf(entrykey.getKey());
-                //currentfields.add(key);
-                columnFields[currentIdx] = key;
-                if (parent.text_id.equals(key)) {
-                    contentIdx = currentIdx;
+            if (parent.nameFields == null || parent.nameFields.length==0) {
+                
+                int keysize = 0;
+                int size = 0 ;
+                if (selectedtweets.get(0).containsKey("latitude"))
+                {
+                    keysize = selectedtweets.get(0).keySet().size();
+                    size = selectedtweets.size();
+                    
                 }
-                currentIdx++;
+                else
+                {
+                    keysize = selectedtweets.get(0).keySet().size()+2;  //add latitude, longitude
+                    size = selectedtweets.size();
+                }
+                
+                content = new Object[size][keysize];
 
-            }
+                columnFields = new String[keysize];;
 
-            for (int i = 0; i < selectedtweets.size(); i++) {
-                String[] tmp = new String[columnFields.length];
-                for (int j = 0; j < columnFields.length; j++) {
+                int currentIdx = 0;
+                //List<String> currentfields = new ArrayList<String>();
 
-                    tmp[j] = String.valueOf(selectedtweets.get(i).get(columnFields[j]));
+                for (Object entry : selectedtweets.get(0).entrySet()) {
+                    Map.Entry<Object, Object> entrykey = (Map.Entry<Object, Object>) entry;
+                    String key = String.valueOf(entrykey.getKey());
+                    //currentfields.add(key);
+                    columnFields[currentIdx] = key;
+                    if (parent.text_id.equals(key)) {
+                        contentIdx = currentIdx;
+                    }
+                    currentIdx++;
 
                 }
-
-                content[i] = tmp;
-
-            }
-
-        } else {
-
-            String[] newNameFields = new String[parent.nameFields.length + 1];
-
-            for (int i = 0; i < parent.nameFields.length; i++) {
-                newNameFields[i + 1] = parent.nameFields[i];
-            }
-
-            newNameFields[0] = "thresh";
-
-            int keysize = newNameFields.length;
-
-            int size = selectedtweets.size();
-            content = new Object[size][keysize];
-
-            columnFields = new String[keysize];;
-
-            //contentIdx = 2;
-            for (int i = 0; i < keysize; i++) {
-                columnFields[i] = newNameFields[i];
-                if (parent.text_id.equals(newNameFields[i])) {
-                    contentIdx = i;
+                if (!selectedtweets.get(0).containsKey("latitude"))
+                {
+                    columnFields[keysize-1] = "longitude";
+                    columnFields[keysize-2] = "latitude";
                 }
-            }
+                
 
-            for (int j = 0; j < size; j++) {
+                for (int i = 0; i < selectedtweets.size(); i++) {
+                    String[] tmp = new String[columnFields.length];
+                    for (int j = 0; j < columnFields.length; j++) {
 
-                String[] s = new String[keysize];
+                        if (selectedtweets.get(i).containsKey(columnFields[j]))                                                        
+                            tmp[j] = String.valueOf(selectedtweets.get(i).get(columnFields[j]));
+                        else
+                            tmp[j] = "";
+                    }
 
-                for (int i = 0; i < newNameFields.length; i++) {
-                    s[i] = String.valueOf(selectedtweets.get(j).get(newNameFields[i]));
+                    content[i] = tmp;
 
                 }
 
-                content[j] = s;
+            } else {
+
+                String[] newNameFields = new String[parent.nameFields.length + 1];
+
+                for (int i = 0; i < parent.nameFields.length; i++) {
+                    newNameFields[i + 1] = parent.nameFields[i];
+                }
+
+                newNameFields[0] = "thresh";
+
+                int keysize = newNameFields.length;
+
+                int size = selectedtweets.size();
+                content = new Object[size][keysize];
+
+                columnFields = new String[keysize];;
+
+                //contentIdx = 2;
+                for (int i = 0; i < keysize; i++) {
+                    columnFields[i] = newNameFields[i];
+                    if (parent.text_id.equals(newNameFields[i])) {
+                        contentIdx = i;
+                    }
+                }
+
+                for (int j = 0; j < size; j++) {
+
+                    String[] s = new String[keysize];
+
+                    for (int i = 0; i < newNameFields.length; i++) {
+                        s[i] = String.valueOf(selectedtweets.get(j).get(newNameFields[i]));
+
+                    }
+
+                    content[j] = s;
+
+                }
 
             }
-
-        }
         }
         
         

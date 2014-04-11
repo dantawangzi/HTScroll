@@ -834,8 +834,8 @@ public class ViewController {
 
         Float[] tmpColor1 = new Float[4];
         float R = (float) 255.0;
-        float G = (float) 255.0;
-        float B = (float) 179.0;
+        float G = (float) 159.0;
+        float B = (float) 0;
         tmpColor1[0] = Alpha;
         tmpColor1[1] = R / (float) 255.0;
         tmpColor1[2] = G / (float) 255.0;
