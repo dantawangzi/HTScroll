@@ -688,6 +688,9 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
                            
         for (int i=0; i<size; i++)
         {
+            
+            if (parent.topicWeights.get(i)>100)
+            {
             TreeNode ct = leaves.get(i);
             
             TemporalViewPanel tp;
@@ -750,7 +753,8 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
                             }
             
              setMigLayoutForScrollPane();
-        }
+        }else
+            parent.topicEventsCount.add(0.5f);
         
       
 
@@ -761,6 +765,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
           
         
         
+        }
         
     }
 

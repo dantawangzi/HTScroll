@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -159,7 +160,7 @@ public class WorldMapProcessingPanel extends JPanel {
         }
         
         
-        LoadAllData();
+        //LoadAllData();
 
         Point2D center = new Point2D.Double((min_y + max_y) / 2, (min_x + max_x) / 2);
 //        System.out.println( M.size());
@@ -469,9 +470,20 @@ public class WorldMapProcessingPanel extends JPanel {
             
             
             
+            int countpos = 0;
+            int countneg = 0;
+            int countneut = 0;
+            List<Float> negvalues = new ArrayList<Float>();
+            List<Float> posvalues = new ArrayList<Float>();
+            List<Point2D> locss = new ArrayList<Point2D>();
+            List<Integer> tweetCounts = new ArrayList<Integer>();
+            int min_neg = 10;
+            Point2D min_negPoint = new Point2D.Float(0.0f,0.0f);
+            int count = 0;      
             
             
-              int count = 0;       
+            if (false)
+            {
             for (Iterator<java.util.Map.Entry<Point2D, List<String>>> it = tweetsGroupedLocation.entrySet().iterator(); it.hasNext();) 
             {
                 java.util.Map.Entry<Point2D, List<String>> entry = it.next();
@@ -486,30 +498,48 @@ public class WorldMapProcessingPanel extends JPanel {
                 
                 //System.out.println(value.size());
                 
-                
+                int count2 = 0;
                 for (int i=0; i<value.size(); i++)
                 {
                     String label = tweets.get(value.get(i)).label;
                     
-                    if  ( label.contains("lowe") ||label.contains("lowes") )
+                    if  ( label.contains("home") ||label.contains("depot") )
                     {    
                         count++;
-                    
-                    sumofpos += tweets.get(value.get(i)).pos;
-                    sumofneg += tweets.get(value.get(i)).neg;
+                        count2++;
+                        sumofpos += tweets.get(value.get(i)).pos;
+                        sumofneg += tweets.get(value.get(i)).neg;
+                        
+                        if ((tweets.get(value.get(i)).pos + tweets.get(value.get(i)).neg)>0)
+                            countpos++;
+                        else if ((tweets.get(value.get(i)).pos + tweets.get(value.get(i)).neg)<0)
+                            countneg++;
+                        else
+                            countneut ++;
+           
                     }
                 }
                 
+                negvalues.add((float)sumofneg/(float)count2);
+                posvalues.add((float)sumofpos/(float)count2);
+                locss.add(key);
+                tweetCounts.add(count2);
                 
+                
+        
 //                int pos = tweets.get(key).pos;
 //                int neg = tweets.get(key).neg;
 //                
-//                if ((sumofpos+sumofneg) > 0 )                
-//                    ma.setColor(color(153,195,25,100));
-//                else                
+                if ((sumofpos+sumofneg) > 0 )
+                {
+                    
+                    ma.setColor(color(153,195,25,100));
+                    
+                }
+                else                
                     if ( (sumofpos+sumofneg) < 0)    
                     {
-                        //  continue;
+                      //    continue;
                       ma.setColor(color(234, 0, 27, 50));
                     }
                     
@@ -536,14 +566,172 @@ public class WorldMapProcessingPanel extends JPanel {
             
             }
             
-            System.out.print(count);
+            
+            System.out.println(count);
+            
+            System.out.println(countpos + " " + countneg + " " + countneut);
+            //System.out.print(min_negPoint);
+            
+            int sumOftweets = 0;
+            for (int i=0; i<tweetCounts.size(); i++)
+            {
+                sumOftweets += tweetCounts.get(i);
+            }
+            
+            float averageTweets = sumOftweets/tweetCounts.size();
+            if (averageTweets <= sumOftweets*0.01)
+                averageTweets =  (int)(sumOftweets*0.01);
+           // averageTweets =200;
+            
+            int negidx=-1, negidx2=-1, negidx3=-1, negidx4=-1, negidx5=-1;;
+            int posidx=-1, posidx2=-1, posidx3=-1, posidx4=-1, posidx5=-1;
+            float posmax = -999, posmax2 = -999, posmax3 = -999, posmax4 = -999, posmax5 = -999;
+            float negmin = 100, negmin2 = 100, negmin3 = 100, negmin4 = 100, negmin5 = 100;
+            Point2D posmaxL = null, posmaxL2 = null, posmaxL3 = null,posmaxL4 = null, posmaxL5 = null;
+            Point2D negminL = null, negminL2 = null, negminL3 = null, negminL4 = null, negminL5 = null;
+            
+            int pos1count = -1,pos2count = -1,pos3count = -1, pos4count = -1,pos5count = -1;
+            int neg1count = -1,neg2count = -1,neg3count = -1,neg4count = -1,neg5count = -1;
+            
+            for (int i=0; i<posvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                if (posvalues.get(i)>=posmax )
+                {
+                    posmax = posvalues.get(i);
+                    posmaxL = locss.get(i);
+                    pos1count = tweetCounts.get(i);
+                }
+                
+                
+            }
+            
+            for (int i=0; i<posvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                if (posvalues.get(i)>=posmax2 && posvalues.get(i)!=posmax)
+                {
+                    posmax2 = posvalues.get(i);
+                    posmaxL2 = locss.get(i);
+                    pos2count = tweetCounts.get(i);
+                }
+                
+            }
+            
+            for (int i=0; i<posvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                  if (posvalues.get(i)>=posmax3 && posvalues.get(i)!=posmax && posvalues.get(i)!=posmax2)
+                {
+                    posmax3 = posvalues.get(i);
+                    posmaxL3 = locss.get(i);
+                    pos3count = tweetCounts.get(i);
+                }
+                
+            }
+            
+            for (int i=0; i<posvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                  if (posvalues.get(i)>=posmax4 && posvalues.get(i)!=posmax && posvalues.get(i)!=posmax2 && posvalues.get(i)!=posmax3)
+                {
+                    posmax4 = posvalues.get(i);
+                    posmaxL4 = locss.get(i);
+                    pos4count = tweetCounts.get(i);
+                }
+                
+            }
+            
+            for (int i=0; i<posvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                  if (posvalues.get(i)>=posmax5 && posvalues.get(i)!=posmax && posvalues.get(i)!=posmax2 && posvalues.get(i)!=posmax3 && posvalues.get(i)!=posmax4)
+                {
+                    posmax5 = posvalues.get(i);
+                    posmaxL5 = locss.get(i);
+                    pos5count = tweetCounts.get(i);
+                }
+                
+            }
+            
+            System.out.println(posmax + " " + posmax2 + " " +posmax3+ " " +posmax4+ " " +posmax5);
+            System.out.println(posmaxL + " " + posmaxL2 + " " +posmaxL3 + " " +posmaxL4 + " " +posmaxL5);
+            System.out.println(pos1count + " " + pos2count + " " +pos3count + " " +pos4count + " " +pos5count);
+            
+            
+            
+             for (int i=0; i<negvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                if (negvalues.get(i)<=negmin)
+                {
+                    negmin = negvalues.get(i);
+                    negminL = locss.get(i);
+                    neg1count = tweetCounts.get(i);
+                }
+                
+                
+            }
+            
+            for (int i=0; i<negvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                if (negvalues.get(i)<=negmin2 && negvalues.get(i)!=negmin)
+                {
+                    negmin2 = negvalues.get(i);
+                    negminL2 = locss.get(i);
+                    neg2count = tweetCounts.get(i);
+                }
+                
+            }
+            
+            for (int i=0; i<negvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                if (negvalues.get(i)<=negmin3 && negvalues.get(i)!=negmin && negvalues.get(i)!=negmin2)
+                {
+                    negmin3 = negvalues.get(i);
+                    negminL3 = locss.get(i);
+                    neg3count = tweetCounts.get(i);
+                }
+                
+            }
+            
+             for (int i=0; i<negvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                if (negvalues.get(i)<=negmin4 && negvalues.get(i)!=negmin && negvalues.get(i)!=negmin2 && negvalues.get(i)!=negmin3)
+                {
+                    negmin4 = negvalues.get(i);
+                    negminL4 = locss.get(i);
+                    neg4count = tweetCounts.get(i);
+                }
+                
+            }
+             
+             for (int i=0; i<negvalues.size();i++)
+            {
+                if (tweetCounts.get(i)>=averageTweets)
+                if (negvalues.get(i)<=negmin5 && negvalues.get(i)!=negmin && negvalues.get(i)!=negmin2 && negvalues.get(i)!=negmin3  && negvalues.get(i)!=negmin4)
+                {
+                    negmin5 = negvalues.get(i);
+                    negminL5 = locss.get(i);
+                    neg5count = tweetCounts.get(i);
+                }
+                
+            }
+             
+            System.out.println(negmin + " " + negmin2 + " " +negmin3+ " " +negmin4+ " " +negmin5);
+            System.out.println(negminL + " " +negminL2 + " " +negminL3+ " " +negminL4+ " " +negminL5);
+            System.out.println(neg1count + " " + neg2count + " " +neg3count + " " + neg4count + " " +neg5count);
+            
             
             //this.frame.setResizable(redraw);
             //  frame.setResizable(true);
 
              //new MapBox.MapBoxProvider());//
             
-            
+            }
             
             mapDetail = new UnfoldingMap(this, new StamenMapProvider());//new Microsoft.AerialProvider()/*, "detail", 10, 10, 585, 580*/);
             //new Microsoft.RoadProvider()

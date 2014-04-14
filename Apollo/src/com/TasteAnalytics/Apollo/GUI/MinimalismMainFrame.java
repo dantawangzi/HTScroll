@@ -508,6 +508,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     topicFrame.setVisible(true);
                     
                       temporalFrame.PreDrawAllLeafs();
+                      
+                      
+                      
 
 
 //for (int i=0;i<35;i++)                    

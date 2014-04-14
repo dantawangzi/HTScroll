@@ -814,103 +814,135 @@ public class ViewController {
                 new Color(251, 128, 114)
 
             };
+    
+    
+     public static Color[] brewerColor
+            = {
+                new Color(141,211,199),
+                new Color(190,186,218),
+                new Color(251,128,114),
+              
+                new Color(204,235,197),
+                   new Color(252,205,229),
+//                    new Color(217,217,217),
+                                 new Color(204,235,197),
+                new Color(128,177,211),//lowes
+    
+  
+                new Color(253,180,98),//hdepot
+                new Color(255,237,111)
+            };
 
     public void setNewHueColors() {
         hueColors = new ArrayList<Float[]>();
 
         float[] hsv = new float[3];
         float Alpha = 1;
-        float R1 = 141;
-        float G1 = 211;
-        float B1 = 199;
+//        float R1 = 141;
+//        float G1 = 211;
+//        float B1 = 199;
         // Color.RGBtoHSB(R1,G1,B1,hsv);
 
-        Float[] tmpColor = new Float[4];
-        tmpColor[0] = Alpha;
-        tmpColor[1] = R1 / (float) 255.0;
-        tmpColor[2] = G1 / (float) 255.0;
-        tmpColor[3] = B1 / (float) 255.0;
-        hueColors.add(tmpColor);
+//        Float[] tmpColor = new Float[4];
+//        tmpColor[0] = Alpha;
+//        tmpColor[1] = R1 / (float) 255.0;
+//        tmpColor[2] = G1 / (float) 255.0;
+//        tmpColor[3] = B1 / (float) 255.0;
+//        hueColors.add(tmpColor);
 
+        for (int i=0; i<brewerColor.length; i++)
+        {
         Float[] tmpColor1 = new Float[4];
-        float R = (float) 255.0;
-        float G = (float) 159.0;
-        float B = (float) 0;
+        float R = (float) brewerColor[i].getRed();
+        float G = (float) brewerColor[i].getGreen();
+        float B = (float) brewerColor[i].getBlue();
         tmpColor1[0] = Alpha;
         tmpColor1[1] = R / (float) 255.0;
         tmpColor1[2] = G / (float) 255.0;
         tmpColor1[3] = B / (float) 255.0;
         hueColors.add(tmpColor1);
-
-        Float[] tmpColor2 = new Float[4];
-        R = (float) 190.0;
-        G = (float) 186.0;
-        B = (float) 218.0;
-        tmpColor2[0] = Alpha;
-        tmpColor2[1] = R / (float) 255.0;
-        tmpColor2[2] = G / (float) 255.0;
-        tmpColor2[3] = B / (float) 255.0;
-        hueColors.add(tmpColor2);
-
-        Float[] tmpColor3 = new Float[4];
-        R = (float) 251.0;
-        G = (float) 128.0;
-        B = (float) 114.0;
-        tmpColor3[0] = Alpha;
-        tmpColor3[1] = R / (float) 255.0;
-        tmpColor3[2] = G / (float) 255.0;
-        tmpColor3[3] = B / (float) 255.0;
-        hueColors.add(tmpColor3);
-
-        Float[] tmpColor4 = new Float[4];
-        R = (float) 128.0;
-        G = (float) 177.0;
-        B = (float) 211.0;
-        tmpColor4[0] = Alpha;
-        tmpColor4[1] = R / (float) 255.0;
-        tmpColor4[2] = G / (float) 255.0;
-        tmpColor4[3] = B / (float) 255.0;
-        hueColors.add(tmpColor4);
-
-        Float[] tmpColor5 = new Float[4];
-        R = (float) 253.0;
-        G = (float) 180.0;
-        B = (float) 98.0;
-        tmpColor5[0] = Alpha;
-        tmpColor5[1] = R / (float) 255.0;
-        tmpColor5[2] = G / (float) 255.0;
-        tmpColor5[3] = B / (float) 255.0;
-        hueColors.add(tmpColor5);
-
-        Float[] tmpColor6 = new Float[4];
-        R = (float) 179.0;
-        G = (float) 222.0;
-        B = (float) 105.0;
-        tmpColor6[0] = Alpha;
-        tmpColor6[1] = R / (float) 255.0;
-        tmpColor6[2] = G / (float) 255.0;
-        tmpColor6[3] = B / (float) 255.0;
-        hueColors.add(tmpColor6);
-
-        Float[] tmpColor7 = new Float[4];
-        R = (float) 252.0;
-        G = (float) 205.0;
-        B = (float) 229.0;
-        tmpColor7[0] = Alpha;
-        tmpColor7[1] = R / (float) 255.0;
-        tmpColor7[2] = G / (float) 255.0;
-        tmpColor7[3] = B / (float) 255.0;
-        hueColors.add(tmpColor7);
-
-        Float[] tmpColor8 = new Float[4];
-        R = (float) 217.0;
-        G = (float) 217.0;
-        B = (float) 217.0;
-        tmpColor8[0] = Alpha;
-        tmpColor8[1] = R / (float) 255.0;
-        tmpColor8[2] = G / (float) 255.0;
-        tmpColor8[3] = B / (float) 255.0;
-        hueColors.add(tmpColor8);
+            
+        }
+        
+//        Float[] tmpColor1 = new Float[4];
+//        float R = (float) 255.0;
+//        float G = (float) 159.0;
+//        float B = (float) 0;
+////        tmpColor1[0] = Alpha;
+////        tmpColor1[1] = R / (float) 255.0;
+////        tmpColor1[2] = G / (float) 255.0;
+////        tmpColor1[3] = B / (float) 255.0;
+////        hueColors.add(tmpColor1);
+//
+//        Float[] tmpColor2 = new Float[4];
+//        R = (float) 190.0;
+//        G = (float) 186.0;
+//        B = (float) 218.0;
+//        tmpColor2[0] = Alpha;
+//        tmpColor2[1] = R / (float) 255.0;
+//        tmpColor2[2] = G / (float) 255.0;
+//        tmpColor2[3] = B / (float) 255.0;
+//        hueColors.add(tmpColor2);
+//
+//        Float[] tmpColor3 = new Float[4];
+//        R = (float) 251.0;
+//        G = (float) 128.0;
+//        B = (float) 114.0;
+//        tmpColor3[0] = Alpha;
+//        tmpColor3[1] = R / (float) 255.0;
+//        tmpColor3[2] = G / (float) 255.0;
+//        tmpColor3[3] = B / (float) 255.0;
+//        hueColors.add(tmpColor3);
+//
+//        Float[] tmpColor4 = new Float[4];
+//        R = (float) 128.0;
+//        G = (float) 177.0;
+//        B = (float) 211.0;
+//        tmpColor4[0] = Alpha;
+//        tmpColor4[1] = R / (float) 255.0;
+//        tmpColor4[2] = G / (float) 255.0;
+//        tmpColor4[3] = B / (float) 255.0;
+//        hueColors.add(tmpColor4);
+//
+//        Float[] tmpColor5 = new Float[4];
+//        R = (float) 253.0;
+//        G = (float) 180.0;
+//        B = (float) 98.0;
+//        tmpColor5[0] = Alpha;
+//        tmpColor5[1] = R / (float) 255.0;
+//        tmpColor5[2] = G / (float) 255.0;
+//        tmpColor5[3] = B / (float) 255.0;
+//        hueColors.add(tmpColor5);
+//
+//        Float[] tmpColor6 = new Float[4];
+//        R = (float) 179.0;
+//        G = (float) 222.0;
+//        B = (float) 105.0;
+//        tmpColor6[0] = Alpha;
+//        tmpColor6[1] = R / (float) 255.0;
+//        tmpColor6[2] = G / (float) 255.0;
+//        tmpColor6[3] = B / (float) 255.0;
+//        hueColors.add(tmpColor6);
+//
+//        Float[] tmpColor7 = new Float[4];
+//        R = (float) 252.0;
+//        G = (float) 205.0;
+//        B = (float) 229.0;
+//        tmpColor7[0] = Alpha;
+//        tmpColor7[1] = R / (float) 255.0;
+//        tmpColor7[2] = G / (float) 255.0;
+//        tmpColor7[3] = B / (float) 255.0;
+//        hueColors.add(tmpColor7);
+//
+//        Float[] tmpColor8 = new Float[4];
+//        R = (float) 217.0;
+//        G = (float) 217.0;
+//        B = (float) 217.0;
+//        tmpColor8[0] = Alpha;
+//        tmpColor8[1] = R / (float) 255.0;
+//        tmpColor8[2] = G / (float) 255.0;
+//        tmpColor8[3] = B / (float) 255.0;
+//        hueColors.add(tmpColor8);
 
     }
 

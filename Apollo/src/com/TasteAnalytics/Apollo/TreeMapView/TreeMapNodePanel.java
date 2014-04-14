@@ -67,8 +67,8 @@ public class TreeMapNodePanel extends JPanel{
     
     void drawPie(Graphics2D g, Rectangle area) {
       double total = 0.0D;
-      Slice[] slices = { new Slice(this.node.getSentiAgg().pos, new Color(55,126,184)), 
-   new Slice(-this.node.getSentiAgg().neg, new Color(214,96,77))};
+      Slice[] slices = { new Slice(this.node.getSentiAgg().pos, new Color(160,170,105)), 
+   new Slice(-this.node.getSentiAgg().neg, new Color(174,86,80))};
       
       for (int i = 0; i < slices.length; i++) {
          total += slices[i].value;
@@ -96,22 +96,22 @@ public class TreeMapNodePanel extends JPanel{
             int height = this.getHeight();
             int size = node.getArrayValue().size();
             
-            Rectangle area = new Rectangle(0,0, this.myRect.width/4, this.myRect.height/4);
+            Rectangle area = new Rectangle(0,0, this.myRect.width/4, this.myRect.width/4);
             drawPie((Graphics2D) g, area);
             
-            for (int i=0; i<size; i++)
-            {
-                g.setColor(Color.black);
-                
-                if (i==0)
-                {
-                    
-                    g.drawLine(0, height/2, width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
-                }
-                else
-                g.drawLine(width/size*i-1, height/2 - (int) (node.getArrayValue().get(i-1)*this.getHeight()), width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
-                
-            }
+//            for (int i=0; i<size; i++)
+//            {
+//                g.setColor(Color.black);
+//                
+//                if (i==0)
+//                {
+//                    
+//                    g.drawLine(0, height/2, width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
+//                }
+//                else
+//                g.drawLine(width/size*i-1, height/2 - (int) (node.getArrayValue().get(i-1)*this.getHeight()), width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
+//                
+//            }
             
             //g.drawString("BLAH", 20, 20);
             //g.drawRect(200, 200, 200, 200);

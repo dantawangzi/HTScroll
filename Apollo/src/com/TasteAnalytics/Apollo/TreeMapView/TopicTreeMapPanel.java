@@ -188,11 +188,7 @@ public class TopicTreeMapPanel extends JPanel{
             }
             
             
-            
-     
-            
-            
-            
+           
     
         
         
