@@ -14,6 +14,7 @@ import com.google.code.geocoder.model.GeocoderRequest;
 import com.google.code.geocoder.model.GeocoderResult;
 import com.google.code.geocoder.model.LatLng;
 import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -67,7 +68,19 @@ public class WorldMapProcessingPanel extends JPanel {
 
     int countMax = -1;
     Embedded embed;
- HashMap<Integer, Point2D> storeLocations;
+    
+    HashMap<String, tweetData> tweets = new HashMap<String, tweetData>();
+    HashMap<String, List<tweetData>> tweetsPoster = new HashMap<String,  List<tweetData>>();
+     
+    
+    HashMap<Point2D, List<String> > tweetsGroupedLocation = new HashMap<Point2D,  List<String>>();
+    
+    
+    HashMap<Integer, Point2D> storeLocations;
+ 
+    HashMap<String, Point2D> alltweetLocations = new HashMap<String,Point2D>();
+ 
+ 
     public WorldMapProcessingPanel(ViewController vc, List<Point2D> L, Point2D center) {
         //super("Embedded PApplet");
         super();
@@ -146,7 +159,7 @@ public class WorldMapProcessingPanel extends JPanel {
         }
         
         
-        //LoadAllData();
+        LoadAllData();
 
         Point2D center = new Point2D.Double((min_y + max_y) / 2, (min_x + max_x) / 2);
 //        System.out.println( M.size());
@@ -178,6 +191,18 @@ public class WorldMapProcessingPanel extends JPanel {
             storeLocations.put(storeindex, p);
             
         }
+        
+         for (tweetData td : tweets.values())
+         {
+             
+             Point2D p = new Point2D.Float(td.lat, td.lon);
+             alltweetLocations.put(td._id,p);
+         }
+        
+        
+        
+        
+        
 
         embed = new Embedded(L, center);
 
@@ -188,22 +213,109 @@ public class WorldMapProcessingPanel extends JPanel {
     }
     
     
-    void LoadallData()
+    
+    
+    void LoadAllData()
     {
-//        MongoClient mongoClient = null;
-//        try {
-//                mongoClient = new MongoClient("10.18.203.211", 27017);
-//            } catch (UnknownHostException ex) {
-//                System.out.println("DB begin load cache error");
-//            }
+        MongoClient mongoClient = null;
+        try {
+                mongoClient = new MongoClient("10.18.203.211", 27017);
+            } catch (UnknownHostException ex) {
+                System.out.println("DB begin load cache error");
+            }
+
+        DB db = mongoClient.getDB("lowes");
+            
+        db.authenticate("li", "li_lowes_user".toCharArray());
+        DBCollection currentColl = db.getCollection("lowes_tweets_job");
+        DBCursor cursor = null;
+        
+        DBObject dbo = null;
+        
+        
+        BasicDBObject query = new BasicDBObject("latitude", new BasicDBObject("$exists",true));
+        BasicDBObject fields = new BasicDBObject();
 //
-//        DB db = mongoClient.getDB("lowes");
+        fields.put("latitude", true);
+        fields.append("longitude", true);
+        fields.append("pos", true);
+        fields.append("neg", true);
+        fields.append("text", true);
+        fields.append("poster", true);
+        fields.append("labels", true);
+        int count = 0; 
+            
+        
+        cursor = currentColl.find(query, fields);
+        while(cursor.hasNext()) {
+           DBObject o = cursor.next();
+            count ++ ;
+            
+            float t1 = Float.parseFloat((String) o.get("latitude"));
+            float t2 = Float.parseFloat((String) o.get("longitude"));
+            int p = Integer.parseInt(String.valueOf((o.get("pos"))));
+            int n = Integer.parseInt(String.valueOf((o.get("neg"))));
+            String te = (String) o.get("text");
+            String id = (String) o.get("_id");
+            String poster = (String) o.get("poster");
+             
+            String label = (String) o.get("labels");
+            tweetData td = new tweetData(t1,t2,id,te,p,n, label.toLowerCase());
+            tweets.put(id, td);
+            //tweetsPoster.put(poster, null);
+            
+            Point2D loc = new Point2D.Float(t1, t2);
+            
+            
+            if (tweetsGroupedLocation.containsKey(loc))
+            {
+                List<String> ss = tweetsGroupedLocation.get(loc);
+                ss.add(id);
+                tweetsGroupedLocation.put(loc, ss);
+            }
+            else
+            {
+                List<String> ss = new ArrayList<String>();
+                ss.add(id);
+                tweetsGroupedLocation.put(loc, ss);
+                
+            }
+            
+            
+          
+            
+            
+            
+            
+            
+           //System.out.println(o.toString());
+        }
+        
+         
+//            cursor = currentColl.find(query, fields);
+//        
+//             count = 0; 
 //            
-//        
-//        DBCollection currentColl = db.getCollection("lowes_tweets_job");
-//        DBCursor cursor = null;
-//        
-//        DBObject dbo = null;
+//            while (cursor.hasNext())
+//            {
+//                count ++ ;
+//                      dbo = (DBObject) cursor.next();
+//                   //   System.out.println(dbo.toString());
+//                     
+//                
+//            }
+//            
+//            System.out.println();
+            
+            
+            mongoClient.close();
+        //DBObject query = new DBObject();
+        
+        
+        
+        
+        
+        
         
         
     }
@@ -325,13 +437,115 @@ public class WorldMapProcessingPanel extends JPanel {
                 markerManager.addMarker(im);
             }
             
+//            int count = 0;
+//            for (Iterator<java.util.Map.Entry<String, Point2D>> it = alltweetLocations.entrySet().iterator(); it.hasNext();) 
+//            {
+//                java.util.Map.Entry<String, Point2D> entry = it.next();
+//                
+//                String  key = entry.getKey();
+//                Point2D value = entry.getValue();
+//                SimplePointMarker ma = new SimplePointMarker(new Location(value.getX(),value.getY()));
+//                
+//                int pos = tweets.get(key).pos;
+//                int neg = tweets.get(key).neg;
+//                
+//                if ((pos+neg) < 0 )
+//                {
+//                    //ma.setColor(color(224,12,18, 50));
+////                if ( (pos+neg) < 0)    
+//                    ma.setColor(color(44, 127, 184, 50));
+////                else
+////                    ma.setColor(color(80, 80, 80, 50));
+//                
+//                ma.setRadius(5.0f);
+//                ma.setStrokeWeight(0);
+//                //ma.setStrokeColor(color(44, 127, 184, 0));
+//                markerManager.addMarker(ma);
+//                count++;
+//                }
+////                if (count >=20099 )
+////                    break;
+//            }
+            
+            
+            
+            
+            
+              int count = 0;       
+            for (Iterator<java.util.Map.Entry<Point2D, List<String>>> it = tweetsGroupedLocation.entrySet().iterator(); it.hasNext();) 
+            {
+                java.util.Map.Entry<Point2D, List<String>> entry = it.next();
+                
+                Point2D  key = entry.getKey();
+                List<String> value = entry.getValue();
+                
+                SimplePointMarker ma = new SimplePointMarker(new Location(key.getX(),key.getY()));
+                //ma.setRadius(value.size());
+                int sumofpos = 0;
+                int sumofneg = 0;
+                
+                //System.out.println(value.size());
+                
+                
+                for (int i=0; i<value.size(); i++)
+                {
+                    String label = tweets.get(value.get(i)).label;
+                    
+                    if  ( label.contains("lowe") ||label.contains("lowes") )
+                    {    
+                        count++;
+                    
+                    sumofpos += tweets.get(value.get(i)).pos;
+                    sumofneg += tweets.get(value.get(i)).neg;
+                    }
+                }
+                
+                
+//                int pos = tweets.get(key).pos;
+//                int neg = tweets.get(key).neg;
+//                
+//                if ((sumofpos+sumofneg) > 0 )                
+//                    ma.setColor(color(153,195,25,100));
+//                else                
+                    if ( (sumofpos+sumofneg) < 0)    
+                    {
+                        //  continue;
+                      ma.setColor(color(234, 0, 27, 50));
+                    }
+                    
+                else
+                {
+                    continue;
+                  //  ma.setColor(color(0, 0, 0, 0));
+                  //  ma.setStrokeWeight(0);
+                }
+               
+//ma.setColor(color(224,12,18, 50)); 
+                if (value.size()>20)
+                {
+                    ma.setRadius(25);
+                }else
+                    ma.setRadius(value.size());
+                
+                ma.setStrokeWeight(0);
+                
+                markerManager.addMarker(ma);
+           
+                //count++;
+
+            
+            }
+            
+            System.out.print(count);
             
             //this.frame.setResizable(redraw);
             //  frame.setResizable(true);
 
              //new MapBox.MapBoxProvider());//
             
-            mapDetail = new UnfoldingMap(this, new Google.GoogleMapProvider());//new Microsoft.AerialProvider()/*, "detail", 10, 10, 585, 580*/);
+            
+            
+            mapDetail = new UnfoldingMap(this, new StamenMapProvider());//new Microsoft.AerialProvider()/*, "detail", 10, 10, 585, 580*/);
             //new Microsoft.RoadProvider()
 //		mapDetail.zoomToLevel(4);
             mapDetail.setZoomRange(1, 12);
@@ -569,6 +783,34 @@ public class WorldMapProcessingPanel extends JPanel {
 	}
 
 }
+    
+    
+    public class tweetData
+    {
+        public float lat;
+        public float lon;
+        String _id;
+        String text;
+        int pos, neg;
+        String label;
+        String poster;
+        
+        tweetData(float lat, float lon, String id, String tt, int p, int n, String l)
+        {
+            this.lat = lat; 
+            this.lon = lon;
+            this._id = id;
+            this.text = tt;
+            this.pos = p;
+            this.neg = n;
+            this.label = l;
+            
+            
+            
+        }
+        
+        
+    }
     
     
 }

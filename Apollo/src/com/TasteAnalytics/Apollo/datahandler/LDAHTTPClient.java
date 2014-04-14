@@ -48,9 +48,9 @@ public class LDAHTTPClient {
         reduce_lookup = new HashMap<String, String>();
 
         String[] types
-                = "topic,doc_to_topic,trans_doc_to_topic,top_docs,unorm_cat_bar,cat_bar,idx_slot,top_tf,top_y_kw_idx,term_idx,flat,topic_terms,top_sim,labeldict,label_topics,sent_agg".split(",");
+                = "topic,doc_to_topic,trans_doc_to_topic,top_docs,unorm_cat_bar,cat_bar,idx_slot,top_tf,top_y_kw_idx,term_idx,flat,topic_terms,top_sim,labeldict,label_topics,sent_agg,top_wt".split(",");
         String[] reduce
-                = "terms,weights,weights,top_docs,weights,weights,weights,weights,top_terms,term,tree,weight,weights,dict,dict,pos".split(",");
+                = "terms,weights,weights,top_docs,weights,weights,weights,weights,top_terms,term,tree,weight,weights,dict,dict,pos,weight".split(",");
 
         for (int i = 0; i < types.length; i++) {
             //System.out.println(types[i]+" "+reduce[i]);

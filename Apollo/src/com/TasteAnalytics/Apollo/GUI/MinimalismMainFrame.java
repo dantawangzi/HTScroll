@@ -216,43 +216,46 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
 
-        for (int i=0; i<35;i++)
-            viewController.topicWeights.add(10000.0f);
         
         
-//        viewController.topicWeights.add(14681.0f);
-//        viewController.topicWeights.add(4294.0f);
-//        viewController.topicWeights.add(22731.0f);
-//        viewController.topicWeights.add(7367.0f);
-//        viewController.topicWeights.add(2595.0f);
-//        viewController.topicWeights.add(4817.0f);
-//        viewController.topicWeights.add(21857.0f);
-//        viewController.topicWeights.add(3717.0f);
-//        viewController.topicWeights.add(16748.0f);
-//        viewController.topicWeights.add(1230.0f);
-//        viewController.topicWeights.add(3079.0f);
-//        viewController.topicWeights.add(3265.0f);
-//        viewController.topicWeights.add(3530.0f);
-//        viewController.topicWeights.add(1849.0f);
-//        viewController.topicWeights.add(3352.0f);
         
-               
-        viewController.topicWeights.add(1045752.0f);
-        viewController.topicWeights.add(54990.0f);
-        viewController.topicWeights.add(9929.0f);
-        viewController.topicWeights.add(1364254.0f);
-        viewController.topicWeights.add(381764.0f);
-        viewController.topicWeights.add(1.0f);
-        viewController.topicWeights.add(1656258.0f);
-        viewController.topicWeights.add(18.0f);
-        viewController.topicWeights.add(8867.0f);
-        viewController.topicWeights.add(7912.0f);
-        viewController.topicWeights.add(474409.0f);
-        viewController.topicWeights.add(3.0f);
-        viewController.topicWeights.add(10709.0f);
-        viewController.topicWeights.add(715914.0f);
-        viewController.topicWeights.add(79491.0f);
-        
+//        for (int i=0; i<35;i++)
+//            viewController.topicWeights.add(10000.0f);
+//        
+//        
+////        viewController.topicWeights.add(14681.0f);
+////        viewController.topicWeights.add(4294.0f);
+////        viewController.topicWeights.add(22731.0f);
+////        viewController.topicWeights.add(7367.0f);
+////        viewController.topicWeights.add(2595.0f);
+////        viewController.topicWeights.add(4817.0f);
+////        viewController.topicWeights.add(21857.0f);
+////        viewController.topicWeights.add(3717.0f);
+////        viewController.topicWeights.add(16748.0f);
+////        viewController.topicWeights.add(1230.0f);
+////        viewController.topicWeights.add(3079.0f);
+////        viewController.topicWeights.add(3265.0f);
+////        viewController.topicWeights.add(3530.0f);
+////        viewController.topicWeights.add(1849.0f);
+////        viewController.topicWeights.add(3352.0f);
+//        
+//               
+//        viewController.topicWeights.add(1045752.0f);
+//        viewController.topicWeights.add(54990.0f);
+//        viewController.topicWeights.add(9929.0f);
+//        viewController.topicWeights.add(1364254.0f);
+//        viewController.topicWeights.add(381764.0f);
+//        viewController.topicWeights.add(1.0f);
+//        viewController.topicWeights.add(1656258.0f);
+//        viewController.topicWeights.add(18.0f);
+//        viewController.topicWeights.add(8867.0f);
+//        viewController.topicWeights.add(7912.0f);
+//        viewController.topicWeights.add(474409.0f);
+//        viewController.topicWeights.add(3.0f);
+//        viewController.topicWeights.add(10709.0f);
+//        viewController.topicWeights.add(715914.0f);
+//        viewController.topicWeights.add(79491.0f);
+//        
 
         
         
@@ -357,15 +360,46 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     viewController.setFormat(format);
 
-                    String TreeString = "";
-
-                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
-                        //System.out.println(r);
-                        TreeString = "digraphgraph{\n" +
-"'Node16','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14',\n" +
-"('Node16','LeafTopic0'),('Node16','LeafTopic1'),('Node16','LeafTopic2'),('Node16','LeafTopic3'),('Node16','LeafTopic4'),('Node16','LeafTopic5'),('Node16','LeafTopic6'),('Node16','LeafTopic7'),('Node16','LeafTopic8'),('Node16','LeafTopic9'),('Node16','LeafTopic10'),('Node16','LeafTopic11'),('Node16','LeafTopic12'),('Node16','LeafTopic13'),('Node16','LeafTopic14'),}";
-//(String) ((HashMap) r).get("tree");
+                    HashMap<String, Float> topicWeightMongo = new HashMap<String, Float>();
+                    for (Object r : (ArrayList) connection.getJobDocs(job, "top_wt")) {
+                        
+                        HashMap hr = (HashMap) r;
+                        
+                          String key = (String) hr.get("_id");
+                          float weights = Float.parseFloat( String.valueOf(hr.get("weight")));
+                          if (weights == 0)
+                              weights = 1;
+                          
+                          topicWeightMongo.put(key, weights);
+                        
+                        
+                        
                     }
+                    
+                    
+                    for (int i=0; i<topicWeightMongo.size(); i++)
+                    {
+                         String key = "two" + (new Integer(i)).toString();
+                         
+                         viewController.topicWeights.add(topicWeightMongo.get(key));
+                        
+                        
+                    }
+                    
+                    String TreeString = "";
+                    
+                     for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
+                        TreeString = (String) ((HashMap) r).get("tree");
+                    }
+                         
+
+//                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
+//                        //System.out.println(r);
+//                        TreeString = "digraphgraph{\n" +
+//"'Node16','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14',\n" +
+//"('Node16','LeafTopic0'),('Node16','LeafTopic1'),('Node16','LeafTopic2'),('Node16','LeafTopic3'),('Node16','LeafTopic4'),('Node16','LeafTopic5'),('Node16','LeafTopic6'),('Node16','LeafTopic7'),('Node16','LeafTopic8'),('Node16','LeafTopic9'),('Node16','LeafTopic10'),('Node16','LeafTopic11'),('Node16','LeafTopic12'),('Node16','LeafTopic13'),('Node16','LeafTopic14'),}";
+////(String) ((HashMap) r).get("tree");
+//                    }
                     
 //                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
 //                    TreeString = "digraphgraph{\n" +
