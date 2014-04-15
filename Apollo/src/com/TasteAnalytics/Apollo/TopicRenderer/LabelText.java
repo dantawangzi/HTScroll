@@ -23,10 +23,10 @@ import javax.swing.JLabel;
  */
 public class LabelText extends JLabel implements MouseListener {
 
-    int column, row;
+    public int column, row;
     Rectangle2D rect;
-    int posX, posY;
-    String s;
+    public int posX, posY;
+    public String s;
     boolean isHighlighted;
     boolean isMagnified;
     Font font;
@@ -36,7 +36,7 @@ public class LabelText extends JLabel implements MouseListener {
     TreeNode node;
     boolean isDisplayed;
     int occurance;
-    float probablity;
+    public float probablity;
     Point location;
     boolean highlightFromLabelTopics = false;
 
@@ -63,7 +63,7 @@ public class LabelText extends JLabel implements MouseListener {
         this.probablity = probablity;
     }
 
-    LabelText() {
+    public LabelText() {
 
         addMouseListener(this);
 

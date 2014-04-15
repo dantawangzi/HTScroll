@@ -1989,15 +1989,15 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
         //if (f!=null)
         if (f.toPattern() == "yyyy") {
-            intervalString = parent.getTemporalFrame().getData().getHr2ms().toString() + "Year";
+            intervalString = parent.data.getHr2ms().toString() + "Year";
 
         } else {
             long millis = 0;
 
-            if (parent.getTemporalFrame().getData().getHr2ms() == null) {
+            if (parent.data.getHr2ms() == null) {
                 millis = 0;
             } else {
-                millis = parent.getTemporalFrame().getData().getHr2ms();
+                millis = parent.data.getHr2ms();
             }
 
             long days = TimeUnit.MILLISECONDS.toDays(millis);
@@ -2023,7 +2023,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         
 
         {
-            int number = parent.getTemporalFrame().getData().getNumOfYears();
+            int number = parent.data.getNumOfYears();
             // System.out.println("How many times" + number);
             double ratio = (double) width / (double) number;
             g2d.setFont(NORMALFONT);
@@ -2118,10 +2118,10 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
     void calculateReTweetRatio() {
         int sum = 0;
-        for (int i = 0; i < parent.getTemporalFrame().getData().idxOfDocumentPerSlot.size(); i++) {
+        for (int i = 0; i < parent.data.idxOfDocumentPerSlot.size(); i++) {
 
-            for (int j = 0; j < parent.getTemporalFrame().getData().idxOfDocumentPerSlot.get(i).size(); j++) {
-                int tempDocIdx = parent.getTemporalFrame().getData().idxOfDocumentPerSlot.get(i).get(j);
+            for (int j = 0; j < parent.data.idxOfDocumentPerSlot.get(i).size(); j++) {
+                int tempDocIdx = parent.data.idxOfDocumentPerSlot.get(i).get(j);
                 String[] p = parent.getInternalDocs().get(tempDocIdx + 1);//both files have headers
             }
 
@@ -2414,9 +2414,9 @@ int count = 0;
      */
     public void buildLabelTimeMap() {
 
-        if (this.getData().topicYearKwIdx != null) {
+        if (parent.data.topicYearKwIdx != null) {
             System.out.println(this.currentNode.getValue());
-            labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), this.getData().topicYearKwIdx);
+            labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), parent.data.topicYearKwIdx);
             
                     }
         else

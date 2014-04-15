@@ -10,17 +10,23 @@ import com.TasteAnalytics.Apollo.TemporalView.TemporalViewPanel;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
+import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel.labelTextComparer;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
 import com.TasteAnalytics.Apollo.TreeMapView.TopicTreeMapPanel;
 import com.TasteAnalytics.Apollo.TreeMapView.TreeMapNodePanel;
+import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import com.TasteAnalytics.Apollo.eventsview.EventsViewListener;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -28,12 +34,16 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
+import javax.swing.JLabel;
+import org.apache.commons.lang.StringUtils;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
@@ -66,12 +76,288 @@ public class ViewController {
     
     public List<Float> topicWeights = new ArrayList<Float>();
     public List<Float> topicEventsCount = new ArrayList<Float>();
-        public HashMap<Integer, TreeNode.SentimentModel> sen = new HashMap<Integer, TreeNode.SentimentModel> ();
+    public HashMap<Integer, TreeNode.SentimentModel> sen = new HashMap<Integer, TreeNode.SentimentModel> ();
     
+    public List<TreeNode> myTree;
+    public CategoryBarElement data;
+    public HashMap<Integer, TreeNode> leaves = new HashMap<Integer,TreeNode>();
+     
+     
+     
+     public void loadCacheData(String databaseName, String TreeString, String host) throws IOException
+    {
+
+        data = new CategoryBarElement(databaseName, host);
+        myTree = new ArrayList<TreeNode>();
+        buildTreeWithString(TreeString);
+
+        BuildNodeValue(data, myTree.get(0));
+        BuildUnNormNodeValue(data, myTree.get(0));
+
+        myTree.get(0).calculateNodeContainedIdx();
     
-    
-    
+      
+        setNodeColor();
+      
         
+        
+
+    } 
+     
+     private List<Float[]> colorMap;
+      public List<Float[]> getCurrentColorMap() {
+        colorMap = new ArrayList<Float[]>();
+        try {
+            colorMap = this.getNewHueColors();//this.parent.getHSVColors(currentStreams.size());//;//getNumericalColors();
+        } catch (Exception e) {
+            System.out.println("colorMap generation failed!");
+        }
+        return colorMap;
+    }
+      
+     
+     public void setNodeColor() {
+        List<Float[]> colorSpecturm = getCurrentColorMap();
+
+        int size = colorSpecturm.size();
+
+        myTree.get(0).setColor(Color.white);
+
+        for (int i = 0; i < myTree.get(0).getChildren().size(); i++) {
+
+            Color current = new Color(colorSpecturm.get((int) i % size)[1], colorSpecturm.get((int) i % size)[2], colorSpecturm.get((int) i % size)[3]);
+            TreeNode t = (TreeNode) myTree.get(0).getChildren().get(i);
+            t.setBaseColor(current);
+            t.setColor(current);
+
+        }
+
+        for (int i = 1; i < myTree.size(); i++) {
+            TreeNode t = myTree.get(i);
+
+            if (t.getLevel() > 1) {
+                TreeNode colorNode = t.getParent(); //myTree.get(i);
+
+                if (t.getParent().getChildren().isEmpty()) {
+                    t.setColor(colorNode.getColor());
+                } else {
+                    if (t.getParent().getChildren().size() == 1) {
+
+                        t.setColor(colorNode.getColor());
+                        //t.setBaseColor(t.getParent().getBaseColor()) ;
+
+                    } else {
+
+                        // t.setBaseColor(t.getParent().getBaseColor()) ;
+                        int size2 = t.getParent().getChildren().size();
+                        Color tempColor = t.getParent().getColor();//colorNode.getBaseColor();
+                        float[] hsv = new float[3];
+                        Color.RGBtoHSB(tempColor.getRed(), tempColor.getGreen(), tempColor.getBlue(), hsv);
+                        List<Color> c = getHueColors(size2, hsv[0]);
+                        for (int j = 0; j < t.getParent().getChildren().size(); j++) {
+                            if (t.equals(((TreeNode) t.getParent().getChildren().get(j)))) {
+                                t.setColor(c.get(j));
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+       
+
+    }
+     
+     
+         private float[] BuildUnNormNodeValue(CategoryBarElement data, TreeNode t) {
+        int numofYears = data.getNumOfYears();
+        List<Float> result = new ArrayList<Float>();
+        float[] tempresult = new float[numofYears];
+        float[] tempsum = new float[numofYears];
+
+        if (t.getUnNormArrayValue().size() == 0) {
+            if (t.getChildren().size() == 0) {
+
+                if (t.getValue().contains("L")) {
+                    int index = t.getIndex();
+                    tempresult = data.getUnormCategoryBar().get(index);
+
+                    for (int i = 0; i < numofYears; i++) {
+                        result.add(tempresult[i]);
+                    }
+
+                    t.setUnNormArrayValue(result);
+                } else {
+                    for (int i = 0; i < numofYears; i++) {
+                        result.add(0f);
+                    }
+
+                    t.setUnNormArrayValue(result);
+
+                }
+                return tempresult;
+
+            } else {
+
+                for (int i = 0; i < t.getChildren().size(); i++) {
+                    for (int j = 0; j < numofYears; j++) {
+                        tempresult = BuildUnNormNodeValue(data, (TreeNode) (t.getChildren().get(i)));
+                        tempsum[j] += tempresult[j];
+                    }
+
+                }
+
+                for (int i = 0; i < numofYears; i++) {
+                    result.add(tempsum[i]);
+                }
+
+                t.setUnNormArrayValue(result);
+                return tempsum;
+            }
+        }
+
+        result = t.getArrayValue();
+        for (int i = 0; i < numofYears; i++) {
+            tempresult[i] = result.get(i);
+        }
+
+        return tempresult;
+
+    }
+    
+     
+     private float[] BuildNodeValue(CategoryBarElement data, TreeNode t) {
+        int numofYears = data.getNumOfYears();
+        List<Float> result = new ArrayList<Float>();
+        float[] tempresult = new float[numofYears];
+        float[] tempsum = new float[numofYears];
+
+        if (t.getArrayValue().isEmpty()) {
+            if (t.getChildren().isEmpty()) {
+
+                if (t.getValue().contains("L")) {
+                    int index = t.getIndex();
+                    tempresult = data.getCategoryBar().get(index);
+
+                    for (int i = 0; i < numofYears; i++) {
+                        result.add(tempresult[i]);
+                    }
+
+                    t.setArrayValue(result);
+                } else {
+                    for (int i = 0; i < numofYears; i++) {
+                        result.add(0f);
+                    }
+
+                    t.setArrayValue(result);
+
+                }
+                return tempresult;
+
+            } else {
+
+                for (int i = 0; i < t.getChildren().size(); i++) {
+                    for (int j = 0; j < numofYears; j++) {
+                        tempresult = BuildNodeValue(data, (TreeNode) (t.getChildren().get(i)));
+                        tempsum[j] += tempresult[j];
+                    }
+
+                }
+
+                for (int i = 0; i < numofYears; i++) {
+                    result.add(tempsum[i]);
+                }
+
+                t.setArrayValue(result);
+                return tempsum;
+            }
+        }
+
+        result = t.getArrayValue();
+        for (int i = 0; i < numofYears; i++) {
+            tempresult[i] = result.get(i);
+        }
+
+        return tempresult;
+
+    }
+        
+      public void buildTreeWithString(String everything) {
+
+        everything = everything.replaceAll(" ", "");
+        everything = everything.replaceAll("\r", "");
+
+        Scanner sc = new Scanner(everything);
+
+        sc.useDelimiter("\n");
+        String temp = sc.next();
+
+        String nodes = sc.next();
+
+        String[] tempNodes = nodes.split(",");
+
+        System.out.println(tempNodes.length + " nodes in tree");
+        TreeNode NodeArray[] = new TreeNode[1000];
+        TreeNode LeafArray[] = new TreeNode[1000];
+
+        for (int i = 0; i < tempNodes.length; i++) {
+
+            String a = tempNodes[i].replaceAll("\\D", "");
+
+            int index = Integer.parseInt(a);
+
+            TreeNode t = new TreeNode(index, tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", ""));
+
+            if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'N') {
+
+                NodeArray[index] = t;
+                myTree.add(t);
+            } else if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'L') {
+                LeafArray[index] = t;
+                myTree.add(t);
+                leaves.put(index, t);
+            } else {
+                int c = 0;
+            }
+        }
+
+        String edges = sc.next();
+
+        String[] tempEdges = edges.split("\\),");
+
+        System.out.println((tempEdges.length - 1) + " links in tree");
+
+        for (int i = 0; i < tempEdges.length - 1; i++) {
+            String[] tempE = tempEdges[i].split(",");
+            TreeNode tt1, tt2;
+
+            int index1 = Integer.parseInt(tempE[0].replaceAll("\\D", ""));
+            int index2 = Integer.parseInt(tempE[1].replaceAll("\\D", ""));
+
+            String tempE1 = tempE[0].replaceAll("[^\\p{L}\\p{N}]", "");
+            if (tempE1.charAt(0) == 'N') {
+
+                tt1 = NodeArray[index1];
+            } else if (tempE1.charAt(0) == 'L') {
+                tt1 = LeafArray[index1];
+            } else {
+                int c = 0;
+                tt1 = null;
+            }
+
+            String tempE2 = tempE[1].replaceAll("[^\\p{L}\\p{N}]", "");
+            if (tempE2.charAt(0) == 'N') {
+                tt2 = NodeArray[index2];
+            } else if (tempE2.charAt(0) == 'L') {
+                tt2 = LeafArray[index2];
+            } else {
+                int c = 0;
+                tt2 = null;
+            }
+
+            tt1.addChildNode(tt2);
+        }
+    }
         
      
     public VastGeoFrame getVCGF() {
@@ -765,6 +1051,64 @@ public class ViewController {
         topicSimilarities = sim;
     }
 
+    
+        private Color hsv2rgb(float h, float s, float v) {
+        h = (h % 1 + 1) % 1; // wrap hue
+
+        int i = (int) Math.floor((float) (h * 6));
+        float f = h * 6 - i;
+        float p = v * (1 - s);
+        float q = v * (1 - s * f);
+        float t = v * (1 - s * (1 - f));
+
+        switch (i) {
+            case 0:
+                return new Color(v, t, p);
+            case 1:
+                return new Color(q, v, p);
+            case 2:
+                return new Color(p, v, t);
+            case 3:
+                return new Color(p, q, v);
+            case 4:
+                return new Color(t, p, v);
+            case 5:
+                return new Color(v, p, q);
+        }
+
+        return null;
+    }
+        
+    
+        private List<Color> getHueColors(int size, float H) {
+        List<Color> tempcolorMap = new ArrayList<Color>();
+        try {
+
+            float S = (float) 0.5;
+            float V = (float) 0.2;
+            float varH = (float) 0.2;
+            for (int i = 0; i < size; i++) {
+                float tempS = (float) S / ((float) size) * (float) i + (float) 0.2;
+                float tempV = (float) V / size * i + (float) 0.7;
+                float tempH = H - (float) varH / 2 + (float) varH / size * i;
+                Color r = hsv2rgb(tempH, tempS, tempV);
+
+                tempcolorMap.add(r);
+            }
+
+            if (size == 0) {
+                Color r = hsv2rgb(H, S, V);
+                tempcolorMap.add(r);
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(" hue colorMap generation failed!");
+        }
+        return tempcolorMap;
+    }
+        
+        
     public List<Float[]> getHSVColors(int n) {
         List<Float[]> colorMap = new ArrayList<Float[]>();
         for (int j = 0; j < n; j++) {
@@ -1084,5 +1428,387 @@ public class ViewController {
         }
 
         return g;
+    }
+    
+    
+    public HashMap<TreeNode, List<LabelText>> allLabels = new HashMap<TreeNode, List<LabelText>>();
+      private int labelsToDisplay = 51;
+        public List<String[]> allTopics;
+        
+        private String HelveticaFont = "Helvetica-Condensed-Bold";
+        
+        static private int occuranceFontSizePara = 2;
+        private int labelFontSize = 10; //18
+        
+        static private int fontSizePerChar = 1;
+        
+    void buildLabelLocations(Map<String, Integer> wordTermIndex, List<String[]> wordTermWeightsF, List<List<Float>> topkTermWeightMongo) {
+
+        allLabels.clear();
+      
+
+        for (int i = 0; i < myTree.size(); i++) {
+            //System.out.println(i);
+            TreeNode o = myTree.get(i);
+
+            List<LabelText> tempList = new ArrayList<LabelText>();
+            Point2D loc = new Point2D.Float(0,0);
+
+            if (o.getChildren().isEmpty()) {
+
+                TreeNode t = o;
+
+                //System.out.print(allLabels.size());
+                if (t.getChildren().isEmpty() && t.getValue().contains("L")) {
+
+                    int index = t.getIndex();
+
+                    int countleng = 0; float w = 0;
+                    for (int j = 1; j < labelsToDisplay; j++) {
+
+                       
+                        try{
+                        LabelText tempLT = new LabelText();
+
+                        int leng = t.getNodeTopics()[j].length();
+                        Font font = null;//new Font("Arial", Font.PLAIN, labelFontSize);
+
+                        if (j == 1) {
+                            tempLT.setOccurance(1);
+                            tempLT.setProbablity(99999.0f);
+                        } else {
+
+                            String tempxx = t.getNodeTopics()[j];
+
+                            int tmpCol = -1;
+
+                            if (!b_readFromDB)
+                            {
+                                if (!StringUtils.isNumeric(tempxx)) {
+                                    tmpCol = wordTermIndex.get(t.getNodeTopics()[j].toLowerCase());
+                                } else {
+                                    tmpCol = wordTermIndex.get(t.getNodeTopics()[j]);
+                                }
+                            }
+                            
+                            if (tmpCol == 989)
+                            {
+                                int a = 0;
+                                
+                            }
+                            if (occurances.get(index + 1)[j] == 0) {
+                                tempLT.setOccurance(1);
+                            } else {
+                                if (occurances.get(index + 1)[j] >= 20) {
+                                    tempLT.setOccurance(20);
+                                } else {
+                                    tempLT.setOccurance(occurances.get(index + 1)[j]);
+                                }
+                            }
+                            
+                            float weight = 0; 
+                            
+                            if (b_readFromDB)
+                                weight = topkTermWeightMongo.get(index).get(j-1);
+                            else
+                                weight = Float.parseFloat(wordTermWeightsF.get(index)[tmpCol]);
+
+                            w = weight;
+                            tempLT.setProbablity(weight);
+                        }
+                        
+                        
+
+                        font = new Font(HelveticaFont, Font.PLAIN, occuranceFontSizePara * tempLT.getOccurance()/*occurances.get(index + 1)[j]*/ + labelFontSize);
+                        //Font HelveticaFont = new Font("Helvetica", Font.BOLD, 12);
+
+                        tempLT.setFont(font);
+                        //tempLT.setColor(Color.BLUE);
+
+                        tempLT.column = index;
+
+                        tempLT.row = j - 1;
+
+                        tempLT.setString(t.getNodeTopics()[j]);
+
+                        tempList.add(tempLT);
+                        }
+                        catch(Exception e){
+                                System.out.println("word " + t.getNodeTopics()[j] + " in dict line " + wordTermIndex.get(t.getNodeTopics()[j])
+                                + " weight is " + w);
+                                }
+                    }
+
+                    labelTextComparer c = new labelTextComparer();
+                    
+                    
+                    Collections.sort(tempList, c);
+                    float maxP = -99999;
+                    for (int j = 0; j < tempList.size(); j++) {
+
+                        if (tempList.get(j).getProbablity() >= maxP && tempList.get(j).getProbablity() <= 59999) {
+                            maxP = tempList.get(j).getProbablity();
+
+                        }
+                    }
+
+                    for (int kkk = 0; kkk < tempList.size(); kkk++) {
+
+                        int px = (int) loc.getX();
+                        int py = (int) loc.getY();
+
+                        LabelText tempLT = tempList.get(kkk);
+                        if (tempLT.getProbablity() == 99999.0f) {
+                            tempLT.setProbablity(0);
+                        } else {
+
+                            tempLT.setProbablity(tempLT.getProbablity() / maxP);
+                        }
+
+                        Font font = tempLT.getFont();
+
+                        JLabel tempLabel = new JLabel();
+                        tempLabel.setFont(font);
+                        FontMetrics fm = tempLabel.getFontMetrics(font);
+                        int widthOfString = fm.stringWidth(" " + tempLT.s + " ");
+                        int leng = widthOfString;
+
+                        if (kkk==0)
+                            leng = 40;//widthOfString + 10;
+                        
+                        tempLT.setRect(new Rectangle2D.Float(px + 20 + countleng, py - 10, leng * fontSizePerChar, 20));
+
+                        tempLT.posX = px + 20 + countleng + 2;
+                        tempLT.posY = py + 5;
+
+                        countleng += (leng * fontSizePerChar + 2);
+
+                    }
+
+                    allLabels.put(t, tempList);
+
+                } 
+//                else // Nodes situation
+//                {
+//                    //int labelsToDisplay2 = 5;
+//                }
+//            } else if (o instanceof DelegateTree) {
+//                TreeNode t = (TreeNode) (((DelegateTree) o).getRoot());
+//
+//                int labelsToDisplay2 = labelsToDisplay / t.getNodeSize();
+//                //String[] temp = new String[labelsToDisplay2 * myTree.get(i).getNodeSize()];
+//
+//                for (int k = 0; k < (labelsToDisplay2); k++) {
+//                    for (int j = 0; j < t.getTopicsContainedIdx().size(); j++) {
+//
+//                        int index1 = t.getTopicsContainedIdx().get(j);
+//                        String t1[] = allTopics.get(index1 + parent.getGlobalReadIndex());
+//                        LabelText tempLT = new LabelText();
+//
+//                        int index = index1;
+//
+//                        int px = (int) loc.getX();
+//                        int py = (int) loc.getY();
+//
+//                        int leng = t1[nodeStringStartIndex + k].length();
+//                        
+//                        
+//                        
+//                        if (wordTermIndex.get(t1[nodeStringStartIndex + k].toLowerCase()) == null) {
+//                            tempLT.setOccurance(1);
+//                            tempLT.setProbablity(99999.0f);
+//                        } else {
+//
+//                            //System.out.println(t1[nodeStringStartIndex + k].toLowerCase());
+//                            int tmpCol = -1;
+//                            
+//                            if (!parent.b_readFromDB)
+//                            {
+//                                tmpCol = wordTermIndex.get(t1[nodeStringStartIndex + k].toLowerCase());
+//                            }
+//                            
+//                            if (occurances.get(index + 1)[k + 1] == 0) {
+//                                tempLT.setOccurance(1);
+//                            } else {
+//                                if (occurances.get(index + 1)[k + 1] >= 20) {
+//                                    tempLT.setOccurance(20);
+//                                } else {
+//                                    tempLT.setOccurance(occurances.get(index + 1)[k + 1]);
+//                                }
+//                            }
+//                            
+//
+//                            float weight = 0;
+//                            
+//                            
+//                             if (parent.b_readFromDB)
+//                                weight = topkTermWeightMongo.get(index).get(j-1);
+//                            else
+//                                weight = Float.parseFloat(wordTermWeightsF.get(index)[tmpCol]);
+//                             
+//                             
+//                            tempLT.setProbablity(weight);
+//
+//                        }
+//
+//                        Font font = new Font("Arial", Font.PLAIN, labelFontSize);
+//                        font = new Font("Font", Font.PLAIN, occuranceFontSizePara * tempLT.getOccurance()/*occurances.get(index + 1)[j]*/ + labelFontSize);
+//                        tempLT.setFont(font);
+//
+//                        //tempLT.setColor(Color.BLUE);
+//                        tempLT.isHighlighted = false;
+//
+//                        tempLT.column = index;
+//                        //  tempLT.setRect(new Rectangle2D.Float(px + 20 + countleng, py - 10, leng * fontSizePerChar, 20));
+//
+//                        tempLT.row = nodeStringStartIndex + k;
+//
+//                        tempLT.setString(t1[nodeStringStartIndex + k]);
+//                        //   tempLT.posX = px + 20 + countleng + 2;
+//                        //   tempLT.posY = py + 5;
+////
+//                        //    countleng += (leng * fontSizePerChar + 2);
+//
+//                        tempList.add(tempLT);
+//                    }
+//
+//                }
+//
+//                labelTextComparer c = new labelTextComparer();
+//                Collections.sort(tempList, c);
+//
+//                float maxP = -99999;
+//                for (int j = 0; j < tempList.size(); j++) {
+//
+//                    if (tempList.get(j).getProbablity() >= maxP && tempList.get(j).getProbablity() <= 59999) {
+//                        maxP = tempList.get(j).getProbablity();
+//
+//                    }
+//                }
+//
+//                int countleng = 0;
+//                for (int kkk = 0; kkk < tempList.size(); kkk++) {
+//                    // System.out.println(tempList.get(kkk).getProbablity());
+//
+//                    int px = (int) loc.getX();
+//                    int py = (int) loc.getY();
+//
+//                    LabelText tempLT = tempList.get(kkk);
+//                    if (tempLT.getProbablity() == 99999.0f) {
+//                        tempLT.setProbablity(0);
+//                    } else {
+//
+//                        tempLT.setProbablity(tempLT.getProbablity() / maxP);
+//                    }
+//
+//                    Font font = tempLT.getFont();
+//
+//                    JLabel tempLabel = new JLabel();
+//                    tempLabel.setFont(font);
+//                    FontMetrics fm = tempLabel.getFontMetrics(font);
+//                    int widthOfString = fm.stringWidth(" " + tempLT.s + " ");
+//                    int leng = widthOfString;
+//
+//                    tempLT.setRect(new Rectangle2D.Float(px + 20 + countleng, py - 10, leng * fontSizePerChar, 20));
+//
+//                    tempLT.posX = px + 20 + countleng + 2;
+//                    tempLT.posY = py + 5;
+//
+//                    countleng += (leng * fontSizePerChar + 2);
+//
+//                }
+//
+//                allLabels.put(t, tempList);
+//
+//            }
+        }
+
+    }
+    }
+    
+      
+    
+    private List<String[]> reorganizedTopics;
+      
+      
+    private List<int[]> occurances;
+    
+    
+        public void extractFrequency() {
+        //Re-organize topics based on the similarities
+        reorganizedTopics = new ArrayList<String[]>();                 
+         
+        reorganizedTopics.add(allTopics.get(0));
+        for (int i = getGlobalReadIndex(); i < allTopics.size(); i++) {
+            int t = (i - 1) + 1;
+            reorganizedTopics.add(allTopics.get(t));
+        }
+
+        
+        
+        if (reorganizedTopics != null) {
+            occurances = new ArrayList<int[]>(reorganizedTopics.size());
+            for (int i = 0; i < reorganizedTopics.size(); i++) {
+                int[] temp = new int[reorganizedTopics.get(0).length];
+                occurances.add(temp);
+            }
+            //otherOccurances = new ArrayList<List<Dimension>>();
+            int count = 1;
+            Dimension keyPos, tempPos;
+            List<Dimension> tmpDim = null;
+            
+                                 
+            for (int i = getGlobalReadIndex(); i < reorganizedTopics.size(); i++) {
+                for (int j = getGlobalReadIndex()+1; j < reorganizedTopics.get(i).length/*30*/; j++) {
+                    //Compare every word with other words
+                    keyPos = new Dimension(i, j);
+                    for (int m = getGlobalReadIndex(); m < reorganizedTopics.size(); m++) {
+                        for (int n = getGlobalReadIndex()+1; n < /*30*/reorganizedTopics.get(m).length; n++) {
+                            if (m == i && n == j) {
+                                //Skip the word itself
+                            } else {
+                                if (reorganizedTopics.get(i)[j].trim().equalsIgnoreCase(reorganizedTopics.get(m)[n].trim())) {
+                                    count++;
+//                                  
+                                }
+                            }
+                        }
+                    }
+
+                    occurances.get(i)[j] = count;
+                    
+                    count = 1;
+                }
+            }
+        }
+        
+    }
+        
+        
+                        public class labelTextComparer implements Comparator<LabelText> {
+        //@Override
+//  public int compare(labelText x, labelText y) {
+//    // TODO: Handle null x or y values
+//    int startComparison = compare(x.probablity, y.probablity);
+//    return startComparison != 0 ? startComparison
+//                                : compare(x.probablity, y.probablity);
+//  }
+
+        // I don't know why this isn't in Long...
+        private int compare(float a, float b) {
+            return a > b ? -1
+                    : a < b ? 1
+                    : 0;
+        }
+
+        public int compare(LabelText x, LabelText y) {
+            int startComparison = compare(x.probablity, y.probablity);
+            return startComparison != 0 ? startComparison
+                    : compare(x.probablity, y.probablity);
+
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+     
     }
 }

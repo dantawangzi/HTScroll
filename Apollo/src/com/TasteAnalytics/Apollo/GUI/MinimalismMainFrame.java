@@ -217,49 +217,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         viewController.setGlobalReadIndex(0);
 
         
-        
-        
-//        for (int i=0; i<35;i++)
-//            viewController.topicWeights.add(10000.0f);
-//        
-//        
-////        viewController.topicWeights.add(14681.0f);
-////        viewController.topicWeights.add(4294.0f);
-////        viewController.topicWeights.add(22731.0f);
-////        viewController.topicWeights.add(7367.0f);
-////        viewController.topicWeights.add(2595.0f);
-////        viewController.topicWeights.add(4817.0f);
-////        viewController.topicWeights.add(21857.0f);
-////        viewController.topicWeights.add(3717.0f);
-////        viewController.topicWeights.add(16748.0f);
-////        viewController.topicWeights.add(1230.0f);
-////        viewController.topicWeights.add(3079.0f);
-////        viewController.topicWeights.add(3265.0f);
-////        viewController.topicWeights.add(3530.0f);
-////        viewController.topicWeights.add(1849.0f);
-////        viewController.topicWeights.add(3352.0f);
-//        
-//               
-//        viewController.topicWeights.add(1045752.0f);
-//        viewController.topicWeights.add(54990.0f);
-//        viewController.topicWeights.add(9929.0f);
-//        viewController.topicWeights.add(1364254.0f);
-//        viewController.topicWeights.add(381764.0f);
-//        viewController.topicWeights.add(1.0f);
-//        viewController.topicWeights.add(1656258.0f);
-//        viewController.topicWeights.add(18.0f);
-//        viewController.topicWeights.add(8867.0f);
-//        viewController.topicWeights.add(7912.0f);
-//        viewController.topicWeights.add(474409.0f);
-//        viewController.topicWeights.add(3.0f);
-//        viewController.topicWeights.add(10709.0f);
-//        viewController.topicWeights.add(715914.0f);
-//        viewController.topicWeights.add(79491.0f);
-//        
-
-        
-        
-        
         connection = new LDAHTTPClient("http", viewController.host, String.valueOf(viewController.port));
         try {
             connection.login();
@@ -391,24 +348,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                      for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
                         TreeString = (String) ((HashMap) r).get("tree");
                     }
-                         
-
-//                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
-//                        //System.out.println(r);
-//                        TreeString = "digraphgraph{\n" +
-//"'Node16','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14',\n" +
-//"('Node16','LeafTopic0'),('Node16','LeafTopic1'),('Node16','LeafTopic2'),('Node16','LeafTopic3'),('Node16','LeafTopic4'),('Node16','LeafTopic5'),('Node16','LeafTopic6'),('Node16','LeafTopic7'),('Node16','LeafTopic8'),('Node16','LeafTopic9'),('Node16','LeafTopic10'),('Node16','LeafTopic11'),('Node16','LeafTopic12'),('Node16','LeafTopic13'),('Node16','LeafTopic14'),}";
-////(String) ((HashMap) r).get("tree");
-//                    }
-                    
-//                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
-//                    TreeString = "digraphgraph{\n" +
-//"'Node21','LeafTopic0','LeafTopic1','LeafTopic2','LeafTopic3','LeafTopic4','LeafTopic5','LeafTopic6','LeafTopic7','LeafTopic8','LeafTopic9','LeafTopic10','LeafTopic11','LeafTopic12','LeafTopic13','LeafTopic14','LeafTopic15','LeafTopic16','LeafTopic17','LeafTopic18','LeafTopic19',\n" +
-//"('Node21','LeafTopic0'),('Node21','LeafTopic1'),('Node21','LeafTopic2'),('Node21','LeafTopic3'),('Node21','LeafTopic4'),('Node21','LeafTopic5'),('Node21','LeafTopic6'),('Node21','LeafTopic7'),('Node21','LeafTopic8'),('Node21','LeafTopic9'),('Node21','LeafTopic10'),('Node21','LeafTopic11'),('Node21','LeafTopic12'),('Node21','LeafTopic13'),('Node21','LeafTopic14'),('Node21','LeafTopic15'),('Node21','LeafTopic16'),('Node21','LeafTopic17'),('Node21','LeafTopic18'),('Node21','LeafTopic19'),}";
-//
-////(String) ((HashMap) r).get("tree");
-//
-//                    }
 
                     List<HashMap> maplocations = new ArrayList<HashMap>();
 
@@ -416,10 +355,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                         maplocations.add((HashMap) r);
                     }
 
-                    //        q1 = new BasicDBObject("type", "flat");
-                    //        cursorfind = currentColl.find(q1);
-                    //        BasicDBObject dbo1 = (BasicDBObject) cursorfind.next();
-                    //        TreeString = dbo1.getString("tree");
                     viewController.setNewHueColors();
 
                     Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -429,17 +364,23 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     String csvfilepath = csvf.getFolderPath();
                     viewController.csvfFolderPath = csvfilepath;
                     viewController.csvfFolderPath = ".\\";
+                    
+                    
+                    viewController.loadCacheData(job, TreeString, viewController.host);
 
-                    temporalFrame = new TemporalViewFrame(viewController, 600,800);//scrnsize.width / 2, scrnsize.height);
+                    temporalFrame = new TemporalViewFrame(viewController, 600,800, viewController.data, viewController.myTree);//scrnsize.width / 2, scrnsize.height);
 
                     viewController.addTemporalFrame(temporalFrame);
 
-                    temporalFrame.loadCacheData(job, TreeString, viewController.host);
-            //temporalFrame.createWorldMap(maplocations);
+                   // temporalFrame.loadCacheData(job, TreeString, viewController.host);
+            
+                    //temporalFrame.createWorldMap(maplocations);
 
                     //temporalFrame.setVisible(true);
                     //temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
                     //temporalFrame.setLocation(0, 0);
+                    
+                    
                     HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
                     List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
 
@@ -492,22 +433,29 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     }
 
                   
-                    topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
-                    viewController.addTopicGraphViewPanel(topicFrame);
-                    viewController.getTopicGraphViewPanel().loadTopic(topics);
-                    System.out.println("topic frame load topics done.");
-
-                    viewController.getTopicGraphViewPanel().buildTreeWithTreeString(TreeString);
-
-                    System.out.println("topic frame build tree done..");
-
-                    topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
-                    topicFrame.setLocation(scrnsize.width / 2, 0);
-
-                    viewController.getTopicGraphViewPanel().generateLayout();
-                    topicFrame.setVisible(true);
+                    //topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
+                    //viewController.addTopicGraphViewPanel(topicFrame);
                     
-                      temporalFrame.PreDrawAllLeafs();
+                    //viewController.getTopicGraphViewPanel().loadTopic(topics);
+                    viewController.allTopics = topics;
+                    viewController.extractFrequency();
+                    
+                    
+                    //System.out.println("topic frame load topics done.");
+
+                    //viewController.getTopicGraphViewPanel().buildTreeWithTreeString(TreeString);
+
+                    //System.out.println("topic frame build tree done..");
+
+                    //topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
+                    //topicFrame.setLocation(scrnsize.width / 2, 0);
+
+                    //viewController.getTopicGraphViewPanel().generateLayout();
+                    
+                    viewController.buildLabelLocations( csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
+                    //topicFrame.setVisible(true);
+                    
+                    temporalFrame.PreDrawAllLeafs();
                       
                       
                       

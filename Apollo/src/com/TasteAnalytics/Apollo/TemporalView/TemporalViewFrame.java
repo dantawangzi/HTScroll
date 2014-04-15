@@ -54,8 +54,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
     private List<Float> topicSims;
     private List<Float[]> colorMap;
-    //private List<TemporalViewPanel> secondColumn;
-    //private List<TemporalViewPanel> thirdColumn;
+
     private List<TreeNode> myTree;
 
     HashMap<Integer, List<TemporalViewPanel>> temporalPanelMap = new HashMap<Integer, List<TemporalViewPanel>>();
@@ -559,7 +558,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
     //JScrollPane scrollPane;
     JPanel menuPanel = new JPanel();
 
-    public TemporalViewFrame(ViewController vc, int WW, int HH) throws IOException {
+    public TemporalViewFrame(ViewController vc, int WW, int HH, CategoryBarElement da, List<TreeNode> tree) throws IOException {
         super();
         setPreferredSize(new Dimension(WW, HH));
    
@@ -575,38 +574,41 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         parent = vc;
         mainPanel = new TemporalViewPanel(vc);
 
-
-        //subPanel = new TemporalViewPanel(vc);
         mainPanel.setName("Main");
         //subPanel.setName("Sub");
 
         mainPanel.setLevel(0);
-        //subPanel.setLevel(0);
 
-        //this.setSize(new Dimension(1800, 900));
 
         mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 3);
-        //worldPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight / 3 ));
-
-        //subPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3);
 
         layoutPanelMap.put(0, new JPanel());
-        //List<TemporalViewPanel> ini = new ArrayList<TemporalViewPanel>();
-//        ini.add(subPanel)ini.add(subPanel);
-//        temporalPanelMap.put(0, );
+        
+        
+        
+         data = da;
+        myTree = tree;
+       
 
-//        secondColumn = new ArrayList<TemporalViewPanel>();
-//        thirdColumn = new ArrayList<TemporalViewPanel>();
-//        //setGridBagLayout();
-        //setMigLayout();
-        //testPanel.add(new JPanel());
-        //setMigLayoutForScrollPane();
+        myTree.get(0).calculateNodeContainedIdx();
+        //  myTree.get(0).calculateNodeString();
+        System.out.println("building trees and values in temporal frame finished...");
+       
+        mainPanel.setData(data);
+
+        mainPanel.currentNode = myTree.get(0);
+        mainPanel.setTree(myTree);
+
+       mainPanel.calculateLocalNormalizingValue(data, getMainPanel().currentNode);
+        mainPanel.calculateRenderControlPointsOfEachHierarchy(data,mainPanel.currentNode, mainPanel.getLocalNormalizingValue());
+       mainPanel.computerZeroslopeAreasHierarchy(0);
+        mainPanel.detectEvents(mainPanel.getEventThreshold());
+
+        mainPanel.UpdateTemporalView(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()), mainPanel.getLocalNormalizingValue());
+
+
         
-        
-     
-          
-          
-          
+  
         this.addComponentListener(new ComponentListener() {
             public void componentResized(ComponentEvent e) {
 
@@ -679,7 +681,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
     {
         
          //    for (int i=0; i<topicNumbers; i++)
-        int size = leaves.size();
+        int size = parent.leaves.size();
         
         
                            
@@ -688,7 +690,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
             
             if (parent.topicWeights.get(i)>100)
             {
-            TreeNode ct = leaves.get(i);
+            TreeNode ct = parent.leaves.get(i);
             
             TemporalViewPanel tp;
             
@@ -1053,7 +1055,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         }
     }
     
-    HashMap<Integer, TreeNode> leaves = new HashMap<Integer,TreeNode>();
+    
 
 
     public void buildTreeWithString(String everything) {
@@ -1089,7 +1091,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
             } else if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'L') {
                 LeafArray[index] = t;
                 myTree.add(t);
-                leaves.put(index, t);
+               // leaves.put(index, t);
             } else {
                 int c = 0;
             }

@@ -962,17 +962,13 @@ public class TopicGraphViewPanel extends JPanel {
 
         totalEdges = myTree.size();
 
-        // Layout<TreeNode,MyLink> layout = new CircleLayout(gh);
-        //  TreeLayout treeLayout = new TreeLayout<TreeNode,MyLink>(gh);
+
         radialLayout = new RadialTreeLayout<Object, MyLink>(gh);
-//         SpringLayout springLayout = new SpringLayout<TreeNode,MyLink>(gh);
         HtreeLayout = new HorizontalOverlappingTreeLayout<Object, MyLink>(gh, node_width_interval, node_height_interval);
-        //  radialLayout.setSize(new Dimension(width,height));
 
         ewcs = new EdgeWeightStrokeFunction<MyLink>();
 
         vv = new VisualizationViewer<Object, MyLink>(HtreeLayout, new Dimension(width, height-controlPanelHeight));
-        // vv.setSize(new Dimension(width, height));
         vv.setBackground(Color.white);
 
         collapser = new TreeCollapser();
@@ -1227,46 +1223,7 @@ public class TopicGraphViewPanel extends JPanel {
         edgeDrawPaint = new GradientEdgePaintTransformer<Object, MyLink>(Color.black, Color.lightGray, vv);
         show_arrow = new DirectionDisplayPredicate<Object, MyLink>(false, false);
 
-//        displayedWordMap = new HashMap<String, List<Dimension>>();
-//
-//        Map<TreeNode, Point2D> lo = HtreeLayout.getLocations();
-//        Set set = lo.entrySet();
-//        Iterator i = set.iterator();
-//
-//        while (i.hasNext()) {
-//            Map.Entry me = (Map.Entry) i.next();
-//            TreeNode t = (TreeNode) me.getKey();
-//            Point2D p = (Point2D) me.getValue();
-//
-//            if (t.getChildren().isEmpty() && t.getValue().contains("L")) {
-//
-//                int index = t.getIndex();
-//                int px = (int) p.getX();
-//                int py = (int) p.getY();
-//
-//                int countleng = 0;
-//                for (int j = 1; j < labelsToDisplay; j++) {
-//                    int leng = t.getNodeTopics()[j].length();
-//                    Rectangle2D rect = new Rectangle2D.Float(px + 10 + countleng, py - 10, leng * fontSizePerChar, 20);
-//                    countleng += (leng * fontSizePerChar + 2);
-//                    // labeltexts[index][j - 1] = rect;
-//
-//                    if (!displayedWordMap.containsKey(t.getNodeTopics()[j])) {
-//                        List<Dimension> templist = new ArrayList<Dimension>();
-//                        Dimension tempD = new Dimension(index, j - 1);
-//                        templist.add(tempD);
-//                        displayedWordMap.put(t.getNodeTopics()[j], templist);
-//
-//
-//                    } else {
-//                        Dimension tempD = new Dimension(index, j - 1);
-//                        displayedWordMap.get(t.getNodeTopics()[j]).add(tempD);
-//                    }
-//                }
-//
-//            }
-//
-//        }
+
         Transformer<Object, Shape> vertexSize = new Transformer<Object, Shape>() {
             public Shape transform(Object i) {
                 Shape s = new Ellipse2D.Double(0, 0, 10, 10);
