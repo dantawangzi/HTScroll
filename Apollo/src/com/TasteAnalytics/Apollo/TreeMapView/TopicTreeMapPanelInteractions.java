@@ -7,7 +7,6 @@
 package com.TasteAnalytics.Apollo.TreeMapView;
 
 import com.explodingpixels.macwidgets.HudWindow;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseEvent;

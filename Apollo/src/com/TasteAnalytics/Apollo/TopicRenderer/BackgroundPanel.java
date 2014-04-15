@@ -9,7 +9,6 @@ package com.TasteAnalytics.Apollo.TopicRenderer;
  * @author Li
  */
 import java.awt.*;
-import java.awt.image.*;
 import javax.swing.*;
 
 /*

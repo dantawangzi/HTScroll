@@ -4,7 +4,6 @@
  */
 package com.TasteAnalytics.Apollo.file;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -20,17 +19,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.apache.commons.lang3.math.NumberUtils;
-//import org.apache.commons.lang.NumberUtils;
-//import org.apache.commons.lang.math.NumberUtils ;
-//import org.apache.commons.lang.math.NumberUtils;
-
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import com.TasteAnalytics.Apollo.GUI.MinimalismMainFrame;
-import au.com.bytecode.opencsv.CSVReader;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * A Simple file parser for reading CSV files and instantiate the

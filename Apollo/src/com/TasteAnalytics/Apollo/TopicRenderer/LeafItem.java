@@ -11,15 +11,10 @@ package com.TasteAnalytics.Apollo.TopicRenderer;
 import java.awt.Color;
 
 import static processing.core.PApplet.map;
-import static processing.core.PConstants.HSB;
-import static processing.core.PConstants.RGB;
 import treemap.SimpleMapItem;
 import treemap.*;
-import processing.core.PApplet;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
-import static processing.core.PApplet.RECT;
 
 
 /**

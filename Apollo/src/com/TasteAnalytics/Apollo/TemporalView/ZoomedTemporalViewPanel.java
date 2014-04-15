@@ -5,9 +5,7 @@
 package com.TasteAnalytics.Apollo.TemporalView;
 
 import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import com.TasteAnalytics.Apollo.GUI.ViewController;
-import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 
 /**
  *

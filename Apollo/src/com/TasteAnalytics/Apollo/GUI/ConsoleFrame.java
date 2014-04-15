@@ -5,12 +5,11 @@
  */
 package com.TasteAnalytics.Apollo.GUI;
 
-import java.awt.GraphicsEnvironment;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.Console;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;

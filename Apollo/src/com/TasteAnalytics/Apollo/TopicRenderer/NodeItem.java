@@ -10,7 +10,6 @@ import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import treemap.*;
 import treemap.MapLayout;
 import treemap.MapModel;
 import treemap.Mappable;

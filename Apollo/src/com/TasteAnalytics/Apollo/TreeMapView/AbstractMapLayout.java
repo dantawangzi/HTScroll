@@ -15,7 +15,9 @@ public abstract class AbstractMapLayout implements MapLayout
     public static final int VERTICAL=0, HORIZONTAL=1;
     public static final int ASCENDING=0, DESCENDING=1;
     
-    /** Subclasses implement this method themselves. */
+    /** Subclasses implement this method themselves.
+     * @param items
+     * @param bounds */
     public abstract void layout(Mappable[] items, Rect bounds);
     
     public void layout(MapModel model, Rect bounds)

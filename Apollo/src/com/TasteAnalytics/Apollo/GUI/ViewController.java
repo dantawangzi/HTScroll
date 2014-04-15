@@ -10,23 +10,17 @@ import com.TasteAnalytics.Apollo.TemporalView.TemporalViewPanel;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
-import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel.customLabelTimecolumnKey;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
 import com.TasteAnalytics.Apollo.TreeMapView.TopicTreeMapPanel;
 import com.TasteAnalytics.Apollo.TreeMapView.TreeMapNodePanel;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import com.TasteAnalytics.Apollo.eventsview.EventsViewListener;
-import com.TasteAnalytics.Apollo.eventsview.EventsViewPanel;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -44,9 +38,6 @@ import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Table;
-import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
-import com.TasteAnalytics.Apollo.Wordle.WordleAlgorithmLite;
-import com.TasteAnalytics.Apollo.Wordle.WordleLite;
 
 /**
  * To coordinate between views

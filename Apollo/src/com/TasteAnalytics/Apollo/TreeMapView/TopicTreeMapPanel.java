@@ -9,7 +9,6 @@ package com.TasteAnalytics.Apollo.TreeMapView;
 import com.TasteAnalytics.Apollo.GUI.ViewController;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
-import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.Apollo.Util.Colors;
 import java.awt.Color;
 import java.awt.Dimension;

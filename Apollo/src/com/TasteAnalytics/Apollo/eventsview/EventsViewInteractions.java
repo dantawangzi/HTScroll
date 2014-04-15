@@ -24,8 +24,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import com.TasteAnalytics.Apollo.TemporalView.CategoryStream;
-import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
-import com.TasteAnalytics.Apollo.TemporalView.TemporalViewPanel;
 import com.TasteAnalytics.Apollo.TemporalView.TimeColumn;
 
 /**

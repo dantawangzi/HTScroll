@@ -4,7 +4,6 @@
 package com.TasteAnalytics.Apollo.TemporalView;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 
 
 public class ColorBrewer {

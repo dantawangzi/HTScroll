@@ -5,7 +5,6 @@
 package com.TasteAnalytics.Apollo.TemporalView;
 
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import javax.swing.JFrame;
 
 /**

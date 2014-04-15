@@ -32,8 +32,6 @@ import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 import com.TasteAnalytics.Apollo.TemporalView.CategoryStream;
 import com.TasteAnalytics.Apollo.TemporalView.ColorBrewer;
 import java.awt.BasicStroke;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
 import com.TasteAnalytics.Apollo.TemporalView.TimeColumn;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 

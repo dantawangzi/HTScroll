@@ -6,7 +6,6 @@ package com.TasteAnalytics.Apollo.TemporalView;
 
 import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 import com.TasteAnalytics.Apollo.GUI.ViewController;
-import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -32,8 +31,6 @@ import java.util.Map;
 import java.util.Scanner;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.border.LineBorder;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.io.IOUtils;
