@@ -989,7 +989,11 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             
             int scale = 1;//numberOfCategories;
             int wscale = 1;
-            float mover = 1;
+            
+            
+            float mover = 1;  //theme rive 0.5, stacked graph 1
+            
+            
             currentPoint = new Point[numofYears + 2][numberOfCategories + 1];
             int h = (height) / scale - margin;
             
