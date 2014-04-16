@@ -684,17 +684,23 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
     }
     
     public void PreDrawAllLeafs() throws IOException
-    {
-        
+    {        
          //    for (int i=0; i<topicNumbers; i++)
         int size = parent.leaves.size();
+                                          
         
         
-                           
+        
+        
+        
+        
+        
+        
+        
         for (int i=0; i<size; i++)
         {
             
-            if (parent.topicWeights.get(i)>100)
+         //   if (parent.topicWeights.get(i)>200)
             {
                 TreeNode ct = parent.leaves.get(i);
 
@@ -722,11 +728,11 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
                             
 
                             int it = i;
-                            mainPanel.getDrawLabels().add(it);
+                           // mainPanel.getDrawLabels().add(it);
 
                             Point2D pf = new Point2D.Float(0,0);
 
-                            mainPanel.getDrawLabelsLocation().add(pf);
+                           // mainPanel.getDrawLabelsLocation().add(pf);
                             tp.setFatherPanel(getMainPanel());
                             tp.calculateLocalNormalizingValue(tp.getData(), tp.currentNode);
                             tp.buildLabelTimeMap();
@@ -755,9 +761,9 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
                             }
             
              setMigLayoutForScrollPane();
-        }else
-            parent.topicEventsCount.add(0.5f);
-        
+        //}else{
+//            parent.topicEventsCount.add(0.5f);
+        }
       
 
 

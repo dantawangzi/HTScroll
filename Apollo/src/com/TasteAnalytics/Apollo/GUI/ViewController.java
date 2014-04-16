@@ -82,6 +82,10 @@ public class ViewController {
     public CategoryBarElement data;
     public HashMap<Integer, TreeNode> leaves = new HashMap<Integer,TreeNode>();
      
+    
+    
+    
+    public List<TreeNode> myRenderingTree;
      
      
      public void loadCacheData(String databaseName, String TreeString, String host) throws IOException

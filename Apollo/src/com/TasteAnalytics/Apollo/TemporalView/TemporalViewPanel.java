@@ -2175,20 +2175,12 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             detectionResults.add(Cusum.cusumProcess(fs, (float) eThreshold));
         }
 
-//         for (float[][] fs : detectionResults) {
-//             
-//             for (int i=0; i<fs.length; i++)
-//                 for (int j = 0; j<fs[i].length; j++)
-//                    System.out.print(fs[i][j] + " ");
-//             
-//         }
-        //computeEventOutlineArea();
+
         int count = 0;
         for (float[][] detectionResult : detectionResults) {
             for (float[] detectionResult1 : detectionResult) {
                 if ((detectionResult1[1] > 0)) {
-              
-              
+                            
                     if (detectionResult1[1] == 1) {
                         count++;
                        

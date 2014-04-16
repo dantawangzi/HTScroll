@@ -11,6 +11,7 @@ import com.TasteAnalytics.Apollo.TreeMapView.RandomMap;
 import com.TasteAnalytics.Apollo.TreeMapView.Rect;
 import com.TasteAnalytics.Apollo.TreeMapView.SquarifiedLayout;
 import com.TasteAnalytics.Apollo.TreeMapView.TreeModel;
+import com.TasteAnalytics.Apollo.eventsview.Cusum;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -711,6 +712,59 @@ public List<Integer> getTopicsContainedIdx()
       
       return this.annonation;
   }
+  
+  
+  
+  public float detectEvents(float eThreshold) {
+
+        List<float[]> unormStreams = new ArrayList<float[]>();
+        ArrayList<float[][]> detectionResults = new ArrayList<float[][]>();//detectionResults.clear();
+
+        if (!this.getChildren().isEmpty()) {
+            for (int i = 0; i < this.getChildren().size(); i++) {
+                List<Float> temp = ((TreeNode) this.getChildren().get(i)).getUnNormArrayValue();
+
+                float[] tempf = new float[temp.size()];
+                for (int j = 0; j < temp.size(); j++) {
+                    tempf[j] = temp.get(j);
+                }
+
+                unormStreams.add(tempf);
+
+            }
+        } else {
+            List<Float> temp = ((TreeNode) this).getUnNormArrayValue();
+
+            float[] tempf = new float[temp.size()];
+            for (int j = 0; j < temp.size(); j++) {
+                tempf[j] = temp.get(j);
+            }
+
+            unormStreams.add(tempf);
+        }
+
+        //List<float[]>
+        for (float[] fs : unormStreams) {
+            detectionResults.add(Cusum.cusumProcess(fs, (float) eThreshold));
+        }
+
+
+        int count = 0;
+        for (float[][] detectionResult : detectionResults) {
+            for (float[] detectionResult1 : detectionResult) {
+                if ((detectionResult1[1] > 0)) {
+                            
+                    if (detectionResult1[1] == 1) {
+                        count++;
+                       
+                    }
+                }
+            }
+        }
+        
+        this.setNumberOfEvents((float) (count==0?0.5:count));
+        return (float) (count==0?0.5:count);
+    }
 
 
   /**

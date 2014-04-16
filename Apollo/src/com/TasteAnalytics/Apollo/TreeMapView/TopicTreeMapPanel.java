@@ -34,6 +34,10 @@ public class TopicTreeMapPanel extends JPanel{
     private MapLayout algorithm;
     private Rect bounds;
     
+    public int mywidth = 0;
+    public int myheight = 0;
+    
+    
     MapModel map;
     List<TreeNode> tree;
     
@@ -57,6 +61,10 @@ public class TopicTreeMapPanel extends JPanel{
         
         this.setBackground(Colors.mainBackgroundColor);
    
+        mywidth = w;
+        myheight = h;
+        
+        
         parent = vc;
         this.tree = tr;
         setSize(w,h);
@@ -66,26 +74,22 @@ public class TopicTreeMapPanel extends JPanel{
         
         TreeMapNodePanel root = new TreeMapNodePanel(vc, tree.get(0),tree.get(0).getLevel(), new Rectangle(0, 0, w, h));
         
-        for (int i=0; i<tree.size(); i++)
-        {
-            if (tree.get(i).getValue().contains("L"))
-            {
-                int index = tree.get(i).getIndex();
-                  tree.get(i).setNumberOfEvents(parent.topicEventsCount.get(index));
-                
-            }
-            
-        }
+//        for (int i=0; i<tree.size(); i++)
+//        {
+//            if (tree.get(i).getValue().contains("L"))
+//            {
+//                int index = tree.get(i).getIndex();
+//                  tree.get(i).setNumberOfEvents(parent.topicEventsCount.get(index));
+//                
+//            }
+//            
+//        }
         
       
         
-        tree.get(0).calculateTreeMapTopicWeight();
+       // tree.get(0).calculateTreeMapTopicWeight();
         
-//        for (int i=0; i<tree.size(); i++)
-//        {
-//            System.out.println(tree.get(i).getValue() + " " + tree.get(i).getTreeMapTopicWeight());
-//        // tree.get(i).size = tree.get(i).getTreeMapTopicWeight();
-//        }
+
         
         
         updateTreeLayout(w,h);
@@ -174,7 +178,7 @@ public class TopicTreeMapPanel extends JPanel{
                 
                 for (int j=0; j<tree.size(); j++)
                 {
-                    TreeNode matchNode = parent.getTemporalFrame().getTree().get(j);
+                    TreeNode matchNode = parent.myTree.get(j);
                     
                     if (matchNode.getValue().equals(tree.get(i).getValue()) )
                     {
@@ -194,6 +198,14 @@ public class TopicTreeMapPanel extends JPanel{
         
     
         }
+    }
+
+    public List<TreeNode> getTree() {
+        return tree;
+    }
+
+    public void setTree(List<TreeNode> tree) {
+        this.tree = tree;
     }
     
     

@@ -4,6 +4,7 @@ package com.TasteAnalytics.Apollo.GUI;
 
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
+import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
@@ -31,9 +32,12 @@ import java.io.*;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -85,6 +89,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         MenuPanel = new javax.swing.JPanel();
         jComboBoxAnalytics = new javax.swing.JComboBox();
         jCheckBoxConsoleMenu = new javax.swing.JCheckBox();
+        jSliderTopicChooser = new javax.swing.JSlider();
+        jTextFieldTopicNumberChooser = new javax.swing.JTextField();
         buttonDisplayInformation = new java.awt.Button();
         jProgressBarSystem = new javax.swing.JProgressBar();
 
@@ -118,6 +124,16 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             }
         });
         MenuPanel.add(jCheckBoxConsoleMenu);
+
+        jSliderTopicChooser.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSliderTopicChooserStateChanged(evt);
+            }
+        });
+        MenuPanel.add(jSliderTopicChooser);
+
+        jTextFieldTopicNumberChooser.setText("0");
+        MenuPanel.add(jTextFieldTopicNumberChooser);
 
         buttonDisplayInformation.setActionCommand("DataInfo");
         buttonDisplayInformation.setLabel("DataInfo");
@@ -204,6 +220,64 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
     }//GEN-LAST:event_buttonDisplayInformationActionPerformed
 
+    private void jSliderTopicChooserStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderTopicChooserStateChanged
+        // TODO add your handling code here:
+        
+        if ( viewController.myRenderingTree!=null && treeMapPanel!=null)
+        {
+         viewController.myRenderingTree.clear();;// = new ArrayList<TreeNode>();
+                      
+         TreeNode t = new TreeNode();            
+         viewController.myRenderingTree.add(t);
+      
+         List<TreeNode> compareList = new ArrayList<TreeNode>();
+                    
+                    for (Map.Entry<Integer, TreeNode> entry : viewController.leaves.entrySet()) {
+                        //int key = entry.getKey();
+                        TreeNode value = entry.getValue();
+                       // System.out.println(value.getIndex() + " " + value.getNumberOfEvents() + " " + value.getTopicWeight() + " " + value.getTreeMapTopicWeight());               
+                        compareList.add(value);
+      
+                    }
+                    
+                treeNodeWeightComparer cper = new treeNodeWeightComparer();
+                Collections.sort(compareList, cper);        
+                            
+                            
+                for (int i=0; i<jSliderTopicChooser.getValue(); i++)
+                {
+                    
+                     viewController.myRenderingTree.add(compareList.get(i));
+                     t.addChildNode(compareList.get(i));
+                    
+                }
+                
+                
+                
+                treeMapPanel.setTree(viewController.myRenderingTree);
+                
+                treeMapPanel.updateTreeLayout(treeMapPanel.mywidth, treeMapPanel.myheight);
+                
+                if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1))
+                {
+                    viewController.getTemporalFrame().getTemporalPanelMap().get(1).clear();
+                
+                    for (int i=0; i<t.getChildren().size(); i++)
+                    {
+             try {
+                 viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+             } catch (IOException ex) {
+                 Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+             }
+                    }
+                }
+        
+        
+        }
+        //jSliderTopicChooser.
+        jTextFieldTopicNumberChooser.setText(String.valueOf(jSliderTopicChooser.getValue()));
+    }//GEN-LAST:event_jSliderTopicChooserStateChanged
+
     void initializeViews(CSVFile csvf) throws IOException {
 
         temporalFrame.getMainPanel().buildLabelTimeMap();
@@ -247,6 +321,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     private javax.swing.JCheckBox jCheckBoxConsoleMenu;
     private javax.swing.JComboBox jComboBoxAnalytics;
     private javax.swing.JProgressBar jProgressBarSystem;
+    private javax.swing.JSlider jSliderTopicChooser;
+    private javax.swing.JTextField jTextFieldTopicNumberChooser;
     private javax.swing.JPanel mViewPanel;
     private javax.swing.ButtonGroup menuEditGroup;
     // End of variables declaration//GEN-END:variables
@@ -375,6 +451,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                         viewController.id_type = ((String) (((HashMap) (hr.get("mongo_input"))).get("_id_type")));
                         viewController.tagLDA = Boolean.parseBoolean(String.valueOf(((HashMap) (hr.get("meta"))).get("tlda")));
 
+                        
+                        int num_of_topics = Integer.parseInt(String.valueOf(((HashMap) (hr.get("meta"))).get("num_topics")));
                         displayedInformation.add( "num_of_topics: " + String.valueOf(((HashMap) (hr.get("meta"))).get("num_topics")));
                         displayedInformation.add("num_doc: " + String.valueOf(hr.get("num_docs")));
                         
@@ -399,9 +477,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                         displayedInformation.add("tag: " + viewController.tagLDA);
                         
                         
+                        jSliderTopicChooser.setMajorTickSpacing(5);
+                        jSliderTopicChooser.setMinimum(1);
+                        jSliderTopicChooser.setMaximum(num_of_topics);
                         
-                        
-                        
+                        jSliderTopicChooser.setPaintTicks(true);
+                      
+                        jSliderTopicChooser.setPaintLabels(true); 
                         
                         
                     }
@@ -535,7 +617,74 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     viewController.buildLabelLocations(csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
                     //topicFrame.setVisible(true);
 
-                    temporalFrame.PreDrawAllLeafs();
+                    //temporalFrame.PreDrawAllLeafs();
+                     for (Map.Entry<Integer, TreeNode> entry : viewController.leaves.entrySet())
+                     {
+                          TreeNode value = entry.getValue();
+                          value.detectEvents(3.0f);
+                         
+                     }
+                   
+                    viewController.myTree.get(0).calculateTreeMapTopicWeight();
+                    
+                    
+                    
+                    viewController.myRenderingTree = new ArrayList<TreeNode>();
+                      
+                    TreeNode t = new TreeNode();
+                    
+//                    t.getChildren().clear();
+                    
+                    viewController.myRenderingTree.add(t);
+                    
+                    
+                    jSliderTopicChooser.setValue(viewController.leaves.size()/2);
+                    
+                    
+                    
+                    List<TreeNode> compareList = new ArrayList<TreeNode>();
+                    
+                    for (Map.Entry<Integer, TreeNode> entry : viewController.leaves.entrySet()) {
+                        int key = entry.getKey();
+                        TreeNode value = entry.getValue();
+                        System.out.println(value.getIndex() + " " + value.getNumberOfEvents() + " " + value.getTopicWeight() + " " + value.getTreeMapTopicWeight());
+                        
+                        compareList.add(value);
+//                        if (value.getTreeMapTopicWeight()>=300)
+//                        {
+//                            viewController.myRenderingTree.add(value);
+//                                t.addChildNode(value);
+//                        }
+                        
+                    
+                    }
+                    
+                    treeNodeWeightComparer cper = new treeNodeWeightComparer();
+                Collections.sort(compareList, cper);        
+                            
+                            
+                for (int i=0; i<jSliderTopicChooser.getValue(); i++)
+                {
+                    
+                     viewController.myRenderingTree.add(compareList.get(i));
+                                t.addChildNode(compareList.get(i));
+                    
+                }
+                
+                
+                    for (int i=0; i<t.getChildren().size(); i++)
+                    {
+                        viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+                    }
+                    
+                    //temporalFrame.PreDrawAllLeafs();
+                    
+                    
+                    
+                    
+                    
+                            
+                            
 
 //for (int i=0;i<35;i++)                    
 //    viewController.topicEventsCount.add(1.0f);
@@ -595,7 +744,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     mongoClient.close();
 
 //
-                    treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myTree, 600, 800);//scrnsize.width/2, scrnsize.height);
+                    treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myRenderingTree, 600, 800);//scrnsize.width/2, scrnsize.height);
                     viewController.setTmp(treeMapPanel);
 
                     System.out.println("Topics Graph done!");
@@ -628,6 +777,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //            rightSplit.setOneTouchExpandable(true);
 //            rightSplit.setDividerLocation(0.8d);
 //            leftSplit.setResizeWeight(0.8d);
+                    
+                    
                     mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeMapPanel, temporalFrame);
                     //leftSplit, rightSplit);
                     mainSplit.setOneTouchExpandable(true);
@@ -635,6 +786,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     mainSplit.setResizeWeight(0.5d);
 
                     mainSplit.setContinuousLayout(true);
+                    
+                    
 
                     mainSplit.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
                         @Override
@@ -687,6 +840,38 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         });
     }
 
+    
+               public class treeNodeWeightComparer implements Comparator<TreeNode> {
+        //@Override
+//  public int compare(labelText x, labelText y) {
+//    // TODO: Handle null x or y values
+//    int startComparison = compare(x.probablity, y.probablity);
+//    return startComparison != 0 ? startComparison
+//                                : compare(x.probablity, y.probablity);
+//  }
+
+        // I don't know why this isn't in Long...
+        private int compare(double a, double b) {
+            return a > b ? -1
+                    : a < b ? 1
+                    : 0;
+        }
+
+    
+
+        public int compare(TreeNode o1, TreeNode o2) {
+             int startComparison = compare(o1.getTreeMapTopicWeight(), o2.getTreeMapTopicWeight());
+             
+            return startComparison != 0 ? startComparison
+                    : compare(o1.getTreeMapTopicWeight(), o2.getTreeMapTopicWeight());
+            
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+     
+    }
+               
+               
     public MinimalismMainFrame() {
         initComponents();
 
@@ -703,6 +888,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                 if (mainSplit != null) {
                     mainSplit.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                    
+                    treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
+                                treeMapPanel.invalidate();
+                                treeMapPanel.getRootPane().revalidate();
                 }
 
                 invalidate();
