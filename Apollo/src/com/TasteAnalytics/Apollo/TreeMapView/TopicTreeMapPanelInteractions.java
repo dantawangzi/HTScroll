@@ -75,7 +75,7 @@ public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotion
         
         currentPanel.updateLayout();
           
-          //  createHudWindow(e, mainFloatingHUDWindow);
+            createHudWindow(e, mainFloatingHUDWindow);
 
     }
 
@@ -83,7 +83,7 @@ public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotion
         currentPanel.mouseOvered = false;
         currentPanel.updateLayout();
         
-      //  mainFloatingHUDWindow.getJDialog().setVisible(false);
+        mainFloatingHUDWindow.getJDialog().setVisible(false);
         
        // If exit the treemap region. The main floating HUDWindow should dipose to clean the screen
 //        mainFloatingHUDWindow.getJDialog().dispose();
@@ -105,9 +105,6 @@ public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotion
      * This HUDWindow is used to show the Icons and Images.
      */
     private static final HudWindow mainFloatingHUDWindow = new HudWindow();
-    
-    
-    
     
     
     

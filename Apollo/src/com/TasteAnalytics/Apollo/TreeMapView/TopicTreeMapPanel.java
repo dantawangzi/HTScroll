@@ -131,7 +131,7 @@ public class TopicTreeMapPanel extends JPanel{
         }
        
         
-        HashMap<TreeNode, List<LabelText>> allLabels = parent.topicGraphicPanel.getAllLabels();
+        HashMap<TreeNode, List<LabelText>> allLabels = parent.allLabels;
         
         
         for (Map.Entry<TreeNode, List<LabelText>> entry : allLabels.entrySet()) {

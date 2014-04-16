@@ -309,11 +309,14 @@ public class ViewController {
             TreeNode t = new TreeNode(index, tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", ""));
 
             if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'N') {
-
+                String[] ary = new String[]{/*t.getValue()*/};
+                t.setNodeTopics(ary);
                 NodeArray[index] = t;
                 myTree.add(t);
             } else if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'L') {
+                t.setNodeTopics(allTopics.get(index + getGlobalReadIndex()));
                 LeafArray[index] = t;
+                t.setTopicWeight(topicWeights.get(index));                                
                 myTree.add(t);
                 leaves.put(index, t);
             } else {
@@ -921,51 +924,53 @@ public class ViewController {
 
     public void stateChanged(TreeNode ct) {
         currentNode = ct;
-
-        VisualizationViewer vv = getTopicGraphViewPanel().getVisualizationViewer();
-        final PickedState<TreeNode> pickedState = vv.getPickedVertexState();
-        Collection<TreeNode> vertices = vv.getGraphLayout().getGraph().getVertices();
-
-        pickedState.clear();
-        //System.out.println(selectedNode.toString());
-        int in = currentNode.getIndex();
-        String sla = currentNode.getValue();
-        //   System.out.println("selectedNode = " + in + " " + sla); 
-        for (Iterator<TreeNode> it = vertices.iterator(); it.hasNext();) {
-
-            Object k = it.next();
-            if (k instanceof TreeNode) {
-                TreeNode t = (TreeNode) k;
-                if (in == t.getIndex() && (sla == null ? t.getValue() == null : sla.equals(t.getValue()))) {
-                    pickedState.pick(t, true);
-                    // System.out.println(t.getValue() + "is matched" );
-                    break;
-                }
-            }
-        }
-
-        TreeNode tx = currentNode.getParent();
-        while (tx != null) {
-            int in1 = tx.getIndex();
-            String sla1 = tx.getValue();
-
-            innerCircle:
-            for (Iterator<TreeNode> it1 = vertices.iterator(); it1.hasNext();) {
-
-                TreeNode t1 = it1.next();
-                if (in1 == t1.getIndex() && (sla1.equals(t1.getValue()))) {
-                    pickedState.pick(t1, true);
-                    //  System.out.println(t1.getValue() + "is matched" );
-                    break innerCircle;
-                }
-            }
-
-            tx = tx.getParent();
-        }
-
-        getTopicGraphViewPanel().getVisualizationViewer().setPickedVertexState(pickedState);
-
-        vv.repaint();
+ // topic graph gone
+        
+        
+//        VisualizationViewer vv = getTopicGraphViewPanel().getVisualizationViewer();
+//        final PickedState<TreeNode> pickedState = vv.getPickedVertexState();
+//        Collection<TreeNode> vertices = vv.getGraphLayout().getGraph().getVertices();
+//
+//        pickedState.clear();
+//        //System.out.println(selectedNode.toString());
+//        int in = currentNode.getIndex();
+//        String sla = currentNode.getValue();
+//        //   System.out.println("selectedNode = " + in + " " + sla); 
+//        for (Iterator<TreeNode> it = vertices.iterator(); it.hasNext();) {
+//
+//            Object k = it.next();
+//            if (k instanceof TreeNode) {
+//                TreeNode t = (TreeNode) k;
+//                if (in == t.getIndex() && (sla == null ? t.getValue() == null : sla.equals(t.getValue()))) {
+//                    pickedState.pick(t, true);
+//                    // System.out.println(t.getValue() + "is matched" );
+//                    break;
+//                }
+//            }
+//        }
+//
+//        TreeNode tx = currentNode.getParent();
+//        while (tx != null) {
+//            int in1 = tx.getIndex();
+//            String sla1 = tx.getValue();
+//
+//            innerCircle:
+//            for (Iterator<TreeNode> it1 = vertices.iterator(); it1.hasNext();) {
+//
+//                TreeNode t1 = it1.next();
+//                if (in1 == t1.getIndex() && (sla1.equals(t1.getValue()))) {
+//                    pickedState.pick(t1, true);
+//                    //  System.out.println(t1.getValue() + "is matched" );
+//                    break innerCircle;
+//                }
+//            }
+//
+//            tx = tx.getParent();
+//        }
+//
+//        getTopicGraphViewPanel().getVisualizationViewer().setPickedVertexState(pickedState);
+//
+//        vv.repaint();
 
         //change event view frame
     }

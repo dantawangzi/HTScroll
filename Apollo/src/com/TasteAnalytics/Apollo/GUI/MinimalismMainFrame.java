@@ -366,19 +366,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     viewController.csvfFolderPath = ".\\";
                     
                     
-                    viewController.loadCacheData(job, TreeString, viewController.host);
-
-                    temporalFrame = new TemporalViewFrame(viewController, 600,800, viewController.data, viewController.myTree);//scrnsize.width / 2, scrnsize.height);
-
-                    viewController.addTemporalFrame(temporalFrame);
-
-                   // temporalFrame.loadCacheData(job, TreeString, viewController.host);
-            
-                    //temporalFrame.createWorldMap(maplocations);
-
-                    //temporalFrame.setVisible(true);
-                    //temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
-                    //temporalFrame.setLocation(0, 0);
+                   
                     
                     
                     HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
@@ -441,6 +429,21 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     viewController.extractFrequency();
                     
                     
+                     viewController.loadCacheData(job, TreeString, viewController.host);
+
+                    temporalFrame = new TemporalViewFrame(viewController, 600,800, viewController.data, viewController.myTree);//scrnsize.width / 2, scrnsize.height);
+
+                    viewController.addTemporalFrame(temporalFrame);
+
+                   // temporalFrame.loadCacheData(job, TreeString, viewController.host);
+            
+                    //temporalFrame.createWorldMap(maplocations);
+
+                    //temporalFrame.setVisible(true);
+                    //temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
+                    //temporalFrame.setLocation(0, 0);
+                    
+                    
                     //System.out.println("topic frame load topics done.");
 
                     //viewController.getTopicGraphViewPanel().buildTreeWithTreeString(TreeString);
@@ -451,6 +454,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     //topicFrame.setLocation(scrnsize.width / 2, 0);
 
                     //viewController.getTopicGraphViewPanel().generateLayout();
+                    
+                    
+                    
                     
                     viewController.buildLabelLocations( csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
                     //topicFrame.setVisible(true);
@@ -545,7 +551,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     
                     
 
-                    treeMapPanel = new TopicTreeMapPanel(viewController, topicFrame.getTree(), 600,800);//scrnsize.width/2, scrnsize.height);
+                    treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myTree, 600,800);//scrnsize.width/2, scrnsize.height);
                     viewController.setTmp(treeMapPanel);
 
                     System.out.println("Topics Graph done!");

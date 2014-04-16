@@ -974,13 +974,11 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
     public void calculateRenderControlPointsOfEachHierarchy(CategoryBarElement data, TreeNode t, float normalValue) {
 
-        float maxValue = 1.0f;//data.getMaximum();
-        // hierarchicalPoint.clear();
+        float maxValue = 1.0f;
+        
         try {
 
-            int numofYears = data.getNumOfYears();// Number of bars
-            //System.out.println(numofYears);
-
+            int numofYears = data.getNumOfYears();// Number of bars            
             int numberOfCategories = t.getChildren().size();
 
             if (numberOfCategories == 0) {
@@ -988,27 +986,23 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             }
 
             timecolumns.clear();
-
-            //   System.out.println("localmaxValue  " + localmaxValue);
+            
             int scale = 1;//numberOfCategories;
             int wscale = 1;
-
+            float mover = 1;
             currentPoint = new Point[numofYears + 2][numberOfCategories + 1];
             int h = (height) / scale - margin;
-
-            int offset_h = 0; //height/scale + (int) ((height/scale/3*(categoryIndex)));
-            int offset_w = 0; //width/wscale;
-
+            
             double verticalratio = (double) h / scale / 1;//localmaxValue;//maxValue;
             double horizontalratio = (double) width / wscale / (double) numofYears;
 
             for (int icol = 0; icol < numberOfCategories; icol++) {
-                currentPoint[0][icol] = new Point(0 + offset_w, (int) (height / scale / 1 * 0.5 + offset_h));
-                currentPoint[numofYears + 1][icol] = new Point(width / wscale + offset_w, (int) (height / scale / 1 * 0.5 + offset_h));
+                currentPoint[0][icol] = new Point(0, (int) (height / scale / 1 *mover ));
+                currentPoint[numofYears + 1][icol] = new Point(width / wscale , (int) (height / scale / 1 * mover ));
             }
 
-            currentPoint[0][numberOfCategories] = new Point(0 + offset_w, (int) (height / scale / 1 * 0.5 + offset_h));
-            currentPoint[numofYears + 1][numberOfCategories] = new Point(width / wscale + offset_w, (int) (height / scale / 1 * 0.5 + offset_h));
+            currentPoint[0][numberOfCategories] = new Point(0 , (int) (height / scale / 1 * mover));
+            currentPoint[numofYears + 1][numberOfCategories] = new Point(width / wscale , (int) (height / scale / 1 *mover ));
 
             //find max value
             for (int i = 0; i < numofYears; i++) {
@@ -1034,20 +1028,20 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
                 sum /= normalValue;
 
-                int offset = (int) (margin * 1.25 + (maxValue - sum) * 0.5 * verticalratio);
+                int offset = (int) (margin * 1.25 + (maxValue - sum) * mover * verticalratio);
                 for (int j = 0; j < numberOfCategories; j++) {
 
-                    currentPoint[i + 1][j] = new Point((int) ((i + 0.5) * horizontalratio + offset_w), offset + offset_h);
+                    currentPoint[i + 1][j] = new Point((int) ((i + mover) * horizontalratio ), offset );
                     offset += (int) (columValues.get(j) / normalValue * verticalratio);
 
                 }
 
-                currentPoint[i + 1][numberOfCategories] = new Point((int) ((i + 0.5) * horizontalratio + offset_w), offset + offset_h);
+                currentPoint[i + 1][numberOfCategories] = new Point((int) ((i + mover) * horizontalratio ), offset );
                 //TODO: Fix the year
-                timecolumns.add(new TimeColumn(i, null, null, i * horizontalratio, 0 + offset_w, horizontalratio, height / scale - offset_h));
+                timecolumns.add(new TimeColumn(i, null, null, i * horizontalratio, 0 , horizontalratio, height / scale ));
             }
 
-            //hierarchicalPoint.add(tempPoint);
+            
         } catch (Exception e) {
             System.out.println("Calculate hierarchical control point function failed!_themeriver");
         }
@@ -2030,7 +2024,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             FontMetrics metrics = this.curg2d.getFontMetrics();
 
             g2d.setColor(Color.BLACK);
-            for (int i = 0; i < number; i++) {
+            for (int i = 0; i < 0/*number*/; i++) {
 
                 // Upper Boundary
                 g2d.drawLine((int) ((i + 1) * ratio), 0, (int) ((i + 1) * ratio), height / 20);
@@ -2416,7 +2410,8 @@ int count = 0;
 
         if (parent.data.topicYearKwIdx != null) {
             System.out.println(this.currentNode.getValue());
-            labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), parent.data.topicYearKwIdx);
+         //   labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap((this.currentNode), parent.data.topicYearKwIdx);
+            //labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), parent.data.topicYearKwIdx);
             
                     }
         else

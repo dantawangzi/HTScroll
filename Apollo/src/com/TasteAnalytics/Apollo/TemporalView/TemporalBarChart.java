@@ -6,7 +6,11 @@
 
 package com.TasteAnalytics.Apollo.TemporalView;
 
+import com.TasteAnalytics.Apollo.GUI.ViewController;
 import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +22,9 @@ import java.util.List;
 
 public class TemporalBarChart {
     
+    
+    ViewController parent;
+    
     TreeNode node;
     
     int numoftimeslots;
@@ -26,11 +33,35 @@ public class TemporalBarChart {
     private CategoryBarElement data;
     
     
-    TemporalBarChart()
+    TemporalBarChart(ViewController vc, TreeNode ct)
     {
+        parent = vc;
+        node = ct;
         
-                
+
+    }
     
+    int rectwidth;
+    int rectheight;
+    
+    
+    void draw(Graphics g, Rectangle2D area)
+    {
+        Graphics2D g2 = (Graphics2D) g;
+        
+        for (int i=0; i<node.getArrayValue().size(); i++)
+        {
+            double width = area.getWidth();
+            double height = area.getHeight();
+            
+            double x = area.getX();
+                    
+            g2.setColor(node.getBaseColor());
+            g2.draw(new Rectangle2D.Double(x + i*6, node.getArrayValue().get(i),
+                               5, node.getArrayValue().get(i)));
+            
+        }
+        
     }
     
     
