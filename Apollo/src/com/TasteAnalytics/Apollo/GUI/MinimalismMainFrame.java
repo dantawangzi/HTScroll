@@ -31,6 +31,7 @@ import java.io.*;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -84,6 +85,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         MenuPanel = new javax.swing.JPanel();
         jComboBoxAnalytics = new javax.swing.JComboBox();
         jCheckBoxConsoleMenu = new javax.swing.JCheckBox();
+        buttonDisplayInformation = new java.awt.Button();
         jProgressBarSystem = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -116,6 +118,17 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             }
         });
         MenuPanel.add(jCheckBoxConsoleMenu);
+
+        buttonDisplayInformation.setActionCommand("DataInfo");
+        buttonDisplayInformation.setLabel("DataInfo");
+        buttonDisplayInformation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDisplayInformationActionPerformed(evt);
+            }
+        });
+        MenuPanel.add(buttonDisplayInformation);
+        buttonDisplayInformation.getAccessibleContext().setAccessibleName("buttonDisplayInfo");
+
         MenuPanel.add(jProgressBarSystem);
 
         mViewPanel.add(MenuPanel, java.awt.BorderLayout.PAGE_START);
@@ -133,11 +146,63 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     }//GEN-LAST:event_exitForm
 
     private void jCheckBoxConsoleMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxConsoleMenuActionPerformed
-                                    
-        consoleFrame.setVisible(jCheckBoxConsoleMenu.isSelected());        
-        
+
+        consoleFrame.setVisible(jCheckBoxConsoleMenu.isSelected());
+
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBoxConsoleMenuActionPerformed
+
+//    class NarrowOptionPane extends JOptionPane {
+//
+//  NarrowOptionPane() {
+//  }
+//
+//  
+//  
+//  
+//  public int getMaxCharactersPerLineCount() {
+//    return 100;
+//  }
+//}
+    List<String> displayedInformation = new ArrayList<String>();
+
+
+    private void buttonDisplayInformationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDisplayInformationActionPerformed
+
+        String msg = "";
+
+    //num_docs
+        //min_year
+        //topics
+        //bigram
+        //maxyear
+        //tick
+//    JOptionPane optionPane = new NarrowOptionPane();
+//    
+//    optionPane.setMessage(msg);
+//    optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+//    JDialog dialog = optionPane.createDialog(null, "job: ");
+//    
+//    dialog.setVisible(true);
+        
+        for (int i=0; i<displayedInformation.size(); i++)
+        {
+            msg += (displayedInformation.get(i) + "\n");
+            
+            
+        }
+        
+        JTextArea textArea = new JTextArea(msg);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize(new Dimension(300, 300));
+        JOptionPane.showMessageDialog(null, scrollPane, "job: " + viewController.collection,
+                JOptionPane.INFORMATION_MESSAGE);
+
+// TODO add your handling code here:
+
+    }//GEN-LAST:event_buttonDisplayInformationActionPerformed
 
     void initializeViews(CSVFile csvf) throws IOException {
 
@@ -177,6 +242,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel MenuPanel;
+    private java.awt.Button buttonDisplayInformation;
     private javax.swing.ButtonGroup buttonEditGroup;
     private javax.swing.JCheckBox jCheckBoxConsoleMenu;
     private javax.swing.JComboBox jComboBoxAnalytics;
@@ -187,18 +253,16 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
     public void run() {
 
-        
-        this.setExtendedState( JFrame.NORMAL );
-        this.setPreferredSize(new Dimension(1200,800));
-        this.setSize(1200,800);
-        
-        
+        this.setExtendedState(JFrame.NORMAL);
+        this.setPreferredSize(new Dimension(1200, 800));
+        this.setSize(1200, 800);
+
         viewController = new ViewController();
-        jCheckBoxConsoleMenu.setSelected(true);
+        jCheckBoxConsoleMenu.setSelected(false);
 
         consoleFrame = new ConsoleFrame();
         consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        consoleFrame.setVisible(true);
+        consoleFrame.setVisible(false);
 
         documentViewer = new DocumentViewer(viewController);
         documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -216,7 +280,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
 
-        
         connection = new LDAHTTPClient("http", viewController.host, String.valueOf(viewController.port));
         try {
             connection.login();
@@ -283,7 +346,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     }
 
                     System.out.append("topk loaded");
-
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    
+                    
                     for (Object r : (ArrayList) connection.getJob(job)) {
                         HashMap hr = (HashMap) r;
                         List<String> ls = ((List) hr.get("field"));
@@ -310,42 +375,70 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                         viewController.id_type = ((String) (((HashMap) (hr.get("mongo_input"))).get("_id_type")));
                         viewController.tagLDA = Boolean.parseBoolean(String.valueOf(((HashMap) (hr.get("meta"))).get("tlda")));
 
+                        displayedInformation.add( "num_of_topics: " + String.valueOf(((HashMap) (hr.get("meta"))).get("num_topics")));
+                        displayedInformation.add("num_doc: " + String.valueOf(hr.get("num_docs")));
+                        
+                        
+                        long d = Long.parseLong(String.valueOf(hr.get("min_year")));
+                        String mindate = format.format(new Date(d));
+                        
+                        displayedInformation.add("start from: " + mindate);
+                        
+                        d = Long.parseLong(String.valueOf(hr.get("max_year")));
+                        mindate = format.format(new Date(d));
+                        
+                        displayedInformation.add("to: " + mindate);
+                        
+                        
+                        displayedInformation.add("num of terms: " + String.valueOf(hr.get("num_terms")));
+                        displayedInformation.add("tick: " + String.valueOf(hr.get("incremental_days")));
+                         
+                     displayedInformation.add("database: " + viewController.database);
+                        displayedInformation.add("table: " + viewController.table);
+                        
+                        displayedInformation.add("tag: " + viewController.tagLDA);
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                     }
 
+                    
+                    
+                    
                     // Make sure all the backend and frontend are agreeing to this.
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                 
 
                     viewController.setFormat(format);
 
                     HashMap<String, Float> topicWeightMongo = new HashMap<String, Float>();
                     for (Object r : (ArrayList) connection.getJobDocs(job, "top_wt")) {
-                        
+
                         HashMap hr = (HashMap) r;
-                        
-                          String key = (String) hr.get("_id");
-                          float weights = Float.parseFloat( String.valueOf(hr.get("weight")));
-                          if (weights == 0)
-                              weights = 1;
-                          
-                          topicWeightMongo.put(key, weights);
-                        
-                        
-                        
+
+                        String key = (String) hr.get("_id");
+                        float weights = Float.parseFloat(String.valueOf(hr.get("weight")));
+                        if (weights == 0) {
+                            weights = 1;
+                        }
+
+                        topicWeightMongo.put(key, weights);
+
                     }
-                    
-                    
-                    for (int i=0; i<topicWeightMongo.size(); i++)
-                    {
-                         String key = "two" + (new Integer(i)).toString();
-                         
-                         viewController.topicWeights.add(topicWeightMongo.get(key));
-                        
-                        
+
+                    for (int i = 0; i < topicWeightMongo.size(); i++) {
+                        String key = "two" + (new Integer(i)).toString();
+
+                        viewController.topicWeights.add(topicWeightMongo.get(key));
+
                     }
-                    
+
                     String TreeString = "";
-                    
-                     for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
+
+                    for (Object r : (ArrayList) connection.getJobDocs(job, "flat")) {
                         TreeString = (String) ((HashMap) r).get("tree");
                     }
 
@@ -364,11 +457,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     String csvfilepath = csvf.getFolderPath();
                     viewController.csvfFolderPath = csvfilepath;
                     viewController.csvfFolderPath = ".\\";
-                    
-                    
-                   
-                    
-                    
+
                     HashMap<String, Float> termWeightMongo = new HashMap<String, Float>();
                     List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
 
@@ -420,60 +509,38 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                         csvf.setSimilarityMatrix(topicSim);
                     }
 
-                  
                     //topicFrame = new TopicGraphViewPanel(viewController, csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
                     //viewController.addTopicGraphViewPanel(topicFrame);
-                    
                     //viewController.getTopicGraphViewPanel().loadTopic(topics);
                     viewController.allTopics = topics;
                     viewController.extractFrequency();
-                    
-                    
-                     viewController.loadCacheData(job, TreeString, viewController.host);
 
-                    temporalFrame = new TemporalViewFrame(viewController, 600,800, viewController.data, viewController.myTree);//scrnsize.width / 2, scrnsize.height);
+                    viewController.loadCacheData(job, TreeString, viewController.host);
+
+                    temporalFrame = new TemporalViewFrame(viewController, 600, 800, viewController.data, viewController.myTree);//scrnsize.width / 2, scrnsize.height);
 
                     viewController.addTemporalFrame(temporalFrame);
 
                    // temporalFrame.loadCacheData(job, TreeString, viewController.host);
-            
                     //temporalFrame.createWorldMap(maplocations);
-
                     //temporalFrame.setVisible(true);
                     //temporalFrame.setSize(scrnsize.width / 2, scrnsize.height);
                     //temporalFrame.setLocation(0, 0);
-                    
-                    
                     //System.out.println("topic frame load topics done.");
-
                     //viewController.getTopicGraphViewPanel().buildTreeWithTreeString(TreeString);
-
                     //System.out.println("topic frame build tree done..");
-
                     //topicFrame.setSize(scrnsize.width / 2, scrnsize.height);
                     //topicFrame.setLocation(scrnsize.width / 2, 0);
-
                     //viewController.getTopicGraphViewPanel().generateLayout();
-                    
-                    
-                    
-                    
-                    viewController.buildLabelLocations( csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
+                    viewController.buildLabelLocations(csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
                     //topicFrame.setVisible(true);
-                    
-                    temporalFrame.PreDrawAllLeafs();
-                      
-                      
-                      
 
+                    temporalFrame.PreDrawAllLeafs();
 
 //for (int i=0;i<35;i++)                    
 //    viewController.topicEventsCount.add(1.0f);
-                      
-                      
-                      
                     worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200);
-                    
+
                     JFrame jp = new JFrame();
                     jp.setSize(new Dimension(1000, 1000));
                     jp.add(worldPanel);
@@ -488,70 +555,47 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //                         HashMap a = (HashMap ) r;
 //                         
 //                     }
-                    
-                    
+
                     MongoClient mongoClient = null;
-                try {
+                    try {
                         mongoClient = new MongoClient(viewController.host, 27017);
                     } catch (UnknownHostException ex) {
                         System.out.println("DB begin load cache error");
                     }
 
-                DB db = mongoClient.getDB("lda_results");
+                    DB db = mongoClient.getDB("lda_results");
 
-                db.authenticate("li", "li_user_2010".toCharArray());
-                DBCollection currentColl = db.getCollection(job);
-                DBCursor cursor = null;
+                    db.authenticate("li", "li_user_2010".toCharArray());
+                    DBCollection currentColl = db.getCollection(job);
+                    DBCursor cursor = null;
 
-                DBObject dbo = null;
-                    
+                    DBObject dbo = null;
+
                     BasicDBObject query = new BasicDBObject();
 //
                     query.put("type", "sent_agg");
 
 //
-                    
-                    
-                    
-            cursor = currentColl.find(query);
-            while (cursor.hasNext())
-            {
-                      dbo = (DBObject) cursor.next();
-                      String c = String.valueOf( dbo.get("count"));
-                      String p = String.valueOf (dbo.get("pos"));
-                      String n = String.valueOf(dbo.get("neg"));
-                      TreeNode.SentimentModel sm ;
-                      
-                      sm = new TreeNode.SentimentModel(Integer.parseInt(p),Integer.parseInt(n), Integer.parseInt(c));
-                      String ids = String.valueOf(dbo.get("_id"));
-                     
-                      
-                      int index = Integer.parseInt(ids.substring(3));
-                viewController.sen.put(index, sm);
-                
-            }
-            
-            mongoClient.close();
+                    cursor = currentColl.find(query);
+                    while (cursor.hasNext()) {
+                        dbo = (DBObject) cursor.next();
+                        String c = String.valueOf(dbo.get("count"));
+                        String p = String.valueOf(dbo.get("pos"));
+                        String n = String.valueOf(dbo.get("neg"));
+                        TreeNode.SentimentModel sm;
+
+                        sm = new TreeNode.SentimentModel(Integer.parseInt(p), Integer.parseInt(n), Integer.parseInt(c));
+                        String ids = String.valueOf(dbo.get("_id"));
+
+                        int index = Integer.parseInt(ids.substring(3));
+                        viewController.sen.put(index, sm);
+
+                    }
+
+                    mongoClient.close();
 
 //
-
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-
-                    treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myTree, 600,800);//scrnsize.width/2, scrnsize.height);
+                    treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myTree, 600, 800);//scrnsize.width/2, scrnsize.height);
                     viewController.setTmp(treeMapPanel);
 
                     System.out.println("Topics Graph done!");
@@ -584,27 +628,25 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //            rightSplit.setOneTouchExpandable(true);
 //            rightSplit.setDividerLocation(0.8d);
 //            leftSplit.setResizeWeight(0.8d);
-            mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeMapPanel, temporalFrame);
-                //leftSplit, rightSplit);
-            mainSplit.setOneTouchExpandable(true);
-            mainSplit.setDividerLocation(0.5d);
-            mainSplit.setResizeWeight(0.5d);
+                    mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeMapPanel, temporalFrame);
+                    //leftSplit, rightSplit);
+                    mainSplit.setOneTouchExpandable(true);
+                    mainSplit.setDividerLocation(0.5d);
+                    mainSplit.setResizeWeight(0.5d);
 
-            mainSplit.setContinuousLayout(true);
-            
-            
-            mainSplit.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+                    mainSplit.setContinuousLayout(true);
+
+                    mainSplit.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
                         @Override
                         public void propertyChange(PropertyChangeEvent pce) {
                             // do here
-                            
-                           if (treeMapPanel!=null)
-                            {
 
-                             //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
-                             treeMapPanel.updateTreeLayout( mainSplit.getLeftComponent().getWidth(),   mainSplit.getLeftComponent().getHeight());
-                             treeMapPanel.invalidate();
-                             treeMapPanel.getRootPane().revalidate();
+                            if (treeMapPanel != null) {
+
+                                //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                                treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
+                                treeMapPanel.invalidate();
+                                treeMapPanel.getRootPane().revalidate();
                             }
                         }
 
@@ -630,10 +672,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     mViewPanel.setBorder(blackline);
                     mViewPanel.add(mainSplit);
                     //mViewPanel.add(treeMapPanel);
-                    
-                    
-                    
-                    
 
                 } catch (IOException ex) {
                     Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -651,34 +689,28 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
     public MinimalismMainFrame() {
         initComponents();
-        
-        
+
         this.setTitle("Apollo Analytics");
-           thread = new Thread(this);
-           
-           
-           
+        thread = new Thread(this);
+
         this.addComponentListener(new ComponentListener() {
-            
 
             public void componentResized(ComponentEvent e) {
-                
-               if (mViewPanel!=null)
-                mViewPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
-               
-               if (mainSplit!=null)
-               {
-                   mainSplit.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
-               }
 
-               
-               invalidate();
-               
+                if (mViewPanel != null) {
+                    mViewPanel.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                }
+
+                if (mainSplit != null) {
+                    mainSplit.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                }
+
+                invalidate();
+
             }
-     
 
             public void componentMoved(ComponentEvent e) {
-               
+
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
@@ -690,8 +722,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        
-                }
+
+    }
 
     public void start() {
         thread.start();

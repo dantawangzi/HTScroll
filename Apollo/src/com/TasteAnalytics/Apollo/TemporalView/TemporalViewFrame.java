@@ -164,55 +164,55 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
         testPanel.setLayout(layout);
 
-        layoutPanelMap.put(0, new JPanel());
-        layoutPanelMap.get(0).setSize(new Dimension(x1, frameheight));
-        layoutPanelMap.get(0).setPreferredSize(new Dimension(x1, frameheight));
+  //      layoutPanelMap.put(0, new JPanel());
+//        layoutPanelMap.get(0).setSize(new Dimension(x1, frameheight));
+//        layoutPanelMap.get(0).setPreferredSize(new Dimension(x1, frameheight));
 
-        GridBagLayout gridBag = new GridBagLayout();
-        layoutPanelMap.get(0).setLayout(gridBag);
-
-        GridBagConstraints cons;
-
-        cons = new GridBagConstraints();
-        cons.gridx = 0;
-        cons.gridy = 0;
-        cons.gridwidth = 1;
-        cons.gridheight = 2;
-
-        cons.weighty = 1;//0.66;
-        cons.weightx = 1.0f;
-
-        cons.fill = GridBagConstraints.BOTH;
-
-        cons.anchor = GridBagConstraints.PAGE_START;
-        gridBag.setConstraints(mainPanel, cons);
-        mainPanel.setBorder(new LineBorder(Color.black, 1));
-        layoutPanelMap.get(0).add(mainPanel);
-
-        cons = new GridBagConstraints();
-        cons.gridx = 0;
-        cons.gridy = 2;
-        cons.weighty = 0.33;
-
-        cons.gridheight = 1;
-        cons.gridwidth = 1;
-        cons.weightx = 1.0f;
-
-        cons.fill = GridBagConstraints.BOTH;
-        cons.anchor = GridBagConstraints.PAGE_END;
-
-//        worldPanel.setBorder(new LineBorder(Color.black, 1));
-//        gridBag.setConstraints(worldPanel, cons);
-//        layoutPanelMap.get(0).add(worldPanel);
-//        
-        //layoutPanelMap.get(0).setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), frameheight));
-        testPanel.add(layoutPanelMap.get(0), "gap 0 0");
+//        GridBagLayout gridBag = new GridBagLayout();
+//        layoutPanelMap.get(0).setLayout(gridBag);
+//
+//        GridBagConstraints cons;
+//
+//        cons = new GridBagConstraints();
+//        cons.gridx = 0;
+//        cons.gridy = 0;
+//        cons.gridwidth = 1;
+//        cons.gridheight = 2;
+//
+//        cons.weighty = 1;//0.66;
+//        cons.weightx = 1.0f;
+//
+//        cons.fill = GridBagConstraints.BOTH;
+//
+//        cons.anchor = GridBagConstraints.PAGE_START;
+//        gridBag.setConstraints(mainPanel, cons);
+//        mainPanel.setBorder(new LineBorder(Color.black, 1));
+//        layoutPanelMap.get(0).add(mainPanel);
+//
+//        cons = new GridBagConstraints();
+//        cons.gridx = 0;
+//        cons.gridy = 2;
+//        cons.weighty = 0.33;
+//
+//        cons.gridheight = 1;
+//        cons.gridwidth = 1;
+//        cons.weightx = 1.0f;
+//
+//        cons.fill = GridBagConstraints.BOTH;
+//        cons.anchor = GridBagConstraints.PAGE_END;
+//
+////        worldPanel.setBorder(new LineBorder(Color.black, 1));
+////        gridBag.setConstraints(worldPanel, cons);
+////        layoutPanelMap.get(0).add(worldPanel);
+////        
+//        //layoutPanelMap.get(0).setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), frameheight));
+//        testPanel.add(layoutPanelMap.get(0), "gap 0 0");
 
         int secondColumnSize = 3;
         int numOfdummies = 0;
         if (num_of_extra_columns >= 1) {
 
-            layoutPanelMap.put(1, new JPanel());
+            layoutPanelMap.put(0, new JPanel());
 
             if (temporalPanelMap.get(1).size() <= 3) {
                 secondColumnSize = 3;
@@ -221,7 +221,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
             }
 
             GridLayout borderlayout = new GridLayout(secondColumnSize, 1);
-            layoutPanelMap.get(1).setLayout(borderlayout);
+            layoutPanelMap.get(0).setLayout(borderlayout);
 
             if (secondColumnSize <= 3) {
                 int widthHere = 0;
@@ -234,8 +234,8 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
                     temporalPanelMap.get(1).get(i).setBorder(new LineBorder(Color.black, 1));
                     widthHere = temporalPanelMap.get(1).get(i).getMyPanelWidth();
-                    //temporalPanelMap.get(1).get(i).setMyPanelSize(x1, y1);
-                    layoutPanelMap.get(1).add(temporalPanelMap.get(1).get(i));
+                   
+                    layoutPanelMap.get(0).add(temporalPanelMap.get(1).get(i));
 
                 }
                // System.out.println("widthHere" + widthHere);
@@ -247,7 +247,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
                     dummyPanel.setPreferredSize(new Dimension(widthHere, dummyHeight));
                     //dummyPanel.setBorder(new LineBorder(Color.black, 10));
                     dummyPanel.setBackground(Color.gray);
-                    layoutPanelMap.get(1).add(dummyPanel);
+                    layoutPanelMap.get(0).add(dummyPanel);
 
                 }
 
@@ -260,84 +260,84 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
                     temporalPanelMap.get(1).get(i).setPanelLabelId(i);
                     temporalPanelMap.get(1).get(i).setName("1 " + i);
                     //temporalPanelMap.get(1).get(i).setMyPanelSize(x1, y1);
-                    layoutPanelMap.get(1).add(temporalPanelMap.get(1).get(i));
+                    layoutPanelMap.get(0).add(temporalPanelMap.get(1).get(i));
 
                 }
 
             }
 
-            layoutPanelMap.get(1).setSize(temporalPanelMap.get(1).get(0).getMyPanelWidth(), frameheight);
-            layoutPanelMap.get(1).setPreferredSize(new Dimension(temporalPanelMap.get(1).get(0).getMyPanelWidth(), frameheight));
+            layoutPanelMap.get(0).setSize(temporalPanelMap.get(1).get(0).getMyPanelWidth(), frameheight);
+            layoutPanelMap.get(0).setPreferredSize(new Dimension(temporalPanelMap.get(1).get(0).getMyPanelWidth(), frameheight));
 
-            testPanel.add(layoutPanelMap.get(1)/*, "gap 0 0"*/);
+            testPanel.add(layoutPanelMap.get(0)/*, "gap 0 0"*/);
         }
 
         HashMap<Integer, Integer> lastColumnDummyNum = new HashMap<Integer, Integer>();
 
         lastColumnDummyNum.put(1, numOfdummies);
-
-        for (int L = 2; L < (temporalPanelMap.size() + 1); L++) {
-            Component[] jp = layoutPanelMap.get(L - 1).getComponents();
-
-            layoutPanelMap.put(L, new JPanel());
-
-            BoxLayout borderlayout = new BoxLayout(layoutPanelMap.get(L), BoxLayout.Y_AXIS);
-            layoutPanelMap.get(L).setLayout(borderlayout);
-            layoutPanelMap.get(L).setPreferredSize(new Dimension(temporalPanelMap.get(L - 1).get(0).getMyPanelWidth(), frameheight));
-            layoutPanelMap.get(L).setSize(temporalPanelMap.get(L - 1).get(0).getMyPanelWidth(), frameheight);
-
-            for (int m = 0; m < jp.length; m++) {
-
-                int count = 0;
-                System.out.println(jp[m].getClass());
-                Component comp = jp[m];
-
-                if (jp[m] instanceof JPanel && !(jp[m] instanceof TemporalViewPanel)) {
-                    JPanel dummyPanel = new JPanel();
-
-                    dummyPanel.setPreferredSize(new Dimension(temporalPanelMap.get(L - 1).get(0).getMyPanelWidth(), temporalPanelMap.get(L - 1).get(0).getMyPanelHeight()));
-                    //dummyPanel.setBorder(new LineBorder(Color.black, 10));
-                    dummyPanel.setBackground(Color.gray);
-                    layoutPanelMap.get(L).add(dummyPanel);
-
-                } else if (jp[m] instanceof TemporalViewPanel) {
-                    TemporalViewPanel tjp = (TemporalViewPanel) jp[m];
-
-                    if (tjp.getchildPanel().isEmpty()) {
-                        JPanel dummyPanel = new JPanel();
-                        dummyPanel.setPreferredSize(new Dimension(tjp.getMyPanelWidth(), tjp.getMyPanelHeight()));
-                        //dummyPanel.setBorder(new LineBorder(Color.black, 10));
-                        dummyPanel.setBackground(Color.gray);
-                        layoutPanelMap.get(L).add(dummyPanel);
-
-                    } else {
-
-                        for (int j = 0; j < tjp.getchildPanel().size(); j++) {
-
-                            TemporalViewPanel tempPanelChild = tjp.getchildPanel().get(j);
-                            tempPanelChild.setBorder(new LineBorder(Color.black, 1));
-                            tempPanelChild.setName(tempPanelChild.getLevel() + " " + count);
-                            tempPanelChild.setPanelLabelId(j);
-                            //widthHere = tempPanelChild.getMyPanelWidth();
-                            //y1 = tempPanel.getFatherPanel().getMyPanelHeight()/tempPanel.getFatherPanel().getchildPanel().size();
-                            //tempPanel.setPreferredSize(new Dimension(x1, y1));
-                            layoutPanelMap.get(L).add(tempPanelChild);
-
-                            count++;
-
-                        }
-
-                    }
-
-                } else {
-                    System.out.println("non-panel component detected, impossible!");
-                }
-
-            }
-
-            testPanel.add(layoutPanelMap.get(L), "gap 0 0");
-
-        }
+//
+//        for (int L = 2; L < (temporalPanelMap.size() + 1); L++) {
+//            Component[] jp = layoutPanelMap.get(L - 1).getComponents();
+//
+//            layoutPanelMap.put(L, new JPanel());
+//
+//            BoxLayout borderlayout = new BoxLayout(layoutPanelMap.get(L), BoxLayout.Y_AXIS);
+//            layoutPanelMap.get(L).setLayout(borderlayout);
+//            layoutPanelMap.get(L).setPreferredSize(new Dimension(temporalPanelMap.get(L - 1).get(0).getMyPanelWidth(), frameheight));
+//            layoutPanelMap.get(L).setSize(temporalPanelMap.get(L - 1).get(0).getMyPanelWidth(), frameheight);
+//
+//            for (int m = 0; m < jp.length; m++) {
+//
+//                int count = 0;
+//                System.out.println(jp[m].getClass());
+//                Component comp = jp[m];
+//
+//                if (jp[m] instanceof JPanel && !(jp[m] instanceof TemporalViewPanel)) {
+//                    JPanel dummyPanel = new JPanel();
+//
+//                    dummyPanel.setPreferredSize(new Dimension(temporalPanelMap.get(L - 1).get(0).getMyPanelWidth(), temporalPanelMap.get(L - 1).get(0).getMyPanelHeight()));
+//                    //dummyPanel.setBorder(new LineBorder(Color.black, 10));
+//                    dummyPanel.setBackground(Color.gray);
+//                    layoutPanelMap.get(L).add(dummyPanel);
+//
+//                } else if (jp[m] instanceof TemporalViewPanel) {
+//                    TemporalViewPanel tjp = (TemporalViewPanel) jp[m];
+//
+//                    if (tjp.getchildPanel().isEmpty()) {
+//                        JPanel dummyPanel = new JPanel();
+//                        dummyPanel.setPreferredSize(new Dimension(tjp.getMyPanelWidth(), tjp.getMyPanelHeight()));
+//                        //dummyPanel.setBorder(new LineBorder(Color.black, 10));
+//                        dummyPanel.setBackground(Color.gray);
+//                        layoutPanelMap.get(L).add(dummyPanel);
+//
+//                    } else {
+//
+//                        for (int j = 0; j < tjp.getchildPanel().size(); j++) {
+//
+//                            TemporalViewPanel tempPanelChild = tjp.getchildPanel().get(j);
+//                            tempPanelChild.setBorder(new LineBorder(Color.black, 1));
+//                            tempPanelChild.setName(tempPanelChild.getLevel() + " " + count);
+//                            tempPanelChild.setPanelLabelId(j);
+//                            //widthHere = tempPanelChild.getMyPanelWidth();
+//                            //y1 = tempPanel.getFatherPanel().getMyPanelHeight()/tempPanel.getFatherPanel().getchildPanel().size();
+//                            //tempPanel.setPreferredSize(new Dimension(x1, y1));
+//                            layoutPanelMap.get(L).add(tempPanelChild);
+//
+//                            count++;
+//
+//                        }
+//
+//                    }
+//
+//                } else {
+//                    System.out.println("non-panel component detected, impossible!");
+//                }
+//
+//            }
+//
+//            testPanel.add(layoutPanelMap.get(L), "gap 0 0");
+//
+//        }
 
 
         updateAllPanels();
@@ -471,19 +471,19 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         }
 
         testPanel.setPreferredSize(
-                new Dimension(
-                        (temporalPanelMap.size()) * tempWidth / (sizeFactor + 1) + tempWidth / (1 + mainSizeFactor),
+                new Dimension(tempWidth,
+                        //(temporalPanelMap.size()) * tempWidth / (sizeFactor + 1) + tempWidth / (1 + mainSizeFactor),
                         tempHeight));
 
        // System.out.println("in update testpan " + testPanel.getWidth() + " " + testPanel.getHeight());
-        mainPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight * 3 / 3);
+       // mainPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight * 3 / 3);
         //  worldPanel.resize(tempWidth / (1 + mainSizeFactor),tempHeight / 3);
         //worldPanel.setPreferredSize(new Dimension(tempWidth / (1 + mainSizeFactor), tempHeight / 3));
         //subPanel.setMyPanelSize(tempWidth / (1 + mainSizeFactor), tempHeight / 3);
 
         int maxSecondaryPanelHeight = testPanel.getHeight() / 3;
 
-        int secondWidth = (int) (myFrameWidth / (1 + sizeFactor));
+        int secondWidth = tempWidth;//(int) (myFrameWidth / (1 + sizeFactor));
        // System.out.println(temporalPanelMap.size() + " secondWidth " + secondWidth + " ");
 
         if (temporalPanelMap.size() > 0) {
@@ -515,7 +515,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
         //setMigLayoutForScrollPane();
         //mainPanel.setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()));
-        mainPanel.UpdateTemporalView(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight() * 3 / 3), mainPanel.getLocalNormalizingValue());
+        //mainPanel.UpdateTemporalView(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight() * 3 / 3), mainPanel.getLocalNormalizingValue());
         //subPanel.UpdateTemporalView(new Dimension(subPanel.getMyPanelWidth(), subPanel.getMyPanelHeight()), subPanel.getLocalNormalizingValue());
         // worldPanel.setPreferredSize(new Dimension(mainPanel.getMyPanelWidth(), mainPanel.getMyPanelHeight()/2));
 
@@ -572,6 +572,8 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
    
         testPanel.setPreferredSize(new Dimension(myFrameWidth, myFrameHeight));
         parent = vc;
+      
+        
         mainPanel = new TemporalViewPanel(vc);
 
         mainPanel.setName("Main");
@@ -580,7 +582,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         mainPanel.setLevel(0);
 
 
-        mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 3);
+        //mainPanel.setMyPanelSize( myFrameWidth, myFrameHeight / 3 * 3);
 
         layoutPanelMap.put(0, new JPanel());
         
@@ -590,13 +592,15 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         myTree = tree;
        
 
-        myTree.get(0).calculateNodeContainedIdx();
+       // myTree.get(0).calculateNodeContainedIdx();
         //  myTree.get(0).calculateNodeString();
-        System.out.println("building trees and values in temporal frame finished...");
+      //  System.out.println("building trees and values in temporal frame finished...");
        
         mainPanel.setData(data);
 
         mainPanel.currentNode = myTree.get(0);
+        
+        
         mainPanel.setTree(myTree);
 
        mainPanel.calculateLocalNormalizingValue(data, getMainPanel().currentNode);
@@ -609,6 +613,8 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
         
   
+
+        
         this.addComponentListener(new ComponentListener() {
             public void componentResized(ComponentEvent e) {
 
@@ -664,11 +670,11 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         getMainPanel().setTree(myTree);
 
         getMainPanel().calculateLocalNormalizingValue(data, getMainPanel().currentNode);
-        getMainPanel().calculateRenderControlPointsOfEachHierarchy(data, getMainPanel().currentNode, getMainPanel().getLocalNormalizingValue());
-        getMainPanel().computerZeroslopeAreasHierarchy(0);
-        getMainPanel().detectEvents(getMainPanel().getEventThreshold());
+        //getMainPanel().calculateRenderControlPointsOfEachHierarchy(data, getMainPanel().currentNode, getMainPanel().getLocalNormalizingValue());
+       // getMainPanel().computerZeroslopeAreasHierarchy(0);
+        //getMainPanel().detectEvents(getMainPanel().getEventThreshold());
 
-        getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
+       // getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
 
         //getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
         System.out.println("initial calculating of main and subpanel done");
@@ -690,13 +696,10 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
             
             if (parent.topicWeights.get(i)>100)
             {
-            TreeNode ct = parent.leaves.get(i);
-            
-            TemporalViewPanel tp;
-            
-         
-                     
-                            
+                TreeNode ct = parent.leaves.get(i);
+
+                TemporalViewPanel tp;
+                    
                             if (!getTemporalPanelMap().containsKey(1))
                             {
                                 List<TemporalViewPanel> tvpl = new ArrayList<TemporalViewPanel>();
@@ -837,7 +840,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         getMainPanel().calculateLocalNormalizingValue(data, getMainPanel().currentNode);
         getMainPanel().calculateRenderControlPointsOfEachHierarchy(data, getMainPanel().currentNode, getMainPanel().getLocalNormalizingValue());
 
-        getMainPanel().computerZeroslopeAreasHierarchy(0);
+      //  getMainPanel().computerZeroslopeAreasHierarchy(0);
 
 //        getSubPanel().currentNode = myTree.get(0);
 //
@@ -851,7 +854,8 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 //        getSubPanel().getDrawLabels().clear();
 //        getMainPanel().getDrawLabelsLocation().clear();
 //        getSubPanel().getDrawLabelsLocation().clear();
-        getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
+      
+        //getMainPanel().UpdateTemporalView(new Dimension(getMainPanel().getMyPanelWidth(), getMainPanel().getMyPanelHeight()), getMainPanel().getLocalNormalizingValue());
         //getSubPanel().UpdateTemporalView(new Dimension(getSubPanel().getMyPanelWidth(), getSubPanel().getMyPanelHeight()), getSubPanel().getLocalNormalizingValue());
 
         setMigLayoutForScrollPane();

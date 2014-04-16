@@ -554,24 +554,16 @@ public class ViewController {
             //if (currentNode == null)          
                 //currentNode = ap.currentNode;
 
-                TreeNode ttt = findMatchingNodeInTopicGraph(currentNode);
+                TreeNode ttt = currentNode;//findMatchingNodeInTopicGraph(currentNode);
             //key = new customLabelTimecolumnKey( ttt, selectedTimeColumn);
 
                 key = new TopicGraphViewPanel.customLabelTimecolumnKey(currentNode.getValue(), String.valueOf(selectedTimeColumn));
 
-            //System.out.println( ap.getLabelTimeMap().size());
-           // System.out.println(key.toString());
-            //System.out.println("you key? " + ap.getLabelTimeMap().containsKey(key));
+ 
                 highlightedTextLabels = ap.getLabelTimeMap().get(key);
 
                 if (highlightedTextLabels == null) {
 
-//                Iterator it = ap.getLabelTimeMap().keySet().iterator();
-//            while(it.hasNext())
-//            {
-//                TopicGraphViewPanel.customLabelTimecolumnKey k = (TopicGraphViewPanel.customLabelTimecolumnKey) it.next();
-//                System.out.println(k);
-//            }
                     System.out.println(key);
                     System.out.println("no wordle cloud map ");
 
