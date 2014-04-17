@@ -57,6 +57,9 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
     private List<TreeNode> myTree;
 
+    
+    
+    
     HashMap<Integer, List<TemporalViewPanel>> temporalPanelMap = new HashMap<Integer, List<TemporalViewPanel>>();
     HashMap<Integer, JPanel> layoutPanelMap = new HashMap<Integer, JPanel>();
 

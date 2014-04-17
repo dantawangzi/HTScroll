@@ -27,6 +27,7 @@ import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -43,6 +44,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import org.apache.commons.lang.StringUtils;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
@@ -810,6 +812,25 @@ public class ViewController {
         getTopicGraphViewPanel().setHighlightLabelsFromLabelTopics(highindex, highWeight, highIndexNumber);
 
     }
+    
+    
+    HashMap<TreeNode, BufferedImage> panelImages = new HashMap<TreeNode, BufferedImage>();
+
+    public HashMap<TreeNode, BufferedImage> getPanelImages() {
+        return panelImages;
+    }
+    
+    
+    
+    
+     public BufferedImage getScreenShot(TemporalViewPanel panel){
+        BufferedImage bi = new BufferedImage(
+            panel.getMyPanelWidth(), panel.getMyPanelHeight(), BufferedImage.TYPE_INT_ARGB);
+        panel.paint(bi.getGraphics());
+        return bi;
+    }
+     
+     
 
     public void addThemeRiver(TreeNode ct) throws IOException {
 
@@ -883,6 +904,9 @@ public class ViewController {
         //tvf.getSubPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), tvf.getSubPanel().getLocalNormalizingValue());
         System.out.println("second column panel added");
         this.getTemporalFrame().setMigLayoutForScrollPane();
+        
+        
+        
 
     }
 
@@ -1439,7 +1463,7 @@ public class ViewController {
         private String HelveticaFont = "Helvetica-Condensed-Bold";
         
         static private int occuranceFontSizePara = 2;
-        private int labelFontSize = 10; //18
+        private int labelFontSize = 20; //18
         
         static private int fontSizePerChar = 1;
         
@@ -1520,7 +1544,7 @@ public class ViewController {
                         
                         
 
-                        font = new Font(HelveticaFont, Font.PLAIN, occuranceFontSizePara * tempLT.getOccurance()/*occurances.get(index + 1)[j]*/ + labelFontSize);
+                        font = new Font(HelveticaFont, Font.PLAIN,  (int) (occuranceFontSizePara * tempLT.getProbablity()* 100)/*.getOccurance()occurances.get(index + 1)[j]*/ + labelFontSize);
                         //Font HelveticaFont = new Font("Helvetica", Font.BOLD, 12);
 
                         tempLT.setFont(font);

@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class LabelText extends JLabel implements MouseListener {
     boolean isDisplayed;
     int occurance;
     public float probablity;
-    Point location;
+    Point2D location;
     boolean highlightFromLabelTopics = false;
 
     Color stringColor;
@@ -114,13 +115,15 @@ public class LabelText extends JLabel implements MouseListener {
         rect = r;
     }
 
-    public void setLocation(Point r) {
+    public void setLocation(Point2D r) {
         location = r;
     }
 
-    @Override
-    public Point getLocation() {
-        return (Point) location;
+ 
+  
+
+    public Point2D getLocation2D() {
+        return location;
     }
 
     public Rectangle2D getRect() {
@@ -151,30 +154,30 @@ public class LabelText extends JLabel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
 
-        int a = 0;
+       
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

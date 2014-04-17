@@ -3,6 +3,7 @@
 package com.TasteAnalytics.Apollo.GUI;
 
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
+import com.TasteAnalytics.Apollo.TemporalView.TemporalViewPanel;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
@@ -26,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -40,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -106,7 +109,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         mViewPanel.setLayout(new java.awt.BorderLayout());
 
         MenuPanel.setBackground(new java.awt.Color(39, 39, 39));
-        MenuPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         jComboBoxAnalytics.setFont(new java.awt.Font("Gill Sans", 0, 14)); // NOI18N
         jComboBoxAnalytics.setMaximumRowCount(12);
@@ -149,7 +151,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
         mViewPanel.add(MenuPanel, java.awt.BorderLayout.PAGE_START);
 
-        getContentPane().add(mViewPanel, java.awt.BorderLayout.CENTER);
+        getContentPane().add(mViewPanel, java.awt.BorderLayout.PAGE_START);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -254,9 +256,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                 
                 
                 
-                treeMapPanel.setTree(viewController.myRenderingTree);
-                
-                treeMapPanel.updateTreeLayout(treeMapPanel.mywidth, treeMapPanel.myheight);
+              
                 
                 if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1))
                 {
@@ -264,13 +264,45 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                 
                     for (int i=0; i<t.getChildren().size(); i++)
                     {
-             try {
-                 viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
-             } catch (IOException ex) {
-                 Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-             }
+                    try {
+                        viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+                        
+                        
+                    } catch (IOException ex) {
+                        Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                           }
                 }
+                
+                 viewController.getPanelImages().clear();
+                for (TemporalViewPanel tvp :  viewController.getTemporalFrame().getTemporalPanelMap().get(1))
+                {
+                    
+                    BufferedImage bi = viewController.getScreenShot(tvp);
+                    
+//                    File outputfile = new File("saved.png");
+//             try {
+//                 ImageIO.write(bi, "png", outputfile);
+//             } catch (IOException ex) {
+//                 Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//             }
+    
+    
+                    viewController.getPanelImages().put(tvp.currentNode, bi);
+                    
+                    
+                }
+                
+                
+                  
+                treeMapPanel.setTree(viewController.myRenderingTree);
+                
+            try {
+                treeMapPanel.updateTreeLayout(treeMapPanel.mywidth, treeMapPanel.myheight);
+            } catch (IOException ex) {
+                Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                
         
         
         }
@@ -681,30 +713,24 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     
                     
                     
-                    
-                    
-                            
-                            
 
-//for (int i=0;i<35;i++)                    
-//    viewController.topicEventsCount.add(1.0f);
                     worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200);
 
                     JFrame jp = new JFrame();
                     jp.setSize(new Dimension(1000, 1000));
-                    jp.add(worldPanel);
+                    jp.add(temporalFrame);
                     jp.setVisible(true);
-//            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());
-//            
-//            
+                    
+                    
+//            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());         
 //            treemapPanel.setVisible(true);
 
                     initializeViews(csvf);
 //                     for (Object r : (ArrayList) connection.getJobDocs(job, "sent_agg")) {
 //                         HashMap a = (HashMap ) r;
-//                         
 //                     }
 
+                    
                     MongoClient mongoClient = null;
                     try {
                         mongoClient = new MongoClient(viewController.host, 27017);
@@ -740,14 +766,51 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                         viewController.sen.put(index, sm);
 
                     }
+                    
+                    
+                    for (int i=0; i<viewController.myTree.size(); i++)
+                    {
+                        if (viewController.myTree.get(i).getChildren().isEmpty())
+                        {
+                            viewController.myTree.get(i).setSentiAgg(viewController.sen.get(viewController.myTree.get(i).getIndex()));
+                        }
+                    
+                    }
+                     
 
                     mongoClient.close();
 
-//
+                    
+                     if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1))
+                {
+                    viewController.getTemporalFrame().getTemporalPanelMap().get(1).clear();
+                
+                    for (int i=0; i<t.getChildren().size(); i++)
+                    {
+                    try {
+                        viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+                        
+                        
+                    } catch (IOException ex) {
+                        Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                           }
+                }
+                     
+                     
+                    for (TemporalViewPanel tvp :  viewController.getTemporalFrame().getTemporalPanelMap().get(1))
+                    {
+
+                        BufferedImage bi = viewController.getScreenShot(tvp);
+                        viewController.getPanelImages().put(tvp.currentNode, bi);
+
+                    }
+
+                    
                     treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myRenderingTree, scrnsize.width/2, scrnsize.height);//, );
                     viewController.setTmp(treeMapPanel);
 
-                    System.out.println("Topics Graph done!");
+                    
 
 //            PrefuseLabelTopicGraphPanel labelTopicGraphPanel = null;
 //            if (viewController.tagLDA) {
@@ -756,31 +819,31 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //
 //            //        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
 //            //        mButtonPanel.setBorder(orangeLine);
-//            rightTopScrollPane = new JScrollPane(topicFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//            rightTopScrollPane.setViewportView(topicFrame);
-//
-//            rightBottomScrollPane = new JScrollPane(labelTopicGraphPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//            rightBottomScrollPane.setViewportView(labelTopicGraphPanel);
-//
-//            leftTopScrollPane = new JScrollPane(temporalFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//            leftTopScrollPane.setViewportView(temporalFrame);
-//
-//            leftBottomScrollPane = new JScrollPane(treeMapPanel/*worldPanel*/, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//            leftBottomScrollPane.setViewportView(treeMapPanel/*worldPanel*/);
-//
+//            rightTopScrollPane = new JScrollPane(temporalFrame, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//            rightTopScrollPane.setViewportView(temporalFrame);
+////
+//            JPanel tempp = new JPanel();
+//            rightBottomScrollPane = new JScrollPane(tempp, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//            rightBottomScrollPane.setViewportView(tempp);
+////
+//            leftTopScrollPane = new JScrollPane(treeMapPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//            leftTopScrollPane.setViewportView(treeMapPanel);
+////
+//            leftBottomScrollPane = new JScrollPane(worldPanel/*worldPanel*/, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//            leftBottomScrollPane.setViewportView(worldPanel/*worldPanel*/);
+////
 //            leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,leftTopScrollPane, leftBottomScrollPane);
 //            leftSplit.setOneTouchExpandable(true);
 //            leftSplit.setDividerLocation(0.8d);
 //            leftSplit.setResizeWeight(0.8d);
-//
+////
 //            rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,rightTopScrollPane, rightBottomScrollPane);
 //            rightSplit.setOneTouchExpandable(true);
 //            rightSplit.setDividerLocation(0.8d);
 //            leftSplit.setResizeWeight(0.8d);
-                    
-                    
-                    mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeMapPanel, temporalFrame);
-                    //leftSplit, rightSplit);
+                                        
+            mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,  treeMapPanel, worldPanel);//leftSplit, rightSplit);//
+                   
                     mainSplit.setOneTouchExpandable(true);
                     mainSplit.setDividerLocation(0.5d);
                     mainSplit.setResizeWeight(0.5d);
@@ -796,8 +859,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                             if (treeMapPanel != null) {
 
-                                //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
-                                treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
+                                try {
+                                    //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                                    treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
+                                } catch (IOException ex) {
+                                    Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                                 treeMapPanel.invalidate();
                                 treeMapPanel.getRootPane().revalidate();
                             }
@@ -889,7 +956,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                 if (mainSplit != null) {
                     mainSplit.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
                     
-                    treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
+                    try {
+                        treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
+                    } catch (IOException ex) {
+                        Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                                 treeMapPanel.invalidate();
                                 treeMapPanel.getRootPane().revalidate();
                 }

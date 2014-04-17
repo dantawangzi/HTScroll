@@ -10,10 +10,13 @@ import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.Util.Colors;
 import com.TasteAnalytics.Apollo.Util.SystemPreferences;
+import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +52,7 @@ public class TopicTreeMapPanel extends JPanel {
 
     int wordsToDisplay = 50;
 
-    public TopicTreeMapPanel(ViewController vc, List<TreeNode> tr, int w, int h) {
+    public TopicTreeMapPanel(ViewController vc, List<TreeNode> tr, int w, int h) throws IOException {
 
 //        TopicTreeMapPanelInteractions interactions = new TopicTreeMapPanelInteractions();
 //        addMouseListener(interactions);
@@ -95,7 +98,9 @@ public class TopicTreeMapPanel extends JPanel {
         for (int i = 1; i < tree.size(); i++) {
          //Rect r = new Rect(tree.get(i).getMyRect().x,tree.get(i).getMyRect().y, tree.get(i).getMyRect().width, tree.get(i).getMyRect().height);   
 
-            TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i), tree.get(i).getLevel(), tree.get(i).getMyRect());
+            
+            TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i), tree.get(i).getLevel(), tree.get(i).getMyRect(), parent.getPanelImages().get(tree.get(i)));
+            
 
             nodePanels.put(tree.get(i), tmp);
             
@@ -129,7 +134,22 @@ public class TopicTreeMapPanel extends JPanel {
                 }
 
                 nodePanels.get(key).setLabels(tmplist);
-                nodePanels.get(key).DrawWordleCloud(new Point(0,0), tmplist);// ?? 0,0??
+                
+                 for (int i = 0; i < tmplist.size(); i++) {
+            LabelText lt = tmplist.get(i);
+
+            String text = lt.getString();
+            if (text == null) {
+                continue;
+            }
+
+            Font font = lt.getFont();
+
+            LabelWordleLite word = new LabelWordleLite(text, font, 0, lt);
+            nodePanels.get(key).list.add(word);
+                 }
+            
+                nodePanels.get(key).DrawWordleCloud(new Point(nodePanels.get(key).myRect.width/2, nodePanels.get(key).myRect.height/2), tmplist);// ?? 0,0??
 
             } else {
                 System.out.println("does not contain this node " + key.toString());
@@ -137,19 +157,19 @@ public class TopicTreeMapPanel extends JPanel {
 
         }
 
-        for (TreeNode leafNode : tree) {
-            if (leafNode.getChildren().isEmpty()) {
-                int key = leafNode.getIndex();
-                leafNode.setSentiAgg(parent.sen.get(key));
-                for (int j = 0; j < tree.size(); j++) {
-                    TreeNode matchNode = parent.myTree.get(j);
-                    if (matchNode.getValue().equals(leafNode.getValue())) {
-                        leafNode.setArrayValue(matchNode.getArrayValue());
-                        break;
-                    }
-                }
-            }
-        }
+//        for (TreeNode leafNode : tree) {
+//            if (leafNode.getChildren().isEmpty()) {
+//                int key = leafNode.getIndex();
+//                leafNode.setSentiAgg(parent.sen.get(key));
+//                for (int j = 0; j < tree.size(); j++) {
+//                    TreeNode matchNode = parent.myTree.get(j);
+//                    if (matchNode.getValue().equals(leafNode.getValue())) {
+//                        leafNode.setArrayValue(matchNode.getArrayValue());
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     }
 
     public List<TreeNode> getTree() {
@@ -160,7 +180,7 @@ public class TopicTreeMapPanel extends JPanel {
         this.tree = tree;
     }
 
-    public void updateTreeLayout(int w, int h) {
+    public void updateTreeLayout(int w, int h) throws IOException {
 
         tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
         Mappable[] leaves = tree.get(0).getItems();
@@ -174,8 +194,14 @@ public class TopicTreeMapPanel extends JPanel {
         for (TreeNode treenode : tree) {
             if (nodePanels.containsKey(treenode)) {
                 TreeMapNodePanel tmp = nodePanels.get(treenode);
+                tmp.setMyBI( parent.getPanelImages().get(treenode));
+                
                 tmp.setMyRect(treenode.getMyRect());
+                
                 tmp.updateLayout();
+                
+                tmp.DrawWordleCloud(new Point(0,0), nodePanels.get(treenode).getLabels());
+           
                 //TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i),tree.get(i).getLevel(), tree.get(i).getMyRect());
             }
         }
