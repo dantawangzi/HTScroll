@@ -211,7 +211,7 @@ public class WordleAlgorithmLite {
 			}
 			strategy.initPosition(word);
 			SpiralWordleFitterLite mover = 
-				new SpiralWordleFitterLite(word, dim, layoutShape, moveResetTime);
+				new SpiralWordleFitterLite(word, dim, LayoutShape.ROUND, moveResetTime);
 			boolean flag = false;
 			//System.out.println(word.bigBounds.x+", "+word.bigBounds.y+"<<" + word.bigBounds.width + " " + word.bigBounds.height);
                         
@@ -241,22 +241,27 @@ public class WordleAlgorithmLite {
 //			}
 			word.setLayedOut(flag);
 		}
-		if (dumpLayout && dumpFileName != null) {
-			dump2Pdf(list, dumpFileName);
-		}
+                
+                /// This may be useful for the future, we can use this to save to report.
+//		if (dumpLayout && dumpFileName != null) {
+//			dump2Pdf(list, dumpFileName);
+//		}
 		if(cleanAfterDone) {
 			wrappers.cleanupLayout();
 		}
                 
-                Rectangle2D rect = null;
-                for (WordleWrapperLite word : wrappers.getDrawables()) {
-                    
-                        rect = (Rectangle2D) word.getBounds().clone();			
-                        //System.out.println(rect.getX() + " " + rect.getY() + " " + rect.getWidth() + " " + rect.getHeight());
-		}
                 
-                
+                /// TODO: I don't know why this is needed. Suggest removing.
+//                Rectangle2D rect = null;
+//                for (WordleWrapperLite word : wrappers.getDrawables()) {
+//                    
+//                        rect = (Rectangle2D) word.getBounds().clone();			
+//                        //System.out.println(rect.getX() + " " + rect.getY() + " " + rect.getWidth() + " " + rect.getHeight());
+//		}
 	}
+        
+        
+        
 	private void dump2Pdf(List<WordleWrapperLite> wrappers, String fileName){
 		//dump the correct wordle result to the file for debug purpose
 		Rectangle2D rect = null;

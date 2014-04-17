@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.TasteAnalytics.Apollo.TreeMapView;
 
 import com.TasteAnalytics.Apollo.GUI.ViewController;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
+import com.TasteAnalytics.Apollo.Util.SystemPreferences;
 import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
 import com.TasteAnalytics.Apollo.Wordle.WordleAlgorithmLite;
 import com.TasteAnalytics.Apollo.Wordle.WordleLite;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -32,8 +33,8 @@ import javax.swing.border.Border;
  *
  * @author lyu8
  */
-public class TreeMapNodePanel extends JPanel{
-    
+public class TreeMapNodePanel extends JPanel {
+
     TreeNode node;
     ViewController parent;
     JLabel title = new JLabel();
@@ -41,8 +42,7 @@ public class TreeMapNodePanel extends JPanel{
     int level;
     List<LabelText> labels;
     List<JLabel> mylabels = new ArrayList<JLabel>();
-    
-    
+
     boolean mouseOvered = false;
 
     public Rectangle getMyRect() {
@@ -54,48 +54,48 @@ public class TreeMapNodePanel extends JPanel{
     }
 
     class Slice {
-    double value;
-    Color color;
-    public Slice(double value, Color color) {  
-       this.value = value;
-       this.color = color;
-    }
- }
-    
-    void drawPie(Graphics2D g, Rectangle area) {
-      double total = 0.0D;
-      Slice[] slices = { new Slice(this.node.getSentiAgg().pos, new Color(160,170,105)), 
-   new Slice(-this.node.getSentiAgg().neg, new Color(174,86,80))};
-      
-      for (int i = 0; i < slices.length; i++) {
-         total += slices[i].value;
-      }
-      
-      
-      double curValue = 0.0D;
-      int startAngle = 0;
-      for (int i = 0; i < 2; i++) {
-         startAngle = (int) (curValue * 360 / total);
-         int arcAngle = (int) (slices[i].value * 360 / total);
-         g.setColor(slices[i].color);
-         g.fillArc(area.x, area.y, area.width, area.height, 
-         startAngle, arcAngle);
-         curValue += slices[i].value;
-      }
-   }
-    
-    
-     @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
 
-            int width = this.getWidth();
-            int height = this.getHeight();
-            int size = node.getArrayValue().size();
-            
-            Rectangle area = new Rectangle(0,0, this.myRect.width/4, this.myRect.width/4);
-            drawPie((Graphics2D) g, area);
-            
+        double value;
+        Color color;
+
+        public Slice(double value, Color color) {
+            this.value = value;
+            this.color = color;
+        }
+    }
+
+    void drawPie(Graphics2D g, Rectangle area) {
+        double totalPieSize = 0.0D;
+        Slice[] slices = {new Slice(this.node.getSentiAgg().pos, new Color(160, 170, 105)),
+            new Slice(-this.node.getSentiAgg().neg, new Color(174, 86, 80))};
+
+        for (Slice slice : slices) {
+            totalPieSize += slice.value;
+        }
+
+        double curValue = 0.0D;
+        int startAngle = 0; // Not in use right now. Do we still need this? 
+        for (int i = 0; i < SystemPreferences.numOfSentiments; i++) {
+            startAngle = (int) (curValue * 360 / totalPieSize);
+            int arcAngle = (int) (slices[i].value * 360 / totalPieSize);
+            g.setColor(slices[i].color);
+            g.fillArc(area.x, area.y, area.width, area.height,
+                    startAngle, arcAngle);
+            curValue += slices[i].value;
+        }
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        int width = this.getWidth();
+        int height = this.getHeight();
+        int size = node.getArrayValue().size();
+
+        Rectangle area = new Rectangle(0, 0, this.myRect.width / 4, this.myRect.width / 4);
+        drawPie((Graphics2D) g, area);
+
 //            for (int i=0; i<size; i++)
 //            {
 //                g.setColor(Color.black);
@@ -109,17 +109,10 @@ public class TreeMapNodePanel extends JPanel{
 //                g.drawLine(width/size*i-1, height/2 - (int) (node.getArrayValue().get(i-1)*this.getHeight()), width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
 //                
 //            }
-            
             //g.drawString("BLAH", 20, 20);
-            //g.drawRect(200, 200, 200, 200);
-        }
-        
-        
-        
-    
-    
-    
-    
+        //g.drawRect(200, 200, 200, 200);
+    }
+
     public boolean isMouseOvered() {
         return mouseOvered;
     }
@@ -127,7 +120,6 @@ public class TreeMapNodePanel extends JPanel{
     public void setMouseOvered(boolean mouseOvered) {
         this.mouseOvered = mouseOvered;
     }
-    
 
     public List<LabelText> getLabels() {
         return labels;
@@ -136,71 +128,61 @@ public class TreeMapNodePanel extends JPanel{
     public void setLabels(List<LabelText> labels) {
         this.labels = labels;
     }
-    
 
-    public void updateLayout()
-    {
+    public void updateLayout() {
         this.setBounds(this.myRect);
         Border bLine = BorderFactory.createLineBorder(Color.red, 2);
-        if (mouseOvered)
-        {
+        if (mouseOvered) {
             this.setBorder(bLine);
             //this.setBackground(Color.red);
-        }
-        else
-        {
+        } else {
             this.setBorder(null);
-            
+
         }
-        
+
         this.setBackground(node.getColor());
-        
+
         //this.getRootPane().revalidate();
-        
     }
-    
-    
-    TreeMapNodePanel(ViewController v, TreeNode t, int l, Rectangle r)
-    {
+
+    /// Public constructor
+    public TreeMapNodePanel(ViewController v, TreeNode t, int l, Rectangle r) {
         parent = v;
         level = l;
         node = t;
         myRect = r;
         this.setBounds(myRect);
         this.setBackground(node.getColor());
-        
-        
-        
+
         title.setText(t.getValue());
-        
-        if (!t.getChildren().isEmpty())
-        {
+
+        if (!t.getChildren().isEmpty()) {
             title.setVisible(false);
-        
+
             this.add(title);
         }
+
+        // This is the main cause of not showing the Circle Word Cloud!!! 
+        // Kind Derek!
+        this.setLayout(null);
         
-        
-         TopicTreeMapPanelInteractions interactions = new TopicTreeMapPanelInteractions(this);
+        TopicTreeMapPanelInteractions interactions = new TopicTreeMapPanelInteractions(this);
         addMouseListener(interactions);
         addMouseMotionListener(interactions);
-        
-        
+
     }
-    
-    
-    
+
     public void DrawWordleCloud(Point2D p, List<LabelText> ls) {
 
-        
         //ls.get(0).getFont()
+        // No Need to create the list any more. We can make this a statics and reused list
         List<LabelWordleLite> list = new ArrayList<LabelWordleLite>();
 
-        int size = 0;
+//        int size = 0;
+//
+//        size = ;
 
-        size = ls.size();
-
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < ls.size(); i++) {
             LabelText lt = ls.get(i);
 
             String text = lt.getString();
@@ -209,56 +191,53 @@ public class TreeMapNodePanel extends JPanel{
             }
 
             Font font = lt.getFont();
-            
-           //      Font font = new Font("Helvetica-Condensed-Bold", Font.BOLD, 10);
+
+//            Font font = new Font("Helvetica-Condensed-Bold", Font.BOLD, 10);
             LabelWordleLite word = new LabelWordleLite(text, font, 0, lt);
             list.add(word);
 
         }
 
+        WordleAlgorithmLite alg = new WordleAlgorithmLite(this.myRect);
         
-        WordleAlgorithmLite alg = new WordleAlgorithmLite(new Rectangle2D.Double(0, 0, this.getWidth(), this.getHeight()));//this.getWidth(), this.getHeight()));
-        //alg.displayParameters();
+//alg.displayParameters();
         alg.place(list);
 
         Rectangle2D bounds = this.myRect;// = findBoundary(list);
 
        // System.out.println(this.getBounds());
-       // System.out.println(bounds);
-
+        // System.out.println(bounds);
         for (LabelWordleLite word : list) {
 
+            // Li, It seems this was not used. 
             setLabelVisualPos(word, p, bounds);
-            //System.out.println(((TopicGraphViewPanel.labelText)word.data).getRect());
+//            System.out.println(word.shape.getBounds().x);
         }
 
         this.labels = ls;
-        
-        for (int i=0; i<ls.size(); i++)
-        {
+
+        // Doesn't seem this function use the SetLabel Pos at all!!
+        for (int i = 0; i < ls.size(); i++) {
             JLabel jl = new JLabel();
-            
+
             jl.setText(ls.get(i).getString());
             ls.get(i);
-            
+
             Point2D p1 = ls.get(i).getLocation();
-            jl.setBounds((int)p1.getX(), (int)p1.getY(), 10,10);
+//            System.out.println();
+            jl.setLocation((int) p1.getX(), (int) p1.getY());
+//            jl.setPreferredSize(new Dimension(80,40));
+            jl.setSize(jl.getPreferredSize());
             
-                
-                //multiTopicKeywordList.get(i).drawRect(g2d);
-                jl.setFont(ls.get(i).getFont());
-                jl.setBackground(Color.red);
-            
+            //multiTopicKeywordList.get(i).drawRect(g2d);
+            jl.setFont(ls.get(i).getFont());
+            jl.setBackground(Color.red);
             mylabels.add(jl);
             this.add(jl);
         }
 
-        
     }
-    
-    
-    
-    
+
     private Rectangle2D findBoundary(List<LabelWordleLite> symbol) {
         float min_x, max_x, min_y, max_y;
         min_x = 99999;
@@ -320,30 +299,28 @@ public class TreeMapNodePanel extends JPanel{
 
         return r;
     }
-    
-    
-    
+
     private void setLabelVisualPos(WordleLite symbol, Point2D p, Rectangle2D bounds) {
         LabelWordleLite label = (LabelWordleLite) symbol;
         Point2D location = label.getLocation();
         LabelText vi = (LabelText) label.data;
-        Rectangle2D glyphBound = label.getShape().getBounds2D();
+//        Rectangle2D glyphBound = label.getShape().getBounds2D();
+//
+//        float size = (float) (vi.getFont().getSize2D() /**
+//                 * vi.getOccurance()
+//                 */
+//                );
 
-        float size = (float) (vi.getFont().getSize2D() /**
-                 * vi.getOccurance()
-                 */
-                );
         
         
-        Font font = vi.getFont().deriveFont(size);
-        
-        //FontMetrics fm = this.getGraphics().getFontMetrics(font);
-        
-        //Rectangle2D strBound = fm.getStringBounds(label.text, this.getGraphics());
-
+//        Font font = vi.getFont().deriveFont(size);
+//        FontMetrics fm = this.getGraphics().getFontMetrics(font);
+//        Rectangle2D strBound = fm.getStringBounds(label.text, this.getGraphics());
          //System.out.println(vi.getString() + "size " + size);
         // System.out.println("strBound " + strBound);
         // System.out.println("glyphBound " + glyphBound);
+        
+        
         /*
          * location is the glyph's location, i.e.:
          * x = the minimum x coordinate of the glyph
@@ -351,12 +328,8 @@ public class TreeMapNodePanel extends JPanel{
          */
         //vi.setLocation(new Point2D.Double(location.getX(), location.getY()));
         //  vi.setLocation(new Point2D.Double(location.getX() + glyphBound.getX() + strBound.getWidth() / 2, location.getY() + fm.getDescent() - strBound.getHeight() / 2));
-        
-
-
-//double x = p.getX() + location.getX() - glyphBound.getX() / 2 - strBound.getWidth() / 2;
-        //double y = p.getY() + location.getY() - glyphBound.getY() / 2 - strBound.getHeight() / 2;
-
+//        double x = p.getX() + location.getX();// - glyphBound.getX() / 2;// - strBound.getWidth() / 2;
+//        double y = p.getY() + location.getY();// - glyphBound.getY() / 2;// - strBound.getHeight() / 2;
 //        if (x < 0) {
 //            x = x - bounds.getX();
 //        }
@@ -370,13 +343,15 @@ public class TreeMapNodePanel extends JPanel{
 //        else if (y >= this.getHeight()) {
 //            y = y - (y - bounds.getHeight());
 //        }
-        
-         double x = p.getX() + location.getX();// - glyphBound.getX() / 2;
-        double y = p.getY() + location.getY() ;//- glyphBound.getY() / 2 ;
-        
+        double x = p.getX() + location.getX();// - glyphBound.getX() / 2;
+        double y = p.getY() + location.getY();//- glyphBound.getY() / 2 ;
+
         Point2D vilocation = new Point2D.Double(x, y);
 
-        vi.setLocation(new Point((int)vilocation.getX(), (int)vilocation.getY()));// + fm.getDescent() - strBound.getHeight() / 2));
+//        System.out.println(x + " " + y);
+        // TODO: Int Points may just limit the placement
+        // Where do we use vi?
+        vi.setLocation(new Point((int) vilocation.getX(), (int) vilocation.getY()));// + fm.getDescent() - strBound.getHeight() / 2));
         //System.out.println(p + " " +location);
 
         //System.out.println("xxx" + fm.getDescent());
@@ -386,7 +361,4 @@ public class TreeMapNodePanel extends JPanel{
         // vi.setY(location.getY() + fm.getDescent() - strBound.getHeight() / 2);
     }
 
-    
-    
-    
 }

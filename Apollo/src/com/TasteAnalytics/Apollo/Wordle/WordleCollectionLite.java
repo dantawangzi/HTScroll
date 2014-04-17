@@ -25,7 +25,7 @@ class WordleCollectionLite {
 	void initLayout(final Dimension2D dim, PositionInitiatorLite pi){
 		Rectangle2D rect = new Rectangle2D.Double();
 		rect.setFrameFromDiagonal(0, 0, dim.getWidth(), dim.getHeight());
-		spatialIndex = new QuadTreeLite(rect, 200);
+		spatialIndex = new QuadTreeLite(rect, 200); //??? 200? 
 		for (final WordleWrapperLite s : wrappers){
 			s.bePrepared();
 		}
