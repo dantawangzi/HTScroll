@@ -744,7 +744,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     mongoClient.close();
 
 //
-                    treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myRenderingTree, 600, 800);//scrnsize.width/2, scrnsize.height);
+                    treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myRenderingTree, scrnsize.width/2, scrnsize.height);//, );
                     viewController.setTmp(treeMapPanel);
 
                     System.out.println("Topics Graph done!");

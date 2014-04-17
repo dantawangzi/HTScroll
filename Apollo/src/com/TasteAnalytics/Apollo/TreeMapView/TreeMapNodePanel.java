@@ -13,15 +13,16 @@ import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
 import com.TasteAnalytics.Apollo.Wordle.WordleAlgorithmLite;
 import com.TasteAnalytics.Apollo.Wordle.WordleLite;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -44,6 +45,8 @@ public class TreeMapNodePanel extends JPanel {
     List<JLabel> mylabels = new ArrayList<JLabel>();
 
     boolean mouseOvered = false;
+    
+    private Graphics2D curg2d;
 
     public Rectangle getMyRect() {
         return myRect;
@@ -84,17 +87,61 @@ public class TreeMapNodePanel extends JPanel {
             curValue += slices[i].value;
         }
     }
+    
+//    private boolean firsttime;
+//    private boolean needDoLayout;
+//    private BufferedImage bi;
+//    private Rectangle area;
+//    @Override
+//    public void update(Graphics g) {
+//        Graphics2D g2 = (Graphics2D) g;
+//        //System.out.println("Rendering");
+//        if (firsttime) {
+//            area = new Rectangle(this.getWidth(), this.getHeight());
+//            bi = (BufferedImage) createImage(this.getWidth(), this.getHeight());
+//            curg2d = bi.createGraphics();
+//            curg2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//            firsttime = false;
+//        }
+//
+//        // Clears the rectangle that was previously drawn.
+//        if (curg2d == null) return;
+//        
+//        curg2d.setColor(Color.WHITE);
+//        //curg2d.setColor(Color.black);
+//        curg2d.fillRect(0, 0, area.width, area.height);
+//
+//        if (needDoLayout) {
+//
+////            // System.out.println( this.name + "do le mei?");
+////            clearPreviousValues();
+////            // computerZeroslopeAreas();
+////            computerZeroslopeAreasHierarchy(0);
+////
+////            //System.out.println("need do layout" + ++countnn);
+////            needDoLayout = false;
+//        }
+//
+//        curg2d.setColor(Color.BLACK);
+//
+//        g2.drawImage(bi, 0, 0, this);
+//    }
+//    
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+     
+        
         int width = this.getWidth();
         int height = this.getHeight();
         int size = node.getArrayValue().size();
 
         Rectangle area = new Rectangle(0, 0, this.myRect.width / 4, this.myRect.width / 4);
         drawPie((Graphics2D) g, area);
+        
+//        update(g);
+        
 
 //            for (int i=0; i<size; i++)
 //            {
@@ -109,7 +156,7 @@ public class TreeMapNodePanel extends JPanel {
 //                g.drawLine(width/size*i-1, height/2 - (int) (node.getArrayValue().get(i-1)*this.getHeight()), width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
 //                
 //            }
-            //g.drawString("BLAH", 20, 20);
+        //g.drawString("BLAH", 20, 20);
         //g.drawRect(200, 200, 200, 200);
     }
 
@@ -166,6 +213,8 @@ public class TreeMapNodePanel extends JPanel {
         // Kind Derek!
         this.setLayout(null);
         
+        
+
         TopicTreeMapPanelInteractions interactions = new TopicTreeMapPanelInteractions(this);
         addMouseListener(interactions);
         addMouseMotionListener(interactions);
@@ -181,7 +230,6 @@ public class TreeMapNodePanel extends JPanel {
 //        int size = 0;
 //
 //        size = ;
-
         for (int i = 0; i < ls.size(); i++) {
             LabelText lt = ls.get(i);
 
@@ -199,21 +247,22 @@ public class TreeMapNodePanel extends JPanel {
         }
 
         WordleAlgorithmLite alg = new WordleAlgorithmLite(this.myRect);
-        
+
 //alg.displayParameters();
         alg.place(list);
 
         Rectangle2D bounds = this.myRect;// = findBoundary(list);
 
-       // System.out.println(this.getBounds());
+        // System.out.println(this.getBounds());
         // System.out.println(bounds);
         for (LabelWordleLite word : list) {
 
-            // Li, It seems this was not used. 
             setLabelVisualPos(word, p, bounds);
+            
+            
 //            System.out.println(word.shape.getBounds().x);
         }
-
+        
         this.labels = ls;
 
         // Doesn't seem this function use the SetLabel Pos at all!!
@@ -228,7 +277,7 @@ public class TreeMapNodePanel extends JPanel {
             jl.setLocation((int) p1.getX(), (int) p1.getY());
 //            jl.setPreferredSize(new Dimension(80,40));
             jl.setSize(jl.getPreferredSize());
-            
+
             //multiTopicKeywordList.get(i).drawRect(g2d);
             jl.setFont(ls.get(i).getFont());
             jl.setBackground(Color.red);
@@ -304,23 +353,19 @@ public class TreeMapNodePanel extends JPanel {
         LabelWordleLite label = (LabelWordleLite) symbol;
         Point2D location = label.getLocation();
         LabelText vi = (LabelText) label.data;
-//        Rectangle2D glyphBound = label.getShape().getBounds2D();
+        Rectangle2D glyphBound = label.getShape().getBounds2D();
 //
 //        float size = (float) (vi.getFont().getSize2D() /**
 //                 * vi.getOccurance()
 //                 */
 //                );
 
-        
-        
 //        Font font = vi.getFont().deriveFont(size);
 //        FontMetrics fm = this.getGraphics().getFontMetrics(font);
 //        Rectangle2D strBound = fm.getStringBounds(label.text, this.getGraphics());
-         //System.out.println(vi.getString() + "size " + size);
+        //System.out.println(vi.getString() + "size " + size);
         // System.out.println("strBound " + strBound);
         // System.out.println("glyphBound " + glyphBound);
-        
-        
         /*
          * location is the glyph's location, i.e.:
          * x = the minimum x coordinate of the glyph

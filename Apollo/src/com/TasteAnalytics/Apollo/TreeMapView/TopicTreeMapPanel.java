@@ -41,10 +41,10 @@ public class TopicTreeMapPanel extends JPanel {
     List<TreeNode> tree;
 
     HashMap<TreeNode, MapModel> NodeMap = new HashMap<TreeNode, MapModel>();
-    HashMap<TreeNode, TreeMapNodePanel> nodePanel = new HashMap<TreeNode, TreeMapNodePanel>();
+    HashMap<TreeNode, TreeMapNodePanel> nodePanels = new HashMap<TreeNode, TreeMapNodePanel>();
 
     public HashMap<TreeNode, TreeMapNodePanel> getNodePanel() {
-        return nodePanel;
+        return nodePanels;
     }
 
     int wordsToDisplay = 50;
@@ -65,7 +65,9 @@ public class TopicTreeMapPanel extends JPanel {
         setPreferredSize(new Dimension(w, h));
         model = new TreeModel();
 
-        TreeMapNodePanel root = new TreeMapNodePanel(vc, tree.get(0), tree.get(0).getLevel(), new Rectangle(0, 0, w, h));
+        //TODO: We need to reconsider the tree generation mechanism
+        
+//        TreeMapNodePanel root = new TreeMapNodePanel(vc, tree.get(0), tree.get(0).getLevel(), new Rectangle(0, 0, w, h));
 
 //        for (int i=0; i<tree.size(); i++)
 //        {
@@ -95,7 +97,8 @@ public class TopicTreeMapPanel extends JPanel {
 
             TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i), tree.get(i).getLevel(), tree.get(i).getMyRect());
 
-            nodePanel.put(tree.get(i), tmp);
+            nodePanels.put(tree.get(i), tmp);
+            
             if (tree.get(i).getChildren().isEmpty()) {
                 tmp.setVisible(true);
                 // System.out.println(tree.get(i).getMyRect());
@@ -105,6 +108,7 @@ public class TopicTreeMapPanel extends JPanel {
                 tmp.setOpaque(false);
 
             }
+            
             this.add(tmp);
 
         }
@@ -117,15 +121,15 @@ public class TopicTreeMapPanel extends JPanel {
 
             List<LabelText> value = entry.getValue();
 
-            if (nodePanel.containsKey(key)) {
+            if (nodePanels.containsKey(key)) {
                 List<LabelText> tmplist = new ArrayList<LabelText>();
 
                 for (int i = 0; i < wordsToDisplay; i++) {
                     tmplist.add(value.get(i));
                 }
 
-                nodePanel.get(key).setLabels(tmplist);
-                nodePanel.get(key).DrawWordleCloud(new Point(0,0), tmplist);// ?? 0,0??
+                nodePanels.get(key).setLabels(tmplist);
+                nodePanels.get(key).DrawWordleCloud(new Point(0,0), tmplist);// ?? 0,0??
 
             } else {
                 System.out.println("does not contain this node " + key.toString());
@@ -133,24 +137,18 @@ public class TopicTreeMapPanel extends JPanel {
 
         }
 
-        for (int i = 0; i < tree.size(); i++) {
-
-            if (tree.get(i).getChildren().isEmpty()) {
-                int key = tree.get(i).getIndex();
-
-                tree.get(i).setSentiAgg(parent.sen.get(key));
-
+        for (TreeNode leafNode : tree) {
+            if (leafNode.getChildren().isEmpty()) {
+                int key = leafNode.getIndex();
+                leafNode.setSentiAgg(parent.sen.get(key));
                 for (int j = 0; j < tree.size(); j++) {
                     TreeNode matchNode = parent.myTree.get(j);
-
-                    if (matchNode.getValue().equals(tree.get(i).getValue())) {
-                        tree.get(i).setArrayValue(matchNode.getArrayValue());
+                    if (matchNode.getValue().equals(leafNode.getValue())) {
+                        leafNode.setArrayValue(matchNode.getArrayValue());
                         break;
                     }
                 }
-
             }
-
         }
     }
 
@@ -173,19 +171,16 @@ public class TopicTreeMapPanel extends JPanel {
 
         tree.get(0).calculateRect(new Rectangle(0, 0, w, h));
 
-        for (int i = 0; i < tree.size(); i++) {
-            if (nodePanel.containsKey(tree.get(i))) {
-                TreeMapNodePanel tmp = nodePanel.get(tree.get(i));
-                tmp.setMyRect(tree.get(i).getMyRect());
+        for (TreeNode treenode : tree) {
+            if (nodePanels.containsKey(treenode)) {
+                TreeMapNodePanel tmp = nodePanels.get(treenode);
+                tmp.setMyRect(treenode.getMyRect());
                 tmp.updateLayout();
                 //TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i),tree.get(i).getLevel(), tree.get(i).getMyRect());
-
             }
-
         }
-
         //if (model==null ) return;
-    //    LayoutDifference measure=new LayoutDifference();
+        //    LayoutDifference measure=new LayoutDifference();
         //Mappable[] leaves=model.getTreeItems();
         // measure.recordLayout(leaves);
         //model.layout(algorithm, bounds);
@@ -203,7 +198,7 @@ public class TopicTreeMapPanel extends JPanel {
 //           //tmpp.setBackground(Color.red);
 //           
 //            this.add(tmpp);
-//            
+//
 //            
 //        }
     }
