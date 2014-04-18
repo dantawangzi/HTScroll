@@ -15,6 +15,7 @@ import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
 import com.TasteAnalytics.Apollo.TreeMapView.TopicTreeMapPanel;
 import com.TasteAnalytics.Apollo.TreeMapView.TreeMapNodePanel;
+import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
 import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import com.TasteAnalytics.Apollo.eventsview.EventsViewListener;
@@ -812,15 +813,21 @@ public class ViewController {
         getTopicGraphViewPanel().setHighlightLabelsFromLabelTopics(highindex, highWeight, highIndexNumber);
 
     }
+
+    public HashMap<TreeNode, TemporalViewPanel> getTreemapMiniTemporal() {
+        return treemapMiniTemporal;
+    }
     
+    
+    
+    HashMap<TreeNode, TemporalViewPanel> treemapMiniTemporal = new HashMap<TreeNode, TemporalViewPanel>();
     
     HashMap<TreeNode, BufferedImage> panelImages = new HashMap<TreeNode, BufferedImage>();
 
     public HashMap<TreeNode, BufferedImage> getPanelImages() {
         return panelImages;
     }
-    
-    
+        
     
     
      public BufferedImage getScreenShot(TemporalViewPanel panel){
@@ -831,7 +838,47 @@ public class ViewController {
     }
      
      
+public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
+    
+    TemporalViewPanel tp = null;
 
+    tp = new TemporalViewPanel(this);
+    
+    tp.currentNode = ct;
+    tp.setData(this.data);
+        tp.setTree(this.myTree);
+    
+    tp.calculateLocalNormalizingValue(tp.getData(), tp.currentNode);
+    tp.buildLabelTimeMap();
+    
+    tp.setName("" + ct.getIndex());
+    tp.setPanelLabelId(ct.getIndex());
+    tp.setLevel(1);
+        
+    this.treemapMiniTemporal.put(ct,tp);
+    
+        float normalizeValue = -1;
+        if (this.treemapMiniTemporal.size() > 0) {
+            
+            for (TemporalViewPanel ttp :this.treemapMiniTemporal.values()) {
+                if (ttp.getLocalNormalizingValue() >= normalizeValue) {
+                    normalizeValue = ttp.getLocalNormalizingValue();
+                }
+            }
+             for (TemporalViewPanel ttp :this.treemapMiniTemporal.values()) {
+                ttp.setGlobalNormalizingValue(normalizeValue);
+            }
+        }
+
+
+      for (TemporalViewPanel ttp :this.treemapMiniTemporal.values()) {
+            ttp.calculateRenderControlPointsOfEachHierarchy(tp.getData(), tp.currentNode, tp.getGlobalNormalizingValue());
+            ttp.computerZeroslopeAreasHierarchy(0);
+
+        }
+    
+}
+          
     public void addThemeRiver(TreeNode ct) throws IOException {
 
         TemporalViewPanel tp = null;
@@ -841,15 +888,15 @@ public class ViewController {
         if (!this.getTemporalFrame().getTemporalPanelMap().containsKey(1)) {
             List<TemporalViewPanel> tvpl = new ArrayList<TemporalViewPanel>();
             this.getTemporalFrame().getTemporalPanelMap().put(1, tvpl);
-
         }
 
+        
         int index = this.getTemporalFrame().getTemporalPanelMap().get(1).size();
         tp.setName("1" + index);
         tp.setPanelLabelId(index);
         tp.setLevel(1);
-        tp.setData(this.getTemporalFrame().getData());
-        tp.setTree(this.getTemporalFrame().getTree());
+        tp.setData(this.data);
+        tp.setTree(this.myTree);
         this.getTemporalFrame().getMainPanel().addChildPanel(tp);
         tp.setFatherPanel(this.getTemporalFrame().getMainPanel());
         TreeNode tempt = ct;
@@ -900,7 +947,9 @@ public class ViewController {
             //ttp.UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), ttp.getGlobalNormalizingValue());
         }
 
-                            //tvf.getMainPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() * 2 / 3), tvf.getMainPanel().getLocalNormalizingValue());
+        
+        
+        //tvf.getMainPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() * 2 / 3), tvf.getMainPanel().getLocalNormalizingValue());
         //tvf.getSubPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), tvf.getSubPanel().getLocalNormalizingValue());
         System.out.println("second column panel added");
         this.getTemporalFrame().setMigLayoutForScrollPane();
@@ -1457,13 +1506,22 @@ public class ViewController {
     
     
     public HashMap<TreeNode, List<LabelText>> allLabels = new HashMap<TreeNode, List<LabelText>>();
+    
+    public HashMap<TreeNode, List<LabelWordleLite>> allLabelInWordle = new HashMap<TreeNode, List<LabelWordleLite>>();
+    
+    
+    
+    
       private int labelsToDisplay = 51;
         public List<String[]> allTopics;
         
         private String HelveticaFont = "Helvetica-Condensed-Bold";
+        private String labelFont = "Arial";//"Impact";
+        static private int occuranceFontSizePara = 40;
+        private int labelFontSize = 0; //18
         
-        static private int occuranceFontSizePara = 2;
-        private int labelFontSize = 20; //18
+        
+        public int wordsToDisplayInWordle = 5;
         
         static private int fontSizePerChar = 1;
         
@@ -1544,10 +1602,11 @@ public class ViewController {
                         
                         
 
-                        font = new Font(HelveticaFont, Font.PLAIN,  (int) (occuranceFontSizePara * tempLT.getProbablity()* 100)/*.getOccurance()occurances.get(index + 1)[j]*/ + labelFontSize);
-                        //Font HelveticaFont = new Font("Helvetica", Font.BOLD, 12);
-
-                        tempLT.setFont(font);
+//                        font = new Font(HelveticaFont, Font.PLAIN,  (int) (occuranceFontSizePara * tempLT.getProbablity()* 100)/*.getOccurance()occurances.get(index + 1)[j]*/ + labelFontSize);
+//                        
+////Font HelveticaFont = new Font("Helvetica", Font.BOLD, 12);
+//
+//                        tempLT.setFont(font);
                         //tempLT.setColor(Color.BLUE);
 
                         tempLT.column = index;
@@ -1558,7 +1617,7 @@ public class ViewController {
 
                         tempList.add(tempLT);
                         }
-                        catch(Exception e){
+                        catch(NumberFormatException e){
                                 System.out.println("word " + t.getNodeTopics()[j] + " in dict line " + wordTermIndex.get(t.getNodeTopics()[j])
                                 + " weight is " + w);
                                 }
@@ -1590,23 +1649,27 @@ public class ViewController {
                             tempLT.setProbablity(tempLT.getProbablity() / maxP);
                         }
 
-                        Font font = tempLT.getFont();
-
-                        JLabel tempLabel = new JLabel();
-                        tempLabel.setFont(font);
-                        FontMetrics fm = tempLabel.getFontMetrics(font);
-                        int widthOfString = fm.stringWidth(" " + tempLT.s + " ");
-                        int leng = widthOfString;
-
-                        if (kkk==0)
-                            leng = 40;//widthOfString + 10;
+                        Font font = new Font(labelFont, Font.PLAIN,  (int) (occuranceFontSizePara * tempLT.getProbablity()) + labelFontSize);
                         
-                        tempLT.setRect(new Rectangle2D.Float(px + 20 + countleng, py - 10, leng * fontSizePerChar, 20));
 
-                        tempLT.posX = px + 20 + countleng + 2;
-                        tempLT.posY = py + 5;
-
-                        countleng += (leng * fontSizePerChar + 2);
+                        tempLT.setFont(font);
+                        
+                        
+//                        JLabel tempLabel = new JLabel();
+//                        tempLabel.setFont(font);
+//                        FontMetrics fm = tempLabel.getFontMetrics(font);
+//                        int widthOfString = fm.stringWidth(" " + tempLT.s + " ");
+//                        int leng = widthOfString;
+//
+//                        if (kkk==0)
+//                            leng = 40;//widthOfString + 10;
+//                        
+//                        tempLT.setRect(new Rectangle2D.Float(px + 20 + countleng, py - 10, leng * fontSizePerChar, 20));
+//
+//                        tempLT.posX = px + 20 + countleng + 2;
+//                        tempLT.posY = py + 5;
+//
+//                        countleng += (leng * fontSizePerChar + 2);
 
                     }
 
@@ -1749,6 +1812,38 @@ public class ViewController {
         }
 
     }
+        
+        
+        
+        
+           for (Map.Entry<TreeNode, List<LabelText>> entry : allLabels.entrySet()) {
+
+            TreeNode key = entry.getKey();
+
+            List<LabelText> value = entry.getValue();
+
+            
+        List<LabelWordleLite> words = new ArrayList<LabelWordleLite>() ;
+            
+           
+                List<LabelText> tmplist = new ArrayList<LabelText>();
+
+
+                 for (int i = 0; i <wordsToDisplayInWordle; i++) {
+                     
+                    LabelText lt = value.get(i);
+
+                    String text = lt.getString();
+
+                    Font font = lt.getFont();
+
+                    LabelWordleLite word = new LabelWordleLite(text, font, 0, lt);
+                   words.add(word);
+                 
+                 }     
+                 
+                  allLabelInWordle.put( key, words);
+        }
     }
     
       

@@ -229,6 +229,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         {
          viewController.myRenderingTree.clear();;// = new ArrayList<TreeNode>();
                       
+         viewController.treemapMiniTemporal.clear();
+         
+         
          TreeNode t = new TreeNode();            
          viewController.myRenderingTree.add(t);
       
@@ -253,10 +256,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                      t.addChildNode(compareList.get(i));
                     
                 }
-                
-                
-                
-              
+
                 
                 if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1))
                 {
@@ -266,6 +266,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     {
                     try {
                         viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+                        viewController.addThemeRiverToTreeMap((TreeNode) t.getChildren().get(i));
                         
                         
                     } catch (IOException ex) {
@@ -289,16 +290,20 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     
     
                     viewController.getPanelImages().put(tvp.currentNode, bi);
-                    
-                    
+                                       
                 }
-                
-                
+
                   
                 treeMapPanel.setTree(viewController.myRenderingTree);
                 
             try {
-                treeMapPanel.updateTreeLayout(treeMapPanel.mywidth, treeMapPanel.myheight);
+                treeMapPanel.updateTreeLayout(treeMapPanel.mywidth, treeMapPanel.myheight-MenuPanel.getHeight(), true);             
+                                    //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));                                    
+                //treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
+                                              
+                treeMapPanel.invalidate();                
+                treeMapPanel.getRootPane().revalidate();
+                                
             } catch (IOException ex) {
                 Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -695,11 +700,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                 Collections.sort(compareList, cper);        
                             
                             
-                for (int i=0; i<jSliderTopicChooser.getValue(); i++)
+                //initial treemap node number 
+                for (int i=0; i<3/*jSliderTopicChooser.getValue()*/; i++)
                 {
                     
                      viewController.myRenderingTree.add(compareList.get(i));
-                                t.addChildNode(compareList.get(i));
+                     t.addChildNode(compareList.get(i));
                     
                 }
                 
@@ -707,6 +713,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     for (int i=0; i<t.getChildren().size(); i++)
                     {
                         viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+                        viewController.addThemeRiverToTreeMap((TreeNode) t.getChildren().get(i));
                     }
                     
                     //temporalFrame.PreDrawAllLeafs();
@@ -781,7 +788,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     mongoClient.close();
 
                     
-                     if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1))
+                if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1))
                 {
                     viewController.getTemporalFrame().getTemporalPanelMap().get(1).clear();
                 
@@ -789,6 +796,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     {
                     try {
                         viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+                        viewController.addThemeRiverToTreeMap((TreeNode) t.getChildren().get(i));
                         
                         
                     } catch (IOException ex) {
@@ -861,7 +869,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                                 try {
                                     //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
-                                    treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
+                                    treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight()-MenuPanel.getHeight(), false);
                                 } catch (IOException ex) {
                                     Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -950,14 +958,17 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             public void componentResized(ComponentEvent e) {
 
                 if (mViewPanel != null) {
+                    
                     mViewPanel.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
                 }
 
                 if (mainSplit != null) {
-                    mainSplit.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+                    
+                    
+                    mainSplit.setPreferredSize(new Dimension(((JFrame)e.getComponent()).getContentPane().getWidth(), ((JFrame)e.getComponent()).getContentPane().getHeight()));
                     
                     try {
-                        treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
+                        treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight()-MenuPanel.getHeight(), false);
                     } catch (IOException ex) {
                         Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -965,7 +976,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                                 treeMapPanel.getRootPane().revalidate();
                 }
 
-                invalidate();
+                revalidate();
 
             }
 

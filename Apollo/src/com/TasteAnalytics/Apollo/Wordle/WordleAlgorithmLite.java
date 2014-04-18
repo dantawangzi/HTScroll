@@ -185,6 +185,8 @@ public class WordleAlgorithmLite {
 //	}
 	
 	public void place(Collection<? extends WordleLite> wordles){
+            
+            
 		List<WordleWrapperLite> list = new ArrayList<WordleWrapperLite>();
 		for(WordleLite wordle : wordles) {
 			list.add(new WordleWrapperLite(wordle));
@@ -196,7 +198,7 @@ public class WordleAlgorithmLite {
 		if (autoAdjustingBound) {
 			dim = wrappers.getWorldSize(bound.getWidth()/bound.getHeight());
 		}
-		dim = new Dimension(dim.getWidth()*1.2, dim.getHeight()*1.2);
+		dim = new Dimension(dim.getWidth()* 1.2/*1.2*/, dim.getHeight() * 1.2 /*1.2*/);
                 
                  //System.out.println(dim.getHeight() + " " + dim.getWidth());
                  

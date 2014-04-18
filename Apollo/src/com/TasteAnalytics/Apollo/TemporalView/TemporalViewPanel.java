@@ -1215,7 +1215,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
             Font font = new Font("Arial", Font.ITALIC, 30);
 
             curg2d.setFont(font);
-            curg2d.drawString(Integer.toString(drawPanelLabelId), 0, 30);
+           // curg2d.drawString(Integer.toString(drawPanelLabelId), 0, 30);
             
             int size = currentNode.getTopicsContainedIdx().size();
             String currentTopics = "";
@@ -1231,11 +1231,9 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
             curg2d.setFont(font);
             
-            curg2d.drawString(currentTopics, 0, 50);
+          //  curg2d.drawString(currentTopics, 0, 50);
             
-            
-                        
-            // System.out.println(drawPanelLabelId + "label id");
+        
         }
         
         
@@ -1258,10 +1256,10 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //                   curg2d.drawString(nodetopics, 0, this.getHeight()-this.getHeight()/10);
 //            }           
         
-        curg2d.drawLine(0, 0, (int) width, 0);
-        curg2d.drawLine(0, 0, 0, height);
-        curg2d.drawLine(0, height, width, height);
-        curg2d.drawLine(width, 0, width, height);
+//        curg2d.drawLine(0, 0, (int) width, 0);
+//        curg2d.drawLine(0, 0, 0, height);
+//        curg2d.drawLine(0, height, width, height);
+//        curg2d.drawLine(width, 0, width, height);
 
 //         curg2d.drawLine(width/2, 0, width/2, height);
 //         
@@ -2054,14 +2052,12 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
 
 //               
-                if (i == displayLengendTimeColumn) // g2d.drawString(upperstr, (int) ((i) * ratio + (ratio - metrics.stringWidth(upperstr)) / 2), 10);
+                if (i == displayLengendTimeColumn) 
                 {
 
-                    g2d.drawString(lowerstr, (int) ((i) * ratio), height - height / 20);
+                    //g2d.drawString(lowerstr, (int) ((i) * ratio), height - height / 20);
 
-//                    int docNumberInSlot = data.idxOfDocumentPerSlot.get(i).size();
-//                    String sDocNumberInSlot = "Total Number of Tweets in this time slot: " + docNumberInSlot;
-//                    g2d.drawString(sDocNumberInSlot, 10, height / 20 + 10);
+
                 }
 
                 if (i == displayLengendTimeColumn && this.name.contains("Main")) // g2d.drawString(upperstr, (int) ((i) * ratio + (ratio - metrics.stringWidth(upperstr)) / 2), 10);
@@ -2070,7 +2066,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
                     //g2d.drawString(lowerstr, (int) ((i) * ratio), height - height / 20);
                     int docNumberInSlot = data.idxOfDocumentPerSlot.get(i).size();
                     String sDocNumberInSlot = "Total Number of Tweets in this time slot: " + docNumberInSlot;
-                    g2d.drawString(sDocNumberInSlot, 10, height / 20 + 10);
+                   // g2d.drawString(sDocNumberInSlot, 10, height / 20 + 10);
 
                 }
             }
@@ -2089,7 +2085,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //            g2d.drawString(timedomain, xpos, height - 10);
         }
         g2d.setColor(Color.BLACK);
-        g2d.drawString(intervalString, 10, 0 + height / 20);
+      //  g2d.drawString(intervalString, 10, 0 + height / 20);
 
         int size = 0;
 

@@ -714,9 +714,12 @@ public List<Integer> getTopicsContainedIdx()
   }
   
   
+  public float avg_unNorm = 0;
+  public float std_unNorm = 0;
   
   public float detectEvents(float eThreshold) {
-
+      
+       float tempsum = 0;
         List<float[]> unormStreams = new ArrayList<float[]>();
         ArrayList<float[][]> detectionResults = new ArrayList<float[][]>();//detectionResults.clear();
 
@@ -727,6 +730,7 @@ public List<Integer> getTopicsContainedIdx()
                 float[] tempf = new float[temp.size()];
                 for (int j = 0; j < temp.size(); j++) {
                     tempf[j] = temp.get(j);
+                    tempsum += tempf[j];
                 }
 
                 unormStreams.add(tempf);
@@ -738,11 +742,31 @@ public List<Integer> getTopicsContainedIdx()
             float[] tempf = new float[temp.size()];
             for (int j = 0; j < temp.size(); j++) {
                 tempf[j] = temp.get(j);
+                 tempsum += tempf[j];
             }
 
             unormStreams.add(tempf);
         }
 
+        avg_unNorm = tempsum/getUnNormArrayValue().size();
+        
+        float sn_square = 0;
+      
+        for (int i = 0; i < getUnNormArrayValue().size(); i++) {
+
+          
+
+               
+                    sn_square += (getUnNormArrayValue().get(i) - avg_unNorm) * (getUnNormArrayValue().get(i) - avg_unNorm);
+                   
+                
+            
+
+        }
+
+        std_unNorm = (float) Math.sqrt(sn_square / getUnNormArrayValue().size());
+        
+        
         //List<float[]>
         for (float[] fs : unormStreams) {
             detectionResults.add(Cusum.cusumProcess(fs, (float) eThreshold));

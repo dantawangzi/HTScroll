@@ -50,8 +50,6 @@ public class TopicTreeMapPanel extends JPanel {
         return nodePanels;
     }
 
-    int wordsToDisplay = 50;
-
     public TopicTreeMapPanel(ViewController vc, List<TreeNode> tr, int w, int h) throws IOException {
 
 //        TopicTreeMapPanelInteractions interactions = new TopicTreeMapPanelInteractions();
@@ -69,9 +67,7 @@ public class TopicTreeMapPanel extends JPanel {
         model = new TreeModel();
 
         //TODO: We need to reconsider the tree generation mechanism
-        
 //        TreeMapNodePanel root = new TreeMapNodePanel(vc, tree.get(0), tree.get(0).getLevel(), new Rectangle(0, 0, w, h));
-
 //        for (int i=0; i<tree.size(); i++)
 //        {
 //            if (tree.get(i).getValue().contains("L"))
@@ -82,94 +78,43 @@ public class TopicTreeMapPanel extends JPanel {
 //            }
 //            
 //        }
-       // tree.get(0).calculateTreeMapTopicWeight();
-        updateTreeLayout(w, h);
-
-//        tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
-//        Mappable[] leaves = tree.get(0).getItems();
-//        map = new RandomMap(leaves);       	    
-//	algorithm = new SquarifiedLayout();
-//        
-//	algorithm.layout(map, new Rect(0, 0, w, h));
-//        
-//        tree.get(0).calculateRect(new Rectangle(0, 0, w, h));
+        // tree.get(0).calculateTreeMapTopicWeight();
+       // updateTreeLayout(w, h);
+        tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
+        Mappable[] leaves = tree.get(0).getItems();
+        map = new RandomMap(leaves);
+        algorithm = new SquarifiedLayout();
+        algorithm.layout(map, new Rect(0, 0, w, h));
+        tree.get(0).calculateRect(new Rectangle(0, 0, w, h));
         setLayout(null);
 
         for (int i = 1; i < tree.size(); i++) {
-         //Rect r = new Rect(tree.get(i).getMyRect().x,tree.get(i).getMyRect().y, tree.get(i).getMyRect().width, tree.get(i).getMyRect().height);   
 
-            
-            TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i), tree.get(i).getLevel(), tree.get(i).getMyRect(), parent.getPanelImages().get(tree.get(i)));
-            
-
+            TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i), tree.get(i).getLevel(), tree.get(i).getMyRect(), parent.getTreemapMiniTemporal().get(tree.get(i)));
             nodePanels.put(tree.get(i), tmp);
-            
+            tmp.list = parent.allLabelInWordle.get(tree.get(i));
+
+            List<LabelText> tmplist = new ArrayList<LabelText>();
+
+            for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
+                tmplist.add(parent.allLabels.get(tree.get(i)).get(j));
+            }
+            tmp.setLabels(tmplist);
+            tmp.DrawWordleCloud(new Point(0, 0), tmplist);
+
             if (tree.get(i).getChildren().isEmpty()) {
                 tmp.setVisible(true);
-                // System.out.println(tree.get(i).getMyRect());
             } else {
                 tmp.setBorder(SystemPreferences.treemapNodeBorder);
                 tmp.setVisible(false);
                 tmp.setOpaque(false);
 
             }
-            
+
             this.add(tmp);
 
         }
 
-        HashMap<TreeNode, List<LabelText>> allLabels = parent.allLabels;
-
-        for (Map.Entry<TreeNode, List<LabelText>> entry : allLabels.entrySet()) {
-
-            TreeNode key = entry.getKey();
-
-            List<LabelText> value = entry.getValue();
-
-            if (nodePanels.containsKey(key)) {
-                List<LabelText> tmplist = new ArrayList<LabelText>();
-
-                for (int i = 0; i < wordsToDisplay; i++) {
-                    tmplist.add(value.get(i));
-                }
-
-                nodePanels.get(key).setLabels(tmplist);
-                
-                 for (int i = 0; i < tmplist.size(); i++) {
-            LabelText lt = tmplist.get(i);
-
-            String text = lt.getString();
-            if (text == null) {
-                continue;
-            }
-
-            Font font = lt.getFont();
-
-            LabelWordleLite word = new LabelWordleLite(text, font, 0, lt);
-            nodePanels.get(key).list.add(word);
-                 }
-            
-                nodePanels.get(key).DrawWordleCloud(new Point(nodePanels.get(key).myRect.width/2, nodePanels.get(key).myRect.height/2), tmplist);// ?? 0,0??
-
-            } else {
-                System.out.println("does not contain this node " + key.toString());
-            }
-
-        }
-
-//        for (TreeNode leafNode : tree) {
-//            if (leafNode.getChildren().isEmpty()) {
-//                int key = leafNode.getIndex();
-//                leafNode.setSentiAgg(parent.sen.get(key));
-//                for (int j = 0; j < tree.size(); j++) {
-//                    TreeNode matchNode = parent.myTree.get(j);
-//                    if (matchNode.getValue().equals(leafNode.getValue())) {
-//                        leafNode.setArrayValue(matchNode.getArrayValue());
-//                        break;
-//                    }
-//                }
-//            }
-//        }
     }
 
     public List<TreeNode> getTree() {
@@ -180,8 +125,19 @@ public class TopicTreeMapPanel extends JPanel {
         this.tree = tree;
     }
 
-    public void updateTreeLayout(int w, int h) throws IOException {
+    public void updateTreeLayout(int w, int h, boolean clearFlag) throws IOException {
 
+        
+        
+        if (clearFlag)
+        {
+            this.removeAll();
+        
+        
+            nodePanels.clear();
+        }
+        
+        
         tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
         Mappable[] leaves = tree.get(0).getItems();
         map = new RandomMap(leaves);
@@ -192,41 +148,79 @@ public class TopicTreeMapPanel extends JPanel {
         tree.get(0).calculateRect(new Rectangle(0, 0, w, h));
 
         for (TreeNode treenode : tree) {
-            if (nodePanels.containsKey(treenode)) {
-                TreeMapNodePanel tmp = nodePanels.get(treenode);
-                tmp.setMyBI( parent.getPanelImages().get(treenode));
-                
-                tmp.setMyRect(treenode.getMyRect());
-                
-                tmp.updateLayout();
-                
-                tmp.DrawWordleCloud(new Point(0,0), nodePanels.get(treenode).getLabels());
-           
-                //TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i),tree.get(i).getLevel(), tree.get(i).getMyRect());
+
+            if (treenode.getChildren().isEmpty()) {
+
+                if (nodePanels.containsKey(treenode)) {
+
+                    TreeMapNodePanel tmp = nodePanels.get(treenode);
+                    //tmp.setMyBI(parent.getPanelImages().get(treenode));
+
+                    tmp.setMyRect(treenode.getMyRect());
+ List<LabelText> tmplist = new ArrayList<LabelText>();
+
+                    for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
+                        tmplist.add(parent.allLabels.get(treenode).get(j));
+                    }
+                    tmp.setLabels(tmplist);
+                    
+                    for (int i = 0; i < tmp.getLabels().size(); i++) {
+                     tmp.wordCloudPanel.add(tmp.getLabels().get(i));
+                    }
+                    tmp.updateLayout();
+
+                    tmp.DrawWordleCloud(new Point(0, 0), nodePanels.get(treenode).getLabels());
+
+                    //TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i),tree.get(i).getLevel(), tree.get(i).getMyRect());
+                } else {
+
+                    TreeMapNodePanel tmp = new TreeMapNodePanel(parent, treenode, treenode.getLevel(), treenode.getMyRect(), parent.getTreemapMiniTemporal().get(treenode));
+                    nodePanels.put(treenode, tmp);
+                    tmp.list = parent.allLabelInWordle.get(treenode);
+                    tmp.setMyRect(treenode.getMyRect());
+                    
+
+                    List<LabelText> tmplist = new ArrayList<LabelText>();
+
+                    for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
+                        tmplist.add(parent.allLabels.get(treenode).get(j));
+                    }
+                    tmp.setLabels(tmplist);
+                    
+                    for (int i = 0; i < tmp.getLabels().size(); i++) {
+                     tmp.wordCloudPanel.add(tmp.getLabels().get(i));
+                    }
+                      
+                    
+                    tmp.updateLayout();
+                      
+                    tmp.DrawWordleCloud(new Point(0, 0), tmp.getLabels());
+
+                    if (treenode.getChildren().isEmpty()) {
+                        tmp.setVisible(true);
+                    } else {
+                        tmp.setBorder(SystemPreferences.treemapNodeBorder);
+                        tmp.setVisible(false);
+                        tmp.setOpaque(false);
+
+                    }
+
+                    this.add(tmp);
+
+                }
             }
+
         }
-        //if (model==null ) return;
-        //    LayoutDifference measure=new LayoutDifference();
-        //Mappable[] leaves=model.getTreeItems();
-        // measure.recordLayout(leaves);
-        //model.layout(algorithm, bounds);
-//        for (int i=0; i<model.getItems().length; i++)
-//        {
-//            Mappable l = model.getItems()[i];
-//            
-//            TreeMapNodePanel tmpp = new TreeMapNodePanel(tree.get(leafOrder.get(i)));
-//            
-//            Rect rect = l.getBounds();
-//            Border orangeLine = BorderFactory.createLineBorder(Color.orange);
-//            //        mButtonPanel.setBorder(orangeLine);
-//            tmpp.setBounds( (int)rect.x,  (int)rect.y,  (int)rect.w,  (int)rect.h);
-//            tmpp.setBorder(orangeLine);
-//           //tmpp.setBackground(Color.red);
-//           
-//            this.add(tmpp);
-//
-//            
-//        }
+        
+        
+        
+        if (clearFlag)
+        for (TreeMapNodePanel tnp : nodePanels.values()) {
+            this.add(tnp);
+
+        }
+
+        this.revalidate();
     }
 
 }

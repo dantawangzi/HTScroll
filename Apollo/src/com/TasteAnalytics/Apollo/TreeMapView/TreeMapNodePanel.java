@@ -33,6 +33,8 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -82,9 +84,9 @@ public class TreeMapNodePanel extends JPanel {
         }
 
         double curValue = 0.0D;
-        int startAngle = 0; // Not in use right now. Do we still need this? 
+       
         for (int i = 0; i < SystemPreferences.numOfSentiments; i++) {
-            startAngle = (int) (curValue * 360 / totalPieSize);
+             int startAngle = (int) (curValue * 360 / totalPieSize);
             int arcAngle = (int) (slices[i].value * 360 / totalPieSize);
             g.setColor(slices[i].color);
             g.fillArc(area.x, area.y, area.width, area.height,
@@ -188,12 +190,12 @@ public class TreeMapNodePanel extends JPanel {
         int height = this.getHeight();
         int size = node.getArrayValue().size();
 
-        
-
-
-		Graphics2D g2d = (Graphics2D) g;
-                if (myBI!=null)
-		g2d.drawImage(myBI, null, 40,0);
+//        
+//
+//
+//		Graphics2D g2d = (Graphics2D) g;
+//                if (myBI!=null)
+//		g2d.drawImage(myBI, null, 40,0);
 	
         
         
@@ -235,12 +237,25 @@ public class TreeMapNodePanel extends JPanel {
 
     public void updateLayout() {
         
-        wordCloudPanel.setBounds(0,40,myRect.width, myRect.height-40);
+         this.setBounds(this.myRect);
+       scrollPane.setBounds(sentiPieSize, 0, myRect.width-sentiPieSize, sentiPieSize);
+        
+       
+        wordCloudPanel.setBounds(0,sentiPieSize,myRect.width *3/5, myRect.height*4/5-sentiPieSize);
+        wordCloudPanel.setOpaque(false);
+       
+        
+        wordRemoveWordPanel.setBounds(myRect.width *3/5,sentiPieSize, myRect.width *3/5,myRect.height*4/5-sentiPieSize);
+        
+        tmp.setBounds(0,  myRect.height*4/5, myRect.width, myRect.height/5);
+        //tmp.setPreferredSize(new Dimension(myRect.width-40, 40));
+        tmp.UpdateTemporalView(new Dimension( myRect.width, myRect.height/5), tmp.getGlobalNormalizingValue());
         
         
-        
-        this.setBounds(this.myRect);
         Border bLine = BorderFactory.createLineBorder(Color.red, 2);
+        
+   
+        
         if (mouseOvered) {
             this.setBorder(bLine);
             //this.setBackground(Color.red);
@@ -257,14 +272,23 @@ public class TreeMapNodePanel extends JPanel {
     /// Public constructor
     
     JPanel wordCloudPanel = new JPanel();
+    JPanel wordRemoveWordPanel = new JPanel();
     Graphics currg;
     
+   TemporalViewPanel tmp;
    
-    public TreeMapNodePanel(ViewController v, TreeNode t, int l, Rectangle r, BufferedImage bi) throws IOException {
+   int sentiPieSize = 60;
+   JPanel infoPanel = new JPanel();
+      JScrollPane scrollPane ;
+   
+    public TreeMapNodePanel(ViewController v, TreeNode t, int l, Rectangle r, /*BufferedImage bi*/TemporalViewPanel tp) throws IOException {
         parent = v;
         level = l;
         node = t;
         myRect = r;
+        tmp = tp;
+        
+        
         this.setBounds(myRect);
         this.setBackground(node.getColor());
 
@@ -277,21 +301,40 @@ public class TreeMapNodePanel extends JPanel {
         }
         
         
-        senti = new sentimentPanel(node.getSentiAgg().pos,node.getSentiAgg().neg, node.getSentiAgg().count, new Rectangle(0,0,40,40));
+        senti = new sentimentPanel(node.getSentiAgg().pos,node.getSentiAgg().neg, node.getSentiAgg().count, new Rectangle(0,0,sentiPieSize,sentiPieSize));
         this.add(senti);
-        senti.setBounds(new Rectangle(0,0,40,40));
+        senti.setBounds(new Rectangle(0,0,sentiPieSize,sentiPieSize));
 
-        
-        myBI = bi;
-        
-        if (this.getWidth()-40>0)
-            myBI = Thumbnails.of(bi).size(this.getWidth()-40, 40).asBufferedImage();
-        
-        
+        this.add(tmp);
+//        tmp.setBounds(40, 0, myRect.width-40, 40);
+//        tmp.setPreferredSize(new Dimension(myRect.width-40, 40));
+//        tmp.UpdateTemporalView(new Dimension(myRect.width-40, 40), tmp.getGlobalNormalizingValue());
+//        
+//        myBI = bi;
+//        
+//        if (this.getWidth()-40>0)
+//            myBI = Thumbnails.of(bi).size(this.getWidth()-40, 40).asBufferedImage();
+       String msg = "";
+       msg += "Average: " + node.avg_unNorm + "\n";
+       msg += "STD: " + node.std_unNorm + "\n";
+    
+       
+        JTextArea textArea = new JTextArea(msg);
+    scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+             
+        this.add(scrollPane);
         this.add(wordCloudPanel);
         wordCloudPanel.setLayout(null);
-        wordCloudPanel.setBounds(0,40,this.getWidth(), this.getHeight()-40);
+//        wordCloudPanel.setBounds(0,40,this.getWidth(), this.getHeight()-40);
+//        
+        wordRemoveWordPanel.setBackground(Color.darkGray);
+        this.add(wordRemoveWordPanel);
         
+        
+        
+        updateLayout();
         
        // worldCloudPanel.setBackground(Color.red);
 //        if (myBI instanceof BufferedImage) {
@@ -338,37 +381,38 @@ public class TreeMapNodePanel extends JPanel {
 
       
 
-        WordleAlgorithmLite alg = new WordleAlgorithmLite(10000,10000);
+        
+        WordleAlgorithmLite alg = new WordleAlgorithmLite( new Rectangle2D.Double(0,0,wordCloudPanel.getWidth(), wordCloudPanel.getHeight()));
+//.wordCloudPanel.getBounds());
 
         alg.place(list);
 
-        Rectangle2D bounds = new Rectangle2D.Double(0,0,10000,10000);//this.wordCloudPanel.getBounds();// = findBoundary(list);
-
+      
+//new Rectangle2D.Double(0,0,wordCloudPanel.getWidth(), wordCloudPanel.getHeight());//wordCloudPanel.getBounds();// 
         // System.out.println(this.getBounds());
         // System.out.println(bounds);
+        
         for (LabelWordleLite word : list) {
 
-            setLabelVisualPos(word, p, bounds);
+            setLabelVisualPos(word);
             
-            
-//            System.out.println(word.shape.getBounds().x);
         }
         
-       this.labels = ls;
+
+        
 
         for (int i = 0; i < labels.size(); i++) {
          
-            Point2D p1 = labels.get(i).getLocation2D();
-            labels.get(i).setLocation((int) p1.getX(), (int) p1.getY());
-            labels.get(i).setBounds((int) p1.getX(), (int) p1.getY(), labels.get(i).getWidth(), labels.get(i).getHeight());
+            Point2D p1 = list.get(i).getLocation();//labels.get(i).getLocation2D();
+         //   labels.get(i).setLocation((int) p1.getX(), (int) p1.getY());
             
-            labels.get(i).setBackground(Color.red);
-            
-
-             labels.get(i).setFont(labels.get(i).getFont());
-
+            labels.get(i).setBounds((int) p1.getX(), (int) p1.getY(), labels.get(i).getWidth(), labels.get(i).getHeight());            
+            labels.get(i).setBackground(Color.red);    
+            labels.get(i).setOpaque(true);
+            labels.get(i).setFont(labels.get(i).getFont());
             labels.get(i).setText(labels.get(i).getString());
-            wordCloudPanel.add(labels.get(i));
+            
+//            wordCloudPanel.add(labels.get(i));
         }
 
     }
@@ -393,10 +437,16 @@ public class TreeMapNodePanel extends JPanel {
                      */
                     );
             Font font = vi.getFont().deriveFont(size);
-            FontMetrics fm = this.getGraphics().getFontMetrics(font);
-            Rectangle2D strBound = fm.getStringBounds(label.text, this.getGraphics());
-
-            float current_x = (float) (location.getX() - glyphBound.getX() / 2 - strBound.getWidth() / 2);
+            FontMetrics fm = null;
+            Rectangle2D strBound = new Rectangle2D.Double(0,0,50,30);
+            if (currg!=null)
+            {
+                fm = this.getGraphics().getFontMetrics(font);
+                
+               strBound = fm.getStringBounds(label.text, this.getGraphics());
+            }
+            
+            float current_x = (float) (location.getX() - strBound.getWidth() / 2);
             if (current_x >= max_x) {
                 max_x = current_x;
             }
@@ -435,21 +485,22 @@ public class TreeMapNodePanel extends JPanel {
         return r;
     }
 
-    private void setLabelVisualPos(WordleLite symbol, Point2D p, Rectangle2D bounds) {
+    private void setLabelVisualPos(WordleLite symbol) {
         LabelWordleLite label = (LabelWordleLite) symbol;
         Point2D location = label.getLocation();
         LabelText vi = (LabelText) label.data;
-        Rectangle2D glyphBound = label.getShape().getBounds2D();
+        //Rectangle2D glyphBound = new Rectangle2D.Double(0,0,vi.getFont().getSize()*10,vi.getFont().getSize()*10); //label.getShape().getBounds2D();
 //
-        float size = (float) (vi.getFont().getSize2D() /**
-                 * vi.getOccurance()
-                 */
-                );
-
-        
+        float size = (float) (vi.getFont().getSize2D());
+ 
+   
         Font font = vi.getFont().deriveFont(size);
         Rectangle2D strBound = new Rectangle2D.Double(0,0,0,0);
         FontMetrics fm = null;
+        
+        
+        
+        
         if (currg!=null)
         {
             fm = currg.getFontMetrics(font);
@@ -481,23 +532,28 @@ public class TreeMapNodePanel extends JPanel {
 //        else if (y >= this.getHeight()) {
 //            y = y - (y - bounds.getHeight());
 //        }
-        double x = location.getX()+glyphBound.getX()+strBound.getWidth()/2;//p.getX() + location.getX() - glyphBound.getX() / 2 - strBound.getWidth() / 2;
+        double x = location.getX() - strBound.getWidth()/2;//+glyphBound.getX()p.getX() + location.getX() - glyphBound.getX() / 2 - strBound.getWidth() / 2;
         
         double y = 0;
+        
+  
+        
         if (fm == null)
-            y = location.getY()-strBound.getHeight()/2;//p.getY() + location.getY() - glyphBound.getY() / 2  - strBound.getHeight() / 2;
+            y = location.getY() + strBound.getHeight()/2 ;//- glyphBound.getY() / 2p.getY() + location.getY() - glyphBound.getY() / 2  - strBound.getHeight() / 2;
         else
-             y = location.getY()+fm.getDescent()-strBound.getHeight()/2;//p.getY() + location.getY() - glyphBound.getY() / 2  - strBound.getHeight() / 2;
+             y = location.getY()+ strBound.getHeight()/2;//-  glyphBound.getY() / 2p.getY() + location.getY() - glyphBound.getY() / 2  - strBound.getHeight() / 2;
+        
+        //fm.getDescent()
+       
         
         Point2D vilocation = new Point2D.Double(x, y);
 
         
-      
-        
 //        System.out.println(x + " " + y);
         // TODO: Int Points may just limit the placement
         // Where do we use vi?
-        vi.setLocation(new Point2D.Double( vilocation.getX(),  vilocation.getY()));// + fm.getDescent() - strBound.getHeight() / 2));
+        //vi.setLocation(new Point2D.Double( vilocation.getX(),  vilocation.getY()));// + fm.getDescent() - strBound.getHeight() / 2));
+        vi.setBounds((int) vilocation.getX(), (int) vilocation.getY(), (int)strBound.getWidth(), (int)strBound.getHeight());
         vi.setBounds((int) vilocation.getX(), (int) vilocation.getY(), (int)strBound.getWidth(), (int)strBound.getHeight());
         //System.out.println(p + " " +location);
 
