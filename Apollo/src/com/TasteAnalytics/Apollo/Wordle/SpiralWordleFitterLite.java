@@ -22,7 +22,7 @@ class SpiralWordleFitterLite {
 	private final static Random rand = new Random(12345L);
 	
 	 static double angleStep = 0.02;
-	 static double radiusStep = 0.3;
+	 static double radiusStep =  0.3;////0.3;
 	SpiralWordleFitterLite(WordleWrapperLite wrapper, Dimension2D size, 
 			LayoutShape layoutShape, int moveResetTime){
 		this.wrapper = wrapper;

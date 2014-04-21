@@ -6,6 +6,7 @@
 package com.TasteAnalytics.Apollo.TopicRenderer;
 
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
+import com.TasteAnalytics.Apollo.TreeMapView.TreeMapNodePanel;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -16,7 +17,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.border.Border;
 
 /**
  *
@@ -42,7 +45,34 @@ public class LabelText extends JLabel implements MouseListener {
     boolean highlightFromLabelTopics = false;
 
     Color stringColor;
+    TreeMapNodePanel parentTreeMapNodePanel;
 
+    public TreeMapNodePanel getParentTreeNodePanel() {
+        return parentTreeMapNodePanel;
+    }
+
+    public void setParentTreeNodePanel(TreeMapNodePanel parent) {
+        this.parentTreeMapNodePanel = parent;
+    }
+    
+    
+    
+    
+    
+    
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    
+    
+    
+    
     public void setHighlightFromLabelTopics(boolean b) {
 
         highlightFromLabelTopics = b;
@@ -154,6 +184,33 @@ public class LabelText extends JLabel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        
+        
+        if (parentTreeMapNodePanel.getLabels().containsKey(this.getIndex()))
+        {
+        
+            parentTreeMapNodePanel.wordCloudPanel.remove(this);
+            parentTreeMapNodePanel.getLabels().remove(this.getIndex());
+            parentTreeMapNodePanel.getRemoved_labels().put(this.getIndex(), this);
+            parentTreeMapNodePanel.wordRemoveWordPanel.add(this);
+            
+        }
+        else
+        {
+              
+            parentTreeMapNodePanel.wordCloudPanel.add(this);
+            parentTreeMapNodePanel.getLabels().put(this.getIndex(), this);
+            
+            
+            parentTreeMapNodePanel.getRemoved_labels().remove(this.getIndex());
+            parentTreeMapNodePanel.wordRemoveWordPanel.remove(this);
+            
+            
+     
+        }
+        parentTreeMapNodePanel.updateLayout();
+        
+        
       //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -170,13 +227,21 @@ public class LabelText extends JLabel implements MouseListener {
     @Override
     public void mouseEntered(MouseEvent e) {
 
-       
+        Border bLine = BorderFactory.createLineBorder(Color.black, 1);
+       // this.setBorder(bLine);
+        
+        this.setBackground(Color.lightGray);
+        
+        this.setOpaque(true);
 
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        
+         this.setBorder(null);
+        this.setOpaque(false);
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

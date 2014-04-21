@@ -6,9 +6,11 @@ import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewPanel;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
+import com.TasteAnalytics.Apollo.TopicRenderer.PrefuseLabelTopicGraphPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
+import com.TasteAnalytics.Apollo.TreeMapView.PrefuseWordleLayout;
 import com.TasteAnalytics.Apollo.TreeMapView.TopicTreeMapPanel;
 import com.TasteAnalytics.Apollo.datahandler.LDAHTTPClient;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
@@ -701,7 +703,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                             
                             
                 //initial treemap node number 
-                for (int i=0; i<3/*jSliderTopicChooser.getValue()*/; i++)
+                for (int i=0; i<4/*jSliderTopicChooser.getValue()*/; i++)
                 {
                     
                      viewController.myRenderingTree.add(compareList.get(i));
@@ -815,6 +817,17 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     }
 
                     
+//                     PrefuseWordleLayout ppp;
+//                    ppp = new PrefuseWordleLayout(viewController, (TreeNode) viewController.myRenderingTree.get(2));
+//            
+//            JFrame jf = new JFrame();
+//            jf.setSize(1000, 1000);
+////            jf.add(ppp);
+//            
+//            jf.setVisible(true);
+            
+            
+                    
                     treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myRenderingTree, scrnsize.width/2, scrnsize.height);//, );
                     viewController.setTmp(treeMapPanel);
 
@@ -824,6 +837,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //            if (viewController.tagLDA) {
 //                labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
 //            }
+            
+            
+           
+            
+            
+            
 //
 //            //        Border orangeLine = BorderFactory.createLineBorder(Color.orange);
 //            //        mButtonPanel.setBorder(orangeLine);

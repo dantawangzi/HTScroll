@@ -40,31 +40,23 @@ public class ConsoleFrame extends javax.swing.JFrame implements WindowListener, 
 //              Thread thread = new Thread(this);  
 //        thread.start();
         
-        try {
-            PipedOutputStream pout = new PipedOutputStream(this.pin);
-            System.setOut(new PrintStream(pout, true));
-        } catch (java.io.IOException io) {
-            textArea.append("Couldn't redirect STDOUT to this console\n" + io.getMessage());
-        } catch (SecurityException se) {
-            textArea.append("Couldn't redirect STDOUT to this console\n" + se.getMessage());
-        }
-
+        
+        
+        
 //        try {
-//            PipedOutputStream pout2 = new PipedOutputStream(this.pin2);
-//            System.setErr(new PrintStream(pout2, true));
+//            PipedOutputStream pout = new PipedOutputStream(this.pin);
+//            System.setOut(new PrintStream(pout, true));
 //        } catch (java.io.IOException io) {
-//            textArea.append("Couldn't redirect STDERR to this console\n" + io.getMessage());
+//            textArea.append("Couldn't redirect STDOUT to this console\n" + io.getMessage());
 //        } catch (SecurityException se) {
-//            textArea.append("Couldn't redirect STDERR to this console\n" + se.getMessage());
+//            textArea.append("Couldn't redirect STDOUT to this console\n" + se.getMessage());
 //        }
-
-        quit = false; // signals the Threads that they should exit
-
-		// Starting two seperate threads to read from the PipedInputStreams				
-        //
-        reader = new Thread(this);
-        reader.setDaemon(true);
-        reader.start();
+//
+//        quit = false; // signals the Threads that they should exit
+//
+//        reader = new Thread(this);
+//        reader.setDaemon(true);
+//        reader.start();
         //
 //        reader2 = new Thread(this);
 //        reader2.setDaemon(true);

@@ -15,6 +15,7 @@ import com.TasteAnalytics.Apollo.Wordle.WordleAlgorithmLite;
 import com.TasteAnalytics.Apollo.Wordle.WordleLite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -28,6 +29,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -124,8 +126,30 @@ public class TreeMapNodePanel extends JPanel {
     JLabel title = new JLabel();
     Rectangle myRect;
     int level;
-    List<LabelText> labels;
-    List<JLabel> mylabels = new ArrayList<JLabel>();
+    //List<LabelText> labels;
+    
+    HashMap<Integer, LabelText> labels = new HashMap<Integer, LabelText>();
+    
+    
+    
+    
+    
+    HashMap<Integer, LabelText> removed_labels = new HashMap<Integer, LabelText>();
+
+    public HashMap<Integer, LabelText> getRemoved_labels() {
+        return removed_labels;
+    }
+
+    public void setRemoved_labels(HashMap<Integer, LabelText> removed_labels) {
+        this.removed_labels = removed_labels;
+    }
+    
+    
+        
+    
+    
+    
+    
 
     boolean mouseOvered = false;
     
@@ -181,42 +205,42 @@ public class TreeMapNodePanel extends JPanel {
 //    }
 //    
 
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-     
-        currg = g;
-        int width = this.getWidth();
-        int height = this.getHeight();
-        int size = node.getArrayValue().size();
-
+//    @Override
+//    public void paintComponent(Graphics g) {
+//        super.paintComponent(g);
+//     
+//         currg = g;
+//        int width = this.getWidth();
+//        int height = this.getHeight();
+//        int size = node.getArrayValue().size();
+//
+////        
+////
+////
+////		Graphics2D g2d = (Graphics2D) g;
+////                if (myBI!=null)
+////		g2d.drawImage(myBI, null, 40,0);
+//	
+//        
+//        
+////        update(g);
 //        
 //
+////            for (int i=0; i<size; i++)
+////            {
+////                g.setColor(Color.black);
+////                
+////                if (i==0)
+////                {
+////                    
+////                    g.drawLine(0, height/2, width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
+////                }
+////                else
+////                g.drawLine(width/size*i-1, height/2 - (int) (node.getArrayValue().get(i-1)*this.getHeight()), width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
+////                
+////            }
 //
-//		Graphics2D g2d = (Graphics2D) g;
-//                if (myBI!=null)
-//		g2d.drawImage(myBI, null, 40,0);
-	
-        
-        
-//        update(g);
-        
-
-//            for (int i=0; i<size; i++)
-//            {
-//                g.setColor(Color.black);
-//                
-//                if (i==0)
-//                {
-//                    
-//                    g.drawLine(0, height/2, width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
-//                }
-//                else
-//                g.drawLine(width/size*i-1, height/2 - (int) (node.getArrayValue().get(i-1)*this.getHeight()), width/size*i, height/2 - (int) (node.getArrayValue().get(i)*this.getHeight()));
-//                
-//            }
-
-    }
+//    }
 
     public boolean isMouseOvered() {
         
@@ -227,12 +251,19 @@ public class TreeMapNodePanel extends JPanel {
         this.mouseOvered = mouseOvered;
     }
 
-    public List<LabelText> getLabels() {
+    public HashMap<Integer, LabelText> getLabels() {
         return labels;
     }
 
-    public void setLabels(List<LabelText> labels) {
-        this.labels = labels;
+    public void setLabelsFromList( List<LabelText> r) {
+        for (int i=0; i<r.size(); i++)
+        {
+               
+            r.get(i).setParentTreeNodePanel(this);
+            this.labels.put(r.get(i).getIndex(), r.get(i));
+        }
+        
+        
     }
 
     public void updateLayout() {
@@ -241,12 +272,12 @@ public class TreeMapNodePanel extends JPanel {
        scrollPane.setBounds(sentiPieSize, 0, myRect.width-sentiPieSize, sentiPieSize);
         
        
-        wordCloudPanel.setBounds(0,sentiPieSize,myRect.width *3/5, myRect.height*4/5-sentiPieSize);
+        wordCloudPanel.setBounds(0,sentiPieSize,myRect.width, myRect.height*3/5-sentiPieSize);
         wordCloudPanel.setOpaque(false);
        
         
-        wordRemoveWordPanel.setBounds(myRect.width *3/5,sentiPieSize, myRect.width *3/5,myRect.height*4/5-sentiPieSize);
-        
+        wordRemoveWordPanel.setBounds(0,myRect.height*3/5, myRect.width, myRect.height*1/5);
+        wordRemoveWordPanel.setLayout(new FlowLayout());
         tmp.setBounds(0,  myRect.height*4/5, myRect.width, myRect.height/5);
         //tmp.setPreferredSize(new Dimension(myRect.width-40, 40));
         tmp.UpdateTemporalView(new Dimension( myRect.width, myRect.height/5), tmp.getGlobalNormalizingValue());
@@ -271,8 +302,8 @@ public class TreeMapNodePanel extends JPanel {
 
     /// Public constructor
     
-    JPanel wordCloudPanel = new JPanel();
-    JPanel wordRemoveWordPanel = new JPanel();
+    public JPanel wordCloudPanel = new JPanel();
+    public JPanel wordRemoveWordPanel = new JPanel();
     Graphics currg;
     
    TemporalViewPanel tmp;
@@ -327,9 +358,9 @@ public class TreeMapNodePanel extends JPanel {
         this.add(scrollPane);
         this.add(wordCloudPanel);
         wordCloudPanel.setLayout(null);
-//        wordCloudPanel.setBounds(0,40,this.getWidth(), this.getHeight()-40);
-//        
+        
         wordRemoveWordPanel.setBackground(Color.darkGray);
+        wordRemoveWordPanel.setLayout(null);
         this.add(wordRemoveWordPanel);
         
         
@@ -381,30 +412,30 @@ public class TreeMapNodePanel extends JPanel {
 
       
 
-        
-        WordleAlgorithmLite alg = new WordleAlgorithmLite( new Rectangle2D.Double(0,0,wordCloudPanel.getWidth(), wordCloudPanel.getHeight()));
-//.wordCloudPanel.getBounds());
-
-        alg.place(list);
-
-      
-//new Rectangle2D.Double(0,0,wordCloudPanel.getWidth(), wordCloudPanel.getHeight());//wordCloudPanel.getBounds();// 
-        // System.out.println(this.getBounds());
-        // System.out.println(bounds);
-        
-        for (LabelWordleLite word : list) {
-
-            setLabelVisualPos(word);
-            
-        }
+//        
+//        WordleAlgorithmLite alg = new WordleAlgorithmLite( new Rectangle2D.Double(0,0,wordCloudPanel.getWidth(), wordCloudPanel.getHeight()));
+////.wordCloudPanel.getBounds());
+//
+//        alg.place(list);
+//
+//      
+//
+//        
+//        for (LabelWordleLite word : list) {
+//
+//          //  setLabelVisualPos(word);
+//            
+//        }
         
 
         
 
-        for (int i = 0; i < labels.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
          
-            Point2D p1 = list.get(i).getLocation();//labels.get(i).getLocation2D();
-         //   labels.get(i).setLocation((int) p1.getX(), (int) p1.getY());
+            Point2D p1 = list.get(i).getLocation();
+        
+           
+            
             
             labels.get(i).setBounds((int) p1.getX(), (int) p1.getY(), labels.get(i).getWidth(), labels.get(i).getHeight());            
             labels.get(i).setBackground(Color.red);    
@@ -562,6 +593,29 @@ public class TreeMapNodePanel extends JPanel {
         //vi.setRect(ss);
         // vi.setX(location.getX() + glyphBound.getX() + strBound.getWidth() / 2);
         // vi.setY(location.getY() + fm.getDescent() - strBound.getHeight() / 2);
+    }
+    
+    
+    
+    public void setLabelBounds(List<Rectangle2D> bound)
+    {
+        
+          for (int i = 0; i < bound.size(); i++) {
+         
+
+               labels.get(i).setBounds((int)(bound.get(i).getX() - wordCloudPanel.getWidth()/4 ), 
+                       (int)(bound.get(i).getY() - wordCloudPanel.getHeight()/4 ), 
+               (int)bound.get(i).getWidth(), (int)bound.get(i).getHeight());    
+               
+           // labels.get(i).setBackground(Color.red);    
+            //labels.get(i).setOpaque(true);
+            labels.get(i).setFont(labels.get(i).getFont());
+            labels.get(i).setText(labels.get(i).getString());
+            
+//            wordCloudPanel.add(labels.get(i));
+        }
+        
+        
     }
 
 }

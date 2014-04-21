@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import prefuse.action.layout.Layout;
 
 import javax.imageio.ImageIO;
 
@@ -195,7 +196,7 @@ public class WordleAlgorithmLite {
 		//get the actual layout bound
 		Dimension2D dim = new Dimension(bound.getWidth(), bound.getHeight());
                
-		if (autoAdjustingBound) {
+		if (/*autoAdjustingBound*/false) {
 			dim = wrappers.getWorldSize(bound.getWidth()/bound.getHeight());
 		}
 		dim = new Dimension(dim.getWidth()* 1.2/*1.2*/, dim.getHeight() * 1.2 /*1.2*/);

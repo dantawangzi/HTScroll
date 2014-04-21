@@ -1515,13 +1515,13 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
       private int labelsToDisplay = 51;
         public List<String[]> allTopics;
         
-        private String HelveticaFont = "Helvetica-Condensed-Bold";
-        private String labelFont = "Arial";//"Impact";
-        static private int occuranceFontSizePara = 40;
+       // private String HelveticaFont = "Helvetica-Condensed-Bold";
+        private final String labelFont = "Impact";//"SansSerif";//
+        static public int occuranceFontSizePara = 40;
         private int labelFontSize = 0; //18
         
         
-        public int wordsToDisplayInWordle = 5;
+        public int wordsToDisplayInWordle = 20;
         
         static private int fontSizePerChar = 1;
         
@@ -1651,10 +1651,9 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 
                         Font font = new Font(labelFont, Font.PLAIN,  (int) (occuranceFontSizePara * tempLT.getProbablity()) + labelFontSize);
                         
-
+                        tempLT.setIndex(kkk);
                         tempLT.setFont(font);
-                        
-                        
+                                          
 //                        JLabel tempLabel = new JLabel();
 //                        tempLabel.setFont(font);
 //                        FontMetrics fm = tempLabel.getFontMetrics(font);
@@ -1674,6 +1673,8 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
                     }
 
                     allLabels.put(t, tempList);
+                    
+                    
 
                 } 
 //                else // Nodes situation
@@ -1823,7 +1824,7 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
             List<LabelText> value = entry.getValue();
 
             
-        List<LabelWordleLite> words = new ArrayList<LabelWordleLite>() ;
+            List<LabelWordleLite> words = new ArrayList<LabelWordleLite>() ;
             
            
                 List<LabelText> tmplist = new ArrayList<LabelText>();
@@ -1838,7 +1839,7 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
                     Font font = lt.getFont();
 
                     LabelWordleLite word = new LabelWordleLite(text, font, 0, lt);
-                   words.add(word);
+                    words.add(word);
                  
                  }     
                  

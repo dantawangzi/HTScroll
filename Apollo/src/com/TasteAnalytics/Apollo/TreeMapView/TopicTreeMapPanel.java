@@ -99,8 +99,20 @@ public class TopicTreeMapPanel extends JPanel {
             for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
                 tmplist.add(parent.allLabels.get(tree.get(i)).get(j));
             }
-            tmp.setLabels(tmplist);
-            tmp.DrawWordleCloud(new Point(0, 0), tmplist);
+            
+            tmp.setLabelsFromList(tmplist);
+            
+            
+            //tmp.DrawWordleCloud(new Point(0, 0), tmplist);
+            
+            
+            
+             PrefuseWordleLayout ppp = new PrefuseWordleLayout(parent, tree.get(i));
+             tmp.setLabelBounds(ppp.DrawWordleCloud( tmp.wordCloudPanel.getBounds()));
+            
+            
+            
+            
 
             if (tree.get(i).getChildren().isEmpty()) {
                 tmp.setVisible(true);
@@ -157,20 +169,28 @@ public class TopicTreeMapPanel extends JPanel {
                     //tmp.setMyBI(parent.getPanelImages().get(treenode));
 
                     tmp.setMyRect(treenode.getMyRect());
- List<LabelText> tmplist = new ArrayList<LabelText>();
+                    List<LabelText> tmplist = new ArrayList<LabelText>();
 
                     for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
                         tmplist.add(parent.allLabels.get(treenode).get(j));
                     }
-                    tmp.setLabels(tmplist);
+                    
+                    //tmp.getLabels()
+                    
+                    
+                    tmp.setLabelsFromList(tmplist);
                     
                     for (int i = 0; i < tmp.getLabels().size(); i++) {
                      tmp.wordCloudPanel.add(tmp.getLabels().get(i));
                     }
-                    tmp.updateLayout();
+                
+                tmp.updateLayout();
+                    //tmp.DrawWordleCloud(new Point(0, 0), nodePanels.get(treenode).getLabels());
 
-                    tmp.DrawWordleCloud(new Point(0, 0), nodePanels.get(treenode).getLabels());
-
+                    PrefuseWordleLayout ppp = new PrefuseWordleLayout(parent, treenode);
+                    tmp.setLabelBounds(ppp.DrawWordleCloud(tmp.wordCloudPanel.getBounds()));
+             
+                   
                     //TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i),tree.get(i).getLevel(), tree.get(i).getMyRect());
                 } else {
 
@@ -185,17 +205,23 @@ public class TopicTreeMapPanel extends JPanel {
                     for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
                         tmplist.add(parent.allLabels.get(treenode).get(j));
                     }
-                    tmp.setLabels(tmplist);
+                    tmp.setLabelsFromList(tmplist);
                     
                     for (int i = 0; i < tmp.getLabels().size(); i++) {
                      tmp.wordCloudPanel.add(tmp.getLabels().get(i));
+                     
                     }
                       
                     
                     tmp.updateLayout();
                       
-                    tmp.DrawWordleCloud(new Point(0, 0), tmp.getLabels());
+                    //tmp.DrawWordleCloud(new Point(0, 0), tmp.getLabels());
 
+                    PrefuseWordleLayout ppp = new PrefuseWordleLayout(parent, treenode);
+                    tmp.setLabelBounds(ppp.DrawWordleCloud(tmp.wordCloudPanel.getBounds()));
+                    
+                    
+                    
                     if (treenode.getChildren().isEmpty()) {
                         tmp.setVisible(true);
                     } else {
