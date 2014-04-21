@@ -13,5 +13,5 @@ import java.awt.Color;
  * @author derekwang
  */
 public interface Colors {
-    public static Color mainBackgroundColor = new Color(39,39,39);
+    public static Color mainBackgroundColor = new Color(0,52,128);// Lowe's Default Color
 }

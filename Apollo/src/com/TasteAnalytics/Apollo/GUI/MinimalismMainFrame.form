@@ -9,7 +9,10 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="0"/>
-    <Property name="title" type="java.lang.String" value="HirarchicalTopics"/>
+    <Property name="title" type="java.lang.String" value="Apollo Analytics"/>
+    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+      <Color blue="80" green="34" red="0" type="rgb"/>
+    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -37,7 +40,7 @@
     <Container class="javax.swing.JPanel" name="mViewPanel">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="27" green="27" red="27" type="rgb"/>
+          <Color blue="80" green="34" red="0" type="rgb"/>
         </Property>
       </Properties>
       <Constraints>
@@ -51,7 +54,7 @@
         <Container class="javax.swing.JPanel" name="MenuPanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="27" green="27" red="27" type="rgb"/>
+              <Color blue="80" green="34" red="0" type="rgb"/>
             </Property>
           </Properties>
           <Constraints>
