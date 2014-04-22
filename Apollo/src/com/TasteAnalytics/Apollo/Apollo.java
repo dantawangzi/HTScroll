@@ -19,7 +19,7 @@ public class Apollo{
         mmframe.setExtendedState(mmframe.getExtendedState()|JFrame.MAXIMIZED_BOTH);
         mmframe.start();
         
-         UIManager.put("ProgressBar.background", Color.WHITE);
+        UIManager.put("ProgressBar.background", Color.WHITE);
         UIManager.put("ProgressBar.foreground", Color.BLACK);
         UIManager.put("ProgressBar.selectionBackground", Color.YELLOW); UIManager.put("ProgressBar.selectionForeground", Color.RED);
         UIManager.put("ProgressBar.shadow", Color.GREEN);
