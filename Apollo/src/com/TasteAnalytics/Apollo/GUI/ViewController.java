@@ -541,7 +541,7 @@ public class ViewController {
 
         currentNode = ct;
 
-        List<List<int[]>> tYK = getTemporalFrame().getData().topicYearKwIdx;
+        List<List<int[]>> tYK = this.data.topicYearKwIdx;
         highlightedTextLabels = null;//.clear();
         //nodeKeywordHighlightMap = null;
         //nodeKeywordHighlightMap.clear();

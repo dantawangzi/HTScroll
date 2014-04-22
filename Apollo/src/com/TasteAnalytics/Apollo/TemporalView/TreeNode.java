@@ -13,7 +13,10 @@ import com.TasteAnalytics.Apollo.TreeMapView.SquarifiedLayout;
 import com.TasteAnalytics.Apollo.TreeMapView.TreeModel;
 import com.TasteAnalytics.Apollo.eventsview.Cusum;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -789,6 +792,16 @@ public List<Integer> getTopicsContainedIdx()
         this.setNumberOfEvents((float) (count==0?0.5:count));
         return (float) (count==0?0.5:count);
     }
+  
+  Image heatmapImage;
+  
+  public static Image getTreeNodeImageFromArray(int[] pixels, int width, int height) {
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            WritableRaster raster = (WritableRaster) image.getData();
+            raster.setPixels(0,0,width,height,pixels);
+            return image;
+        }
+  
 
 
   /**

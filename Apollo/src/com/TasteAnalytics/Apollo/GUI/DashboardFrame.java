@@ -738,7 +738,13 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     }
 
                     //temporalFrame.PreDrawAllLeafs();
-//                    worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200); // TODO: Reenable if needed
+                    //worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200); // TODO: Reenable if needed
+                    
+                    JFrame jf = new JFrame();
+                    jf.setSize(1200,1200);
+                    jf.add(worldPanel);
+                    jf.setVisible(true);
+                    
 //            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());         
 //            treemapPanel.setVisible(true);
                     // TODO: I commented this out and changed it with a no-parameter initilizer. 
@@ -785,13 +791,24 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
 
                     }
 
-                    for (TreeNode myTree : viewController.treeNodes) {
-                        if (myTree.getChildren().isEmpty()) {
-                            myTree.setSentiAgg(viewController.sen.get(myTree.getIndex()));
+                    for (TreeNode treenode : viewController.treeNodes) {
+                        if (treenode.getChildren().isEmpty()) {
+                            treenode.setSentiAgg(viewController.sen.get(myTree.getIndex()));
                         }
                     }
 
                     mongoClient.close();
+                    
+                     for (TreeNode treenode : viewController.treeNodes) {
+                        if (treenode.getChildren().isEmpty()) {
+                            treenode.
+                            
+                           //
+                        }
+                    }
+                    
+                    
+                    
 
                    // if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1)) 
                     {
@@ -911,7 +928,7 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                 try {
                     connection.close();
 
-                    // TODO add your handling code here:
+                  
                 } catch (IOException ex) {
                     Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }

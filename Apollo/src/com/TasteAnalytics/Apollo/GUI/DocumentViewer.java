@@ -1721,7 +1721,7 @@ public class DocumentViewer extends JFrame {
 //    void loadDocs(String tmpURL) throws MalformedURLException, IOException {
 //        tmpURL = tmpURL.replaceAll("_usage", "");
 //        CSVReader csvReader = new CSVReader(tmpURL);
-//        //tmpDocs = csvReader.readAll();//first line is the header //TODO
+//        //tmpDocs = csvReader.readAll();//first line is the header //
 //        tmpDocs = null;
 //
 //        this.parent.setInternalDocs(tmpDocs);

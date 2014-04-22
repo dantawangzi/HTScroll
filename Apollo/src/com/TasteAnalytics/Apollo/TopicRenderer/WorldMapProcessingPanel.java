@@ -836,7 +836,20 @@ public class WorldMapProcessingPanel extends JPanel {
         public void keyPressed() {
 
             if (key == 'c') {
-                markerManager.clearMarkers();
+                
+                
+                 Location topleft = mapDetail.getTopLeftBorder();
+                 Location rightBottom = mapDetail.getBottomRightBorder();
+                 
+                 PGraphics pg = mapDetail.mapDisplay.getOuterPG();
+		PImage thumbnail = pg.get();
+                thumbnail.save("map.png");
+                
+                 System.out.println(topleft);
+                 System.out.println(rightBottom);
+                 
+                 
+               // markerManager.clearMarkers();
             }
 
         }
