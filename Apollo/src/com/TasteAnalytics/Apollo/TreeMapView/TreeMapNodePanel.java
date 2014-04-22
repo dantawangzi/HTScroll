@@ -81,7 +81,9 @@ public final class TreeMapNodePanel extends JPanel {
 
             g.setColor(SystemPreferences.positiveColor);
             g.fillRect(0, 0, (int) (area.getWidth() * flagPercentage), (int) area.getHeight());
-
+            
+            g.drawString(String.valueOf(flagPercentage), 20, 0);
+            
             g.setColor(SystemPreferences.negativeColor);
             g.fillRect((int) (area.getWidth() * flagPercentage), 0, (int) (area.getWidth() * (1 - flagPercentage)), (int) area.getHeight());
         }
@@ -280,10 +282,10 @@ public final class TreeMapNodePanel extends JPanel {
             // SentiBar goes from left to right. Always show
             sentiBar.setBounds(new Rectangle(SystemPreferences.treemapBorderWidth, 0, myRect.width - SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight));
             // Topic List occupy only left side of the view
-            scrollPane.setBounds(SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight, (int) topic_list_panel_width, myRect.height - 24);
+            scrollPane.setBounds(SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight, (int) topic_list_panel_width, myRect.height  - SystemPreferences.sentimentBarHeight - SystemPreferences.treemapBorderWidth);
 
             // Time View occupies the bottom of the view
-            timeviewPanel.setBounds((int) topic_list_panel_width + SystemPreferences.treemapBorderWidth, myRect.height * 4 / 5, myRect.width, myRect.height / 5);
+            timeviewPanel.setBounds((int) topic_list_panel_width + SystemPreferences.treemapBorderWidth, myRect.height * 4 / 5, myRect.width - 2* SystemPreferences.treemapBorderWidth, myRect.height / 5 - SystemPreferences.treemapBorderWidth);
 
             // Map Image is set on the right between Sentibar and teh Time View
         } else {
@@ -293,12 +295,12 @@ public final class TreeMapNodePanel extends JPanel {
             sentiBar.setBounds(new Rectangle(SystemPreferences.treemapBorderWidth, 0, myRect.width - SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight));
 
             /*Topic List occupy across the panel but shorter*/
-            scrollPane.setBounds(SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight, this.myRect.width, 2 * myRect.height / 5);
+            scrollPane.setBounds(SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight, this.myRect.width, 2 * myRect.height / 5 );
 
             // Map Image is set on the right between Sentibar and teh Time View
 
             /*Topic List occupy across the panel but shorter*/
-            timeviewPanel.setBounds(SystemPreferences.treemapBorderWidth, myRect.height * 4 / 5, myRect.width, myRect.height / 5);
+            timeviewPanel.setBounds(SystemPreferences.treemapBorderWidth, myRect.height * 4 / 5, myRect.width  - 2* SystemPreferences.treemapBorderWidth, myRect.height / 5 - SystemPreferences.treemapBorderWidth);
 
         }
 
