@@ -251,34 +251,34 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     t.addChildNode(compareList.get(i));
                 }
 
-                if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1)) {
-                    viewController.getTemporalFrame().getTemporalPanelMap().get(1).clear();
+//                if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1)) {
+//                    viewController.getTemporalFrame().getTemporalPanelMap().get(1).clear();
 
                     for (int i = 0; i < t.getChildren().size(); i++) {
                         try {
-                            viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+//                            viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
                             viewController.addThemeRiverToTreeMap((TreeNode) t.getChildren().get(i));
 
                         } catch (IOException ex) {
                             Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                }
+//                }
 //TODO: Enable this is we needed.
-                viewController.getPanelImages().clear();
-                for (TemporalViewPanel tvp : viewController.getTemporalFrame().getTemporalPanelMap().get(1)) {
-
-                    BufferedImage bi = viewController.getScreenShot(tvp);
-
-//                    File outputfile = new File("saved.png");
-//             try {
-//                 ImageIO.write(bi, "png", outputfile);
-//             } catch (IOException ex) {
-//                 Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
-//             }
-                    viewController.getPanelImages().put(tvp.currentNode, bi);
-
-                }
+//                viewController.getPanelImages().clear();
+//                for (TemporalViewPanel tvp : viewController.getTemporalFrame().getTemporalPanelMap().get(1)) {
+//
+//                    BufferedImage bi = viewController.getScreenShot(tvp);
+//
+////                    File outputfile = new File("saved.png");
+////             try {
+////                 ImageIO.write(bi, "png", outputfile);
+////             } catch (IOException ex) {
+////                 Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+////             }
+//                    viewController.getPanelImages().put(tvp.currentNode, bi);
+//
+//                }
 
                 treeMapPanel.setTree(viewController.myRenderingTree);
 
