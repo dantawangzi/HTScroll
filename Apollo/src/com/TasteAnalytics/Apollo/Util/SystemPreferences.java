@@ -16,17 +16,26 @@ import javax.swing.border.Border;
  */
 public class SystemPreferences {
     
+    /*   System Settings  */
+    public static boolean isNormalizationNecessary = true;
     
-    /*
-    Treemap Settings
-    */
+    /*   Treemap Settings  */
     
     /// Number of Sentiments
     /// Default to 2 to show Negative and Positive. 
     /// If change to 3 will show Negative, Netural, and Positive
     public static int numOfSentiments = 2;
     
+    public static int sentimentBarHeight = 24; // 40 pixel for the height
+    
+    public static Color positiveColor = new Color(160, 170, 105);
+    public static Color negativeColor = new Color(174, 86, 80);
+    
     /// Tree Node Panel Color
     public static Border treemapNodeBorder = BorderFactory.createLineBorder(Color.white, 3);
+    
+    public static int topicListPanelMinWidth = 120;
+    public static int treemapBorderWidth = 4;
+    
     
 }

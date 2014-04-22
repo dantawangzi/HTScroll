@@ -582,7 +582,7 @@ public class TopicGraphViewPanel extends JPanel {
 
 //        for (int i=0; i<myTree.size(); i++)
 //        {
-//            TreeNode t = myTree.get(i);
+//            TreeNode t = treeNodes.get(i);
 //            if (t.getLevel() == 1)  
 //            {
 //                t.setBaseColor(t.getParent().getBaseColor());
@@ -1434,7 +1434,7 @@ public class TopicGraphViewPanel extends JPanel {
                         vv.repaint();
 
                         //System.out.println(tvf);
-                        //System.out.println("tree in graph is " + myTree.size());
+                        //System.out.println("tree in graph is " + treeNodes.size());
                         if (tvf != null) {
                             tvf.updateData(myTree);
 
@@ -2298,7 +2298,7 @@ public class TopicGraphViewPanel extends JPanel {
                 TreeNode t = (TreeNode) (((DelegateTree) o).getRoot());
 
                 int labelsToDisplay2 = labelsToDisplay / t.getNodeSize();
-                //String[] temp = new String[labelsToDisplay2 * myTree.get(i).getNodeSize()];
+                //String[] temp = new String[labelsToDisplay2 * treeNodes.get(i).getNodeSize()];
 
                 for (int k = 0; k < (labelsToDisplay2); k++) {
                     for (int j = 0; j < t.getTopicsContainedIdx().size(); j++) {

@@ -9,6 +9,7 @@ import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
 import com.TasteAnalytics.Apollo.TreeMapView.TopicTreeMapPanel;
+import com.TasteAnalytics.Apollo.Util.SystemPreferences;
 import com.TasteAnalytics.Apollo.datahandler.LDAHTTPClient;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import com.TasteAnalytics.Apollo.file.CSVFile;
@@ -19,16 +20,15 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -43,7 +43,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 
 /**
  *
@@ -94,6 +93,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         jSliderTopicChooser = new javax.swing.JSlider();
         jTextFieldTopicNumberChooser = new javax.swing.JTextField();
         buttonDisplayInformation = new java.awt.Button();
+        jRadioButton1 = new javax.swing.JRadioButton();
         jProgressBarSystem = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -105,7 +105,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
             }
         });
 
-        mViewPanel.setBackground(new java.awt.Color(0, 52, 128));
+        mViewPanel.setBackground(new java.awt.Color(39, 39, 39));
         mViewPanel.setLayout(new java.awt.BorderLayout());
 
         MenuPanel.setBackground(new java.awt.Color(0, 52, 128));
@@ -127,6 +127,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         });
         MenuPanel.add(jCheckBoxConsoleMenu);
 
+        jSliderTopicChooser.setToolTipText("Select Number of Topic Groups");
         jSliderTopicChooser.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSliderTopicChooserStateChanged(evt);
@@ -147,6 +148,16 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         MenuPanel.add(buttonDisplayInformation);
         buttonDisplayInformation.getAccessibleContext().setAccessibleName("buttonDisplayInfo");
 
+        jRadioButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jRadioButton1.setSelected(true);
+        jRadioButton1.setText("Normalize?");
+        jRadioButton1.setToolTipText("Normalize all the temporal values");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton1ActionPerformed(evt);
+            }
+        });
+        MenuPanel.add(jRadioButton1);
         MenuPanel.add(jProgressBarSystem);
 
         mViewPanel.add(MenuPanel, java.awt.BorderLayout.PAGE_START);
@@ -206,54 +217,56 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     }//GEN-LAST:event_buttonDisplayInformationActionPerformed
 
     private void jSliderTopicChooserStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderTopicChooserStateChanged
-        // TODO add your handling code here:
 
-        if (viewController.myRenderingTree != null && treeMapPanel != null) {
-            viewController.myRenderingTree.clear();;// = new ArrayList<TreeNode>();
+        // TODO: Li, this is a way to speed up teh Jslider. We don't need to calculate the layout everytime we update.
+        JSlider source = (JSlider) evt.getSource();
+        if (!source.getValueIsAdjusting()) {
+            if (viewController.myRenderingTree != null && treeMapPanel != null) {
+                viewController.myRenderingTree.clear();// = new ArrayList<TreeNode>();
 
-            viewController.treemapMiniTemporal.clear();
+                viewController.treemapMiniTemporal.clear();
 
-            TreeNode t = new TreeNode();
-            viewController.myRenderingTree.add(t);
+                TreeNode t = new TreeNode();
+                viewController.myRenderingTree.add(t);
 
-            List<TreeNode> compareList = new ArrayList<TreeNode>();
+                List<TreeNode> compareList = new ArrayList<TreeNode>();
 
-            for (Map.Entry<Integer, TreeNode> entry : viewController.leaves.entrySet()) {
-                //int key = entry.getKey();
-                TreeNode value = entry.getValue();
-                // System.out.println(value.getIndex() + " " + value.getNumberOfEvents() + " " + value.getTopicWeight() + " " + value.getTreeMapTopicWeight());               
-                compareList.add(value);
+                for (Map.Entry<Integer, TreeNode> entry : viewController.leaves.entrySet()) {
+                    //int key = entry.getKey();
+                    TreeNode value = entry.getValue();
+                    // System.out.println(value.getIndex() + " " + value.getNumberOfEvents() + " " + value.getTopicWeight() + " " + value.getTreeMapTopicWeight());               
+                    compareList.add(value);
 
-            }
+                }
 
-            treeNodeWeightComparer cper = new treeNodeWeightComparer();
-            Collections.sort(compareList, cper);
+                treeNodeWeightComparer cper = new treeNodeWeightComparer();
+                Collections.sort(compareList, cper);
 
-            for (int i = 0; i < jSliderTopicChooser.getValue(); i++) {
+                for (int i = 0; i < jSliderTopicChooser.getValue(); i++) {
 
-                viewController.myRenderingTree.add(compareList.get(i));
-                t.addChildNode(compareList.get(i));
+                    viewController.myRenderingTree.add(compareList.get(i));
+                    t.addChildNode(compareList.get(i));
 
-            }
+                }
 
-            if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1)) {
-                viewController.getTemporalFrame().getTemporalPanelMap().get(1).clear();
+                if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1)) {
+                    viewController.getTemporalFrame().getTemporalPanelMap().get(1).clear();
 
-                for (int i = 0; i < t.getChildren().size(); i++) {
-                    try {
-                        viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
-                        viewController.addThemeRiverToTreeMap((TreeNode) t.getChildren().get(i));
+                    for (int i = 0; i < t.getChildren().size(); i++) {
+                        try {
+                            viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+                            viewController.addThemeRiverToTreeMap((TreeNode) t.getChildren().get(i));
 
-                    } catch (IOException ex) {
-                        Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
-            }
 
-            viewController.getPanelImages().clear();
-            for (TemporalViewPanel tvp : viewController.getTemporalFrame().getTemporalPanelMap().get(1)) {
+                viewController.getPanelImages().clear();
+                for (TemporalViewPanel tvp : viewController.getTemporalFrame().getTemporalPanelMap().get(1)) {
 
-                BufferedImage bi = viewController.getScreenShot(tvp);
+                    BufferedImage bi = viewController.getScreenShot(tvp);
 
 //                    File outputfile = new File("saved.png");
 //             try {
@@ -261,28 +274,32 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //             } catch (IOException ex) {
 //                 Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
 //             }
-                viewController.getPanelImages().put(tvp.currentNode, bi);
+                    viewController.getPanelImages().put(tvp.currentNode, bi);
+
+                }
+
+                treeMapPanel.setTree(viewController.myRenderingTree);
+
+                try {
+                    treeMapPanel.updateTreeLayout(treeMapPanel.mywidth, treeMapPanel.myheight - 20, true);
+                } catch (IOException ex) {
+                    Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
             }
-
-            treeMapPanel.setTree(viewController.myRenderingTree);
-
-            try {
-                treeMapPanel.updateTreeLayout(treeMapPanel.mywidth, treeMapPanel.myheight - MenuPanel.getHeight(), true);
-                                    //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));                                    
-                //treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight());
-
-                treeMapPanel.invalidate();
-                treeMapPanel.getRootPane().revalidate();
-
-            } catch (IOException ex) {
-                Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+            //jSliderTopicChooser.
+            jTextFieldTopicNumberChooser.setText(String.valueOf(jSliderTopicChooser.getValue()));
         }
-        //jSliderTopicChooser.
-        jTextFieldTopicNumberChooser.setText(String.valueOf(jSliderTopicChooser.getValue()));
+
+
     }//GEN-LAST:event_jSliderTopicChooserStateChanged
+
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        // TODO add your handling code here:
+//         SystemPreferences.isNormalizationNecessary = !SystemPreferences.isNormalizationNecessary;
+//            System.out.println(SystemPreferences.isNormalizationNecessary);
+
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     void initializeViews(CSVFile csvf) throws IOException {
 
@@ -327,6 +344,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
     private javax.swing.JCheckBox jCheckBoxConsoleMenu;
     private javax.swing.JComboBox jComboBoxAnalytics;
     private javax.swing.JProgressBar jProgressBarSystem;
+    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JSlider jSliderTopicChooser;
     private javax.swing.JTextField jTextFieldTopicNumberChooser;
     private javax.swing.JPanel mViewPanel;
@@ -350,17 +368,40 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
         documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         viewController.addDocumentViewer(documentViewer);
 
-        this.decorateMainFrame();
+        try {
+            this.decorateMainFrame();
+        } catch (IOException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
+        this.initializeMenuPanel();
         /// Load the Analytics Data from the MongoDB
         this.loadComboMenuItems();
 
+        ViewController.mainFrame = this; // Double Binding
     }
 
-    private void decorateMainFrame() {
-//        BufferedImage myPicture = ImageIO.read(new File("logo_ta.png"));
-//        JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-//        add(picLabel);
+    private void initializeMenuPanel() {
+        this.jRadioButton1.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                SystemPreferences.isNormalizationNecessary = (e.getStateChange() == 1);
+                try {
+                    ViewController.treemappanel.updateTreeLayout(ViewController.treemappanel.getWidth(), ViewController.treemappanel.getHeight() - 20, false);
+                    // TODO: Figure out why the Menu Panel has a height increase
+                } catch (IOException ex) {
+                    Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                ViewController.treemappanel.revalidate();
+//            System.out.println(SystemPreferences.isNormalizationNecessary);
+            }
+        });
+    }
+
+    private void decorateMainFrame() throws IOException {
+        BufferedImage myPicture = ImageIO.read(new File("logo_ta.png"));
+        JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+        this.MenuPanel.add(picLabel);
+
     }
 
     private void loadComboMenuItems() {
@@ -491,7 +532,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                         jSliderTopicChooser.setMaximum(num_of_topics);
 
                         jSliderTopicChooser.setPaintTicks(true);
-
                         jSliderTopicChooser.setPaintLabels(true);
 
                     }
@@ -602,7 +642,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     viewController.loadCacheData(job, TreeString, viewController.host);
 
-                    temporalFrame = new TemporalViewFrame(viewController, 600, 800, viewController.data, viewController.myTree);//scrnsize.width / 2, scrnsize.height);
+                    temporalFrame = new TemporalViewFrame(viewController, 600, 800, viewController.data, viewController.treeNodes);//scrnsize.width / 2, scrnsize.height);
 
                     viewController.addTemporalFrame(temporalFrame);
 
@@ -627,7 +667,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     }
 
-                    viewController.myTree.get(0).calculateTreeMapTopicWeight();
+                    viewController.treeNodes.get(0).calculateTreeMapTopicWeight();
 
                     viewController.myRenderingTree = new ArrayList<TreeNode>();
 
@@ -658,7 +698,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     Collections.sort(compareList, cper);
 
                     //initial treemap node number 
-                    for (int i = 0; i < 4/*jSliderTopicChooser.getValue()*/; i++) {
+                    for (int i = 0; i < jSliderTopicChooser.getValue(); i++) {
 
                         viewController.myRenderingTree.add(compareList.get(i));
                         t.addChildNode(compareList.get(i));
@@ -671,8 +711,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     }
 
                     //temporalFrame.PreDrawAllLeafs();
-                    worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200);
-
+//                    worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200); // TODO: Reenable if needed
                     JFrame jp = new JFrame();
                     jp.setSize(new Dimension(1000, 1000));
                     jp.add(temporalFrame);
@@ -721,11 +760,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     }
 
-                    for (int i = 0; i < viewController.myTree.size(); i++) {
-                        if (viewController.myTree.get(i).getChildren().isEmpty()) {
-                            viewController.myTree.get(i).setSentiAgg(viewController.sen.get(viewController.myTree.get(i).getIndex()));
+                    for (TreeNode myTree : viewController.treeNodes) {
+                        if (myTree.getChildren().isEmpty()) {
+                            myTree.setSentiAgg(viewController.sen.get(myTree.getIndex()));
                         }
-
                     }
 
                     mongoClient.close();
@@ -751,6 +789,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 
                     }
 
+                    // TODO: This is hard coded to show the bottom of the view. Need to Change the 80 to dynamically calulated from the height of the menuPanel
+                    treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myRenderingTree, mViewPanel.getWidth(), mViewPanel.getHeight() - 80);//, );
+                    ViewController.treemappanel = treeMapPanel;// Double Binding this to static treemap panel
+                    mViewPanel.add(treeMapPanel);
+
 //                     PrefuseWordleLayout ppp;
 //                    ppp = new PrefuseWordleLayout(viewController, (TreeNode) viewController.myRenderingTree.get(2));
 //            
@@ -759,9 +802,6 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 ////            jf.add(ppp);
 //            
 //            jf.setVisible(true);
-                    treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myRenderingTree, scrnsize.width / 2, scrnsize.height);//, );
-                    viewController.setTmp(treeMapPanel);
-
 //            PrefuseLabelTopicGraphPanel labelTopicGraphPanel = null;
 //            if (viewController.tagLDA) {
 //                labelTopicGraphPanel = new PrefuseLabelTopicGraphPanel(viewController.csvfFolderPath, viewController, csvf.getSimilarityMatrix());
@@ -791,37 +831,37 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //            rightSplit.setOneTouchExpandable(true);
 //            rightSplit.setDividerLocation(0.8d);
 //            leftSplit.setResizeWeight(0.8d);
-                    mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeMapPanel, worldPanel);//leftSplit, rightSplit);//
-
-                    mainSplit.setOneTouchExpandable(true);
-                    mainSplit.setDividerLocation(0.5d);
-                    mainSplit.setResizeWeight(0.5d);
-
-                    mainSplit.setContinuousLayout(true);
-
-                    mainSplit.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
-                        @Override
-                        public void propertyChange(PropertyChangeEvent pce) {
-                            // do here
-
-                            if (treeMapPanel != null) {
-
-                                try {
-                                    //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
-                                    treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight() - MenuPanel.getHeight(), false);
-                                } catch (IOException ex) {
-                                    Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                treeMapPanel.invalidate();
-                                treeMapPanel.getRootPane().revalidate();
-                            }
-                        }
-
-//                        public void propertyChange(PropertyChangeEvent evt) {
-//                            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//                        }
-                    });
+//                    mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeMapPanel, worldPanel);//leftSplit, rightSplit);//
 //
+//                    mainSplit.setOneTouchExpandable(true);
+//                    mainSplit.setDividerLocation(0.5d);
+//                    mainSplit.setResizeWeight(0.5d);
+//
+//                    mainSplit.setContinuousLayout(true);
+//
+//                    mainSplit.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+//                        @Override
+//                        public void propertyChange(PropertyChangeEvent pce) {
+//                            // do here
+//
+//                            if (treeMapPanel != null) {
+//
+//                                try {
+//                                    //treeMapPanel.setPreferredSize( new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
+//                                    treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight() - MenuPanel.getHeight(), false);
+//                                } catch (IOException ex) {
+//                                    Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//                                }
+//                                treeMapPanel.invalidate();
+//                                treeMapPanel.getRootPane().revalidate();
+//                            }
+//                        }
+//
+////                        public void propertyChange(PropertyChangeEvent evt) {
+////                            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+////                        }
+//                    });
+////
 //            //Provide minimum sizes for the two components in the split pane
 //            Dimension minimumSize = new Dimension(200, 100);
 //            leftTopScrollPane.setMinimumSize(minimumSize);
@@ -835,11 +875,10 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
 //            rightTopScrollPane.setMaximumSize(maximumSize);
 //            rightBottomScrollPane.setMaximumSize(maximumSize);
 //            
-                    Border blackline = BorderFactory.createLineBorder(Color.black);
-                    mViewPanel.setBorder(blackline);
-                    mViewPanel.add(mainSplit);
+//                    Border blackline = BorderFactory.createLineBorder(Color.black);
+//                    mViewPanel.setBorder(blackline);
+//                    mViewPanel.add(mainSplit);
                     //mViewPanel.add(treeMapPanel);
-
                 } catch (IOException ex) {
                     Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -896,19 +935,18 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable 
                     mViewPanel.setPreferredSize(new Dimension(e.getComponent().getSize().width, e.getComponent().getSize().height));
                 }
 
-                if (mainSplit != null) {
-
-                    mainSplit.setPreferredSize(new Dimension(((JFrame) e.getComponent()).getContentPane().getWidth(), ((JFrame) e.getComponent()).getContentPane().getHeight()));
-
-                    try {
-                        treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight() - MenuPanel.getHeight(), false);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    treeMapPanel.invalidate();
-                    treeMapPanel.getRootPane().revalidate();
-                }
-
+//                if (mainSplit != null) {
+//
+//                    mainSplit.setPreferredSize(new Dimension(((JFrame) e.getComponent()).getContentPane().getWidth(), ((JFrame) e.getComponent()).getContentPane().getHeight()));
+//
+//                    try {
+//                        treeMapPanel.updateTreeLayout(mainSplit.getLeftComponent().getWidth(), mainSplit.getLeftComponent().getHeight() - MenuPanel.getHeight(), false);
+//                    } catch (IOException ex) {
+//                        Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                    treeMapPanel.invalidate();
+//                    treeMapPanel.getRootPane().revalidate();
+//                }
                 revalidate();
 
             }

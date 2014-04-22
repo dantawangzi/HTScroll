@@ -10,7 +10,6 @@ import com.TasteAnalytics.Apollo.TemporalView.TemporalViewPanel;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
-import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel.labelTextComparer;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
 import com.TasteAnalytics.Apollo.TopicRenderer.WorldMapProcessingPanel;
 import com.TasteAnalytics.Apollo.TreeMapView.TopicTreeMapPanel;
@@ -20,14 +19,11 @@ import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import com.TasteAnalytics.Apollo.eventsview.EventsViewListener;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.picking.PickedState;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -44,8 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import org.apache.commons.lang.StringUtils;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
@@ -58,6 +52,8 @@ import prefuse.data.Table;
  * @author wdou
  */
 public class ViewController {
+
+    public static MinimalismMainFrame mainFrame;
 
     public TemporalViewListener tvl;
     public EventsViewListener evl;
@@ -76,12 +72,11 @@ public class ViewController {
     public WorldMapProcessingPanel worldMapProcessingFrame;
     public List<Point2D> geoLocations;
 
-    
     public List<Float> topicWeights = new ArrayList<Float>();
     public List<Float> topicEventsCount = new ArrayList<Float>();
     public HashMap<Integer, TreeNode.SentimentModel> sen = new HashMap<Integer, TreeNode.SentimentModel> ();
     
-    public List<TreeNode> myTree;
+    public List<TreeNode> treeNodes;
     public CategoryBarElement data;
     public HashMap<Integer, TreeNode> leaves = new HashMap<Integer,TreeNode>();
      
@@ -95,13 +90,13 @@ public class ViewController {
     {
 
         data = new CategoryBarElement(databaseName, host);
-        myTree = new ArrayList<TreeNode>();
+        treeNodes = new ArrayList<TreeNode>();
         buildTreeWithString(TreeString);
 
-        BuildNodeValue(data, myTree.get(0));
-        BuildUnNormNodeValue(data, myTree.get(0));
+        BuildNodeValue(data, treeNodes.get(0));
+        BuildUnNormNodeValue(data, treeNodes.get(0));
 
-        myTree.get(0).calculateNodeContainedIdx();
+        treeNodes.get(0).calculateNodeContainedIdx();
     
       
         setNodeColor();
@@ -128,19 +123,19 @@ public class ViewController {
 
         int size = colorSpecturm.size();
 
-        myTree.get(0).setColor(Color.white);
+        treeNodes.get(0).setColor(Color.white);
 
-        for (int i = 0; i < myTree.get(0).getChildren().size(); i++) {
+        for (int i = 0; i < treeNodes.get(0).getChildren().size(); i++) {
 
             Color current = new Color(colorSpecturm.get((int) i % size)[1], colorSpecturm.get((int) i % size)[2], colorSpecturm.get((int) i % size)[3]);
-            TreeNode t = (TreeNode) myTree.get(0).getChildren().get(i);
+            TreeNode t = (TreeNode) treeNodes.get(0).getChildren().get(i);
             t.setBaseColor(current);
             t.setColor(current);
 
         }
 
-        for (int i = 1; i < myTree.size(); i++) {
-            TreeNode t = myTree.get(i);
+        for (int i = 1; i < treeNodes.size(); i++) {
+            TreeNode t = treeNodes.get(i);
 
             if (t.getLevel() > 1) {
                 TreeNode colorNode = t.getParent(); //myTree.get(i);
@@ -319,12 +314,12 @@ public class ViewController {
                 String[] ary = new String[]{/*t.getValue()*/};
                 t.setNodeTopics(ary);
                 NodeArray[index] = t;
-                myTree.add(t);
+                treeNodes.add(t);
             } else if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'L') {
                 t.setNodeTopics(allTopics.get(index + getGlobalReadIndex()));
                 LeafArray[index] = t;
                 t.setTopicWeight(topicWeights.get(index));                                
-                myTree.add(t);
+                treeNodes.add(t);
                 leaves.put(index, t);
             } else {
                 int c = 0;
@@ -476,11 +471,11 @@ public class ViewController {
         return null;
     }
 
-    TopicTreeMapPanel treemappanel;
+    public static TopicTreeMapPanel treemappanel;
 
-    public TopicTreeMapPanel getTmp() {
-        return treemappanel;
-    }
+//    public TopicTreeMapPanel getTmp() {
+//        return treemappanel;
+//    }
 
     public void setTmp(TopicTreeMapPanel tmp) {
         this.treemappanel = tmp;
@@ -846,7 +841,7 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
     
     tp.currentNode = ct;
     tp.setData(this.data);
-        tp.setTree(this.myTree);
+        tp.setTree(this.treeNodes);
     
     tp.calculateLocalNormalizingValue(tp.getData(), tp.currentNode);
     tp.buildLabelTimeMap();
@@ -896,7 +891,7 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
         tp.setPanelLabelId(index);
         tp.setLevel(1);
         tp.setData(this.data);
-        tp.setTree(this.myTree);
+        tp.setTree(this.treeNodes);
         this.getTemporalFrame().getMainPanel().addChildPanel(tp);
         tp.setFatherPanel(this.getTemporalFrame().getMainPanel());
         TreeNode tempt = ct;
@@ -1530,9 +1525,9 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
         allLabels.clear();
       
 
-        for (int i = 0; i < myTree.size(); i++) {
+        for (int i = 0; i < treeNodes.size(); i++) {
             //System.out.println(i);
-            TreeNode o = myTree.get(i);
+            TreeNode o = treeNodes.get(i);
 
             List<LabelText> tempList = new ArrayList<LabelText>();
             Point2D loc = new Point2D.Float(0,0);
@@ -1685,7 +1680,7 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 //                TreeNode t = (TreeNode) (((DelegateTree) o).getRoot());
 //
 //                int labelsToDisplay2 = labelsToDisplay / t.getNodeSize();
-//                //String[] temp = new String[labelsToDisplay2 * myTree.get(i).getNodeSize()];
+//                //String[] temp = new String[labelsToDisplay2 * treeNodes.get(i).getNodeSize()];
 //
 //                for (int k = 0; k < (labelsToDisplay2); k++) {
 //                    for (int j = 0; j < t.getTopicsContainedIdx().size(); j++) {

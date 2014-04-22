@@ -595,8 +595,8 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         myTree = tree;
        
 
-       // myTree.get(0).calculateNodeContainedIdx();
-        //  myTree.get(0).calculateNodeString();
+       // treeNodes.get(0).calculateNodeContainedIdx();
+        //  treeNodes.get(0).calculateNodeString();
       //  System.out.println("building trees and values in temporal frame finished...");
        
         mainPanel.setData(data);
@@ -662,7 +662,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         BuildUnNormNodeValue(data, myTree.get(0));
 
         myTree.get(0).calculateNodeContainedIdx();
-        //  myTree.get(0).calculateNodeString();
+        //  treeNodes.get(0).calculateNodeString();
         System.out.println("building trees and values in temporal frame finished...");
         setNodeColor();
         getMainPanel().setData(data);
@@ -798,7 +798,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         BuildUnNormNodeValue(data, myTree.get(0));
 
         myTree.get(0).calculateNodeContainedIdx();
-        //  myTree.get(0).calculateNodeString();
+        //  treeNodes.get(0).calculateNodeString();
 
         System.out.println("building trees and values in temporal frame finished...");
         setNodeColor();
@@ -816,10 +816,10 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
 //        getSubPanel().setData(data);
 //
-//        getSubPanel().currentNode = myTree.get(1);
+//        getSubPanel().currentNode = treeNodes.get(1);
 //        //calculateRenderControlPoints(data);
 //
-//        getSubPanel().setTree(myTree);
+//        getSubPanel().setTree(treeNodes);
 //        getSubPanel().calculateLocalNormalizingValue(data, getSubPanel().currentNode);
 //        getSubPanel().calculateRenderControlPointsOfEachHierarchy(data, getSubPanel().currentNode, getSubPanel().getLocalNormalizingValue());
 //        getSubPanel().computerZeroslopeAreasHierarchy(0);
@@ -837,11 +837,11 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
         myTree = tree;
 
         // System.out.println("tree is" + tree.size());
-        // System.out.println(myTree.size());
+        // System.out.println(treeNodes.size());
         BuildNodeValue(data, myTree.get(0));
         BuildUnNormNodeValue(data, myTree.get(0));
         myTree.get(0).calculateNodeContainedIdx();
-        // myTree.get(0).calculateNodeString();
+        // treeNodes.get(0).calculateNodeString();
 
         getMainPanel().currentNode = myTree.get(0);
         getMainPanel().setTree(myTree);
@@ -851,9 +851,9 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
       //  getMainPanel().computerZeroslopeAreasHierarchy(0);
 
-//        getSubPanel().currentNode = myTree.get(0);
+//        getSubPanel().currentNode = treeNodes.get(0);
 //
-//        getSubPanel().setTree(myTree);
+//        getSubPanel().setTree(treeNodes);
 //        getSubPanel().calculateLocalNormalizingValue(data, getSubPanel().currentNode);
 //        getSubPanel().calculateRenderControlPointsOfEachHierarchy(data, getSubPanel().currentNode, getSubPanel().getLocalNormalizingValue());
 //
@@ -1166,7 +1166,7 @@ public class TemporalViewFrame extends JPanel implements TemporalViewListener, M
 
 //        for (int i=0; i<myTree.size(); i++)
 //        {
-//            TreeNode t = myTree.get(i);
+//            TreeNode t = treeNodes.get(i);
 //            if (t.getLevel() == 1)  
 //            {
 //                t.setBaseColor(t.getParent().getBaseColor());

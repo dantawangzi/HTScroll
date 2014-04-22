@@ -420,9 +420,9 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //        data = new CategoryBarElement(internalRecord, topicSequence, years, allDocs, termWeights, termWeights_norm,termIndex, allTopics, path, contentIdx, format);
 //
 //
-//        BuildNodeValue(data, myTree.get(0));
+//        BuildNodeValue(data, treeNodes.get(0));
 //
-//        currentNode = myTree.get(0);
+//        currentNodetreeNodesree.get(0);
 //        // calculateRenderControlPoints(data);
 //
 //        timeIntervalFormat = format;

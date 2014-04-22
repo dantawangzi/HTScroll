@@ -495,7 +495,7 @@ public List<Integer> getTopicsContainedIdx()
       float result = 0;
       if (this.getChildren().isEmpty())
       {
-          result = (float) Math.sqrt( this.numberOfEvents * this.topicWeight);
+          result = (float) Math.sqrt(this.numberOfEvents * this.topicWeight);
                     
       }
       else
@@ -509,7 +509,7 @@ public List<Integer> getTopicsContainedIdx()
       }
       
       
-      
+   
       this.TreeMapTopicWeight = result;
       return result;
       
