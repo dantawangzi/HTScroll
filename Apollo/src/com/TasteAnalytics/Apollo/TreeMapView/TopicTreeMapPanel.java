@@ -131,14 +131,16 @@ public class TopicTreeMapPanel extends JPanel {
                     //tmp.setMyBI(parent.getPanelImages().get(treenode));
 
                     tmp.setMyRect(treenode.getMyRect());
-                    List<LabelText> tmplist = new ArrayList<LabelText>();
-
-                    for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
-                        tmplist.add(parent.allLabels.get(treenode).get(j));
-                    }
-
-                    //tmp.getLabels()
-                    tmp.setLabelsFromList(tmplist);
+                    
+                    // TODO: LOW: We don't need this until WordCloud possibly
+//                    List<LabelText> tmplist = new ArrayList<LabelText>();
+//
+//                    for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
+//                        tmplist.add(parent.allLabels.get(treenode).get(j));
+//                    }
+//
+//                    //tmp.getLabels()
+//                    tmp.setLabelsFromList(tmplist);
 
 //                    for (int i = 0; i < tmp.getLabels().size(); i++) {
 //                        tmp.wordCloudPanel.add(tmp.getLabels().get(i));
@@ -153,15 +155,15 @@ public class TopicTreeMapPanel extends JPanel {
 
                     TreeMapNodePanel tmp = new TreeMapNodePanel(parent, treenode, treenode.getLevel(), treenode.getMyRect(), parent.getTreemapMiniTemporal().get(treenode));
                     nodePanels.put(treenode, tmp);
-                    tmp.list = parent.allLabelInWordle.get(treenode);
-                    tmp.setMyRect(treenode.getMyRect());
-
-                    List<LabelText> tmplist = new ArrayList<LabelText>();
-
-                    for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
-                        tmplist.add(parent.allLabels.get(treenode).get(j));
-                    }
-                    tmp.setLabelsFromList(tmplist);
+//                    tmp.list = parent.allLabelInWordle.get(treenode);
+//                    tmp.setMyRect(treenode.getMyRect());
+//
+//                    List<LabelText> tmplist = new ArrayList<LabelText>();
+//
+//                    for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
+//                        tmplist.add(parent.allLabels.get(treenode).get(j));
+//                    }
+//                    tmp.setLabelsFromList(tmplist);
 
                     // TODO: Enable Wordle If Neccessary
 //                    for (int i = 0; i < tmp.getLabels().size(); i++) {
