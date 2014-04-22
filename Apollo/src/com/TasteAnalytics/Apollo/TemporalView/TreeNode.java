@@ -726,6 +726,10 @@ public List<Integer> getTopicsContainedIdx()
     }
   
   
+    
+  
+  
+  
   
   
   public float detectEvents(float eThreshold) {
