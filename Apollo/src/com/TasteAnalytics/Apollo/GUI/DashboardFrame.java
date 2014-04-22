@@ -793,7 +793,7 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
 
                     for (TreeNode treenode : viewController.treeNodes) {
                         if (treenode.getChildren().isEmpty()) {
-                            treenode.setSentiAgg(viewController.sen.get(myTree.getIndex()));
+                            treenode.setSentiAgg(viewController.sen.get(treenode.getIndex()));
                         }
                     }
 
@@ -801,7 +801,7 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     
                      for (TreeNode treenode : viewController.treeNodes) {
                         if (treenode.getChildren().isEmpty()) {
-                            treenode.
+                            //treenode.
                             
                            //
                         }
