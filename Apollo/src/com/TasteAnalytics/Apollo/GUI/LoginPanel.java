@@ -9,15 +9,12 @@ package com.TasteAnalytics.Apollo.GUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 /**
  *
- * @author Li
+ * @author Li Yu
  */
 public class LoginPanel extends JPanel{
     

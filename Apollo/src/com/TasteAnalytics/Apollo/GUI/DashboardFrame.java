@@ -3,7 +3,6 @@
 package com.TasteAnalytics.Apollo.GUI;
 
 import com.TasteAnalytics.Apollo.TemporalView.TemporalViewFrame;
-import com.TasteAnalytics.Apollo.TemporalView.TemporalViewPanel;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import com.TasteAnalytics.Apollo.TopicRenderer.TopicGraphViewPanel;
 import com.TasteAnalytics.Apollo.TopicRenderer.VastGeoFrame;
@@ -384,9 +383,10 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
         consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         consoleFrame.setVisible(false);
 
-        loginPanel = new LoginPanel(viewController);
-
-        mViewPanel.add(loginPanel);
+        // TODO: Enable this when the backend is ready
+//        loginPanel = new LoginPanel(viewController);
+//
+//        mViewPanel.add(loginPanel);
 
         documentViewer = new DocumentViewer(viewController);
         documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
