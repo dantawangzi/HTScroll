@@ -738,7 +738,7 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     }
 
                     //temporalFrame.PreDrawAllLeafs();
-                    //worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200); // TODO: Reenable if needed
+                    worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200); // TODO: Reenable if needed
                     
                     JFrame jf = new JFrame();
                     jf.setSize(1200,1200);
