@@ -204,9 +204,6 @@ public class LabelText extends JLabel implements MouseListener {
             
             parentTreeMapNodePanel.getRemoved_labels().remove(this.getIndex());
             parentTreeMapNodePanel.wordRemoveWordPanel.remove(this);
-            
-            
-     
         }
         parentTreeMapNodePanel.updateLayout();
         

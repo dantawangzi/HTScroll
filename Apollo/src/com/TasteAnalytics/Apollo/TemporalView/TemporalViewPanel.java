@@ -442,7 +442,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     public TemporalViewPanel(ViewController viewController) throws IOException {
         this.parent = viewController;
         viewController.addTemporalViewListener(this);
-
+        this.setPanelTimeColumnMode(true);
         // mainPanel = new javax.swing.JPanel();
         // this.setTitle("ThemeRiver");
         //  setPreferredSize(new Dimension(1200, 900));
@@ -451,12 +451,16 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         childPanel = new ArrayList<TemporalViewPanel>();
 
         focusedSelectionList = new ArrayList<Point2D>();
+        
+        
 
         //focusedTimeColumnList = new ArrayList<Integer>();
         //focusedStreamList = new ArrayList<Integer>();
         width = 900;
         height = 1000;
 
+        
+        
         drawPanelLabelId = -1;
         drawLabels = new ArrayList<Integer>();
         drawLabelsLocations = new ArrayList<Point2D>();
@@ -2395,9 +2399,7 @@ int count = 0;
     HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<LabelText>> labelTimeMap
             = new HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<LabelText>>();
 
-    /**
-     * Wenwen: comment here if not want word cloud
-     */
+   
     public void buildLabelTimeMap() {
 
         if (parent.data.topicYearKwIdx != null) {

@@ -6,6 +6,7 @@ package com.TasteAnalytics.Apollo.TemporalView;
 
 import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 import com.TasteAnalytics.Apollo.GUI.DocumentViewer;
+import com.TasteAnalytics.Apollo.Util.SystemPreferences;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -65,19 +66,22 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
     private List<ZoomLevel> zoomManager;
     private int[] currentKw = null;
     private myPopup popUp;
-    private boolean timecolumn;
+    private boolean _timecolumnFlag;
     private boolean showingSingle;
     static int MAXTHIRDCOLUMNSIZE = 9;
     int globalMouseX;
     int globalMouseY;
 
+    //TODO: High Show Time Related Information
     public TemporalViewInteractions(TemporalViewPanel panel) {
         attachedPanel = panel;
         isClicked = false;
 
         zoomlevel = 0;
         zoomManager = new ArrayList<ZoomLevel>();
-
+        
+        _timecolumnFlag = SystemPreferences.timecolumn; // TODO: Move this to system preferences
+        
         popUp = new myPopup();
     }
 
@@ -107,7 +111,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
         }
 
-        if (!timecolumn) {
+        if (!_timecolumnFlag) {
 
             if (SwingUtilities.isLeftMouseButton(me)) {
                 TreeNode selectedNode;
@@ -825,7 +829,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
             }
 
-            if (timecolumn) {
+            if (_timecolumnFlag) {
 
                 int selected_node_index = -1;
 
@@ -1203,7 +1207,7 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
                 AbstractButton aButton = (AbstractButton) event.getSource();
                 boolean selected = aButton.getModel().isSelected();
 
-                timecolumn = selected;
+                _timecolumnFlag = selected;
                 parentFrame.setTimeColumnMode(selected);
                 attachedPanel.setPanelTimeColumnMode(selected);
 

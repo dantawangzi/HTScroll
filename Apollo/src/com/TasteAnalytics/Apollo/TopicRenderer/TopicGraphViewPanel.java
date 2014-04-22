@@ -50,7 +50,7 @@ import javax.swing.JPanel;
 import com.TasteAnalytics.Apollo.GUI.ViewController;
 import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 import com.TasteAnalytics.Apollo.datahandler.LDAHTTPClient;
-import com.TasteAnalytics.Apollo.GUI.MinimalismMainFrame;
+import com.TasteAnalytics.Apollo.GUI.DashboardFrame;
 import com.TasteAnalytics.Apollo.TemporalView.TreeNode;
 import java.util.Collection;
 import java.awt.Container;
@@ -938,7 +938,7 @@ public class TopicGraphViewPanel extends JPanel {
         try {
             connection.login();
         } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         connection.updateTree(parent.collection, everything);

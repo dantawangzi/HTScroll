@@ -18,6 +18,7 @@ import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
 import com.TasteAnalytics.Apollo.datahandler.CategoryBarElement;
 import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import com.TasteAnalytics.Apollo.eventsview.EventsViewListener;
+import com.explodingpixels.macwidgets.HudWindow;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -53,7 +54,9 @@ import prefuse.data.Table;
  */
 public class ViewController {
 
-    public static MinimalismMainFrame mainFrame;
+    public static DashboardFrame mainFrame;
+
+    public static final HudWindow mainFloatingHUDWindow = new HudWindow();
 
     public TemporalViewListener tvl;
     public EventsViewListener evl;
@@ -74,20 +77,15 @@ public class ViewController {
 
     public List<Float> topicWeights = new ArrayList<Float>();
     public List<Float> topicEventsCount = new ArrayList<Float>();
-    public HashMap<Integer, TreeNode.SentimentModel> sen = new HashMap<Integer, TreeNode.SentimentModel> ();
-    
+    public HashMap<Integer, TreeNode.SentimentModel> sen = new HashMap<Integer, TreeNode.SentimentModel>();
+
     public List<TreeNode> treeNodes;
     public CategoryBarElement data;
-    public HashMap<Integer, TreeNode> leaves = new HashMap<Integer,TreeNode>();
-     
-    
-    
-    
+    public HashMap<Integer, TreeNode> leaves = new HashMap<Integer, TreeNode>();
+
     public List<TreeNode> myRenderingTree;
-     
-     
-     public void loadCacheData(String databaseName, String TreeString, String host) throws IOException
-    {
+
+    public void loadCacheData(String databaseName, String TreeString, String host) throws IOException {
 
         data = new CategoryBarElement(databaseName, host);
         treeNodes = new ArrayList<TreeNode>();
@@ -97,17 +95,14 @@ public class ViewController {
         BuildUnNormNodeValue(data, treeNodes.get(0));
 
         treeNodes.get(0).calculateNodeContainedIdx();
-    
-      
-        setNodeColor();
-      
-        
-        
 
-    } 
-     
-     private List<Float[]> colorMap;
-      public List<Float[]> getCurrentColorMap() {
+        setNodeColor();
+
+    }
+
+    private List<Float[]> colorMap;
+
+    public List<Float[]> getCurrentColorMap() {
         colorMap = new ArrayList<Float[]>();
         try {
             colorMap = this.getNewHueColors();//this.parent.getHSVColors(currentStreams.size());//;//getNumericalColors();
@@ -116,9 +111,8 @@ public class ViewController {
         }
         return colorMap;
     }
-      
-     
-     public void setNodeColor() {
+
+    public void setNodeColor() {
         List<Float[]> colorSpecturm = getCurrentColorMap();
 
         int size = colorSpecturm.size();
@@ -166,12 +160,10 @@ public class ViewController {
                 }
             }
         }
-       
 
     }
-     
-     
-         private float[] BuildUnNormNodeValue(CategoryBarElement data, TreeNode t) {
+
+    private float[] BuildUnNormNodeValue(CategoryBarElement data, TreeNode t) {
         int numofYears = data.getNumOfYears();
         List<Float> result = new ArrayList<Float>();
         float[] tempresult = new float[numofYears];
@@ -226,9 +218,8 @@ public class ViewController {
         return tempresult;
 
     }
-    
-     
-     private float[] BuildNodeValue(CategoryBarElement data, TreeNode t) {
+
+    private float[] BuildNodeValue(CategoryBarElement data, TreeNode t) {
         int numofYears = data.getNumOfYears();
         List<Float> result = new ArrayList<Float>();
         float[] tempresult = new float[numofYears];
@@ -283,8 +274,8 @@ public class ViewController {
         return tempresult;
 
     }
-        
-      public void buildTreeWithString(String everything) {
+
+    public void buildTreeWithString(String everything) {
 
         everything = everything.replaceAll(" ", "");
         everything = everything.replaceAll("\r", "");
@@ -318,7 +309,7 @@ public class ViewController {
             } else if (tempNodes[i].replaceAll("[^\\p{L}\\p{N}]", "").charAt(0) == 'L') {
                 t.setNodeTopics(allTopics.get(index + getGlobalReadIndex()));
                 LeafArray[index] = t;
-                t.setTopicWeight(topicWeights.get(index));                                
+                t.setTopicWeight(topicWeights.get(index));
                 treeNodes.add(t);
                 leaves.put(index, t);
             } else {
@@ -363,8 +354,7 @@ public class ViewController {
             tt1.addChildNode(tt2);
         }
     }
-        
-     
+
     public VastGeoFrame getVCGF() {
         return VCGF;
     }
@@ -427,6 +417,23 @@ public class ViewController {
         labelColor.push(new Color(152, 78, 163));
 
         labelColor.push(new Color(255, 127, 0));
+        
+        
+    }
+
+    public void initilizeMainHUDDisplay() {
+        
+        // TODO: Run into some speed issues here.
+//        mainFloatingHUDWindow.getJDialog().setTitle("Breakdown View");
+//        
+//        mainFloatingHUDWindow.getJDialog().setFocusable(false);
+//        mainFloatingHUDWindow.getJDialog().setFocusableWindowState(false);
+//        mainFloatingHUDWindow.getJDialog().setAlwaysOnTop(false);
+//        mainFloatingHUDWindow.getJDialog().setVisible(false);
+//
+//        mainFloatingHUDWindow.getJDialog().setPreferredSize(new Dimension((int) (ViewController.mainFrame.getWidth() * 0.85), (int) (ViewController.mainFrame.getHeight() * 0.85)));
+//        mainFloatingHUDWindow.getJDialog().setLocation(new Point((int) (ViewController.mainFrame.getWidth() * 0.075), (int) (ViewController.mainFrame.getHeight() * 0.075)));
+//        mainFloatingHUDWindow.getJDialog().pack();
     }
 
     /**
@@ -476,7 +483,6 @@ public class ViewController {
 //    public TopicTreeMapPanel getTmp() {
 //        return treemappanel;
 //    }
-
     public void setTmp(TopicTreeMapPanel tmp) {
         this.treemappanel = tmp;
     }
@@ -553,15 +559,14 @@ public class ViewController {
             if (selectedTimeColumn != previousTimeColumn || (!lastNode.equals(currentNode))) {
 
                 TopicGraphViewPanel.customLabelTimecolumnKey key;
-            //if (currentNode == null)          
+                //if (currentNode == null)          
                 //currentNode = ap.currentNode;
 
                 TreeNode ttt = currentNode;//findMatchingNodeInTopicGraph(currentNode);
-            //key = new customLabelTimecolumnKey( ttt, selectedTimeColumn);
+                //key = new customLabelTimecolumnKey( ttt, selectedTimeColumn);
 
                 key = new TopicGraphViewPanel.customLabelTimecolumnKey(currentNode.getValue(), String.valueOf(selectedTimeColumn));
 
- 
                 highlightedTextLabels = ap.getLabelTimeMap().get(key);
 
                 if (highlightedTextLabels == null) {
@@ -624,7 +629,7 @@ public class ViewController {
             }
         }
 
-   //     System.out.println(nodeKeywordHighlightMap.size());
+        //     System.out.println(nodeKeywordHighlightMap.size());
 //        isShowingSingleTopic = isSingle;
 //
 //        if (isSingle) {
@@ -812,68 +817,62 @@ public class ViewController {
     public HashMap<TreeNode, TemporalViewPanel> getTreemapMiniTemporal() {
         return treemapMiniTemporal;
     }
-    
-    
-    
+
     HashMap<TreeNode, TemporalViewPanel> treemapMiniTemporal = new HashMap<TreeNode, TemporalViewPanel>();
-    
+
     HashMap<TreeNode, BufferedImage> panelImages = new HashMap<TreeNode, BufferedImage>();
 
     public HashMap<TreeNode, BufferedImage> getPanelImages() {
         return panelImages;
     }
-        
-    
-    
-     public BufferedImage getScreenShot(TemporalViewPanel panel){
+
+    public BufferedImage getScreenShot(TemporalViewPanel panel) {
         BufferedImage bi = new BufferedImage(
-            panel.getMyPanelWidth(), panel.getMyPanelHeight(), BufferedImage.TYPE_INT_ARGB);
+                panel.getMyPanelWidth(), panel.getMyPanelHeight(), BufferedImage.TYPE_INT_ARGB);
         panel.paint(bi.getGraphics());
         return bi;
     }
-     
-     
-public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
-    
-    TemporalViewPanel tp = null;
 
-    tp = new TemporalViewPanel(this);
-    
-    tp.currentNode = ct;
-    tp.setData(this.data);
+    public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
+
+        TemporalViewPanel tp = null;
+
+        tp = new TemporalViewPanel(this);
+
+        tp.currentNode = ct;
+        tp.setData(this.data);
         tp.setTree(this.treeNodes);
-    
-    tp.calculateLocalNormalizingValue(tp.getData(), tp.currentNode);
-    tp.buildLabelTimeMap();
-    
-    tp.setName("" + ct.getIndex());
-    tp.setPanelLabelId(ct.getIndex());
-    tp.setLevel(1);
-        
-    this.treemapMiniTemporal.put(ct,tp);
-    
+
+        tp.calculateLocalNormalizingValue(tp.getData(), tp.currentNode);
+        tp.buildLabelTimeMap();
+
+        tp.setName("" + ct.getIndex());
+        tp.setPanelLabelId(ct.getIndex());
+        tp.setLevel(1);
+
+        this.treemapMiniTemporal.put(ct, tp);
+
         float normalizeValue = -1;
         if (this.treemapMiniTemporal.size() > 0) {
-            
-            for (TemporalViewPanel ttp :this.treemapMiniTemporal.values()) {
+
+            for (TemporalViewPanel ttp : this.treemapMiniTemporal.values()) {
                 if (ttp.getLocalNormalizingValue() >= normalizeValue) {
                     normalizeValue = ttp.getLocalNormalizingValue();
                 }
             }
-             for (TemporalViewPanel ttp :this.treemapMiniTemporal.values()) {
+            for (TemporalViewPanel ttp : this.treemapMiniTemporal.values()) {
                 ttp.setGlobalNormalizingValue(normalizeValue);
             }
         }
 
-
-      for (TemporalViewPanel ttp :this.treemapMiniTemporal.values()) {
+        for (TemporalViewPanel ttp : this.treemapMiniTemporal.values()) {
             ttp.calculateRenderControlPointsOfEachHierarchy(tp.getData(), tp.currentNode, tp.getGlobalNormalizingValue());
             ttp.computerZeroslopeAreasHierarchy(0);
 
         }
-    
-}
-          
+
+    }
+
     public void addThemeRiver(TreeNode ct) throws IOException {
 
         TemporalViewPanel tp = null;
@@ -885,7 +884,6 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
             this.getTemporalFrame().getTemporalPanelMap().put(1, tvpl);
         }
 
-        
         int index = this.getTemporalFrame().getTemporalPanelMap().get(1).size();
         tp.setName("1" + index);
         tp.setPanelLabelId(index);
@@ -942,55 +940,43 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
             //ttp.UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), ttp.getGlobalNormalizingValue());
         }
 
-        
-        
         //tvf.getMainPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() * 2 / 3), tvf.getMainPanel().getLocalNormalizingValue());
         //tvf.getSubPanel().UpdateTemporalView(new Dimension(tvf.getContentPane().getWidth() / (1 + secondColumnExist + thirdColumnExist), tvf.getContentPane().getHeight() / 3), tvf.getSubPanel().getLocalNormalizingValue());
         System.out.println("second column panel added");
         this.getTemporalFrame().setMigLayoutForScrollPane();
-        
-        
-        
 
     }
 
     public void stateChangedNew(TreeNode ct) {
 
-        for ( TreeMapNodePanel p : treemappanel.getNodePanel().values())
-        {
-            p.setMouseOvered(false);  
+        //TODO: HIGH COMMENT OUT ANYTHING RELATED TO THE TOPIC GRAPH MEMORY LEAK!!
+        for (TreeMapNodePanel p : treemappanel.getNodePanel().values()) {
+            p.setMouseOvered(false);
             p.updateLayout();
-            
+
         }
-        
+
         TreeNode a = findMatchingNodeInTopicGraph(ct);
-        
-        
-        if (a.getChildren().isEmpty())
-        {
+
+        if (a.getChildren().isEmpty()) {
             treemappanel.getNodePanel().get(a).setMouseOvered(true);
             treemappanel.getNodePanel().get(a).updateLayout();
-        }
-        else
-        {
-            for (int i=0; i<a.getChildren().size(); i++)
-            {
+        } else {
+            for (int i = 0; i < a.getChildren().size(); i++) {
                 TreeNode t = (TreeNode) a.getChildren().get(i);
                 treemappanel.getNodePanel().get(t).setMouseOvered(true);
                 treemappanel.getNodePanel().get(t).updateLayout();
             }
-            
+
         }
-        
-       
-         //TopicTreeMap
+
+        //TopicTreeMap
     }
 
     public void stateChanged(TreeNode ct) {
         currentNode = ct;
- // topic graph gone
-        
-        
+        // topic graph gone
+
 //        VisualizationViewer vv = getTopicGraphViewPanel().getVisualizationViewer();
 //        final PickedState<TreeNode> pickedState = vv.getPickedVertexState();
 //        Collection<TreeNode> vertices = vv.getGraphLayout().getGraph().getVertices();
@@ -1035,7 +1021,6 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 //        getTopicGraphViewPanel().getVisualizationViewer().setPickedVertexState(pickedState);
 //
 //        vv.repaint();
-
         //change event view frame
     }
 
@@ -1120,8 +1105,7 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
         topicSimilarities = sim;
     }
 
-    
-        private Color hsv2rgb(float h, float s, float v) {
+    private Color hsv2rgb(float h, float s, float v) {
         h = (h % 1 + 1) % 1; // wrap hue
 
         int i = (int) Math.floor((float) (h * 6));
@@ -1147,9 +1131,8 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 
         return null;
     }
-        
-    
-        private List<Color> getHueColors(int size, float H) {
+
+    private List<Color> getHueColors(int size, float H) {
         List<Color> tempcolorMap = new ArrayList<Color>();
         try {
 
@@ -1176,8 +1159,7 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
         }
         return tempcolorMap;
     }
-        
-        
+
     public List<Float[]> getHSVColors(int n) {
         List<Float[]> colorMap = new ArrayList<Float[]>();
         for (int j = 0; j < n; j++) {
@@ -1218,23 +1200,20 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
                 new Color(251, 128, 114)
 
             };
-    
-    
-     public static Color[] brewerColor
+
+    public static Color[] brewerColor
             = {
-                new Color(141,211,199),
-                new Color(190,186,218),
-                new Color(251,128,114),
-              
-                new Color(204,235,197),
-                   new Color(252,205,229),
-//                    new Color(217,217,217),
-                                 new Color(204,235,197),
-                new Color(128,177,211),//lowes
-    
-  
-                new Color(253,180,98),//hdepot
-                new Color(255,237,111)
+                new Color(141, 211, 199),
+                new Color(190, 186, 218),
+                new Color(251, 128, 114),
+                new Color(204, 235, 197),
+                new Color(252, 205, 229),
+                //                    new Color(217,217,217),
+                new Color(204, 235, 197),
+                new Color(128, 177, 211),//lowes
+
+                new Color(253, 180, 98),//hdepot
+                new Color(255, 237, 111)
             };
 
     public void setNewHueColors() {
@@ -1253,21 +1232,19 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 //        tmpColor[2] = G1 / (float) 255.0;
 //        tmpColor[3] = B1 / (float) 255.0;
 //        hueColors.add(tmpColor);
+        for (int i = 0; i < brewerColor.length; i++) {
+            Float[] tmpColor1 = new Float[4];
+            float R = (float) brewerColor[i].getRed();
+            float G = (float) brewerColor[i].getGreen();
+            float B = (float) brewerColor[i].getBlue();
+            tmpColor1[0] = Alpha;
+            tmpColor1[1] = R / (float) 255.0;
+            tmpColor1[2] = G / (float) 255.0;
+            tmpColor1[3] = B / (float) 255.0;
+            hueColors.add(tmpColor1);
 
-        for (int i=0; i<brewerColor.length; i++)
-        {
-        Float[] tmpColor1 = new Float[4];
-        float R = (float) brewerColor[i].getRed();
-        float G = (float) brewerColor[i].getGreen();
-        float B = (float) brewerColor[i].getBlue();
-        tmpColor1[0] = Alpha;
-        tmpColor1[1] = R / (float) 255.0;
-        tmpColor1[2] = G / (float) 255.0;
-        tmpColor1[3] = B / (float) 255.0;
-        hueColors.add(tmpColor1);
-            
         }
-        
+
 //        Float[] tmpColor1 = new Float[4];
 //        float R = (float) 255.0;
 //        float G = (float) 159.0;
@@ -1347,7 +1324,6 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 //        tmpColor8[2] = G / (float) 255.0;
 //        tmpColor8[3] = B / (float) 255.0;
 //        hueColors.add(tmpColor8);
-
     }
 
     public List<Float[]> getNewHueColors() {
@@ -1498,39 +1474,33 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 
         return g;
     }
-    
-    
-    public HashMap<TreeNode, List<LabelText>> allLabels = new HashMap<TreeNode, List<LabelText>>();
-    
-    public HashMap<TreeNode, List<LabelWordleLite>> allLabelInWordle = new HashMap<TreeNode, List<LabelWordleLite>>();
-    
-    
-    
-    
-      private int labelsToDisplay = 51;
-        public List<String[]> allTopics;
-        
-       // private String HelveticaFont = "Helvetica-Condensed-Bold";
-        private final String labelFont = "Impact";//"SansSerif";//
-        static public int occuranceFontSizePara = 40;
-        private int labelFontSize = 0; //18
-        
-        
-        public int wordsToDisplayInWordle = 20;
-        
-        static private int fontSizePerChar = 1;
-        
+
+    public static final HashMap<TreeNode, List<LabelText>> allLabels = new HashMap<TreeNode, List<LabelText>>();
+
+    public static final HashMap<TreeNode, List<LabelWordleLite>> allLabelInWordle = new HashMap<TreeNode, List<LabelWordleLite>>();
+
+    private int labelsToDisplay = 51;
+    public List<String[]> allTopics;
+
+    // private String HelveticaFont = "Helvetica-Condensed-Bold";
+    private final String labelFont = "Impact";//"SansSerif";//
+    static public int occuranceFontSizePara = 40;
+    private int labelFontSize = 0; //18
+
+    public int wordsToDisplayInWordle = 20;
+
+    static private int fontSizePerChar = 1;
+
     void buildLabelLocations(Map<String, Integer> wordTermIndex, List<String[]> wordTermWeightsF, List<List<Float>> topkTermWeightMongo) {
 
         allLabels.clear();
-      
 
         for (int i = 0; i < treeNodes.size(); i++) {
             //System.out.println(i);
             TreeNode o = treeNodes.get(i);
 
             List<LabelText> tempList = new ArrayList<LabelText>();
-            Point2D loc = new Point2D.Float(0,0);
+            Point2D loc = new Point2D.Float(0, 0);
 
             if (o.getChildren().isEmpty()) {
 
@@ -1541,86 +1511,80 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 
                     int index = t.getIndex();
 
-                    int countleng = 0; float w = 0;
+                    int countleng = 0;
+                    float w = 0;
                     for (int j = 1; j < labelsToDisplay; j++) {
 
-                       
-                        try{
-                        LabelText tempLT = new LabelText();
+                        try {
+                            LabelText tempLT = new LabelText();
 
-                        int leng = t.getNodeTopics()[j].length();
-                        Font font = null;//new Font("Arial", Font.PLAIN, labelFontSize);
+                            int leng = t.getNodeTopics()[j].length();
+                            Font font = null;//new Font("Arial", Font.PLAIN, labelFontSize);
 
-                        if (j == 1) {
-                            tempLT.setOccurance(1);
-                            tempLT.setProbablity(99999.0f);
-                        } else {
-
-                            String tempxx = t.getNodeTopics()[j];
-
-                            int tmpCol = -1;
-
-                            if (!b_readFromDB)
-                            {
-                                if (!StringUtils.isNumeric(tempxx)) {
-                                    tmpCol = wordTermIndex.get(t.getNodeTopics()[j].toLowerCase());
-                                } else {
-                                    tmpCol = wordTermIndex.get(t.getNodeTopics()[j]);
-                                }
-                            }
-                            
-                            if (tmpCol == 989)
-                            {
-                                int a = 0;
-                                
-                            }
-                            if (occurances.get(index + 1)[j] == 0) {
+                            if (j == 1) {
                                 tempLT.setOccurance(1);
+                                tempLT.setProbablity(99999.0f);
                             } else {
-                                if (occurances.get(index + 1)[j] >= 20) {
-                                    tempLT.setOccurance(20);
-                                } else {
-                                    tempLT.setOccurance(occurances.get(index + 1)[j]);
-                                }
-                            }
-                            
-                            float weight = 0; 
-                            
-                            if (b_readFromDB)
-                                weight = topkTermWeightMongo.get(index).get(j-1);
-                            else
-                                weight = Float.parseFloat(wordTermWeightsF.get(index)[tmpCol]);
 
-                            w = weight;
-                            tempLT.setProbablity(weight);
-                        }
-                        
-                        
+                                String tempxx = t.getNodeTopics()[j];
+
+                                int tmpCol = -1;
+
+                                if (!b_readFromDB) {
+                                    if (!StringUtils.isNumeric(tempxx)) {
+                                        tmpCol = wordTermIndex.get(t.getNodeTopics()[j].toLowerCase());
+                                    } else {
+                                        tmpCol = wordTermIndex.get(t.getNodeTopics()[j]);
+                                    }
+                                }
+
+                                if (tmpCol == 989) {
+                                    int a = 0;
+
+                                }
+                                if (occurances.get(index + 1)[j] == 0) {
+                                    tempLT.setOccurance(1);
+                                } else {
+                                    if (occurances.get(index + 1)[j] >= 20) {
+                                        tempLT.setOccurance(20);
+                                    } else {
+                                        tempLT.setOccurance(occurances.get(index + 1)[j]);
+                                    }
+                                }
+
+                                float weight = 0;
+
+                                if (b_readFromDB) {
+                                    weight = topkTermWeightMongo.get(index).get(j - 1);
+                                } else {
+                                    weight = Float.parseFloat(wordTermWeightsF.get(index)[tmpCol]);
+                                }
+
+                                w = weight;
+                                tempLT.setProbablity(weight);
+                            }
 
 //                        font = new Font(HelveticaFont, Font.PLAIN,  (int) (occuranceFontSizePara * tempLT.getProbablity()* 100)/*.getOccurance()occurances.get(index + 1)[j]*/ + labelFontSize);
 //                        
 ////Font HelveticaFont = new Font("Helvetica", Font.BOLD, 12);
 //
 //                        tempLT.setFont(font);
-                        //tempLT.setColor(Color.BLUE);
+                            //tempLT.setColor(Color.BLUE);
+                            tempLT.column = index;
 
-                        tempLT.column = index;
+                            tempLT.row = j - 1;
 
-                        tempLT.row = j - 1;
+                            tempLT.setString(t.getNodeTopics()[j]);
 
-                        tempLT.setString(t.getNodeTopics()[j]);
-
-                        tempList.add(tempLT);
+                            tempList.add(tempLT);
+                        } catch (NumberFormatException e) {
+                            System.out.println("word " + t.getNodeTopics()[j] + " in dict line " + wordTermIndex.get(t.getNodeTopics()[j])
+                                    + " weight is " + w);
                         }
-                        catch(NumberFormatException e){
-                                System.out.println("word " + t.getNodeTopics()[j] + " in dict line " + wordTermIndex.get(t.getNodeTopics()[j])
-                                + " weight is " + w);
-                                }
                     }
 
                     labelTextComparer c = new labelTextComparer();
-                    
-                    
+
                     Collections.sort(tempList, c);
                     float maxP = -99999;
                     for (int j = 0; j < tempList.size(); j++) {
@@ -1644,11 +1608,11 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
                             tempLT.setProbablity(tempLT.getProbablity() / maxP);
                         }
 
-                        Font font = new Font(labelFont, Font.PLAIN,  (int) (occuranceFontSizePara * tempLT.getProbablity()) + labelFontSize);
-                        
+                        Font font = new Font(labelFont, Font.PLAIN, (int) (occuranceFontSizePara * tempLT.getProbablity()) + labelFontSize);
+
                         tempLT.setIndex(kkk);
                         tempLT.setFont(font);
-                                          
+
 //                        JLabel tempLabel = new JLabel();
 //                        tempLabel.setFont(font);
 //                        FontMetrics fm = tempLabel.getFontMetrics(font);
@@ -1664,14 +1628,11 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 //                        tempLT.posY = py + 5;
 //
 //                        countleng += (leng * fontSizePerChar + 2);
-
                     }
 
                     allLabels.put(t, tempList);
-                    
-                    
 
-                } 
+                }
 //                else // Nodes situation
 //                {
 //                    //int labelsToDisplay2 = 5;
@@ -1805,63 +1766,50 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
 //                allLabels.put(t, tempList);
 //
 //            }
+            }
+
         }
 
-    }
-        
-        
-        
-        
-           for (Map.Entry<TreeNode, List<LabelText>> entry : allLabels.entrySet()) {
+        for (Map.Entry<TreeNode, List<LabelText>> entry : allLabels.entrySet()) {
 
             TreeNode key = entry.getKey();
 
             List<LabelText> value = entry.getValue();
 
-            
-            List<LabelWordleLite> words = new ArrayList<LabelWordleLite>() ;
-            
-           
-                List<LabelText> tmplist = new ArrayList<LabelText>();
+            List<LabelWordleLite> words = new ArrayList<LabelWordleLite>();
 
+//            List<LabelText> tmplist = new ArrayList<LabelText>();
+            for (int i = 0; i < wordsToDisplayInWordle; i++) {
 
-                 for (int i = 0; i <wordsToDisplayInWordle; i++) {
-                     
-                    LabelText lt = value.get(i);
+                LabelText lt = value.get(i);
 
-                    String text = lt.getString();
+                String text = lt.getString();
 
-                    Font font = lt.getFont();
+                Font font = lt.getFont();
 
-                    LabelWordleLite word = new LabelWordleLite(text, font, 0, lt);
-                    words.add(word);
-                 
-                 }     
-                 
-                  allLabelInWordle.put( key, words);
+                LabelWordleLite word = new LabelWordleLite(text, font, 0, lt);
+                words.add(word);
+
+            }
+
+            allLabelInWordle.put(key, words);
         }
     }
-    
-      
-    
+
     private List<String[]> reorganizedTopics;
-      
-      
+
     private List<int[]> occurances;
-    
-    
-        public void extractFrequency() {
+
+    public void extractFrequency() {
         //Re-organize topics based on the similarities
-        reorganizedTopics = new ArrayList<String[]>();                 
-         
+        reorganizedTopics = new ArrayList<String[]>();
+
         reorganizedTopics.add(allTopics.get(0));
         for (int i = getGlobalReadIndex(); i < allTopics.size(); i++) {
             int t = (i - 1) + 1;
             reorganizedTopics.add(allTopics.get(t));
         }
 
-        
-        
         if (reorganizedTopics != null) {
             occurances = new ArrayList<int[]>(reorganizedTopics.size());
             for (int i = 0; i < reorganizedTopics.size(); i++) {
@@ -1872,14 +1820,13 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
             int count = 1;
             Dimension keyPos, tempPos;
             List<Dimension> tmpDim = null;
-            
-                                 
+
             for (int i = getGlobalReadIndex(); i < reorganizedTopics.size(); i++) {
-                for (int j = getGlobalReadIndex()+1; j < reorganizedTopics.get(i).length/*30*/; j++) {
+                for (int j = getGlobalReadIndex() + 1; j < reorganizedTopics.get(i).length/*30*/; j++) {
                     //Compare every word with other words
                     keyPos = new Dimension(i, j);
                     for (int m = getGlobalReadIndex(); m < reorganizedTopics.size(); m++) {
-                        for (int n = getGlobalReadIndex()+1; n < /*30*/reorganizedTopics.get(m).length; n++) {
+                        for (int n = getGlobalReadIndex() + 1; n < /*30*/ reorganizedTopics.get(m).length; n++) {
                             if (m == i && n == j) {
                                 //Skip the word itself
                             } else {
@@ -1890,18 +1837,15 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
                             }
                         }
                     }
-
                     occurances.get(i)[j] = count;
-                    
                     count = 1;
                 }
             }
         }
-        
+
     }
-        
-        
-                        public class labelTextComparer implements Comparator<LabelText> {
+
+    public class labelTextComparer implements Comparator<LabelText> {
         //@Override
 //  public int compare(labelText x, labelText y) {
 //    // TODO: Handle null x or y values
@@ -1925,6 +1869,5 @@ public void addThemeRiverToTreeMap(TreeNode ct) throws IOException {
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
-     
     }
 }

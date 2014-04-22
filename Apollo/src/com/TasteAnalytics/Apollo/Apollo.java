@@ -1,5 +1,5 @@
 package com.TasteAnalytics.Apollo;
-import com.TasteAnalytics.Apollo.GUI.MinimalismMainFrame;
+import com.TasteAnalytics.Apollo.GUI.DashboardFrame;
 import java.awt.Color;
 import javax.swing.*;
 
@@ -14,7 +14,7 @@ public class Apollo{
     */
     public static void main (String args[]) {
        
-        MinimalismMainFrame mmframe = new MinimalismMainFrame();
+        DashboardFrame mmframe = new DashboardFrame();
         mmframe.setVisible(true);
         mmframe.setExtendedState(mmframe.getExtendedState()|JFrame.MAXIMIZED_BOTH);
         mmframe.start();

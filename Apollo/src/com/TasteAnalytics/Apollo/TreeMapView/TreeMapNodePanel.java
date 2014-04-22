@@ -264,10 +264,9 @@ public final class TreeMapNodePanel extends JPanel {
     }
 
     public void setLabelsFromList(List<LabelText> r) {
-        for (int i = 0; i < r.size(); i++) {
-
-            r.get(i).setParentTreeNodePanel(this);
-            this.labels.put(r.get(i).getIndex(), r.get(i));
+        for (LabelText label : r) {
+            label.setParentTreeNodePanel(this);
+            this.labels.put(label.getIndex(), label);
         }
 
     }
@@ -281,7 +280,7 @@ public final class TreeMapNodePanel extends JPanel {
             // SentiBar goes from left to right. Always show
             sentiBar.setBounds(new Rectangle(SystemPreferences.treemapBorderWidth, 0, myRect.width - SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight));
             // Topic List occupy only left side of the view
-            scrollPane.setBounds(SystemPreferences.treemapBorderWidth, 24, (int) topic_list_panel_width, myRect.height - 24);
+            scrollPane.setBounds(SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight, (int) topic_list_panel_width, myRect.height - 24);
 
             // Time View occupies the bottom of the view
             timeviewPanel.setBounds((int) topic_list_panel_width + SystemPreferences.treemapBorderWidth, myRect.height * 4 / 5, myRect.width, myRect.height / 5);
@@ -292,9 +291,9 @@ public final class TreeMapNodePanel extends JPanel {
 
             /* SentiBar goes from left to right. Always show */
             sentiBar.setBounds(new Rectangle(SystemPreferences.treemapBorderWidth, 0, myRect.width - SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight));
-            
+
             /*Topic List occupy across the panel but shorter*/
-            scrollPane.setBounds(SystemPreferences.treemapBorderWidth, 24, this.myRect.width, 2 * myRect.height / 5);
+            scrollPane.setBounds(SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight, this.myRect.width, 2 * myRect.height / 5);
 
             // Map Image is set on the right between Sentibar and teh Time View
 
@@ -315,25 +314,26 @@ public final class TreeMapNodePanel extends JPanel {
 //        wordRemoveWordPanel.setLayout(new FlowLayout());
         //tmp.setPreferredSize(new Dimension(myRect.width-40, 40));
 //       
-        Border bLine = BorderFactory.createMatteBorder(
-                5, 5, 5, 5, node.getColor());
+        Border nodeBorderStyle = BorderFactory.createMatteBorder(
+                SystemPreferences.treemapBorderWidth, SystemPreferences.treemapBorderWidth,
+                SystemPreferences.treemapBorderWidth, SystemPreferences.treemapBorderWidth,
+                node.getColor());
 
-        this.setBorder(bLine);
+        this.setBorder(nodeBorderStyle);
+
+        this.setBackground(new Color(39, 39, 39));
 
 //        if (mouseOvered) {
-//            //this.setBorder(bLine);
+//            //this.setBorder(nodeBorderStyle);
 //            this.setBackground(Color.red);
 //        } else {
 //            this.setBorder(null);
 //
 //        }
-        this.setBackground(new Color(39, 39, 39));
-
-        //this.getRootPane().revalidate();
     }
 
     /// Public constructor
-    public JPanel wordCloudPanel = new JPanel();
+    public JPanel wordCloudPanel = new JPanel(); // TODO: Remove this
     public JPanel wordRemoveWordPanel = new JPanel();
     Graphics currg;
 

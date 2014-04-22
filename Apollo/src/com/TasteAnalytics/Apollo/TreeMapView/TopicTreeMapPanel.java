@@ -25,13 +25,13 @@ import javax.swing.JPanel;
 public class TopicTreeMapPanel extends JPanel {
 
     //private MapDisplay view;
-    ViewController parent;
-    private TreeModel model;
+    public static ViewController parent;
+//    private final TreeModel model;
     private MapLayout algorithm;
-    private Rect bounds;
+//    private Rect bounds;
 
-    public int mywidth = 0;
-    public int myheight = 0;
+    public int treemapPanelWidth = 0;
+    public int treemapPanelHeight = 0;
 
     MapModel map;
     List<TreeNode> tree;
@@ -45,61 +45,45 @@ public class TopicTreeMapPanel extends JPanel {
 
     public TopicTreeMapPanel(ViewController vc, List<TreeNode> tr, int w, int h) throws IOException {
 
-//        TopicTreeMapPanelInteractions interactions = new TopicTreeMapPanelInteractions();
-//        addMouseListener(interactions);
-//        addMouseMotionListener(interactions);
         this.setBackground(Colors.mainBackgroundColor);
 
-        mywidth = w;
-        myheight = h;
+        treemapPanelWidth = w;
+        treemapPanelHeight = h;
 
-        parent = vc;
+        parent = vc; //Double Binding
         this.tree = tr;
-        setSize(w, h);
-        setPreferredSize(new Dimension(w, h));
-        model = new TreeModel();
+        this.setSize(w, h);
+        this.setPreferredSize(new Dimension(w, h));
+        this.setLayout(null);
 
-        //TODO: We need to reconsider the tree generation mechanism
-//        TreeMapNodePanel root = new TreeMapNodePanel(vc, tree.get(0), tree.get(0).getLevel(), new Rectangle(0, 0, w, h));
-//        for (int i=0; i<tree.size(); i++)
-//        {
-//            if (tree.get(i).getValue().contains("L"))
-//            {
-//                int index = tree.get(i).getIndex();
-//                  tree.get(i).setNumberOfEvents(parent.topicEventsCount.get(index));
-//                
-//            }
-//            
-//        }
-        // tree.get(0).calculateTreeMapTopicWeight();
-        // updateTreeLayout(w, h);
         tree.get(0).setMyRect(new Rectangle(0, 0, w, h));
+//        model = new TreeModel();
+
         Mappable[] leaves = tree.get(0).getItems();
         map = new RandomMap(leaves);
         algorithm = new SquarifiedLayout();
         algorithm.layout(map, new Rect(0, 0, w, h));
         tree.get(0).calculateRect(new Rectangle(0, 0, w, h));
-        setLayout(null);
 
         List<LabelText> tmplist = new ArrayList<LabelText>();
         for (int i = 1; i < tree.size(); i++) {
-
             TreeMapNodePanel tmp = new TreeMapNodePanel(parent, tree.get(i), tree.get(i).getLevel(), tree.get(i).getMyRect(), parent.getTreemapMiniTemporal().get(tree.get(i)));
             nodePanels.put(tree.get(i), tmp);
-            tmp.list = parent.allLabelInWordle.get(tree.get(i));
+            
+            // TODO: HIGH We shoud optimize memory usable here. We don't need to make a copy of all labels!
+            tmp.list = ViewController.allLabelInWordle.get(tree.get(i));
 
             tmplist.clear();
 
             for (int j = 0; j < parent.wordsToDisplayInWordle; j++) {
-                tmplist.add(parent.allLabels.get(tree.get(i)).get(j));
+                tmplist.add(ViewController.allLabels.get(tree.get(i)).get(j));
             }
 
             tmp.setLabelsFromList(tmplist);
 
             //tmp.DrawWordleCloud(new Point(0, 0), tmplist);
-            PrefuseWordleLayout ppp = new PrefuseWordleLayout(parent, tree.get(i));
-            tmp.setLabelBounds(ppp.DrawWordleCloud(tmp.wordCloudPanel.getBounds()));
-
+//            PrefuseWordleLayout ppp = new PrefuseWordleLayout(parent, tree.get(i));
+//            tmp.setLabelBounds(ppp.DrawWordleCloud(tmp.wordCloudPanel.getBounds()));
             if (tree.get(i).getChildren().isEmpty()) {
                 tmp.setVisible(true);
             } else {
@@ -156,16 +140,14 @@ public class TopicTreeMapPanel extends JPanel {
                     //tmp.getLabels()
                     tmp.setLabelsFromList(tmplist);
 
-                    for (int i = 0; i < tmp.getLabels().size(); i++) {
-                        tmp.wordCloudPanel.add(tmp.getLabels().get(i));
-                    }
-
+//                    for (int i = 0; i < tmp.getLabels().size(); i++) {
+//                        tmp.wordCloudPanel.add(tmp.getLabels().get(i));
+//                    }
+//                    PrefuseWordleLayout ppp = new PrefuseWordleLayout(parent, treenode);
+//                    tmp.setLabelBounds(ppp.DrawWordleCloud(tmp.wordCloudPanel.getBounds()));
                     tmp.updateLayout();
+
                     //tmp.DrawWordleCloud(new Point(0, 0), nodePanels.get(treenode).getLabels());
-
-                    PrefuseWordleLayout ppp = new PrefuseWordleLayout(parent, treenode);
-                    tmp.setLabelBounds(ppp.DrawWordleCloud(tmp.wordCloudPanel.getBounds()));
-
                     //TreeMapNodePanel timeviewPanel = new TreeMapNodePanel(parent, tree.get(i),tree.get(i).getLevel(), tree.get(i).getMyRect());
                 } else {
 
@@ -181,16 +163,14 @@ public class TopicTreeMapPanel extends JPanel {
                     }
                     tmp.setLabelsFromList(tmplist);
 
-                    for (int i = 0; i < tmp.getLabels().size(); i++) {
-                        tmp.wordCloudPanel.add(tmp.getLabels().get(i));
-
-                    }
-
+                    // TODO: Enable Wordle If Neccessary
+//                    for (int i = 0; i < tmp.getLabels().size(); i++) {
+//                        tmp.wordCloudPanel.add(tmp.getLabels().get(i));
+//                    }
+//                    //tmp.DrawWordleCloud(new PoitimeviewPanel0, 0), tmp.getLabels());
+//                    PrefuseWordleLayout ppp = new PrefuseWordleLayout(parent, treenode);
+//                    tmp.setLabelBounds(ppp.DrawWordleCloud(tmp.wordCloudPanel.getBounds()));
                     tmp.updateLayout();
-
-                    //tmp.DrawWordleCloud(new PoitimeviewPanel0, 0), tmp.getLabels());
-                    PrefuseWordleLayout ppp = new PrefuseWordleLayout(parent, treenode);
-                    tmp.setLabelBounds(ppp.DrawWordleCloud(tmp.wordCloudPanel.getBounds()));
 
                     if (treenode.getChildren().isEmpty()) {
                         tmp.setVisible(true);
@@ -198,11 +178,8 @@ public class TopicTreeMapPanel extends JPanel {
                         tmp.setBorder(SystemPreferences.treemapNodeBorder);
                         tmp.setVisible(false);
                         tmp.setOpaque(false);
-
                     }
-
                     this.add(tmp);
-
                 }
             }
 
@@ -211,13 +188,12 @@ public class TopicTreeMapPanel extends JPanel {
         if (clearFlag) {
             for (TreeMapNodePanel tnp : nodePanels.values()) {
                 this.add(tnp);
-
             }
         }
 
         this.revalidate();
         this.repaint();
-        // TODO: Li, we need to rapint this!
+        // TODO: Li, we need to rapint this! And this fix your revalidation issue
     }
 
 }
