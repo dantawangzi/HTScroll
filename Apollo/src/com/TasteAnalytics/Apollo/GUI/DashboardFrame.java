@@ -60,6 +60,8 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
     /// Console Frame Declaration
     private ConsoleFrame consoleFrame = null;
 
+    private LoginPanel loginPanel = null;
+
 //    File currentPath = null;
 //    static public Map<Integer, Integer> parIdx2docIdx;
     DocumentViewer documentViewer = null;
@@ -180,7 +182,7 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
 
         consoleFrame.setVisible(jCheckBoxConsoleMenu.isSelected());
 
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_jCheckBoxConsoleMenuActionPerformed
 
 //    class NarrowOptionPane extends JOptionPane {
@@ -214,7 +216,6 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
         JOptionPane.showMessageDialog(null, scrollPane, "job: " + viewController.collection,
                 JOptionPane.INFORMATION_MESSAGE);
 
-// TODO add your handling code here:
 
     }//GEN-LAST:event_buttonDisplayInformationActionPerformed
 
@@ -302,22 +303,24 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
 
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
-   private void initializeViews (){
-        temporalFrame.getMainPanel().buildLabelTimeMap();
-
+    private void initializeViews() {
+        if (temporalFrame != null) {
+            temporalFrame.getMainPanel().buildLabelTimeMap();
+        }
         consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 jCheckBoxConsoleMenu.setSelected(false);
             }
         });
-        
+
         this.viewController.initilizeMainHUDDisplay();
-   }
+    }
+
     void initializeViews(CSVFile csvf) throws IOException {
-
-        temporalFrame.getMainPanel().buildLabelTimeMap();
-
+        if (temporalFrame != null) {
+            temporalFrame.getMainPanel().buildLabelTimeMap();
+        }
         consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -364,6 +367,10 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
     private javax.swing.ButtonGroup menuEditGroup;
     // End of variables declaration//GEN-END:variables
 
+    public JPanel getmViewPanel() {
+        return this.mViewPanel;
+    }
+
     public void run() {
 
         this.setExtendedState(JFrame.NORMAL);
@@ -376,6 +383,10 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
         consoleFrame = new ConsoleFrame();
         consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         consoleFrame.setVisible(false);
+
+        loginPanel = new LoginPanel(viewController);
+
+        mViewPanel.add(loginPanel);
 
         documentViewer = new DocumentViewer(viewController);
         documentViewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -392,6 +403,7 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
         this.loadComboMenuItems();
 
         ViewController.mainFrame = this; // Double Binding
+
     }
 
     private void initializeMenuPanel() {
@@ -656,15 +668,14 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     viewController.loadCacheData(job, TreeString, viewController.host);
 
                     //TODO: Enable temporal view if we need it
-                    temporalFrame = new TemporalViewFrame(viewController, 600, 800, viewController.data, viewController.treeNodes);//scrnsize.width / 2, scrnsize.height);
-                    viewController.addTemporalFrame(temporalFrame);
-                    JFrame jp = new JFrame();
-                    jp.setSize(new Dimension(250, 250));
-                    jp.add(temporalFrame);
-                    jp.setVisible(true);
-
+//                    temporalFrame = new TemporalViewFrame(viewController, 600, 800, viewController.data, viewController.treeNodes);//scrnsize.width / 2, scrnsize.height);
+//                    viewController.addTemporalFrame(temporalFrame);
+//                    JFrame jp = new JFrame();
+//                    jp.setSize(new Dimension(250, 250));
+//                    jp.add(temporalFrame);
+//                    jp.setVisible(true);
                     viewController.buildLabelLocations(csvf.getTermIndex(), csvf.getTermWeights(), topkTermWeightMongo);
-                    
+
                     // temporalFrame.loadCacheData(job, TreeString, viewController.host);
                     //temporalFrame.createWorldMap(maplocations);
                     //temporalFrame.setVisible(true);
@@ -678,7 +689,6 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     //viewController.getTopicGraphViewPanel().generateLayout();
                     //topicFrame.setVisible(true);
                     //temporalFrame.PreDrawAllLeafs();
-                    
                     // TODO: This should be offloaded to backend. Also, We should show events.
                     for (Map.Entry<Integer, TreeNode> entry : viewController.leaves.entrySet()) {
                         TreeNode value = entry.getValue();
@@ -723,7 +733,7 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     }
 
                     for (int i = 0; i < t.getChildren().size(); i++) {
-                        viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+                        // viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
                         viewController.addThemeRiverToTreeMap((TreeNode) t.getChildren().get(i));
                     }
 
@@ -731,7 +741,6 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
 //                    worldPanel = new WorldMapProcessingPanel(viewController, maplocations, 1200, 1200); // TODO: Reenable if needed
 //            treemapPanel = new TreeMapProcessingPanel(topicFrame.getTree());         
 //            treemapPanel.setVisible(true);
-
                     // TODO: I commented this out and changed it with a no-parameter initilizer. 
                     // We don't need CSV for this version do we ?
 //                    initializeViews(csvf);
@@ -740,7 +749,6 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
 //                     for (Object r : (ArrayList) connection.getJobDocs(job, "sent_agg")) {
 //                         HashMap a = (HashMap ) r;
 //                     }
-
                     MongoClient mongoClient = null;
                     try {
                         mongoClient = new MongoClient(viewController.host, 27017);
@@ -785,12 +793,13 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
 
                     mongoClient.close();
 
-                    if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1)) {
-                        viewController.getTemporalFrame().getTemporalPanelMap().get(1).clear();
+                   // if (viewController.getTemporalFrame().getTemporalPanelMap().containsKey(1)) 
+                    {
+                      //  viewController.getTemporalFrame().getTemporalPanelMap().get(1).clear();
 
                         for (int i = 0; i < t.getChildren().size(); i++) {
                             try {
-                                viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
+                                //viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
                                 viewController.addThemeRiverToTreeMap((TreeNode) t.getChildren().get(i));
 
                             } catch (IOException ex) {
@@ -799,12 +808,12 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                         }
                     }
 
-                    for (TemporalViewPanel tvp : viewController.getTemporalFrame().getTemporalPanelMap().get(1)) {
-
-                        BufferedImage bi = viewController.getScreenShot(tvp);
-                        viewController.getPanelImages().put(tvp.currentNode, bi);
-
-                    }
+//                    for (TemporalViewPanel tvp : viewController.getTemporalFrame().getTemporalPanelMap().get(1)) {
+//
+//                        BufferedImage bi = viewController.getScreenShot(tvp);
+//                        viewController.getPanelImages().put(tvp.currentNode, bi);
+//
+//                    }
 
                     // TODO: This is hard coded to show the bottom of the view. Need to Change the 80 to dynamically calulated from the height of the menuPanel
                     treeMapPanel = new TopicTreeMapPanel(viewController, viewController.myRenderingTree, mViewPanel.getWidth(), mViewPanel.getHeight() - 80);//, );

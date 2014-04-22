@@ -2404,7 +2404,7 @@ int count = 0;
 
         if (parent.data.topicYearKwIdx != null) {
             System.out.println(this.currentNode.getValue());
-         //   labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap((this.currentNode), parent.data.topicYearKwIdx);
+          //  labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap((this.currentNode), parent.data.topicYearKwIdx);
             //labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), parent.data.topicYearKwIdx);
             
                     }

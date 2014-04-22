@@ -586,6 +586,9 @@ public class ViewController {
         lastNode = currentNode;
 
         // getTopicGraphViewPanel().updateLabelLocations();
+        
+          if (getTopicGraphViewPanel()!=null)
+          {
         if (ct != null && ct.getChildren().isEmpty()) {
             //System.out.println("ctct");
             TreeNode ttt = findMatchingNodeInTopicGraph(ct);
@@ -594,8 +597,12 @@ public class ViewController {
         } else {
             ap.showingNode = null;
         }
-
-        if (tYK.isEmpty()) {
+          }
+        
+        
+        if (getTopicGraphViewPanel()!=null)
+        {
+        if (tYK.isEmpty() ) {
             // System.out.println("current Node is null");
 
             // 
@@ -627,6 +634,7 @@ public class ViewController {
 
                 //getTopicGraphViewPanel().highLightByYearIdxKwNode(currentNode, selectedTimeColumn, tYK, nodeKeywordHighlightMap);
             }
+        }
         }
 
         //     System.out.println(nodeKeywordHighlightMap.size());
@@ -787,24 +795,25 @@ public class ViewController {
     }
 
     public TreeNode findMatchingNodeInTopicGraph(TreeNode findt) {
-
-        VisualizationViewer vv = getTopicGraphViewPanel().getVisualizationViewer();
-        Collection<TreeNode> vertices = vv.getGraphLayout().getGraph().getVertices();
-
-        int in = findt.getIndex();
-        String sla = findt.getValue();
-        //   System.out.println("selectedNode = " + in + " " + sla); 
-        for (Iterator<TreeNode> it = vertices.iterator(); it.hasNext();) {
-
-            Object k = it.next();
-            if (k instanceof TreeNode) {
-                TreeNode t = (TreeNode) k;
-                if (in == t.getIndex() && (sla == null ? t.getValue() == null : sla.equals(t.getValue()))) {
-
-                    return t;
-                }
-            }
-        }
+//TODO: graph topic view 
+        
+//        VisualizationViewer vv = getTopicGraphViewPanel().getVisualizationViewer();
+//        Collection<TreeNode> vertices = vv.getGraphLayout().getGraph().getVertices();
+//
+//        int in = findt.getIndex();
+//        String sla = findt.getValue();
+//        //   System.out.println("selectedNode = " + in + " " + sla); 
+//        for (Iterator<TreeNode> it = vertices.iterator(); it.hasNext();) {
+//
+//            Object k = it.next();
+//            if (k instanceof TreeNode) {
+//                TreeNode t = (TreeNode) k;
+//                if (in == t.getIndex() && (sla == null ? t.getValue() == null : sla.equals(t.getValue()))) {
+//
+//                    return t;
+//                }
+//            }
+//        }
         return null;
 
     }
