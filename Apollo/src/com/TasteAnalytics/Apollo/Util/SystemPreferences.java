@@ -37,5 +37,6 @@ public class SystemPreferences {
     public static int topicListPanelMinWidth = 120;
     public static int treemapBorderWidth = 4;
     
+    public static Color mainColor = new Color(0,52,128, 128);
     
 }

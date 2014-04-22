@@ -12,6 +12,7 @@ import com.TasteAnalytics.Apollo.TopicRenderer.LabelText;
 import com.TasteAnalytics.Apollo.Util.SystemPreferences;
 import com.TasteAnalytics.Apollo.Wordle.LabelWordleLite;
 import com.TasteAnalytics.Apollo.Wordle.WordleLite;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -30,14 +31,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -96,18 +95,19 @@ public final class TreeMapNodePanel extends JPanel {
 
     }
 
-    class sentimentPanel extends JPanel {
+    class SentimentPiePanel extends JPanel {
 
         int pos;
         int neg;
         int count;
         Rectangle myArea;
 
-        sentimentPanel(int p, int n, int c, Rectangle area) {
+        SentimentPiePanel(int p, int n, int c, Rectangle area) {
             pos = p;
             neg = n;
             count = c;
             myArea = area;
+            this.setBounds(area);
 
         }
 
@@ -142,7 +142,7 @@ public final class TreeMapNodePanel extends JPanel {
     }
 
     private SentimenBar sentiBar;
-    sentimentPanel senti;
+    SentimentPiePanel senti;
     TreeNode node;
     ViewController parent;
     JLabel title = new JLabel();
@@ -164,7 +164,7 @@ public final class TreeMapNodePanel extends JPanel {
 
     boolean mouseOvered = false;
 
-    private Graphics2D curg2d;
+//    private Graphics2D curg2d;
     JLabel imageLabel = new JLabel();
 
     public Rectangle getMyRect() {
@@ -279,7 +279,7 @@ public final class TreeMapNodePanel extends JPanel {
 
         if (myRect.width >= myRect.height) {
             // SentiBar goes from left to right. Always show
-
+            sentiBar.setBounds(new Rectangle(SystemPreferences.treemapBorderWidth, 0, myRect.width - SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight));
             // Topic List occupy only left side of the view
             scrollPane.setBounds(SystemPreferences.treemapBorderWidth, 24, (int) topic_list_panel_width, myRect.height - 24);
 
@@ -291,6 +291,8 @@ public final class TreeMapNodePanel extends JPanel {
             // Layout Vertically
 
             /* SentiBar goes from left to right. Always show */
+            sentiBar.setBounds(new Rectangle(SystemPreferences.treemapBorderWidth, 0, myRect.width - SystemPreferences.treemapBorderWidth, SystemPreferences.sentimentBarHeight));
+            
             /*Topic List occupy across the panel but shorter*/
             scrollPane.setBounds(SystemPreferences.treemapBorderWidth, 24, this.myRect.width, 2 * myRect.height / 5);
 
@@ -303,10 +305,9 @@ public final class TreeMapNodePanel extends JPanel {
 
         if (SystemPreferences.isNormalizationNecessary) {
             timeviewPanel.UpdateTemporalView(new Dimension(myRect.width, myRect.height / 5), timeviewPanel.getGlobalNormalizingValue());
-        }else{
+        } else {
             timeviewPanel.UpdateTemporalView(new Dimension(myRect.width, myRect.height / 5), timeviewPanel.getLocalNormalizingValue());
         }
-        
 
 //        wordCloudPanel.setBounds(0, sentiPieSize, myRect.width, myRect.height * 3 / 5 - sentiPieSize);
 //        wordCloudPanel.setOpaque(false);
@@ -315,8 +316,8 @@ public final class TreeMapNodePanel extends JPanel {
         //tmp.setPreferredSize(new Dimension(myRect.width-40, 40));
 //       
         Border bLine = BorderFactory.createMatteBorder(
-                                    5, 5, 5, 5, node.getColor());
-        
+                5, 5, 5, 5, node.getColor());
+
         this.setBorder(bLine);
 
 //        if (mouseOvered) {
@@ -326,7 +327,6 @@ public final class TreeMapNodePanel extends JPanel {
 //            this.setBorder(null);
 //
 //        }
-        
         this.setBackground(new Color(39, 39, 39));
 
         //this.getRootPane().revalidate();
@@ -368,12 +368,11 @@ public final class TreeMapNodePanel extends JPanel {
         }
 
         //TODO: Maybe making this a switch so people can change between sentiment bar or pie
-//        senti = new sentimentPanel(node.getSentiAgg().pos, node.getSentiAgg().neg, node.getSentiAgg().count, new Rectangle(0, 0, sentiPieSize, sentiPieSize));
+//        senti = new SentimentPiePanel(node.getSentiAgg().pos, node.getSentiAgg().neg, node.getSentiAgg().count, new Rectangle(0, 0, sentiPieSize, sentiPieSize));
 //        this.add(senti);
 //        senti.setBounds(new Rectangle(0, 0, sentiPieSize, sentiPieSize));
         sentiBar = new SentimenBar(node.getSentiAgg().pos, node.getSentiAgg().neg, node.getSentiAgg().count, new Rectangle(SystemPreferences.treemapBorderWidth, 0, this.getWidth(), SystemPreferences.sentimentBarHeight));
         this.add(sentiBar);
-
         this.add(timeviewPanel);
 //        timeviewPanel.setBounds(40, 0, myRect.width-40, 40);
 //        timeviewPanel.setPreferredSize(new Dimension(myRect.width-40, 40));
@@ -393,37 +392,42 @@ public final class TreeMapNodePanel extends JPanel {
 //        textArea.setWrapStyleWord(true);
 
         /*Set up the Topic Term List Display*/
+        // TODO: Set a limit here.
         CheckListItem[] inputs = new CheckListItem[node.getNodeTopics().length - 2];
 
-        for (int i = 0; i < node.getNodeTopics().length - 2 ; i++) {
-            inputs[i] = new CheckListItem(node.getNodeTopics()[i+2]);
-            inputs[i].setSelected(true);
+        for (int i = 0; i < node.getNodeTopics().length - 2; i++) {
+            inputs[i] = new CheckListItem(node.getNodeTopics()[i + 2]);
+//            inputs[i].setSelected(true);
         }
-      
+
         JList topicList = new JList(inputs);
 
         // Use a CheckListRenderer (see below) 
         // to renderer topicList cells
-        topicList.setCellRenderer(new CheckListRenderer());
-        topicList.setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION);
+        CheckListRenderer renderer = new CheckListRenderer();
+        topicList.setCellRenderer(renderer);
+        topicList.addMouseListener(renderer.getHandler(topicList));
+        topicList.addMouseMotionListener(renderer.getHandler(topicList));
+//        topicList.setSelectionMode(
+//                ListSelectionModel.SINGLE_SELECTION);
 
         // Add a mouse listener to handle changing selection
-        topicList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent event) {
-                JList list = (JList) event.getSource();
-
-                // Get index of item clicked
-                int index = list.locationToIndex(event.getPoint());
-                CheckListItem item = (CheckListItem) list.getModel().getElementAt(index);
-
-                // Toggle selected state
-                item.setSelected(!item.isSelected());
-
-                // Repaint cell
-                list.repaint(list.getCellBounds(index, index));
-            }
-        });
+//        topicList.addMouseListener(new MouseAdapter() {
+//            public void mouseClicked(MouseEvent event) {
+//                JList list = (JList) event.getSource();
+//
+//                // Get index of item clicked
+//                int index = list.locationToIndex(event.getPoint());
+//                CheckListItem item = (CheckListItem) list.getModel().getElementAt(index);
+//
+//                System.out.println(item.label);
+////                item.changeColor();
+////                item. // Toggle selected state
+//                //                item.setSelected(!item.isSelected());
+//                // Repaint cell
+//                list.repaint(list.getCellBounds(index, index));
+//            }
+//        });
         scrollPane = new JScrollPane(topicList);
 
         this.add(scrollPane);
@@ -718,22 +722,121 @@ public final class TreeMapNodePanel extends JPanel {
         public String toString() {
             return label;
         }
+
     }
 
 // Handles rendering cells in the topicList using a check box
-    class CheckListRenderer extends JRadioButton
+    class CheckListRenderer extends JPanel
             implements ListCellRenderer {
+
+        private JLabel label;
+        private SentimenBar sentimentOverLay;
+        private final Color HOVER_COLOR = SystemPreferences.mainColor;
+        private final Color HOVER_FONT_COLOR = Color.WHITE;
+        private int hoverIndex = -1;
+        private MouseAdapter handler;
 
         public Component getListCellRendererComponent(
                 JList list, Object value, int index,
                 boolean isSelected, boolean hasFocus) {
-            setEnabled(list.isEnabled());
-            setSelected(((CheckListItem) value).isSelected());
+
+            this.removeAll();
+
+            if (!isSelected) {
+                setBackground(index == hoverIndex
+                        ? HOVER_COLOR : list.getBackground());
+                setForeground(index == hoverIndex
+                        ? HOVER_FONT_COLOR : list.getForeground());
+
+            }
+
+            this.setLayout(new BorderLayout(1, 3));
             setFont(list.getFont());
-            setBackground(list.getBackground());
-            setForeground(list.getForeground());
-            setText(value.toString());
+
+//            setBackground(list.getBackground());
+//            setForeground(list.getForeground());
+            label = new JLabel(value.toString());
+
+            sentimentOverLay = new SentimenBar(15, -50, 500, new Rectangle(0, 0, 20, 10));// TODO: Need to hook data to here
+
+            this.add(sentimentOverLay, BorderLayout.WEST);
+
+            this.add(label, BorderLayout.CENTER);
+
+            this.addMouseListener(new MouseAdapter() {
+                private Color background;
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    background = getBackground();
+                    System.out.println("Here");
+                    setBackground(Color.RED);
+                    repaint();
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    setBackground(background);
+                }
+            });
+
             return this;
         }
+
+        public MouseAdapter getHandler(JList list) {
+            if (handler == null) {
+                handler = new HoverMouseHandler(list);
+            }
+            return handler;
+        }
+
+        class HoverMouseHandler extends MouseAdapter {
+
+            private final JList list;
+
+            public HoverMouseHandler(JList list) {
+                this.list = list;
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                setHoverIndex(-1);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int index = list.locationToIndex(e.getPoint());
+                setHoverIndex(list.getCellBounds(index, index).contains(e.getPoint())
+                        ? index : -1);
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                if (e.getClickCount() == 2) {
+                    int index = list.locationToIndex(e.getPoint());
+                    setHoverIndex(list.getCellBounds(index, index).contains(e.getPoint())
+                            ? index : -1);
+                    System.out.println(((CheckListItem) list.getModel().getElementAt(index)).label);
+
+                    // Load HUD View for Detailed Display
+                } else {
+                    if (SwingUtilities.isRightMouseButton(e)) {
+                        System.out.println("Ready for Popup Context Menu");
+                    }
+                }
+
+            }
+
+            private void setHoverIndex(int index) {
+                if (hoverIndex == index) {
+                    return;
+                }
+                hoverIndex = index;
+                list.repaint();
+            }
+
+        }
+
     }
 }

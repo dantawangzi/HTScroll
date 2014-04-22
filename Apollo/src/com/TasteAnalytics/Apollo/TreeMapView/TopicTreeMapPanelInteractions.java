@@ -6,15 +6,13 @@
 
 package com.TasteAnalytics.Apollo.TreeMapView;
 
+import com.TasteAnalytics.Apollo.GUI.ViewController;
 import com.explodingpixels.macwidgets.HudWindow;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Li Yu, Derek Wang
@@ -35,22 +33,25 @@ public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotion
     
     
     public void mouseClicked(MouseEvent e) {
-        
-        
-        try {
-            currentPanel.parent.addThemeRiver(currentPanel.node);
-            
-            
-            
-            
-            
-            //build new theme river in temporal frame
-            
-            
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        } catch (IOException ex) {
-            Logger.getLogger(TopicTreeMapPanelInteractions.class.getName()).log(Level.SEVERE, null, ex);
+        if (e.getClickCount() >=2) {
+             createHudWindow(e, mainFloatingHUDWindow);
         }
+        
+        
+//        try {
+////            currentPanel.parent.addThemeRiver(currentPanel.node);
+//            
+//           
+//            
+//            
+//            
+//            //build new theme river in temporal frame
+//            
+//            
+//            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        } catch (IOException ex) {
+//            Logger.getLogger(TopicTreeMapPanelInteractions.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void mousePressed(MouseEvent e) {
@@ -106,26 +107,19 @@ public class TopicTreeMapPanelInteractions implements MouseListener, MouseMotion
      */
     private static final HudWindow mainFloatingHUDWindow = new HudWindow();
     
-    
-    
-    
      private void createHudWindow(MouseEvent e, HudWindow _defaultHudWindow) {
          
          //TODO: This is running slow. Need update. 
-            _defaultHudWindow.hideCloseButton();
-            _defaultHudWindow.getContentPane().removeAll();
+//            _defaultHudWindow.hideCloseButton();
+//            _defaultHudWindow.getContentPane().removeAll();
             _defaultHudWindow.getJDialog().setFocusable(false);
             _defaultHudWindow.getJDialog().setFocusableWindowState(false);
-            
-            _defaultHudWindow.getJDialog().setFocusable(false);
             _defaultHudWindow.getJDialog().setAlwaysOnTop(true);
             _defaultHudWindow.getJDialog().setVisible(true);
-//            _defaultHudWindow.getJDialog().setSize(new Dimension(500, 500));
-            
             _defaultHudWindow.getJDialog().setTitle("Breakdown View");
             
-            _defaultHudWindow.getJDialog().setPreferredSize(new Dimension(500, 500));
-            _defaultHudWindow.getJDialog().setLocation(new Point(e.getLocationOnScreen().x, e.getLocationOnScreen().y));
+            _defaultHudWindow.getJDialog().setPreferredSize(new Dimension((int)(ViewController.mainFrame.getWidth() * 0.85), (int)(ViewController.mainFrame.getHeight()*0.85)));
+            _defaultHudWindow.getJDialog().setLocation(new Point((int)(ViewController.mainFrame.getWidth() * 0.075), (int)(ViewController.mainFrame.getHeight()* 0.075)));
             _defaultHudWindow.getJDialog().pack();
            
             
