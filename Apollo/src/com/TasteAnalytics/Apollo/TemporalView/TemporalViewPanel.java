@@ -1155,6 +1155,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
         if (firsttime) {
             area = new Rectangle(width, height);
             bi = (BufferedImage) createImage(width, height);
+             
             curg2d = bi.createGraphics();
             curg2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             firsttime = false;
@@ -1193,9 +1194,9 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 //        curg2d.setColor(Color.BLACK);
 
         
-        if (!testEventPoints.isEmpty() && bShowEvents) {
+        if (!testEventPoints.isEmpty() /*&& bShowEvents*/) {
 
-            curg2d.setStroke(new BasicStroke(2));
+            curg2d.setStroke(new BasicStroke(1));
 
             for (int i = 0; i < contours.length; i++) {
                 for (int j = 0; j < contours[0].length; j++) {
@@ -2099,14 +2100,12 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
             for (int i = 0; i < size; i++) {
                 String s = multiTopicKeywordList.get(i).getString();
-                Point2D p = multiTopicKeywordList.get(i).getLocation();
-
-                g2d.setColor(Color.CYAN);
-                //multiTopicKeywordList.get(i).drawRect(g2d);
+                Point2D p = multiTopicKeywordList.get(i).getLocation();                
 
                 g2d.setFont(multiTopicKeywordList.get(i).getFont());
                 g2d.setColor(Color.DARK_GRAY);
-                g2d.drawString(s, (float) p.getX(), (float) p.getY());
+               // g2d.drawString(s, (float) p.getX(), (float) p.getY());
+                g2d.drawString(s, i*20, 10);
 
             }
 
@@ -2129,6 +2128,13 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
     }
     private ArrayList<float[][]> detectionResults = new ArrayList<float[][]>();
 
+    public void setDetectionResults(ArrayList<float[][]> detectionResults) {
+        this.detectionResults = detectionResults;
+    }
+
+    
+    
+    
     public ArrayList<float[][]> getDetectionResults() {
         return detectionResults;
     }
@@ -2389,7 +2395,7 @@ int count = 0;
 //
         }
 
-        repaintView();
+        //repaintView();
     }
 
     public HashMap<TopicGraphViewPanel.customLabelTimecolumnKey, List<LabelText>> getLabelTimeMap() {
@@ -2404,7 +2410,8 @@ int count = 0;
 
         if (parent.data.topicYearKwIdx != null) {
             System.out.println(this.currentNode.getValue());
-          //  labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap((this.currentNode), parent.data.topicYearKwIdx);
+            
+            labelTimeMap = parent.buildLabelMap((this.currentNode), parent.data.topicYearKwIdx);
             //labelTimeMap = parent.getTopicGraphViewPanel().buildLabelMap(parent.findMatchingNodeInTopicGraph(this.currentNode), parent.data.topicYearKwIdx);
             
                     }
@@ -2458,18 +2465,13 @@ int count = 0;
 
         }
 
-        WordleAlgorithmLite alg = new WordleAlgorithmLite(new Rectangle2D.Double(0, 0, 1200,600));//this.getWidth(), this.getHeight()));
-        //alg.displayParameters();
+        WordleAlgorithmLite alg = new WordleAlgorithmLite(this.getWidth(), this.getHeight());        
         alg.place(list);
 
-        Rectangle2D bounds = findBoundary(list);
-
-       // System.out.println(this.getBounds());
-       // System.out.println(bounds);
-
+        
         for (LabelWordleLite word : list) {
 
-            setLabelVisualPos(word, p, bounds);
+            setLabelVisualPos(word, p, new Rectangle(0,0,this.getWidth(), this.getHeight()));
             //System.out.println(((TopicGraphViewPanel.labelText)word.data).getRect());
         }
 

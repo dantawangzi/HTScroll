@@ -411,7 +411,7 @@ public class WorldMapProcessingPanel extends JPanel {
             //size(800,800);
             size(1600, 1000);
             
-                 PImage p = loadImage("logo_lowes_xxxsmall.png");
+                 PImage p = loadImage("logo_lowes_dot.png");
             
             for (Iterator<java.util.Map.Entry<Integer, Point2D>> it = storeLocations.entrySet().iterator(); it.hasNext();) {
                 java.util.Map.Entry<Integer, Point2D> entry = it.next();

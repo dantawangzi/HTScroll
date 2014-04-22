@@ -719,12 +719,20 @@ public List<Integer> getTopicsContainedIdx()
   
   public float avg_unNorm = 0;
   public float std_unNorm = 0;
+  ArrayList<float[][]> detectionResults = new ArrayList<float[][]>();
+
+    public ArrayList<float[][]> getDetectionResults() {
+        return detectionResults;
+    }
+  
+  
+  
   
   public float detectEvents(float eThreshold) {
       
        float tempsum = 0;
         List<float[]> unormStreams = new ArrayList<float[]>();
-        ArrayList<float[][]> detectionResults = new ArrayList<float[][]>();//detectionResults.clear();
+        //detectionResults.clear();
 
         if (!this.getChildren().isEmpty()) {
             for (int i = 0; i < this.getChildren().size(); i++) {

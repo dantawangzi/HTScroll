@@ -693,6 +693,8 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     for (Map.Entry<Integer, TreeNode> entry : viewController.leaves.entrySet()) {
                         TreeNode value = entry.getValue();
                         value.detectEvents(3.0f);
+                        
+                        
                     }
 
                     viewController.treeNodes.get(0).calculateTreeMapTopicWeight();
@@ -735,6 +737,9 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     for (int i = 0; i < t.getChildren().size(); i++) {
                         // viewController.addThemeRiver((TreeNode) t.getChildren().get(i));
                         viewController.addThemeRiverToTreeMap((TreeNode) t.getChildren().get(i));
+                        
+                        
+                        
                     }
 
                     //temporalFrame.PreDrawAllLeafs();
@@ -798,6 +803,20 @@ public class DashboardFrame extends javax.swing.JFrame implements Runnable {
                     }
 
                     mongoClient.close();
+                    
+                    
+  //TODO: generate image                  
+//                     for (Object r : (ArrayList) connection.getJobDocs(job, "agg_geo")) {
+//                            HashMap hr = (HashMap) r;
+//                            String key = (String) hr.get("_id");
+//                            String weights = (String) hr.get("weights");
+//                            // float tmpvalue = Float.parseFloat(weights);
+//                            topicSimMongo.put(key, weights);
+//
+//                        }
+                     
+                     
+                    
                     
                      for (TreeNode treenode : viewController.treeNodes) {
                         if (treenode.getChildren().isEmpty()) {

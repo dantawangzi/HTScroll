@@ -731,8 +731,10 @@ public class TemporalViewInteractions implements MouseListener, MouseMotionListe
 
         }
 
-        attachedPanel.parent.getTemporalFrame().invalidate();
-
+        if (attachedPanel.parent.getTemporalFrame()!=null)
+        {
+            attachedPanel.parent.getTemporalFrame().invalidate();
+        }
     }
 
     @Override

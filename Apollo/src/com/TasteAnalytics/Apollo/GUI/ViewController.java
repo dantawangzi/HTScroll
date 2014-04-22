@@ -20,6 +20,7 @@ import com.TasteAnalytics.Apollo.eventsview.EventViewFrame;
 import com.TasteAnalytics.Apollo.eventsview.EventsViewListener;
 import com.explodingpixels.macwidgets.HudWindow;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.layout.ObservableCachingLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -578,6 +579,8 @@ public class ViewController {
                     Point tmp_p = new Point(ap.getWidth() / 2, ap.getHeight() / 2);
 
                     ap.DrawWordleCloud(tmp_p/*ap.currentMouseLocation*/, highlightedTextLabels);
+                    System.out.println(highlightedTextLabels.size());
+                    System.out.println("draw wordle in tmo");
                 }
             }
         }
@@ -858,7 +861,8 @@ public class ViewController {
         tp.setName("" + ct.getIndex());
         tp.setPanelLabelId(ct.getIndex());
         tp.setLevel(1);
-
+        tp.setDetectionResults(ct.getDetectionResults());
+        
         this.treemapMiniTemporal.put(ct, tp);
 
         float normalizeValue = -1;
@@ -879,6 +883,8 @@ public class ViewController {
             ttp.computerZeroslopeAreasHierarchy(0);
 
         }
+        
+        tp.computeEventOutlineArea() ;
 
     }
 
@@ -1852,6 +1858,97 @@ public class ViewController {
             }
         }
 
+    }
+    
+    
+     public List<LabelText> retriveLabelsOfNode(TreeNode t, int timecolumn, List<List<int[]>> tYK) {
+        List<LabelText> r = new ArrayList<LabelText>();
+
+        if (t.getChildren().isEmpty()) {
+
+            List<LabelText> ltl = allLabels.get(t);
+            //System.out.println(t);
+            int[] index = tYK.get(t.getIndex()).get(timecolumn);
+
+            for (int j = 0; j < index.length; j++) {
+
+                if ((index[j]) < (labelsToDisplay - 2)) {
+                    r.add(ltl.get(index[j] + 1));
+                }
+            }
+        }
+//        else {
+//
+//            //System.out.println("single here" );
+//            HashMap<TreeNode, List<LabelText>> highlightedOfthisNode = new HashMap<TreeNode, List<LabelText>>();
+//            // System.out.println("single here" );
+//            highLightByYearIdxKwNode(t, timecolumn, tYK, highlightedOfthisNode);
+//
+//            //System.out.println("highlight over");
+//            r = putUpHighlightedKeywordList(highlightedOfthisNode);
+//            //System.out.println("putUp over");                                    
+//        }
+        return r;
+
+    }
+    
+     public HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<LabelText>> buildLabelMap(TreeNode cNode, List<List<int[]>> tYK) {
+
+        HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<LabelText>> hmp = new HashMap< TopicGraphViewPanel.customLabelTimecolumnKey, List<LabelText>>();
+        
+        //System.out.println("building label maps in " + cNode.);
+
+        int numberofyears = this.data.getNumOfYears();
+
+        TreeNode tk = cNode;
+        //System.out.println(tk.getValue() + "is building" + tk.getChildren().size() + " children");
+
+        for (int i = 0; i < numberofyears; i++) {
+
+            TopicGraphViewPanel.customLabelTimecolumnKey key = new TopicGraphViewPanel.customLabelTimecolumnKey(tk.getValue(), String.valueOf(i));
+
+            List<LabelText> tmpLabels = retriveLabelsOfNode(tk, i, tYK);
+            // System.out.println(tmpLabels.size());
+            hmp.put(key, tmpLabels);
+                //System.out.println(key.toString());
+
+        }
+
+         if (!tk.getChildren().isEmpty())
+        for (int i = 0; i < numberofyears; i++) {
+
+            {
+
+
+                for (int j = 0; j < tk.getChildren().size(); j++) {
+                    TreeNode t1 = (TreeNode) tk.getChildren().get(j);
+                    //TreeNode t1 = null;
+//                    String matchedNodeString = "LeafTopic" + tk.getTopicsContainedIdx().get(j);
+//
+//                    for (int k = 0; k < lll.getGraph().getVertices().size(); k++) {
+//                        Object o = lll.getGraph().getVertices().toArray()[k];
+//                        t1 = (TreeNode) o;
+//                        if (t1.getValue().equals(matchedNodeString)) {
+//                            break;
+//                        }
+//                    }
+
+                    //System.out.println("single node" + i);
+                    List<LabelText> tmpLabels = retriveLabelsOfNode(t1, i, tYK);
+                    //System.out.println("single node" + tmpLabels.size());
+
+                    TopicGraphViewPanel.customLabelTimecolumnKey key = new TopicGraphViewPanel.customLabelTimecolumnKey(t1.getValue(), String.valueOf(i));
+                    hmp.put(key, tmpLabels);
+
+                }
+            }
+
+        }
+
+       // System.out.println("hmp size " + hmp.size());
+
+        return hmp;
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public class labelTextComparer implements Comparator<LabelText> {
