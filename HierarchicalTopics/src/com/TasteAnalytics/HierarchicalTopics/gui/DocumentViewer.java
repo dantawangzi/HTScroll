@@ -986,7 +986,7 @@ public class DocumentViewer extends JFrame {
                 new Comparator<Entry<K, V>>() {
                     @Override
                     public int compare(Entry<K, V> e1, Entry<K, V> e2) {
-                        return e1.getValue().compareTo(e2.getValue());
+                        return e2.getValue().compareTo(e1.getValue());
                     }
                 }
         );
@@ -1002,9 +1002,9 @@ public class DocumentViewer extends JFrame {
 
         this.setVisible(true);
 
-        System.out.println(tmpDocs.size() + " " + tmpDocs.get(0).length);
-        System.out.println(tmpDocs.get(0)[0] + tmpDocs.get(0)[1] + tmpDocs.get(0)[2] + tmpDocs.get(0)[3] + tmpDocs.get(0)[4]);
-        if (true) {
+  //      System.out.println(tmpDocs.size() + " " + tmpDocs.get(0).length);
+//        System.out.println(tmpDocs.get(0)[0] + tmpDocs.get(0)[1] + tmpDocs.get(0)[2] + tmpDocs.get(0)[3] + tmpDocs.get(0)[4]);
+        if (false) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // for  all data sets  reddit only
             final HashMap<String, Color> randomColor = new HashMap<String, Color>();

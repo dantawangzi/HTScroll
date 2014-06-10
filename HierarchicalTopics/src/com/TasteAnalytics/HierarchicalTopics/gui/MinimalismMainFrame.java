@@ -89,13 +89,16 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
         initComponents();
         
+        jConnectMongoButton.setVisible(false);
         
         Thread thread = new Thread(this);  
         thread.start();  
     
-        System.out.println("This is currently running on the main thread, " +  
-        "the id is: " + Thread.currentThread().getId());  
         
+        
+//        System.out.println("This is currently running on the main thread, " +  
+//        "the id is: " + Thread.currentThread().getId());  
+//        
         
 
     }
@@ -146,6 +149,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         jConnectMongoButton.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
         jConnectMongoButton.setText("Connect Mongo");
+        jConnectMongoButton.setEnabled(false);
         jConnectMongoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jConnectMongoButtonActionPerformed(evt);
@@ -972,6 +976,9 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             vcGeoFrame.setVisible(true);
         else
             vcGeoFrame.setVisible(false);
+        
+        
+         vcGeoFrame.setVisible(false);
 //
 ////
         System.out.println("GeoFrame done");
