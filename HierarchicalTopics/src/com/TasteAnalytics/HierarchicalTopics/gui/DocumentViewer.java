@@ -1254,7 +1254,7 @@ public class DocumentViewer extends JFrame {
 
         
         //for reddit  
-        if (true)
+        if (false)
         {
             HashMap<String, List<Integer>> submissionMap = new HashMap<String, List<Integer>>();
             for (int i = 0; i < selectedtweets.size(); i++) {
@@ -1569,7 +1569,7 @@ public class DocumentViewer extends JFrame {
             lastIndex = 0;
 
             //currentDoc  = tmpDocs.get(i)[2].toLowerCase();//Challenge 1
-            currentDoc = tmpDocs.get(i)[1].toLowerCase();//Challenge 3
+            currentDoc = tmpDocs.get(i)[parent.getContentIdx()].toLowerCase();//Challenge 3
 
             matchCount = currentDoc.split(keyword).length - 1;
 

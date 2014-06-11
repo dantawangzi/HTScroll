@@ -694,7 +694,7 @@ public class CSVFile extends SimpleParallelSpaceModel {
         int contentColumn = -1;
 
         for (int i = 0; i < allDocs.get(0).length; i++) {
-            if (allDocs.get(0)[i].equals("Content") || allDocs.get(0)[i].equals("content")
+            if (allDocs.get(0)[i].equals("CONTENT") ||allDocs.get(0)[i].equals("Content") || allDocs.get(0)[i].equals("content")
                     || allDocs.get(0)[i].equals("Abstract") || allDocs.get(0)[i].equals("abstract") || allDocs.get(0)[i].equals("text")
                     || allDocs.get(0)[i].equals("Description") ||allDocs.get(0)[i].equals("new_text")
                     
