@@ -684,7 +684,9 @@ public class CSVFile extends SimpleParallelSpaceModel {
         int dateColumn = -1;
 
         for (int i = 0; i < allDocs.get(0).length; i++) {
-            if (allDocs.get(0)[i].contains("DATE") || allDocs.get(0)[i].contains("date") || allDocs.get(0)[i].contains("StartDate") || allDocs.get(0)[i].contains("Year") || allDocs.get(0)[i].contains("time") || allDocs.get(0)[i].contains("Created_at")) {
+            if (allDocs.get(0)[i].contains("DATE") || allDocs.get(0)[i].contains("date") 
+                    || allDocs.get(0)[i].contains("StartDate") || allDocs.get(0)[i].contains("Year") || allDocs.get(0)[i].contains("time")
+                    || allDocs.get(0)[i].contains("Created_at")) {
                 dateColumn = i;
                 break;
             }
