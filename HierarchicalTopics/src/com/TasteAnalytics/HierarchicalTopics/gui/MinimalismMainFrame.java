@@ -544,8 +544,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         CSVFile csvf = new CSVFile("");
         try {
-            
-            
+                        
        // viewController.setUsageRecord(csvf.getInternalRecord());
 
         //viewController.setInternalDocs(csvf.getInternalDocs());
@@ -558,14 +557,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
          HashMap<String, String[]> topicsByMongo = new HashMap<String, String[]>();
         
         for (Object r : (ArrayList) connection.getJobDocs(job,"topic"))
-        {
-            
+        {            
             
             String Key =(String)   ((HashMap)r).get("_id");
             String terms = (String) ((HashMap)r).get("terms");
-            
-            
-            
+                                    
             String[] tmps = terms.split(",");
             String[] tmpdest = new String[tmps.length+2];
             tmpdest[0] = "Group";

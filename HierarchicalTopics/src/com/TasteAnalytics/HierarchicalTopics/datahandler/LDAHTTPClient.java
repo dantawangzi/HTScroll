@@ -166,16 +166,11 @@ public class LDAHTTPClient {
 			localContext.setCookieStore(cookieStore);
 
 			HttpGet httpget = new HttpGet(url);
-			System.out.println(url);
+			//System.out.println(url);
 
 			response = httpclient.execute(httpget, localContext);
 
-			
-	
 
-			
-
-		
 
 		String result = "{}";
 		try {
