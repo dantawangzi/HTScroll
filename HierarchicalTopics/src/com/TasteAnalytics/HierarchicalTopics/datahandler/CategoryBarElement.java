@@ -585,7 +585,7 @@ public class CategoryBarElement {
             //topicYearKwIdax load
             String filepathtyki = csvPath + "topicYearKwIdx.txt";
             File f1 = new File(filepathtyki);
-            if (false/*f1.exists()*/) {
+            if (f1.exists()) {
                 topicYearKwIdx = new ArrayList<List<int[]>>();
 
                 System.out.println("cache files exist, Loading topicYearKwIdx.txt... ");

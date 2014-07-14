@@ -41,14 +41,14 @@ public class ConsoleFrame extends javax.swing.JFrame implements WindowListener, 
 //              Thread thread = new Thread(this);  
 //        thread.start();
         
-        try {
-            PipedOutputStream pout = new PipedOutputStream(this.pin);
-            System.setOut(new PrintStream(pout, true));
-        } catch (java.io.IOException io) {
-            textArea.append("Couldn't redirect STDOUT to this console\n" + io.getMessage());
-        } catch (SecurityException se) {
-            textArea.append("Couldn't redirect STDOUT to this console\n" + se.getMessage());
-        }
+//        try {
+//            PipedOutputStream pout = new PipedOutputStream(this.pin);
+//            System.setOut(new PrintStream(pout, true));
+//        } catch (java.io.IOException io) {
+//            textArea.append("Couldn't redirect STDOUT to this console\n" + io.getMessage());
+//        } catch (SecurityException se) {
+//            textArea.append("Couldn't redirect STDOUT to this console\n" + se.getMessage());
+//        }
 
 //        try {
 //            PipedOutputStream pout2 = new PipedOutputStream(this.pin2);
@@ -63,10 +63,18 @@ public class ConsoleFrame extends javax.swing.JFrame implements WindowListener, 
 
 		// Starting two seperate threads to read from the PipedInputStreams				
         //
-        reader = new Thread(this);
-        reader.setDaemon(true);
-        reader.start();
-        //
+       // reader = new Thread(this);
+       // reader.setDaemon(true);
+        //reader.start();
+     
+        
+
+
+
+
+
+
+//
 //        reader2 = new Thread(this);
 //        reader2.setDaemon(true);
 //        reader2.start();
@@ -162,48 +170,48 @@ public class ConsoleFrame extends javax.swing.JFrame implements WindowListener, 
     }
 
     public synchronized void run() {
-          System.out.println("This is currently running on a separate thread, " +  
-        "the id is: " + Thread.currentThread().getId());  
-        try {
-            while (Thread.currentThread() == reader) {
-                try {
-                    this.wait(100);
-                } catch (InterruptedException ie) {
-                }
-                if (pin.available() != 0) {
-                    String input = this.readLine(pin);
-                    textArea.append(input);
-                    textArea.setCaretPosition(textArea.getDocument().getLength());
-                }
-                if (quit) {
-                    return;
-                }
-            }
-
-//            while (Thread.currentThread() == reader2) {
+//          System.out.println("This is currently running on a separate thread, " +  
+//        "the id is: " + Thread.currentThread().getId());  
+//        try {
+//            while (Thread.currentThread() == reader) {
 //                try {
 //                    this.wait(100);
 //                } catch (InterruptedException ie) {
 //                }
-//                if (pin2.available() != 0) {
-//                    String input = this.readLine(pin2);
+//                if (pin.available() != 0) {
+//                    String input = this.readLine(pin);
 //                    textArea.append(input);
+//                    textArea.setCaretPosition(textArea.getDocument().getLength());
 //                }
 //                if (quit) {
 //                    return;
 //                }
 //            }
-        } catch (Exception e) {
-            textArea.append("\nConsole reports an Internal error.");
-            textArea.append("The error is: " + e);
-        }
-
-		// just for testing (Throw a Nullpointer after 1 second)
-//		if (Thread.currentThread()==errorThrower)
-//		{
-//			try { this.wait(1000); }catch(InterruptedException ie){}
-//			throw new NullPointerException("Application test: throwing an NullPointerException It should arrive at the console");
-//		}
+//
+////            while (Thread.currentThread() == reader2) {
+////                try {
+////                    this.wait(100);
+////                } catch (InterruptedException ie) {
+////                }
+////                if (pin2.available() != 0) {
+////                    String input = this.readLine(pin2);
+////                    textArea.append(input);
+////                }
+////                if (quit) {
+////                    return;
+////                }
+////            }
+//        } catch (Exception e) {
+//            textArea.append("\nConsole reports an Internal error.");
+//            textArea.append("The error is: " + e);
+//        }
+//
+//		// just for testing (Throw a Nullpointer after 1 second)
+////		if (Thread.currentThread()==errorThrower)
+////		{
+////			try { this.wait(1000); }catch(InterruptedException ie){}
+////			throw new NullPointerException("Application test: throwing an NullPointerException It should arrive at the console");
+////		}
     }
 
     public synchronized String readLine(PipedInputStream in) throws IOException {
