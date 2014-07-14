@@ -100,8 +100,10 @@ public class LDAHTTPClient {
         }
         
 	public Object apacheGet(String path, String parameters) throws ClientProtocolException, IOException{
-		String url = this.protocol + "://" + this.host + ":" + this.port + "/" + path + "?json=True&"+parameters;
+		String url = this.protocol + "://" + this.host + ":" + this.port + "/" + path + "?json=True&"+parameters;; 
+                        //+parameters;
 
+                //System.out.println(url);
 		// Create local HTTP context
 		HttpClientContext localContext = HttpClientContext.create();
 		
@@ -143,10 +145,49 @@ public class LDAHTTPClient {
 
 	}
                 
+               
                 public void login() throws ClientProtocolException, IOException{
-		apacheGet("qwertyuiop","");
+		apacheGetLogin("qwertyuiop","u=client8&p=changeme");
 	}
 	
+                
+                public boolean apacheGetLogin(String path, String parameters) throws ClientProtocolException, IOException {
+
+		CloseableHttpResponse response = null;
+		HttpClientContext localContext = HttpClientContext.create();
+
+		
+		
+		String url = this.protocol + "://" + this.host + ":" + this.port + "/"
+				+ path;
+		
+
+			url = url + "?" + parameters;
+			localContext.setCookieStore(cookieStore);
+
+			HttpGet httpget = new HttpGet(url);
+			System.out.println(url);
+
+			response = httpclient.execute(httpget, localContext);
+
+			
+	
+
+			
+
+		
+
+		String result = "{}";
+		try {
+			result = EntityUtils.toString(response.getEntity());
+		} finally {
+			response.close();
+		}
+                        return true;
+    
+	
+	}
+                
 	public Object getJobs() throws IOException{
 		return apacheGet("", "");
 	}
