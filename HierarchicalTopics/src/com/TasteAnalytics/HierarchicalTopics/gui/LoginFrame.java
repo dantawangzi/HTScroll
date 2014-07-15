@@ -89,9 +89,9 @@ public class LoginFrame extends JFrame {
 		this.setLayout(new BorderLayout());
 		JPanel displayPanel = new JPanel();
 		
-		serverSelector.addItem((String)"192.168.0.17");
+		//serverSelector.addItem((String)"192.168.0.17");
 		serverSelector.addItem((String)"caprica.uncc.edu");
-		serverSelector.addItem((String)"54.209.61.133");
+		//serverSelector.addItem((String)"54.209.61.133");
 		
 		
 		//serverSelector.addItem((String)"");

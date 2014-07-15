@@ -90,6 +90,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         viewController.setParentFrame(this);
         initComponents();
         
+        //jButton1.setVisible(false);
+        
       //  jConnectMongoButton.setVisible(false);
         
         Thread thread = new Thread(this);  
@@ -141,6 +143,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         jButton1.setText("Load Data");
         jButton1.setActionCommand("Load Data...");
         jButton1.setMargin(new java.awt.Insets(0, 5, 0, 0));
+        jButton1.setMinimumSize(new java.awt.Dimension(0, 0));
+        jButton1.setPreferredSize(new java.awt.Dimension(0, 0));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openItemActionPerformed(evt);
@@ -149,7 +153,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         getContentPane().add(jButton1, java.awt.BorderLayout.CENTER);
 
         jConnectMongoButton.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
-        jConnectMongoButton.setText("Connect Mongo");
+        jConnectMongoButton.setText("Cloud Connection");
         jConnectMongoButton.setEnabled(true);
         jConnectMongoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -461,7 +465,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
     private void jConnectMongoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectMongoButtonActionPerformed
 
-        viewController.host = "54.209.61.133";;//"caprica.uncc.edu";//10.18.202.126"; // 
+        viewController.host = "caprica.uncc.edu";//"54.209.61.133";//"caprica.uncc.edu";//10.18.202.126"; // 
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
         
