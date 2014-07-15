@@ -72,8 +72,7 @@ public class ViewController {
     
     MinimalismMainFrame mf;
     public void setParentFrame(MinimalismMainFrame m){
-        mf = m;
-        
+        mf = m;        
     };
     
     public MinimalismMainFrame getParentFrame(){
