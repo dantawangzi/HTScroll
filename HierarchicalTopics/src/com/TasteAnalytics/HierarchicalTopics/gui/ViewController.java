@@ -4,22 +4,25 @@
  */
 package com.TasteAnalytics.HierarchicalTopics.gui;
 
-import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.picking.PickedState;
+import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
+import com.TasteAnalytics.HierarchicalTopics.eventsview.EventViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.eventsview.EventsViewListener;
 import com.TasteAnalytics.HierarchicalTopics.eventsview.EventsViewPanel;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewListener;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewListener;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TemporalViewPanel;
 import com.TasteAnalytics.HierarchicalTopics.temporalView.renderer.TreeNode;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame;
-import com.TasteAnalytics.HierarchicalTopics.eventsview.EventViewFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame.customLabelTimecolumnKey;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
+import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.picking.PickedState;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
@@ -27,17 +30,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame.customLabelTimecolumnKey;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.VastGeoFrame;
-import com.TasteAnalytics.HierarchicalTopics.topicRenderer.WorldMapProcessingFrame;
-import java.awt.Point;
-
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
@@ -70,9 +70,40 @@ public class ViewController {
     public WorldMapProcessingFrame worldMapProcessingFrame;
     public List<Point2D> geoLocations;
     
-     
-     
+    MinimalismMainFrame mf;
+    public void setParentFrame(MinimalismMainFrame m){
+        mf = m;
+        
+    };
+    
+    public MinimalismMainFrame getParentFrame(){
+        
+        return mf;
+    };
+    
+     public String CookieString = "";
 
+     private LDAHTTPClient connection = null;
+
+	public LDAHTTPClient getConnection() {
+		return connection;
+	}
+
+	public boolean InitializeNetworkConnection(boolean initByCookie,
+			String username, String password) {
+
+		connection = new LDAHTTPClient("http",
+				this.host, "2012");
+		try {
+			return connection.login(initByCookie, username, password);
+		} catch (IOException ex) {
+			return false;
+
+		}
+	}
+        
+        
+        
     public VastGeoFrame getVCGF() {
         return VCGF;
     }
@@ -451,7 +482,7 @@ public class ViewController {
     int zoomSubBins = 5;
     boolean b_readAll = true;
     public boolean b_readFromDB = false;
-    public String host = "";
+    public String host = "54.209.61.133";
     String user = "";
     String password = "";
     String table = "";

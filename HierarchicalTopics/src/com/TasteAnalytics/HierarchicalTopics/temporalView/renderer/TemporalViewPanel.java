@@ -2070,7 +2070,7 @@ public class TemporalViewPanel extends JPanel implements TemporalViewListener, M
 
                     //g2d.drawString(lowerstr, (int) ((i) * ratio), height - height / 20);
                     int docNumberInSlot = data.idxOfDocumentPerSlot.get(i).size();
-                    String sDocNumberInSlot = "Total Number of Tweets in this time slot: " + docNumberInSlot;
+                    String sDocNumberInSlot = "Total Number of documents in this time slot: " + docNumberInSlot;
                     g2d.drawString(sDocNumberInSlot, 10, height / 20 + 10);
 
                 }

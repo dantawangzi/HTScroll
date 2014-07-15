@@ -1031,7 +1031,7 @@ public class CategoryBarElement {
 //         for (Object r : (ArrayList) c.getJobDocsMeta(JobName, JobName))
 //			System.out.println(r);
          
-         c.login();
+         c.login(true, null, null);
          
          for (Object r : (ArrayList) c.getJob(JobName))
          {
@@ -1253,7 +1253,7 @@ public class CategoryBarElement {
         }
          
         
-      // c.close();
+       c.close();
           System.out.println("topicYearKwIdx loaded");
          
 

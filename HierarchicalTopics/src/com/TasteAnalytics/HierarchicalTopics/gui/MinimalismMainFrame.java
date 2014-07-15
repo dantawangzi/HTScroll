@@ -69,7 +69,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
     //private ViewController viewcontroller;
     //Defined by wdou
-    private com.TasteAnalytics.HierarchicalTopics.gui.ViewController viewController;
+    public com.TasteAnalytics.HierarchicalTopics.gui.ViewController viewController;
 
     DocumentViewer documentViewer = null;
     TemporalViewFrame temporalFrame = null;
@@ -86,7 +86,8 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     
     public MinimalismMainFrame() {
         
-        
+          viewController = new ViewController();
+        viewController.setParentFrame(this);
         initComponents();
         
       //  jConnectMongoButton.setVisible(false);
@@ -473,7 +474,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         //"54.209.61.133"
         LDAHTTPClient connection  = new LDAHTTPClient("http", viewController.host, String.valueOf(viewController.port));
         try {
-            connection.login();
+            connection.login(true,null,null);
         } catch (IOException ex) {
             Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -529,7 +530,14 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             data[i] = tmp;
 
         }
-        JTable table = new JTable(data, columnName);
+        JTable table = new JTable(data, columnName){
+            
+             public boolean isCellEditable(int row, int col) {
+
+	        return false;
+	      } 
+	
+        };
 
         JScrollPane scrollPane = new JScrollPane(table);
         table.setFillsViewportHeight(true);
@@ -593,7 +601,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             topics.add(topicsByMongo.get(key));
         }
 
-       System.out.append("topk loaded");
+       System.out.println("topk loaded");
 
         
             
@@ -672,7 +680,16 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             List<List<Float>> topicSim = new ArrayList<List<Float>>();
             
             
+           
+//         for (Object r : (ArrayList) c.getJobDocsMeta(JobName, JobName))
+//			System.out.println(r);
             
+            
+            if (connection == null)
+            {
+            connection  = new LDAHTTPClient("http",viewController.host, "2012");
+            connection.login(true, null, null);
+            }
             if (viewController.b_readFromDB)
             {
                 
@@ -1069,9 +1086,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     // End of variables declaration//GEN-END:variables
 
     public void  run() {
-       viewController = new ViewController();
+     
         
         jCheckBoxConsoleMenu.setState(false);
+        
+        
         consoleFrame = new ConsoleFrame();
         consoleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //// TODO: DXW---Need to comment this out!April 03, 2013

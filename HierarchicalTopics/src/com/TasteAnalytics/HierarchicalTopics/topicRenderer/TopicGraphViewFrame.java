@@ -1102,7 +1102,7 @@ public class TopicGraphViewFrame extends JFrame {
         {
         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
         try {
-            connection.login();
+            connection.login(true,null,null);
         } catch (IOException ex) {
             Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1116,6 +1116,8 @@ public class TopicGraphViewFrame extends JFrame {
 
         myTree.get(0).calculateNodeString();
 
+        for (int i=0; i<myTree.get(0).getNodeTopics().length; i++)
+            myTree.get(0).getNodeTopics()[i] = "";
         // NodeStringProcessing();
         setNodeColor();
 

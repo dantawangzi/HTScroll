@@ -540,7 +540,7 @@ public class DocumentViewer extends JFrame {
         if (parent.b_readFromDB) {
 
             LDAHTTPClient c = new LDAHTTPClient("http", parent.host, "2012");
-            c.login();
+            c.login(true,null,null);
 //             MongoClient mongoClient = null;
 //        try {
 //                mongoClient = new MongoClient("10.18.203.211", 27017);

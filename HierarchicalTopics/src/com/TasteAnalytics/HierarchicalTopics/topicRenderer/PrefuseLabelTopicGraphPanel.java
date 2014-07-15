@@ -173,7 +173,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             
             
             LDAHTTPClient c = new LDAHTTPClient("http", parent.host, "2012");
-            c.login();
+            c.login(true,null,null);
             
              String dictString = "";
              for (Object r : (ArrayList) c.getJobDocs(parent.collection,"labeldict"))
@@ -198,14 +198,14 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                  if("NONE".equals(labeltext))
                          continue;
                  
-//                  if("agency".equals(labeltext))
-//                         continue;
+                  if("agency".equals(labeltext))
+                         continue;
                  
                 labelDictMap.put(Integer.parseInt(labelint), labeltext);
                 
                 
             }
-            labelCount--;    // labelCount--;         
+            labelCount--;     labelCount--;         
           
             
               topicWeightPerLabel = new float[labelCount][];
@@ -224,7 +224,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                   String line = tmpLabelTopicString[2*i+1];
                 String labeltopicview[] = line.split("\\|");
 
-                topicWeightPerLabel[i] = new float[labeltopicview.length-1];
+                topicWeightPerLabel[i] = new float[labeltopicview.length-2];
 
                 List<TopicWeight> templst = new ArrayList<TopicWeight>();
                 topicWeightPerLabelMap.put(i, templst);
@@ -233,10 +233,14 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                     if (temp1.length!=2)
                         continue;
                   //  System.out.println( j + " " + temp1[0] + " " + temp1[1]);
+                    
                     int index = Integer.parseInt(temp1[0].replaceAll("\\D+", ""));
                     float weight = Float.parseFloat(temp1[1]);
                  
-                    
+                    if (index == 0)
+                        continue;
+                    else
+                        index--;
                         
                     topicWeightPerLabel[i][index] = weight;
 
@@ -444,21 +448,21 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             Node n = graph.addNode();
             n.set("id", i);
             n.set("name", "Label" + Integer.toString(i));
-            n.set("LabelText", labelDictMap.get(i));
+            n.set("LabelText", labelDictMap.get(i+1));
             n.set("selected", false);
 
         }
 
-        System.out.println("mean value " + average_of_hell + " std is " + sntd + " edgesnumber " + edgesnumber + " " + count);
+      //  System.out.println("mean value " + average_of_hell + " std is " + sntd + " edgesnumber " + edgesnumber + " " + count);
 
         
-        updateEdges((float) (average_of_hell + sntd));
+        updateEdges((float) (average_of_hell/* + sntd*/));
 
         PrintOutJsonEdges();
         
         
         
-        edgeThreSlider = new JValueSlider("EdgeWeight Slider", minHellValue, maxHellValue, (average_of_hell + sntd));
+        edgeThreSlider = new JValueSlider("EdgeWeight Slider", minHellValue, maxHellValue, (average_of_hell /* + sntd*/));
         edgeWeightSlider = new JValueSlider("Weight Slider", 1, 10, 5);
         
         

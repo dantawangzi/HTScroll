@@ -11,21 +11,29 @@
 		{"name":"usda","group":8},
 		{"name":"nrc","group":9},
 		{"name":"doc","group":10},
-		{"name":"dhs","group":11},
-		{"name":"null","group":12}
+		{"name":"dhs","group":11}
 	],
 	"links":[
-		{"source":0,"target":2,"value":746.0286},
-		{"source":1,"target":2,"value":548.6902},
-		{"source":2,"target":3,"value":693.61444},
-		{"source":2,"target":4,"value":522.57306},
-		{"source":2,"target":5,"value":583.3844},
-		{"source":2,"target":6,"value":706.10956},
-		{"source":2,"target":7,"value":558.16815},
-		{"source":2,"target":8,"value":701.7058},
-		{"source":2,"target":9,"value":701.64777},
-		{"source":2,"target":10,"value":738.24554},
-		{"source":2,"target":11,"value":724.7438},
-		{"source":2,"target":12,"value":683.75635}
+		{"source":0,"target":1,"value":280.96805},
+		{"source":0,"target":2,"value":665.8881},
+		{"source":0,"target":4,"value":238.66365},
+		{"source":1,"target":2,"value":481.22366},
+		{"source":1,"target":3,"value":247.73883},
+		{"source":1,"target":6,"value":251.50624},
+		{"source":1,"target":8,"value":245.41379},
+		{"source":1,"target":9,"value":249.50577},
+		{"source":1,"target":10,"value":275.4334},
+		{"source":1,"target":11,"value":264.76205},
+		{"source":2,"target":3,"value":621.4375},
+		{"source":2,"target":4,"value":501.56082},
+		{"source":2,"target":5,"value":515.02826},
+		{"source":2,"target":6,"value":628.4623},
+		{"source":2,"target":7,"value":508.1462},
+		{"source":2,"target":8,"value":623.304},
+		{"source":2,"target":9,"value":625.2019},
+		{"source":2,"target":10,"value":659.1132},
+		{"source":2,"target":11,"value":646.04706},
+		{"source":4,"target":10,"value":233.23692},
+		{"source":4,"target":11,"value":222.27415}
 	]
 }
