@@ -560,18 +560,32 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         {            
             
             String Key =(String)   ((HashMap)r).get("_id");
-            String terms = (String) ((HashMap)r).get("terms");
-                                    
-            String[] tmps = terms.split(",");
-            String[] tmpdest = new String[tmps.length+2];
-            tmpdest[0] = "Group";
-            tmpdest[1] = Key;
-            for (int i=0; i<tmps.length; i++)
-            {
-                tmpdest[2+i] = tmps[i];
-                
-            }
-            topicsByMongo.put(Key, tmpdest); 
+           // String terms = (String) ((HashMap)r).get("terms");
+                      
+            if (((HashMap<?, ?>) r).get("terms") instanceof BasicDBList) {
+					BasicDBList terms = ((BasicDBList) ((HashMap<?, ?>) r)
+							.get("terms"));
+
+					String[] tmpdest = new String[terms.size() + 2];
+					tmpdest[0] = "Group";
+					tmpdest[1] = Key;
+					for (int i = 0; i < terms.size(); i++) {
+						tmpdest[2 + i] = (String) terms.get(i);
+
+					}
+					 topicsByMongo.put(Key, tmpdest); 
+
+				}
+//            String[] tmps = terms.split(",");
+//            String[] tmpdest = new String[tmps.length+2];
+//            tmpdest[0] = "Group";
+//            tmpdest[1] = Key;
+//            for (int i=0; i<tmps.length; i++)
+//            {
+//                tmpdest[2+i] = tmps[i];
+//                
+//            }
+//            topicsByMongo.put(Key, tmpdest); 
         }
          for (int i=0; i<topicsByMongo.size(); i++)
         {
@@ -619,8 +633,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         String TreeString = "";
         
         
-        for (Object r : (ArrayList) connection.getJobDocs(job, "flat"))
-        {System.out.println(r);TreeString = (String) ((HashMap) r).get("tree");}
+//        for (Object r : (ArrayList) connection.getJobDocs(job, "flat"))
+//        {System.out.println(r);TreeString = (String) ((HashMap) r).get("tree");}
+                        TreeString = "digraphgraph{\n" +
+"'Node18','LeafTopic9','LeafTopic5','LeafTopic10','LeafTopic16','LeafTopic8','LeafTopic15','LeafTopic3','LeafTopic7','LeafTopic12','LeafTopic13','LeafTopic0','LeafTopic19','LeafTopic1','LeafTopic11','LeafTopic4','LeafTopic6','LeafTopic2','LeafTopic14','LeafTopic17','LeafTopic18',\n" +
+"('Node18','LeafTopic9'),('Node18','LeafTopic5'),('Node18','LeafTopic10'),('Node18','LeafTopic16'),('Node18','LeafTopic8'),('Node18','LeafTopic15'),('Node18','LeafTopic3'),('Node18','LeafTopic7'),('Node18','LeafTopic12'),('Node18','LeafTopic13'),('Node18','LeafTopic0'),('Node18','LeafTopic19'),('Node18','LeafTopic1'),('Node18','LeafTopic11'),('Node18','LeafTopic4'),('Node18','LeafTopic6'),('Node18','LeafTopic2'),('Node18','LeafTopic14'),('Node18','LeafTopic17'),('Node18','LeafTopic18'),}";
                         
 //        q1 = new BasicDBObject("type", "flat");
 //        cursorfind = currentColl.find(q1);
@@ -771,13 +788,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         } catch (IOException ex) {
             Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            connection.close();
-            
-// TODO add your handling code here:
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//          //  connection.close();
+//            
+//// TODO add your handling code here:
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
     }//GEN-LAST:event_jConnectMongoButtonActionPerformed
 

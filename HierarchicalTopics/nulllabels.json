@@ -1,0 +1,31 @@
+{
+	"nodes":[
+		{"name":"hhs","group":0},
+		{"name":"dod","group":1},
+		{"name":"epa","group":2},
+		{"name":"doe","group":3},
+		{"name":"nasa","group":4},
+		{"name":"dot","group":5},
+		{"name":"nsf","group":6},
+		{"name":"ed","group":7},
+		{"name":"usda","group":8},
+		{"name":"nrc","group":9},
+		{"name":"doc","group":10},
+		{"name":"dhs","group":11},
+		{"name":"null","group":12}
+	],
+	"links":[
+		{"source":0,"target":2,"value":746.0286},
+		{"source":1,"target":2,"value":548.6902},
+		{"source":2,"target":3,"value":693.61444},
+		{"source":2,"target":4,"value":522.57306},
+		{"source":2,"target":5,"value":583.3844},
+		{"source":2,"target":6,"value":706.10956},
+		{"source":2,"target":7,"value":558.16815},
+		{"source":2,"target":8,"value":701.7058},
+		{"source":2,"target":9,"value":701.64777},
+		{"source":2,"target":10,"value":738.24554},
+		{"source":2,"target":11,"value":724.7438},
+		{"source":2,"target":12,"value":683.75635}
+	]
+}

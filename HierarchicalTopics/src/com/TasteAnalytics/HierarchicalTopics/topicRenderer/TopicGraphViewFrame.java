@@ -1109,7 +1109,7 @@ public class TopicGraphViewFrame extends JFrame {
         
         connection.updateTree(parent.collection, everything);
         
-        connection.close();
+      //  connection.close();
         
         }
         myTree.get(0).calculateNodeSize();

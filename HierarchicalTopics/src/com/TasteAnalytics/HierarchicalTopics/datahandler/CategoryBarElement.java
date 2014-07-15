@@ -585,7 +585,7 @@ public class CategoryBarElement {
             //topicYearKwIdax load
             String filepathtyki = csvPath + "topicYearKwIdx.txt";
             File f1 = new File(filepathtyki);
-            if (f1.exists()) {
+            if (false/*f1.exists()*/) {
                 topicYearKwIdx = new ArrayList<List<int[]>>();
 
                 System.out.println("cache files exist, Loading topicYearKwIdx.txt... ");
@@ -1253,7 +1253,7 @@ public class CategoryBarElement {
         }
          
         
-        c.close();
+      // c.close();
           System.out.println("topicYearKwIdx loaded");
          
 
@@ -1323,6 +1323,8 @@ public class CategoryBarElement {
 
                 // List<Integer> templist =new  ArrayList<Integer>();
                 count = 0;
+                
+                
                 for (int k = 0; k < numRecords; k++) {
                     if (values_UnNorm.get(k) != null) {
 

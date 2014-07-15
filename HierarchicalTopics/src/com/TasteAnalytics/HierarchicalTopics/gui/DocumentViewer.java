@@ -568,7 +568,7 @@ public class DocumentViewer extends JFrame {
                 }
 
             }
-            c.close();
+            //c.close();
 
 //            for (int k = 0; k < parentPanel.getData().idxOfDocumentPerSlot.get(selectedTimeColumn).size(); k++) {
 //
@@ -747,7 +747,7 @@ public class DocumentViewer extends JFrame {
             }
         });
 
-        docSelectionThreshold.setValue(25);
+        docSelectionThreshold.setValue(5);
         docSelectionThreshold.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 docSelectionThresholdStateChanged(evt);
@@ -756,7 +756,7 @@ public class DocumentViewer extends JFrame {
 
         jLabel2.setText("Select Docs above");
 
-        thresholdLabel.setText("25%");
+        thresholdLabel.setText("5%");
 
         jLabel3.setText("RT Ratio with Threshold:");
 
@@ -1350,7 +1350,7 @@ public class DocumentViewer extends JFrame {
 
         else // not for reddit
         {
-        if (parent.nameFields == null) {
+        if (parent.nameFields == null || parent.nameFields.length == 0) {
             int keysize = selectedtweets.get(0).keySet().size();
             int size = selectedtweets.size();
             content = new Object[size][keysize];

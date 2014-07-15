@@ -103,7 +103,7 @@ public class LDAHTTPClient {
 		String url = this.protocol + "://" + this.host + ":" + this.port + "/" + path + "?json=True&"+parameters;; 
                         //+parameters;
 
-                //System.out.println(url);
+                System.out.println(url);
 		// Create local HTTP context
 		HttpClientContext localContext = HttpClientContext.create();
 		
@@ -354,7 +354,7 @@ public class LDAHTTPClient {
 //		for (Object r : (ArrayList) c.getTopicSlotDocs("a1391797786164_lowes_all_fb_BI_LEMMA_T25", 0, 1, 0.25, "lowes", "fb_lowes", a))
 //			System.out.println(r);
 //		
-                c.close();
+                //c.close();
 		System.out.print("end");
 
 	}
