@@ -646,23 +646,23 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
        viewController.setFormat(format);
 
-        String TreeString = "";
-        
-        
-        for (Object r : (ArrayList) connection.getJobDocs(job, "flat"))
+    String TreeString = "";
+
+
+    for (Object r : (ArrayList) connection.getJobDocs(job, "flat"))
+    {
+        Object temp = ((HashMap) r).get("tree");
+        if (temp instanceof Boolean)
         {
-            Object temp = ((HashMap) r).get("tree");
-            if (temp instanceof Boolean)
-            {
-                TreeString = "digraphgraph{\n" +
+            TreeString = "digraphgraph{\n" +
 "'Node18','LeafTopic9','LeafTopic5','LeafTopic10','LeafTopic16','LeafTopic8','LeafTopic15','LeafTopic3','LeafTopic7','LeafTopic12','LeafTopic13','LeafTopic0','LeafTopic19','LeafTopic1','LeafTopic11','LeafTopic4','LeafTopic6','LeafTopic2','LeafTopic14','LeafTopic17','LeafTopic18',\n" +
 "('Node18','LeafTopic9'),('Node18','LeafTopic5'),('Node18','LeafTopic10'),('Node18','LeafTopic16'),('Node18','LeafTopic8'),('Node18','LeafTopic15'),('Node18','LeafTopic3'),('Node18','LeafTopic7'),('Node18','LeafTopic12'),('Node18','LeafTopic13'),('Node18','LeafTopic0'),('Node18','LeafTopic19'),('Node18','LeafTopic1'),('Node18','LeafTopic11'),('Node18','LeafTopic4'),('Node18','LeafTopic6'),('Node18','LeafTopic2'),('Node18','LeafTopic14'),('Node18','LeafTopic17'),('Node18','LeafTopic18'),}";
-                
-            }
-            else
-            TreeString = (String) temp;
-        
+
         }
+        else
+        TreeString = (String) temp;
+
+    }
                         
                         
 //        q1 = new BasicDBObject("type", "flat");
@@ -860,9 +860,11 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         int s = viewController.getTopicGraphViewPanel().getTree().size();
 
-        FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
+       FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
 
-        String treeString = IOUtils.toString(inputStream);
+       String treeString = IOUtils.toString(inputStream);
+        
+        
 
 //
 //                        MongoClient mongoClient = new MongoClient("152.15.99.7", 27017);

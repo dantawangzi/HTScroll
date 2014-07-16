@@ -652,16 +652,19 @@ public class TopicGraphViewFrame extends JFrame {
 
         processTree(everything);
 
-//        try {
-//            int size = myTree.size();
-//
-//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-//            out.write(everything);
-//            out.close();
-//        } catch (IOException e) {
-//            System.out.println("Exception ");
-//
-//        }
+        
+        
+        
+        try {
+            int size = myTree.size();
+
+            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+            out.write(everything);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Exception ");
+
+        }
 
         myTree.get(0).calculateNodeSize();
 
@@ -701,16 +704,16 @@ public class TopicGraphViewFrame extends JFrame {
 
         processTree(everything);
 
-//        try {
-//            int size = myTree.size();
-//
-//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-//            out.write(everything);
-//            out.close();
-//        } catch (IOException e) {
-//            System.out.println("Exception ");
-//
-//        }
+        try {
+            int size = myTree.size();
+
+            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+            out.write(everything);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Exception ");
+
+        }
 
         myTree.get(0).calculateNodeSize();
 
@@ -915,16 +918,51 @@ public class TopicGraphViewFrame extends JFrame {
         int size1 = myTree.size();
 
         myTree.clear();
-        String everything;
-        FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
+        String everything = "";
+    
+       
+
+        
+         if (parent.b_readFromDB)
+        {
+            
+            
+                   
+         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
+        try {
+            connection.login(true,null,null);
+        } catch (IOException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
+        {
+            
+            
+            Object temp = ((HashMap) r).get("tree");
+            if (temp instanceof Boolean)
+            {
+                   System.out.println("NO TREE");
+                    }
+                    else
+                    everything = (String) temp;
+
+                }
+            
+        }
+             else
+        {
+                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
         try {
             everything = IOUtils.toString(inputStream);
         } finally {
             inputStream.close();
         }
-
-        everything = everything.replaceAll(" ", "");
-
+                
+                }
+         
+          everything = everything.replaceAll(" ", "");
+         
         // replace all strings in list
         for (int i = 0; i < childString.size(); i++) {
             String temp1 = oldParentString.get(i);
@@ -949,6 +987,8 @@ public class TopicGraphViewFrame extends JFrame {
 
         processTree(everything);
 
+        
+        
 //        try {
 //            int size = myTree.size();
 //            System.out.println(size);
@@ -974,13 +1014,47 @@ public class TopicGraphViewFrame extends JFrame {
         int size1 = myTree.size();
 
         myTree.clear();
-        String everything;
-        FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
+        String everything = "";
+        
+         
+         
+        if (parent.b_readFromDB)
+        {
+            
+            
+                   
+         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
+        try {
+            connection.login(true,null,null);
+        } catch (IOException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
+        {
+            
+            
+            Object temp = ((HashMap) r).get("tree");
+            if (temp instanceof Boolean)
+            {
+                   System.out.println("NO TREE");
+                    }
+                    else
+                    everything = (String) temp;
+
+                }
+            
+        }
+             else
+        {
+                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
         try {
             everything = IOUtils.toString(inputStream);
         } finally {
             inputStream.close();
         }
+                
+                }
 
         everything = everything.replaceAll(" ", "");
 
@@ -1017,13 +1091,44 @@ public class TopicGraphViewFrame extends JFrame {
         int size1 = myTree.size();
 
         myTree.clear();
-        String everything;
-        FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
+        String everything = "";
+        if (parent.b_readFromDB)
+        {
+            
+            
+                   
+         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
+        try {
+            connection.login(true,null,null);
+        } catch (IOException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
+        {
+            
+            
+            Object temp = ((HashMap) r).get("tree");
+            if (temp instanceof Boolean)
+            {
+                   System.out.println("NO TREE");
+                    }
+                    else
+                    everything = (String) temp;
+
+                }
+            
+        }
+             else
+        {
+                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
         try {
             everything = IOUtils.toString(inputStream);
         } finally {
             inputStream.close();
         }
+                
+                }
 
         everything = everything.replaceAll(" ", "");
 
@@ -1081,13 +1186,48 @@ public class TopicGraphViewFrame extends JFrame {
         int size1 = myTree.size();
 
         myTree.clear();
-        String everything;
-        FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
+        String everything = "";
+        
+ 
+        
+        if (parent.b_readFromDB)
+        {
+            
+            
+                   
+         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
+        try {
+            connection.login(true,null,null);
+        } catch (IOException ex) {
+            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
+        {
+            
+            
+            Object temp = ((HashMap) r).get("tree");
+            if (temp instanceof Boolean)
+            {
+                   System.out.println("NO TREE");
+                    }
+                    else
+                    everything = (String) temp;
+
+                }
+            
+        }
+             else
+        {
+                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
         try {
             everything = IOUtils.toString(inputStream);
         } finally {
             inputStream.close();
         }
+                
+                }
+        
 
         everything = everything.replaceAll(" ", "");
 
@@ -1112,17 +1252,17 @@ public class TopicGraphViewFrame extends JFrame {
         processTree(everything);
 
         
-//        if (!parent.b_readFromDB)
-//        try {
-//            int size = myTree.size();
-//            System.out.println(size);
-//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-//            out.write(everything);
-//            out.close();
-//        } catch (IOException e) {
-//            System.out.println("Exception ");
-//
-//        }                
+        if (!parent.b_readFromDB)
+        try {
+            int size = myTree.size();
+            System.out.println(size);
+            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+            out.write(everything);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Exception ");
+
+        }                
          if (parent.b_readFromDB)//else
         {
         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
