@@ -652,22 +652,34 @@ public class TopicGraphViewFrame extends JFrame {
 
         processTree(everything);
 
-        try {
-            int size = myTree.size();
-
-            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-            out.write(everything);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Exception ");
-
-        }
+//        try {
+//            int size = myTree.size();
+//
+//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+//            out.write(everything);
+//            out.close();
+//        } catch (IOException e) {
+//            System.out.println("Exception ");
+//
+//        }
 
         myTree.get(0).calculateNodeSize();
 
         //myTree.get(0).calculateNodeString();
 
         NodeStringProcessing();
+        
+          for (int j=0; j<myTree.size(); j++)
+        {
+            if (!myTree.get(j).getChildren().isEmpty())
+            {
+                for (int i=0; i<myTree.get(j).getNodeTopics().length; i++)
+                {
+                    myTree.get(j).getNodeTopics()[i] = "";
+
+                }
+            }
+        }
 
         setNodeColor();
         
@@ -689,16 +701,16 @@ public class TopicGraphViewFrame extends JFrame {
 
         processTree(everything);
 
-        try {
-            int size = myTree.size();
-
-            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-            out.write(everything);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Exception ");
-
-        }
+//        try {
+//            int size = myTree.size();
+//
+//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+//            out.write(everything);
+//            out.close();
+//        } catch (IOException e) {
+//            System.out.println("Exception ");
+//
+//        }
 
         myTree.get(0).calculateNodeSize();
 
@@ -706,6 +718,19 @@ public class TopicGraphViewFrame extends JFrame {
 
         NodeStringProcessing();
 
+        
+          for (int j=0; j<myTree.size(); j++)
+        {
+            if (!myTree.get(j).getChildren().isEmpty())
+            {
+                for (int i=0; i<myTree.get(j).getNodeTopics().length; i++)
+                {
+                    myTree.get(j).getNodeTopics()[i] = "";
+
+                }
+            }
+        }
+          
         setNodeColor();
 
     }
@@ -924,16 +949,16 @@ public class TopicGraphViewFrame extends JFrame {
 
         processTree(everything);
 
-        try {
-            int size = myTree.size();
-            System.out.println(size);
-            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-            out.write(everything);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Exception ");
-
-        }
+//        try {
+//            int size = myTree.size();
+//            System.out.println(size);
+//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+//            out.write(everything);
+//            out.close();
+//        } catch (IOException e) {
+//            System.out.println("Exception ");
+//
+//        }
 
         myTree.get(0).calculateNodeSize();
 
@@ -968,16 +993,16 @@ public class TopicGraphViewFrame extends JFrame {
 //            System.out.println("what why ");
         processTree(everything);
 
-        try {
-            int size = myTree.size();
-            System.out.println(size);
-            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-            out.write(everything);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Exception ");
-
-        }
+//        try {
+//            int size = myTree.size();
+//            System.out.println(size);
+//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+//            out.write(everything);
+//            out.close();
+//        } catch (IOException e) {
+//            System.out.println("Exception ");
+//
+//        }
 
         myTree.get(0).calculateNodeSize();
 
@@ -1031,16 +1056,16 @@ public class TopicGraphViewFrame extends JFrame {
 
         processTree(everything);
 
-        try {
-            int size = myTree.size();
-            System.out.println(size);
-            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-            out.write(everything);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Exception ");
-
-        }
+//        try {
+//            int size = myTree.size();
+//            System.out.println(size);
+//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+//            out.write(everything);
+//            out.close();
+//        } catch (IOException e) {
+//            System.out.println("Exception ");
+//
+//        }
 
         myTree.get(0).calculateNodeSize();
 
@@ -1088,16 +1113,16 @@ public class TopicGraphViewFrame extends JFrame {
 
         
 //        if (!parent.b_readFromDB)
-        try {
-            int size = myTree.size();
-            System.out.println(size);
-            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-            out.write(everything);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Exception ");
-
-        }                
+//        try {
+//            int size = myTree.size();
+//            System.out.println(size);
+//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+//            out.write(everything);
+//            out.close();
+//        } catch (IOException e) {
+//            System.out.println("Exception ");
+//
+//        }                
          if (parent.b_readFromDB)//else
         {
         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
@@ -1116,8 +1141,19 @@ public class TopicGraphViewFrame extends JFrame {
 
         myTree.get(0).calculateNodeString();
 
-        for (int i=0; i<myTree.get(0).getNodeTopics().length; i++)
-            myTree.get(0).getNodeTopics()[i] = "";
+        for (int j=0; j<myTree.size(); j++)
+        {
+            if (!myTree.get(j).getChildren().isEmpty())
+            {
+                for (int i=0; i<myTree.get(j).getNodeTopics().length; i++)
+                {
+                    myTree.get(j).getNodeTopics()[i] = "";
+
+                }
+            }
+        }
+        
+          
         // NodeStringProcessing();
         setNodeColor();
 
