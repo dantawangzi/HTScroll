@@ -91,7 +91,7 @@ public class ViewController {
 	public boolean InitializeNetworkConnection(boolean initByCookie,
 			String username, String password) {
 
-		connection = new LDAHTTPClient("http",
+		connection = new LDAHTTPClient("https",
 				this.host, "2012");
 		try {
 			return connection.login(initByCookie, username, password);
@@ -481,7 +481,7 @@ public class ViewController {
     int zoomSubBins = 5;
     boolean b_readAll = true;
     public boolean b_readFromDB = false;
-    public String host = "caprica.uncc.edu";//"54.209.61.133";
+    public String host = "54.209.61.133";//"caprica.uncc.edu";
     String user = "";
     String password = "";
     String table = "";

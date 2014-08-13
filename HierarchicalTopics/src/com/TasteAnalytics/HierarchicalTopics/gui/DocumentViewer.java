@@ -30,6 +30,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -106,17 +107,38 @@ public class DocumentViewer extends JFrame {
      * Creates new form DocumentViewer
      */
     public DocumentViewer() {
+        
+        ImageIcon logo_icon = new ImageIcon ( 
+    		Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().
+			getResource("resource/logo.png")));
+            this.setIconImage(logo_icon.getImage());
+            
+            
         initComponents();
     }
 
     public DocumentViewer(ViewController viewController) {
         this();
+        
+        ImageIcon logo_icon = new ImageIcon ( 
+    		Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().
+			getResource("resource/logo.png")));
+            this.setIconImage(logo_icon.getImage());
+            
+            
         this.parent = viewController;
     }
 
     /*DXW: Simplify the Initializer*/
     public DocumentViewer(final TemporalViewPanel p, final Point2D pt) throws IOException, UnknownHostException, ParseException {
 
+        
+        ImageIcon logo_icon = new ImageIcon ( 
+    		Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().
+			getResource("resource/logo.png")));
+            this.setIconImage(logo_icon.getImage());
+            
+            
         initComponents();
 
         //Set this frame just to close itself
@@ -539,7 +561,7 @@ public class DocumentViewer extends JFrame {
         int countTotalDoc = 0;
         if (parent.b_readFromDB) {
 
-            LDAHTTPClient c = new LDAHTTPClient("http", parent.host, "2012");
+            LDAHTTPClient c = new LDAHTTPClient("https", parent.host, "2012");
             c.login(true,null,null);
 //             MongoClient mongoClient = null;
 //        try {

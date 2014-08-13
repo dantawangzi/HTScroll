@@ -113,6 +113,7 @@ import edu.uci.ics.jung.visualization.transform.shape.ViewLensSupport;
 import edu.uci.ics.jung.visualization.control.LensMagnificationGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.ModalLensGraphMouse;
 import edu.uci.ics.jung.visualization.transform.LensTransformer;
+import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -121,6 +122,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import javax.swing.JTextField;
 import java.lang.Math;
+import javax.swing.ImageIcon;
 //import com.explodingpixels.macwidgets;
 import javax.swing.JPopupMenu;
 import javax.swing.JSlider;
@@ -343,6 +345,11 @@ public class TopicGraphViewFrame extends JFrame {
     int highlightOne = 0;
     boolean b_showText = true;
 
+    
+    public String myTreeString = "";
+    
+    
+    
     public Graphics2D getCurg2d() {
         return curg2d;
     }
@@ -410,7 +417,7 @@ public class TopicGraphViewFrame extends JFrame {
     private boolean bMagnified = false;
 
     public TopicGraphViewFrame() {
-        super("Hierarchical Topics");
+        super("Topic Analysis View");
     }
 
     public VisualizationViewer getVisualizationViewer() {
@@ -426,7 +433,15 @@ public class TopicGraphViewFrame extends JFrame {
     List<List<Float>> topkTermWeightMongo = new ArrayList<List<Float>>();
 
     public TopicGraphViewFrame(ViewController viewController, Map<String, Integer> termIndex, List<String[]> termWeight, List<List<Float>> TermWeightMongo) throws FileNotFoundException, IOException {
-        this.parent = viewController;
+       
+        
+        
+        ImageIcon logo_icon = new ImageIcon ( 
+    		Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().
+			getResource("resource/logo.png")));
+            this.setIconImage(logo_icon.getImage());
+            
+            this.parent = viewController;
         wordTermIndex = termIndex;
         wordTermWeightsF = termWeight;
         topkTermWeightMongo = TermWeightMongo;
@@ -642,7 +657,7 @@ public class TopicGraphViewFrame extends JFrame {
     }
 
     
-    public void buildTreeWithTreeString(String everything)
+    public void buildTreeWithTreeString(String everything) throws IOException
     {
          myTree = new ArrayList<TreeNode>();
        
@@ -651,21 +666,41 @@ public class TopicGraphViewFrame extends JFrame {
         everything = everything.replaceAll(" ", "");
 
         processTree(everything);
+  
+//        try {
+//            int size = myTree.size();           
+//                    File file = new 
+//    File(getClass().getClassLoader().getResource("resource/" + "newTree_Node" + size + ".txt").toString()); 
+//    BufferedWriter out = new BufferedWriter(new FileWriter(file)); 
+//
+//            
+//         //   BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+//            out.write(everything);
+//            out.close();
+//        } catch (IOException e) {
+//            System.out.println("Exception ");
+//
+//        }
 
-        
-        
-        
-        try {
-            int size = myTree.size();
-
-            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-            out.write(everything);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Exception ");
-
-        }
-
+//        if (parent.b_readFromDB)//else
+//        {
+//        LDAHTTPClient connection  = new LDAHTTPClient("https", parent.host, String.valueOf(parent.port));
+//        try {
+//            connection.login(true,null,null);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        connection.updateTree(parent.collection, everything);
+//        
+//      //  connection.close();
+//        
+//        
+//        }
+            
+            myTreeString = everything;
+            
+            
         myTree.get(0).calculateNodeSize();
 
         //myTree.get(0).calculateNodeString();
@@ -702,18 +737,21 @@ public class TopicGraphViewFrame extends JFrame {
         }
         everything = everything.replaceAll(" ", "");
 
+        myTreeString = everything;
         processTree(everything);
 
-        try {
-            int size = myTree.size();
-
-            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-            out.write(everything);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Exception ");
-
-        }
+//        try {
+//            int size = myTree.size();
+//
+//            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+//            out.write(everything);
+//            out.close();
+//        } catch (IOException e) {
+//            System.out.println("Exception ");
+//
+//        }
+        
+     
 
         myTree.get(0).calculateNodeSize();
 
@@ -923,43 +961,46 @@ public class TopicGraphViewFrame extends JFrame {
        
 
         
-         if (parent.b_readFromDB)
-        {
-            
-            
-                   
-         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
-        try {
-            connection.login(true,null,null);
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
-        {
-            
-            
-            Object temp = ((HashMap) r).get("tree");
-            if (temp instanceof Boolean)
-            {
-                   System.out.println("NO TREE");
-                    }
-                    else
-                    everything = (String) temp;
-
-                }
-            
-        }
-             else
-        {
-                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
-        try {
-            everything = IOUtils.toString(inputStream);
-        } finally {
-            inputStream.close();
-        }
-                
-                }
+//         if (parent.b_readFromDB)
+//        {
+//            
+//            
+//                   
+//         LDAHTTPClient connection  = new LDAHTTPClient("https", parent.host, String.valueOf(parent.port));
+//        try {
+//            connection.login(true,null,null);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
+//        {
+//            
+//            
+//            Object temp = ((HashMap) r).get("tree");
+//            if (temp instanceof Boolean)
+//            {
+//                   System.out.println("NO TREE");
+//                    }
+//                    else
+//                    everything = (String) temp;
+//
+//                }
+//            
+//        }
+//             else
+//        {
+//            everything = myTreeString;
+////                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
+////        try {
+////            everything = IOUtils.toString(inputStream);
+////        } finally {
+////            inputStream.close();
+////        }
+//                
+//                }
+         
+          everything = myTreeString;
          
           everything = everything.replaceAll(" ", "");
          
@@ -999,6 +1040,24 @@ public class TopicGraphViewFrame extends JFrame {
 //            System.out.println("Exception ");
 //
 //        }
+//        
+//        if (parent.b_readFromDB)//else
+//        {
+//        LDAHTTPClient connection  = new LDAHTTPClient("https", parent.host, String.valueOf(parent.port));
+//        try {
+//            connection.login(true,null,null);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        connection.updateTree(parent.collection, everything);
+//        
+//      //  connection.close();
+//        
+//        
+//        }
+        
+        myTreeString = everything;
 
         myTree.get(0).calculateNodeSize();
 
@@ -1018,43 +1077,49 @@ public class TopicGraphViewFrame extends JFrame {
         
          
          
-        if (parent.b_readFromDB)
-        {
-            
-            
-                   
-         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
-        try {
-            connection.login(true,null,null);
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        if (parent.b_readFromDB)
+//        {
+//            
+//            
+//                   
+//         LDAHTTPClient connection  = new LDAHTTPClient("https", parent.host, String.valueOf(parent.port));
+//        try {
+//            connection.login(true,null,null);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
+//        {
+//            
+//            
+//            Object temp = ((HashMap) r).get("tree");
+//            if (temp instanceof Boolean)
+//            {
+//                   System.out.println("NO TREE");
+//                    }
+//                    else
+//                    everything = (String) temp;
+//
+//                }
+//            
+//        }
+//             else
+//        {
+//            
+//            everything = myTreeString;
+//            
+////                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
+////        try {
+////            everything = IOUtils.toString(inputStream);
+////        } finally {
+////            inputStream.close();
+////        }
+//                
+//                }
         
-        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
-        {
-            
-            
-            Object temp = ((HashMap) r).get("tree");
-            if (temp instanceof Boolean)
-            {
-                   System.out.println("NO TREE");
-                    }
-                    else
-                    everything = (String) temp;
-
-                }
-            
-        }
-             else
-        {
-                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
-        try {
-            everything = IOUtils.toString(inputStream);
-        } finally {
-            inputStream.close();
-        }
-                
-                }
+        
+         everything = myTreeString;
 
         everything = everything.replaceAll(" ", "");
 
@@ -1077,6 +1142,27 @@ public class TopicGraphViewFrame extends JFrame {
 //            System.out.println("Exception ");
 //
 //        }
+        
+//        
+//        if (parent.b_readFromDB)//else
+//        {
+//        LDAHTTPClient connection  = new LDAHTTPClient("https", parent.host, String.valueOf(parent.port));
+//        try {
+//            connection.login(true,null,null);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        connection.updateTree(parent.collection, everything);
+//        
+//      //  connection.close();
+//        
+//        
+//        }
+        
+        myTreeString = everything;
+        
+        
 
         myTree.get(0).calculateNodeSize();
 
@@ -1092,44 +1178,51 @@ public class TopicGraphViewFrame extends JFrame {
 
         myTree.clear();
         String everything = "";
-        if (parent.b_readFromDB)
-        {
-            
-            
-                   
-         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
-        try {
-            connection.login(true,null,null);
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        if (parent.b_readFromDB)
+//        {
+//            
+//            
+//                   
+//         LDAHTTPClient connection  = new LDAHTTPClient("https", parent.host, String.valueOf(parent.port));
+//        try {
+//            connection.login(true,null,null);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
+//        {
+//            
+//            
+//            Object temp = ((HashMap) r).get("tree");
+//            if (temp instanceof Boolean)
+//            {
+//                   System.out.println("NO TREE");
+//                    }
+//                    else
+//                    everything = (String) temp;
+//
+//                }
+//            
+//        }
+//             else
+//        {
+//            
+//            everything = myTreeString;
+////                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
+////        try {
+////            everything = IOUtils.toString(inputStream);
+////        } finally {
+////            inputStream.close();
+////        }
+//                
+//                }
+//        
         
-        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
-        {
-            
-            
-            Object temp = ((HashMap) r).get("tree");
-            if (temp instanceof Boolean)
-            {
-                   System.out.println("NO TREE");
-                    }
-                    else
-                    everything = (String) temp;
 
-                }
-            
-        }
-             else
-        {
-                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
-        try {
-            everything = IOUtils.toString(inputStream);
-        } finally {
-            inputStream.close();
-        }
-                
-                }
-
+         everything = myTreeString;
+         
+         
         everything = everything.replaceAll(" ", "");
 
         String newNodeString = "Node" + Integer.toString(newNodeIdx);
@@ -1172,6 +1265,27 @@ public class TopicGraphViewFrame extends JFrame {
 //
 //        }
 
+        
+//        if (parent.b_readFromDB)//else
+//        {
+//        LDAHTTPClient connection  = new LDAHTTPClient("https", parent.host, String.valueOf(parent.port));
+//        try {
+//            connection.login(true,null,null);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        connection.updateTree(parent.collection, everything);
+//        
+//      //  connection.close();
+//        
+//        
+//        }
+        
+        
+        myTreeString = everything;
+        
+        
         myTree.get(0).calculateNodeSize();
 
         myTree.get(0).calculateNodeString();
@@ -1189,45 +1303,51 @@ public class TopicGraphViewFrame extends JFrame {
         String everything = "";
         
  
+//        
+//        if (parent.b_readFromDB)
+//        {
+//            
+//            
+//                   
+//         LDAHTTPClient connection  = new LDAHTTPClient("https", parent.host, String.valueOf(parent.port));
+//        try {
+//            connection.login(true,null,null);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
+//        {
+//            
+//            
+//            Object temp = ((HashMap) r).get("tree");
+//            if (temp instanceof Boolean)
+//            {
+//                   System.out.println("NO TREE");
+//                    }
+//                    else
+//                    everything = (String) temp;
+//
+//                }
+//            
+//        }
+//             else
+//        {
+//            
+//            everything = myTreeString;
+////                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
+////        try {
+////            everything = IOUtils.toString(inputStream);
+////        } finally {
+////            inputStream.close();
+////        }
+//                
+//         }
         
-        if (parent.b_readFromDB)
-        {
-            
-            
-                   
-         LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
-        try {
-            connection.login(true,null,null);
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
         
-        for (Object r : (ArrayList) connection.getJobDocs(parent.collection, "flat"))
-        {
-            
-            
-            Object temp = ((HashMap) r).get("tree");
-            if (temp instanceof Boolean)
-            {
-                   System.out.println("NO TREE");
-                    }
-                    else
-                    everything = (String) temp;
-
-                }
-            
-        }
-             else
-        {
-                FileInputStream inputStream = new FileInputStream(folderPath + "newTree_Node" + size1 + ".txt");
-        try {
-            everything = IOUtils.toString(inputStream);
-        } finally {
-            inputStream.close();
-        }
-                
-                }
         
+          everything = myTreeString;
+    
 
         everything = everything.replaceAll(" ", "");
 
@@ -1252,31 +1372,38 @@ public class TopicGraphViewFrame extends JFrame {
         processTree(everything);
 
         
-        if (!parent.b_readFromDB)
-        try {
-            int size = myTree.size();
-            System.out.println(size);
-            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
-            out.write(everything);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Exception ");
-
-        }                
-         if (parent.b_readFromDB)//else
-        {
-        LDAHTTPClient connection  = new LDAHTTPClient("http", parent.host, String.valueOf(parent.port));
-        try {
-            connection.login(true,null,null);
-        } catch (IOException ex) {
-            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        connection.updateTree(parent.collection, everything);
-        
-      //  connection.close();
-        
-        }
+//        if (!parent.b_readFromDB)
+//        //try {
+//            
+//              myTreeString = everything;
+////            int size = myTree.size();
+////            System.out.println(size);
+////            BufferedWriter out = new BufferedWriter(new FileWriter(folderPath + "newTree_Node" + size + ".txt"));
+////            out.write(everything);
+////            out.close();
+////        } catch (IOException e) {
+////            System.out.println("Exception ");
+////
+////        }                
+//         if (parent.b_readFromDB)//else
+//        {
+//        LDAHTTPClient connection  = new LDAHTTPClient("https", parent.host, String.valueOf(parent.port));
+//        try {
+//            connection.login(true,null,null);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MinimalismMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        connection.updateTree(parent.collection, everything);
+//        
+//      //  connection.close();
+//        
+//        
+//        }
+         
+          myTreeString = everything;
+          
+          
         myTree.get(0).calculateNodeSize();
 
         myTree.get(0).calculateNodeString();

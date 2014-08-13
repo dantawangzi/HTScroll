@@ -86,6 +86,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     
     public MinimalismMainFrame() {
         
+        
+         ImageIcon logo_icon = new ImageIcon ( 
+    		Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().
+			getResource("resource/logo.png")));
+            this.setIconImage(logo_icon.getImage());
+            
+            
           viewController = new ViewController();
         
           
@@ -136,7 +143,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         aboutItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("HirarchicalTopics");
+        setTitle("Saber");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 exitForm(evt);
@@ -469,7 +476,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
     private void jConnectMongoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectMongoButtonActionPerformed
 
-        viewController.host = "caprica.uncc.edu";//"54.209.61.133";//"caprica.uncc.edu";//10.18.202.126"; // 
+       // viewController.host = "caprica.uncc.edu";//"54.209.61.133";//"caprica.uncc.edu";//10.18.202.126"; // 
         viewController.b_readFromDB = true;
         viewController.setGlobalReadIndex(0);
         
@@ -480,7 +487,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
         
         //"54.209.61.133"
-        LDAHTTPClient connection  = new LDAHTTPClient("http", viewController.host, String.valueOf(viewController.port));
+        LDAHTTPClient connection  = new LDAHTTPClient("https", viewController.host, String.valueOf(viewController.port));
         try {
             connection.login(true,null,null);
         } catch (IOException ex) {
@@ -705,7 +712,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             
             if (connection == null)
             {
-            connection  = new LDAHTTPClient("http",viewController.host, "2012");
+            connection  = new LDAHTTPClient("https",viewController.host, "2012");
             connection.login(true, null, null);
             }
             if (viewController.b_readFromDB)
@@ -860,12 +867,13 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         int s = viewController.getTopicGraphViewPanel().getTree().size();
 
-       FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
-
-       String treeString = IOUtils.toString(inputStream);
         
-        
+      // FileInputStream inputStream = new FileInputStream(csvfilepath + "newTree_Node" + s + ".txt");
 
+       String treeString //= IOUtils.toString(inputStream);
+        
+        = topicFrame.myTreeString;
+        
 //
 //                        MongoClient mongoClient = new MongoClient("152.15.99.7", 27017);
 //                        DB db = mongoClient.getDB("patents");

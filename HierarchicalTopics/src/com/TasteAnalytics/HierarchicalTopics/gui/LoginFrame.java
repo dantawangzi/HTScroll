@@ -81,6 +81,14 @@ public class LoginFrame extends JFrame {
 	}
 
 	public LoginFrame(ViewController vc) {
+            
+             ImageIcon logo_icon = new ImageIcon ( 
+    		Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().
+			getResource("resource/logo.png")));
+            this.setIconImage(logo_icon.getImage());
+            
+            
+            
 		this.vc = vc;
 	this.setVisible(true);
 		//;//;//"192.168.0.17";//
@@ -90,8 +98,8 @@ public class LoginFrame extends JFrame {
 		JPanel displayPanel = new JPanel();
 		
 		//serverSelector.addItem((String)"192.168.0.17");
-		serverSelector.addItem((String)"caprica.uncc.edu");
-		//serverSelector.addItem((String)"54.209.61.133");
+		//serverSelector.addItem((String)"caprica.uncc.edu");
+		serverSelector.addItem((String)"Taste Server"/*"54.209.61.133"*/);
 		
 		
 		//serverSelector.addItem((String)"");
@@ -176,9 +184,12 @@ public class LoginFrame extends JFrame {
 
 		password = String.valueOf(input);
 
-		
-		
-		String servername = (String)serverSelector.getSelectedItem();
+		String servername = "";
+                
+                if (((String)serverSelector.getSelectedItem()).contains("Taste"))
+                    servername = "54.209.61.133";
+                    else
+		servername = (String)serverSelector.getSelectedItem();
 		
 		vc.host = servername;
 		

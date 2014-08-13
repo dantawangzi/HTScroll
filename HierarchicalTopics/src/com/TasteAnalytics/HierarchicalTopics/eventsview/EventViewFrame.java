@@ -54,6 +54,7 @@ import prefuse.data.Graph;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.EventsPanelPrefuse;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.PrefuseLabelTopicGraphPanel;
 import com.TasteAnalytics.HierarchicalTopics.topicRenderer.TopicGraphViewFrame.MyLink;
+import java.awt.Toolkit;
 
 public class EventViewFrame extends JFrame {
     
@@ -145,6 +146,14 @@ public class EventViewFrame extends JFrame {
     public EventViewFrame(ViewController vc, List<TreeNode> thisTree, CategoryBarElement data, List<Integer> seq, DelegateForest<Object, TopicGraphViewFrame.MyLink> g, Graph pgh, String everything, String folderPath, List<List<Float>> disMatrix) throws FileNotFoundException, IOException {
         super("Network View");
         
+        
+        ImageIcon logo_icon = new ImageIcon ( 
+    		Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().
+			getResource("resource/logo.png")));
+            this.setIconImage(logo_icon.getImage());
+            
+            
+            
         parent = vc;
         
         this.setPreferredSize(new Dimension(1000, 1000));

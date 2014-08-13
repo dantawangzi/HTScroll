@@ -35,10 +35,12 @@ import java.awt.Component;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.text.DateFormat;
 import java.util.HashMap;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -921,7 +923,13 @@ public class TemporalViewFrame extends JFrame implements TemporalViewListener, M
     
     
     public TemporalViewFrame(ViewController vc, int WW, int HH) throws IOException {
-        super("Hierarchical ThemeRiver");
+        super("Event Analysis View");
+        
+        ImageIcon logo_icon = new ImageIcon ( 
+    		Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().
+			getResource("resource/logo.png")));
+            this.setIconImage(logo_icon.getImage());
+            
         setPreferredSize(new Dimension(WW, HH));
 
 //        for (int i=0; i<2; i++)

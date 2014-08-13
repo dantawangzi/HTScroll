@@ -19,14 +19,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -36,7 +43,7 @@ import org.apache.http.util.EntityUtils;
 
 public class LDAHTTPClient {
 
-    String protocol;
+    String protocol = "https";
     String host;
     String port;
     HashMap<String, String> reduce_lookup;
@@ -45,7 +52,37 @@ public class LDAHTTPClient {
 
     public LDAHTTPClient(String protocol, String host, String port) {
         super();
-        httpclient = HttpClients.createDefault();
+        
+        
+         SSLContext sslcontext = null;
+		try {
+			sslcontext = SSLContext.getInstance("TLS");
+		} catch (NoSuchAlgorithmException e) {
+			
+			e.printStackTrace();
+		}
+        
+        try {
+			sslcontext.init(new KeyManager[0], new TrustManager[] 
+			  {new CustomTrustManager()}, new SecureRandom());
+		} catch (KeyManagementException e) {
+			
+			e.printStackTrace();
+		}
+        
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                sslcontext,
+                new String[] { "TLSv1" },
+                null,
+                SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER/*.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER*/);
+
+
+		httpclient = HttpClients.custom()
+                .setSSLSocketFactory(sslsf)
+                .build();//HttpClients.createDefault();
+                
+                
+      //  httpclient = HttpClients.createDefault();
         cookieStore = new BasicCookieStore();
 
         this.protocol = protocol;
@@ -99,7 +136,7 @@ public class LDAHTTPClient {
         String url = this.protocol + "://" + this.host + ":" + this.port + "/" + path + "?json=True&" + parameters;;
         //+parameters;
 
-        System.out.println(url);
+       // System.out.println(url);
         // Create local HTTP context
         HttpClientContext localContext = HttpClientContext.create();
 
@@ -156,7 +193,7 @@ public class LDAHTTPClient {
                 + path;
 
 		//url = escapeURL(url);
-		//System.out.println(url);
+	//	System.out.println(url);
         if (initByCookie) {
 
             
@@ -191,7 +228,7 @@ public class LDAHTTPClient {
                     writer = new BufferedWriter(new FileWriter(
                             "./...key"));
                     writer.write(cookies.get(i).getValue());
-                     System.out.println(cookies.get(i).getValue());
+                   //  System.out.println(cookies.get(i).getValue());
                     writer.close();
 
                     if (NetworkMetaInformation.isWindows()) {
@@ -217,7 +254,7 @@ public class LDAHTTPClient {
         }
 
 		// System.out.println(result);
-        if (result.equals("these are not the droids you are looking for...")) {
+        if (result.equals("Access Denied. Please contact info@tasteanalytics.com for access.")) {
             System.out.println("incorrect Cookie");
             return false;
 
@@ -378,7 +415,7 @@ public class LDAHTTPClient {
 
     public static void main(String[] args) throws Exception {
 
-        LDAHTTPClient c = new LDAHTTPClient("http", "localhost", "2012");
+        LDAHTTPClient c = new LDAHTTPClient("https", "localhost", "2012");
 		// gets all the jobs indexes (index collection name)
 //		for (Object r : (ArrayList) c.getJobs())
 //			System.out.println(((HashMap)r).get("_id"));

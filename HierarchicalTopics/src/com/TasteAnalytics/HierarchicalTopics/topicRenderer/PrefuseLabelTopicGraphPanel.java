@@ -172,7 +172,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
             
             
             
-            LDAHTTPClient c = new LDAHTTPClient("http", parent.host, "2012");
+            LDAHTTPClient c = new LDAHTTPClient("https", parent.host, "2012");
             c.login(true,null,null);
             
              String dictString = "";
@@ -458,7 +458,7 @@ public class PrefuseLabelTopicGraphPanel extends Display {
         
         updateEdges((float) (average_of_hell/* + sntd*/));
 
-        PrintOutJsonEdges();
+       // PrintOutJsonEdges();
         
         
         

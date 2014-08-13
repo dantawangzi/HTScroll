@@ -23,7 +23,9 @@ public class NetworkMetaInformation {
 	public static String collection = "";
 
 	public static String CookieString = "";
-	public static String IncorrectCookieResponse = "these are not the droids you are looking for...";
+	public static String IncorrectCookieResponse = 
+                "Access Denied. Please contact info@tasteanalytics.com for access.";
+                //"these are not the droids you are looking for...";
 
 		/**
 	 * A class that host all the network meta information
