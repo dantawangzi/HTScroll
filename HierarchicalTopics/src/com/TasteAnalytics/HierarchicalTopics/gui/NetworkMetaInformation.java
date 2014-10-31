@@ -11,7 +11,7 @@ package com.TasteAnalytics.HierarchicalTopics.gui;
  * @author Lee
  */
 public class NetworkMetaInformation {
-    	public static String servername =  "caprica.uncc.edu"; 
+    	public static String servername =  "54.209.61.133"; 
 	
 	//"caprica.uncc.edu";//"54.209.61.133";//"192.168.0.17";//
 	
@@ -22,7 +22,8 @@ public class NetworkMetaInformation {
 
 	public static String collection = "";
 
-	public static String CookieString = "";
+	public static String CookieKeyString = "";
+        public static String CookieUserString = "";
 	public static String IncorrectCookieResponse = 
                 "Access Denied. Please contact info@tasteanalytics.com for access.";
                 //"these are not the droids you are looking for...";

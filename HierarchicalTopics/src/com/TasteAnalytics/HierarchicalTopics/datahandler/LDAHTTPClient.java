@@ -196,14 +196,23 @@ public class LDAHTTPClient {
 	//	System.out.println(url);
         if (initByCookie) {
 
-            
+            //  url = this.protocol + "://" + this.host + ":" + this.port;
           //  System.out.println(NetworkMetaInformation.CookieString);
             
-            BasicClientCookie bcc = new BasicClientCookie("key",
-                    NetworkMetaInformation.CookieString);
+           //cookieStore.clear();
             
-            bcc.setDomain(this.host);
-            cookieStore.addCookie(bcc);
+            	BasicClientCookie cookieKey = new BasicClientCookie("key", NetworkMetaInformation.CookieKeyString);
+			BasicClientCookie cookieUser = new BasicClientCookie("user", NetworkMetaInformation.CookieUserString);
+			
+			cookieKey.setDomain(NetworkMetaInformation.servername);
+			cookieUser.setDomain(NetworkMetaInformation.servername);
+                        
+                        cookieStore.addCookie(cookieKey);
+			cookieStore.addCookie(cookieUser);
+                        
+            
+//            bcc.setDomain(this.host);
+//            cookieStore.addCookie(bcc);
 
             localContext.setCookieStore(cookieStore);
             HttpGet httpget = new HttpGet(url);
@@ -220,13 +229,24 @@ public class LDAHTTPClient {
             response = httpclient.execute(httpget, localContext);
 
             List<Cookie> cookies = localContext.getCookieStore().getCookies();
-
-            for (int i = 0; i < cookies.size(); i++) {
-
-                if (cookies.get(i).getName().equals("key")) {
-                    BufferedWriter writer = null;
+            
+             BufferedWriter writer = null;
                     writer = new BufferedWriter(new FileWriter(
                             "./...key"));
+                    
+              for (int i = 0; i < cookies.size(); i++) {
+				if (cookies.get(i).getName().equals("user"))
+				{
+					writer.write(cookies.get(i).getValue() + "\n");break;
+				}
+			}
+              
+            for (int i = 0; i < cookies.size(); i++) {
+                
+              
+                
+                if (cookies.get(i).getName().equals("key")) {
+                   
                     writer.write(cookies.get(i).getValue());
                    //  System.out.println(cookies.get(i).getValue());
                     writer.close();
@@ -359,7 +379,6 @@ public class LDAHTTPClient {
         String s_id = "slot_id=" + String.valueOf(slot_id);
         String thresh = "threshold=" + String.valueOf(threshold);
         in_db = "indb=" + in_db;
-
         in_table = "intable=" + in_table;
 
         String field = "";
@@ -412,6 +431,50 @@ public class LDAHTTPClient {
 
         return get(path, job_id + "&" + t_id + "&" + s_id + "&" + thresh + "&" + in_db + "&" + in_table);
     }
+    
+    public Object getRelatedTweetsEntity(String collection,int topicId, String ids) throws ClientProtocolException, IOException {
+        
+        
+        String path = "jt";
+        String job_id = "job_id=" + collection;
+        String tid = "t_id=" + String.valueOf(topicId);
+        String id = "&_id=" + ids;
+        
+        String parameter = job_id + "&doc_type=top_group_agg" + "&" + tid + id ;
+        
+          String url = this.protocol + "://" + this.host + ":" + this.port + "/" + path + "?json=True&" + parameter;;
+		          System.out.println(url);
+                          
+        return apacheGet(path, parameter);
+    }
+    
+    
+    
+    
+    
+    	public Object getTweetsEntity(String collection, List<String> ids) throws ClientProtocolException, IOException {
+		
+		
+		String path = "re";
+		collection = "job_id=" + collection;
+		String id = "&_ids=";
+		
+		for (String s : ids)
+		{
+			id += s + ",";
+		}
+		
+		id = id.substring(0, id.length()-1);
+		
+				
+				
+		String parameter = collection + id;
+                
+                
+		  String url = this.protocol + "://" + this.host + ":" + this.port + "/" + path + "?json=True&" + parameter;;
+		          System.out.println(url);
+		return apacheGet(path, parameter);
+	}
 
     public static void main(String[] args) throws Exception {
 

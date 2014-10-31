@@ -30,6 +30,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -53,6 +54,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -70,6 +72,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -98,7 +102,17 @@ public class DocumentViewer extends JFrame {
     SelectionListener listener;//for document selection
     public Map<String, Integer> awardNum2docIdx;//identified award number as common ground
     TreeMap<Integer, Integer> sortedResults;
-
+    JPanel relatedDocsContentPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 10));
+    
+    int _id_index = -1;
+    int title_index = -1;
+    int abstract_index = -1;
+    int tokens_index = -1;
+    
+    
+    HashSet<String> hideString = new HashSet<String>();
+    
+    
     public List<Integer> getSelectedDocuments() {
         return selectedDocuments;
     }
@@ -114,7 +128,13 @@ public class DocumentViewer extends JFrame {
             this.setIconImage(logo_icon.getImage());
             
             
+           
         initComponents();
+//        relatedDocsContentPanel.setPreferredSize(new Dimension(800, 800));
+//        
+//        jScrollPaneRelatedDocs.setBackground(Color.green);
+//        
+//         jScrollPaneRelatedDocs = new JScrollPane(relatedDocsContentPanel);
     }
 
     public DocumentViewer(ViewController viewController) {
@@ -133,13 +153,44 @@ public class DocumentViewer extends JFrame {
     public DocumentViewer(final TemporalViewPanel p, final Point2D pt) throws IOException, UnknownHostException, ParseException {
 
         
+        hideString.add("bb_box");
+        hideString.add("pos");
+        hideString.add("lat");
+        hideString.add("geo_type");
+        hideString.add("geo_class");
+        hideString.add("loc");
+        hideString.add("geo_name");
+        hideString.add("sentiment");
+        hideString.add("imp");
+        hideString.add("neg");
+        hideString.add("lon");
+        hideString.add("cntry_code");
+        hideString.add("e_list");
+        hideString.add("_label");
+        hideString.add("num_labels");
+        hideString.add("cnty");
+        hideString.add("_entities");
+        hideString.add("_id");
+        hideString.add("postcode");
+        hideString.add("thresh");
+        hideString.add("state");
+        
+        hideString.add("nom_id");
+        hideString.add("osm_id");
+        
+        
+        
         ImageIcon logo_icon = new ImageIcon ( 
     		Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().
 			getResource("resource/logo.png")));
             this.setIconImage(logo_icon.getImage());
             
-            
+            relatedDocsContentPanel.setBackground(Color.white);
         initComponents();
+        
+//         relatedDocsContentPanel.setPreferredSize(new Dimension(800, 800));
+//        jScrollPaneRelatedDocs = new JScrollPane(relatedDocsContentPanel);
+        
 
         //Set this frame just to close itself
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -209,6 +260,21 @@ public class DocumentViewer extends JFrame {
         } else {
             this.updateDocViewContent(selectedDocuments, p.parent.host, p.parent.port, p.parent.database, p.parent.collection, p.parent.nameFields);
         }
+        
+//         DefaultTableModel dtm = 
+//        (DefaultTableModel)jTable1.getModel();
+        
+        
+        for (int i=0; i<model.getColumnCount(); i++)
+        {
+            String cname = model.getColumnName(i);
+            if (hideString.contains(cname))
+            {
+                jTable1.removeColumn(jTable1.getColumn(cname));
+            }
+            
+        }
+        
 
 ////        geoHeatMapPanel.setLayout(null/*new CardLayout()*/);
 ////        geoHeatMapPanel.setPreferredSize(new Dimension(520, 264));
@@ -475,7 +541,7 @@ public class DocumentViewer extends JFrame {
 
         }
 
-        System.out.println("local maxxx");
+       // System.out.println("local maxxx");
 
         for (int y = 0; y < imgHeight; y++) {
             for (int x = 0; x < imgWidth; x++) {
@@ -702,6 +768,7 @@ public class DocumentViewer extends JFrame {
         RTRatio = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         JExportButton = new javax.swing.JButton();
+        jScrollPaneRelatedDocs = new javax.swing.JScrollPane(relatedDocsContentPanel);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Document Viewer");
@@ -793,34 +860,38 @@ public class DocumentViewer extends JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane2)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(101, 101, 101))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(docSelectionThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(thresholdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(44, 44, 44)
-                                .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(JExportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel1)
-                        .addGap(128, 128, 128)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(64, 64, 64)
+                                .addComponent(jLabel1)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jScrollPaneRelatedDocs)
+                                .addGap(10, 10, 10))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(101, 101, 101))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(docSelectionThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(thresholdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(44, 44, 44)
+                                        .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(JExportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -841,14 +912,16 @@ public class DocumentViewer extends JFrame {
                     .addComponent(jLabel3)
                     .addComponent(JExportButton))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
-                .addGap(0, 25, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPaneRelatedDocs, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                .addGap(11, 11, 11))
         );
 
         pack();
@@ -892,6 +965,19 @@ public class DocumentViewer extends JFrame {
             } else {
                 try {
                     this.updateDocViewContent(selectedDocuments, parent.host, parent.port, parent.database, parent.collection, parent.nameFields);
+                    
+                     DefaultTableModel dtm = 
+        (DefaultTableModel)jTable1.getModel();
+        for (int i=0; i<dtm.getColumnCount(); i++)
+        {
+            String cname = dtm.getColumnName(i);
+            if (hideString.contains(cname.toLowerCase()))
+            {
+                jTable1.removeColumn(jTable1.getColumn(cname));
+            }
+            
+        }
+        
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ParseException ex) {
@@ -954,6 +1040,11 @@ public class DocumentViewer extends JFrame {
         au.com.bytecode.opencsv.CSVWriter csvW;
         try {
             //System.out.println(temprow);
+            if (parent.csvfFolderPath==null)
+                parent.csvfFolderPath = "";
+            
+            
+            
             csvW = new au.com.bytecode.opencsv.CSVWriter(new FileWriter(parent.csvfFolderPath + "\\export.csv"));
             csvW.writeAll(content);
             csvW.close();
@@ -989,6 +1080,7 @@ public class DocumentViewer extends JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPaneRelatedDocs;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField searchKeywordWithinDoc;
@@ -1249,7 +1341,7 @@ public class DocumentViewer extends JFrame {
             int countRT = 0;
             for (int i = 0; i < content.length; i++) {
                 String contentString = (String) content[i][parentPanel.parent.getContentIdx() + 1];
-                System.out.println(contentString.length());
+                //System.out.println(contentString.length());
                 if (contentString.contains("RT ") || contentString.contains("rt ")) {
                     countRT++;
                     // System.out.println(contentString);
@@ -1390,9 +1482,35 @@ public class DocumentViewer extends JFrame {
                 if (parent.text_id.equals(key)) {
                     contentIdx = currentIdx;
                 }
+                 if ("title".equals(key)) {
+                    title_index = currentIdx;
+                }
+                  if ("abstract".equals(key.toLowerCase())) {
+                    abstract_index = currentIdx;
+                }
+                  
+                  if (ViewController.ngram == 2)
+                   if ("tokens_2".equals(key)) {
+                    tokens_index = currentIdx;
+                }
+                   
+                   if (ViewController.ngram == 1)
+                      if ("tokens_1".equals(key)) {
+                    tokens_index = currentIdx;
+                }
+                   
+   
+                    if ("_id".equals(key)) {
+                    _id_index = currentIdx;
+                }
+                         
+                
                 currentIdx++;
 
             }
+            
+            
+            
 
             for (int i = 0; i < selectedtweets.size(); i++) {
                 String[] tmp = new String[columnFields.length];
@@ -1501,6 +1619,12 @@ public class DocumentViewer extends JFrame {
             RTRatio.setText(countRT + " in " + selectedDocIndexes.size() + " documents contain RT, ratio: " + Float.toString(ratio));
         }
 
+        
+       
+        
+       
+        
+        
         this.setVisible(true);
 
     }
@@ -1668,6 +1792,8 @@ public class DocumentViewer extends JFrame {
         }
 
         public void valueChanged(ListSelectionEvent e) {
+            
+            if (e.getValueIsAdjusting())
             if (e.getSource() == tab.getSelectionModel() && tab.getRowSelectionAllowed()) {
                 int selectedRow = jTable1.getSelectedRow();
                 if (selectedRow != -1) {
@@ -1677,13 +1803,133 @@ public class DocumentViewer extends JFrame {
                         jTextArea1.append((String) jTable1.getValueAt(selectedRow, i));
                         jTextArea1.append("\n");
                     }
-                    System.out.println(selectedRow);
+//                    System.out.println(selectedRow);
+                    jTextArea1.setCaretPosition(0);
+                    String[] tokens;
+                    HashSet<String> t1 = new HashSet<String>()
+                    ;
+                    
+                    relatedDocsContentPanel.removeAll();
+                    
+                    
+                    if (tokens_index!=-1)
+                    {
+                        
+                        if (ViewController.ngram == 2)
+                        {
+                            String tokens_2 =  jTable1.getModel().getValueAt(selectedRow, tokens_index).toString();
+                            tokens_2 =  tokens_2.replaceAll("\\[", "");
+                            tokens_2 =  tokens_2.replaceAll("\\]", "");
+                            tokens_2 =  tokens_2.replaceAll("\"", "");
+                            tokens = tokens_2.split(",");
 
-                    // parent.getScatterPlotChart().setViewingDoc(paraSelectedRecords[selectedRow]);
+                            for (String s: tokens)
+                            {
+                                t1.add(s);
+                            }
+                        }
+                        else
+                        {
+                             String tokens_2 =  jTable1.getModel().getValueAt(selectedRow, tokens_index).toString();
+                            tokens_2 =  tokens_2.replaceAll("\\[", "");
+                            tokens_2 =  tokens_2.replaceAll("\\]", "");
+                            tokens_2 =  tokens_2.replaceAll("\"", "");
+                            tokens = tokens_2.split(",");
+
+                            for (String s: tokens)
+                            {
+                                t1.add(s);
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                      String current_id = "";
+                     if (_id_index!=-1)
+                    {
+                         current_id =  jTable1.getModel().getValueAt(selectedRow, _id_index).toString();
+                    }
+                     
+//                     List<String> _ids = new ArrayList<String>();
+//                     
+//                
+//                     
+//                     //
+//                     
+//                     _ids.add("543c0befad1d0037b86434df");
+//                     _ids.add("543c0befad1d0037b86434bb");
+//                     _ids.add("543c0befad1d0037b86434b4");
+//                     _ids.add("543c0befad1d0037b86434c6");
+//                     
+                     
+                      LDAHTTPClient c = new LDAHTTPClient("https", parent.host, "2012");
+                    try {
+                        c.login(true,null,null);
+                        
+                        BasicDBList x = (BasicDBList)c.getRelatedTweetsEntity(parent.collection,curTreeNode.getIndex() ,current_id);
+                                
+                                
+                                
+//                        BasicDBList x = (BasicDBList)c.getTweetsEntity( parent.collection,_ids);
+//                        
+                         if(x!=null)
+                         {
+                             for (int i=0; i<x.size(); i++)
+                             {
+                                 BasicDBObject dbo = (BasicDBObject) x.get(i);
+                                 
+                                 String title = String.valueOf(dbo.get("Title"));
+                                 String Abstract = String.valueOf(dbo.get("Abstract"));
+                                 
+                                 String tok = "";
+                                 if (ViewController.ngram==2)
+                                    tok = String.valueOf(dbo.get("tokens_2"));
+                                 else
+                                    tok = String.valueOf(dbo.get("tokens_1"));
+                                 
+                                 tok = tok.replaceAll("\"", "");
+                                  tok =  tok.replaceAll("\\[", "");
+                              tok =  tok.replaceAll("\\]", "");
+                              tok =  tok.replaceAll("\"", "");
+                                  HashSet<String> inter = new HashSet<String>(t1);
+                                 HashSet<String> t2 = new HashSet<String>();
+                                 
+                                 String[] tokArray = tok.split(",");
+                                 for (String s: tokArray)
+                                    {
+                                        t2.add(s);
+                                    }
+                                 String _id = String.valueOf(dbo.get("_id"));
+                                
+                    
+                                 inter.retainAll(t2);
+                                 
+                                 JRelatedDocDisplayPanel jddp = new JRelatedDocDisplayPanel(t2,inter,title, Abstract, _id, parent.host, parent.collection, hideString);
+                                 
+                                 relatedDocsContentPanel.add(jddp);
+                                 
+                                 
+                             }
+                         }
+                        
+                        
+                        relatedDocsContentPanel.revalidate();
+                        relatedDocsContentPanel.repaint();
+                        
+                        
+                        //TODO: make the call here 
+                    } catch (IOException ex) {
+                        Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    
+                    
+                    
                 }
-                if (e.getValueIsAdjusting()) {
-                    return;
-                }
+//                if (e.getValueIsAdjusting()) {
+//                    return;
+//                }
             }
         }
     }

@@ -71,6 +71,8 @@ public class ViewController {
     public List<Point2D> geoLocations;
     
     MinimalismMainFrame mf;
+    static public int ngram = 2;
+    
     public void setParentFrame(MinimalismMainFrame m){
         mf = m;        
     };

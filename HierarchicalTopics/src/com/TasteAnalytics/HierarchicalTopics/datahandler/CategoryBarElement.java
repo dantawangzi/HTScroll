@@ -1027,7 +1027,7 @@ public class CategoryBarElement {
 //        DBCursor cursor = dbc.find(q1);
          float incrementalDays = 0;
 
-         LDAHTTPClient c  = new LDAHTTPClient("https",host, "2012");
+         LDAHTTPClient c  =  new LDAHTTPClient("https",host, "2012");
 //         for (Object r : (ArrayList) c.getJobDocsMeta(JobName, JobName))
 //			System.out.println(r);
          

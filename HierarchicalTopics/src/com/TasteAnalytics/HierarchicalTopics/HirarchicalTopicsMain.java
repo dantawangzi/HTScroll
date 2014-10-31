@@ -40,7 +40,8 @@ public class HirarchicalTopicsMain {
                 BufferedReader br = new BufferedReader(new FileReader(
                         loginKeyFile));
 
-                NetworkMetaInformation.CookieString = br.readLine();
+                NetworkMetaInformation.CookieUserString = br.readLine();
+						NetworkMetaInformation.CookieKeyString = br.readLine();
                 br.close();
 
             } catch (IOException e1) {

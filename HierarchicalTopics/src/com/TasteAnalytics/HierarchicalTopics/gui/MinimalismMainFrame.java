@@ -487,7 +487,18 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
         
         //"54.209.61.133"
-        LDAHTTPClient connection  = new LDAHTTPClient("https", viewController.host, String.valueOf(viewController.port));
+         LDAHTTPClient connection = null;
+        
+        
+//            if (viewController. getConnection()!=null)
+//            {
+// 
+//        
+//         connection  = viewController. getConnection();
+//        }
+//            else
+            connection = new LDAHTTPClient("https", viewController.host,
+                        String.valueOf(viewController.port));
         try {
             connection.login(true,null,null);
         } catch (IOException ex) {
@@ -559,7 +570,15 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 
         JOptionPane.showMessageDialog(null, scrollPane,
                 "select", JOptionPane.YES_NO_CANCEL_OPTION);
-
+        
+        
+        while (table.getSelectedRow()==-1)
+                {
+            JOptionPane.showMessageDialog(null, scrollPane,
+                "select", JOptionPane.YES_NO_CANCEL_OPTION);
+                }
+        
+        
         String job = jobNames.get(table.getSelectedRow());
         viewController.collection = job;
 
@@ -579,6 +598,17 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
          HashMap<String, String[]> topicsByMongo = new HashMap<String, String[]>();
         
+         BasicDBList r1 = (BasicDBList)connection.getJob(job);
+         BasicDBObject r11 = (BasicDBObject)r1.get(0);
+         
+         
+         viewController.ngram = Integer.parseInt(String.valueOf(((BasicDBObject)r11.get("meta")).get("ngram")));
+                 
+                 
+      //   HashMap<?, ?> meta = (HashMap<?, ?>) (hr.get("mongo_input"));
+        // viewController.ngram = r1.getInt("ngram");
+         
+         
         for (Object r : (ArrayList) connection.getJobDocs(job,"topic"))
         {            
             
@@ -1041,13 +1071,18 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 ////
         System.out.println("GeoFrame done");
 
+        try
+        {
         eventViewFrame = new EventViewFrame(viewController, temporalFrame.getTree(), temporalFrame.getData(), viewController.getLeafNodeSequence(),
                 viewController.getTopicGraphViewPanel().getGh(), pgh, treeString, csvf.getFolderPath(), csvf.getSimilarityMatrix());
 //                       
         eventViewFrame.setVisible(true);
 
         System.out.println("label graph done");
-
+        }catch(Exception e)
+        {
+            System.err.println("NO TAG");
+        }
         
         consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -1064,6 +1099,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             }
         });
 
+        if (eventViewFrame!=null)
         eventViewFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {

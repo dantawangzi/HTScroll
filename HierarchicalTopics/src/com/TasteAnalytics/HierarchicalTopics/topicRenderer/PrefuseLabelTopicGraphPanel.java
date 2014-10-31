@@ -182,6 +182,9 @@ public class PrefuseLabelTopicGraphPanel extends Display {
                   dictString = (String) ((HashMap) r).get("dict");
              }
              
+             if (dictString.length()<1)
+                 return;
+             
              
              labelCount = 0; 
             

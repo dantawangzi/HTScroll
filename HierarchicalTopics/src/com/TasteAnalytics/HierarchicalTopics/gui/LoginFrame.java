@@ -187,10 +187,15 @@ public class LoginFrame extends JFrame {
 		String servername = "";
                 
                 if (((String)serverSelector.getSelectedItem()).contains("Taste"))
-                    servername = "54.209.61.133";
+                    servername = "54.209.61.133";//"ccis031.uncc.edu";//"192.168.0.17";//
                     else
-		servername = (String)serverSelector.getSelectedItem();
+                    servername = (String)serverSelector.getSelectedItem();
 		
+                
+                
+                NetworkMetaInformation.servername = servername;
+                
+                
 		vc.host = servername;
 		
 		boolean connectionSuccess = vc.InitializeNetworkConnection(
@@ -203,7 +208,8 @@ public class LoginFrame extends JFrame {
 			BufferedReader br = new BufferedReader(new FileReader(
 					loginKeyFile));
 
-			NetworkMetaInformation.CookieString = br.readLine();
+			NetworkMetaInformation.CookieUserString = br.readLine();
+			NetworkMetaInformation.CookieKeyString = br.readLine();
 			br.close();
 			
 			vc.getParentFrame().setVisible(true);
