@@ -99,7 +99,8 @@ public class LoginFrame extends JFrame {
 		
 		//serverSelector.addItem((String)"192.168.0.17");
 		//serverSelector.addItem((String)"caprica.uncc.edu");
-		serverSelector.addItem((String)"Taste Server"/*"54.209.61.133"*/);
+		serverSelector.addItem((String)"Taste External Server"/*"54.209.61.133"*/);
+                serverSelector.addItem((String)"SOCOM/DITIC Internal Server"/*"54.209.61.133"*/);
 		
 		
 		//serverSelector.addItem((String)"");
@@ -186,10 +187,15 @@ public class LoginFrame extends JFrame {
 
 		String servername = "";
                 
-                if (((String)serverSelector.getSelectedItem()).contains("Taste"))
-                    servername = "54.209.61.133";//"ccis031.uncc.edu";//"192.168.0.17";//
-                    else
-                    servername = (String)serverSelector.getSelectedItem();
+                
+                if (serverSelector.getSelectedIndex() == 0)
+                    servername = "54.209.61.133";//"ccis031.uncc.edu";////
+                else
+                    servername = "ccis031.uncc.edu";////
+//                if (((String)serverSelector.getSelectedItem()).contains("Taste"))
+//                    servername = "ccis031.uncc.edu";//"54.209.61.133";//"192.168.0.17";//
+//                    else
+//                    servername = (String)serverSelector.getSelectedItem();
 		
                 
                 

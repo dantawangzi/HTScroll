@@ -5,7 +5,6 @@
  */
 package com.TasteAnalytics.HierarchicalTopics.gui;
 
-import com.google.gson.Gson;
 import com.TasteAnalytics.HierarchicalTopics.datahandler.LDAHTTPClient;
 import com.TasteAnalytics.HierarchicalTopics.eventsview.EventViewFrame;
 import com.TasteAnalytics.HierarchicalTopics.file.CSVFile;
@@ -19,8 +18,7 @@ import com.google.code.geocoder.model.GeocodeResponse;
 import com.google.code.geocoder.model.GeocoderRequest;
 import com.google.code.geocoder.model.GeocoderResult;
 import com.google.code.geocoder.model.LatLng;
-
-
+import com.google.gson.Gson;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -38,6 +36,11 @@ import java.awt.geom.Point2D;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.*;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -132,6 +135,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenu = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jCheckBoxTemporalFrame = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxTopicGraph = new javax.swing.JCheckBoxMenuItem();
@@ -184,6 +188,14 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
             }
         });
         fileMenu.add(openMenu);
+
+        jMenuItem1.setText("Sign Out");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        fileMenu.add(jMenuItem1);
 
         menuBar.add(fileMenu);
 
@@ -561,8 +573,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
              public boolean isCellEditable(int row, int col) {
 
 	        return false;
-	      } 
-	
+	      } 	
         };
 
         JScrollPane scrollPane = new JScrollPane(table);
@@ -572,12 +583,12 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
                 "select", JOptionPane.YES_NO_CANCEL_OPTION);
         
         
-        while (table.getSelectedRow()==-1)
-                {
-            JOptionPane.showMessageDialog(null, scrollPane,
-                "select", JOptionPane.YES_NO_CANCEL_OPTION);
-                }
-        
+//        while (table.getSelectedRow()==-1)
+//                {
+//            JOptionPane.showMessageDialog(null, scrollPane,
+//                "select", JOptionPane.YES_NO_CANCEL_OPTION);
+//                }
+//        
         
         String job = jobNames.get(table.getSelectedRow());
         viewController.collection = job;
@@ -878,6 +889,28 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
 // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBoxConsoleMenuActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+       
+        
+      
+        
+        Path path =  FileSystems.getDefault().getPath("./...key");
+				try {
+					Files.delete(path);
+					System.exit(0);
+				} catch (NoSuchFileException x) {
+					System.err.format("%s: no such" + " file or directory%n",
+							path);
+				} catch (DirectoryNotEmptyException x) {
+					System.err.format("%s not empty%n", path);
+				} catch (IOException x) {
+					// File permission problems are caught here.
+					System.err.println(x);
+				}
+        
+        
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     void initializeViews(CSVFile csvf) throws IOException {
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -1144,6 +1177,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
     private javax.swing.JCheckBoxMenuItem jCheckBoxTopicGraph;
     private javax.swing.JButton jConnectMongoButton;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.ButtonGroup menuEditGroup;
     private javax.swing.JMenuItem openMenu;
