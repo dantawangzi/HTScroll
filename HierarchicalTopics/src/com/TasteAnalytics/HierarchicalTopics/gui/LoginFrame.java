@@ -154,9 +154,7 @@ public class LoginFrame extends JFrame {
 
 		
 		
-		
-		
-		
+	
 		jButtonLogin.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
@@ -198,7 +196,7 @@ public class LoginFrame extends JFrame {
 //                    servername = (String)serverSelector.getSelectedItem();
 		
                 
-                
+                 servername = "75.176.54.27";
                 NetworkMetaInformation.servername = servername;
                 
                 

@@ -500,8 +500,7 @@ public class MinimalismMainFrame extends javax.swing.JFrame implements Runnable{
         
         //"54.209.61.133"
          LDAHTTPClient connection = null;
-        
-        
+     
 //            if (viewController. getConnection()!=null)
 //            {
 // 

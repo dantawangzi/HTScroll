@@ -483,7 +483,7 @@ public class ViewController {
     int zoomSubBins = 5;
     boolean b_readAll = true;
     public boolean b_readFromDB = false;
-    public String host = "54.209.61.133";//"caprica.uncc.edu";
+    public String host = "75.176.54.27";//"54.209.61.133";//"caprica.uncc.edu";
     String user = "";
     String password = "";
     String table = "";

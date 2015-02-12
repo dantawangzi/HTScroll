@@ -11,7 +11,7 @@ package com.TasteAnalytics.HierarchicalTopics.gui;
  * @author Lee
  */
 public class NetworkMetaInformation {
-    	public static String servername =  "54.209.61.133"; 
+    	public static String servername =  "75.176.54.27"; 
 	
 	//"caprica.uncc.edu";//"54.209.61.133";//"192.168.0.17";//
 	
