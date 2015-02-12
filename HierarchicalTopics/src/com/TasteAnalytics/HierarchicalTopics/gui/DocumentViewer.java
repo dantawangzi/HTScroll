@@ -728,6 +728,7 @@ public class DocumentViewer extends JFrame {
     public DocumentViewer(List<Integer> l, final TemporalViewPanel p, Color c, final Point2D pt) {
         initComponents();
         this.getContentPane().setBackground(c);
+        jPanel1.setBackground(c);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         int[] tmp = new int[l.size()];
         for (int i = 0; i < l.size(); i++) {
@@ -761,17 +762,23 @@ public class DocumentViewer extends JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         searchKeywordWithinDoc = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        acrossCorpusWordSearchText = new javax.swing.JTextField();
+        jScrollPaneRelatedDocs = new javax.swing.JScrollPane(relatedDocsContentPanel);
+        jPanel1 = new javax.swing.JPanel();
         docSelectionThreshold = new javax.swing.JSlider();
+        JExportButton = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         thresholdLabel = new javax.swing.JLabel();
+        acrossCorpusWordSearchText = new javax.swing.JTextField();
         RTRatio = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        JExportButton = new javax.swing.JButton();
-        jScrollPaneRelatedDocs = new javax.swing.JScrollPane(relatedDocsContentPanel);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Document Viewer");
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -790,20 +797,21 @@ public class DocumentViewer extends JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
+        jTextArea1.setMinimumSize(new java.awt.Dimension(100, 50));
         jScrollPane2.setViewportView(jTextArea1);
 
         searchKeywordWithinDoc.setText("Highlight Keywords with in Selected Document");
-        searchKeywordWithinDoc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchKeywordWithinDocActionPerformed(evt);
-            }
-        });
         searchKeywordWithinDoc.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 searchKeywordWithinDocFocusGained(evt);
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 searchKeywordWithinDocFocusLost(evt);
+            }
+        });
+        searchKeywordWithinDoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchKeywordWithinDocActionPerformed(evt);
             }
         });
         searchKeywordWithinDoc.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -815,26 +823,7 @@ public class DocumentViewer extends JFrame {
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel1.setText("0 Highlighted");
 
-        acrossCorpusWordSearchText.setText("Filter Documents based on Keyword");
-        acrossCorpusWordSearchText.setToolTipText("");
-        acrossCorpusWordSearchText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                acrossCorpusWordSearchTextActionPerformed(evt);
-            }
-        });
-        acrossCorpusWordSearchText.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                acrossCorpusWordSearchTextFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                acrossCorpusWordSearchTextFocusLost(evt);
-            }
-        });
-        acrossCorpusWordSearchText.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                acrossCorpusWordSearchTextKeyReleased(evt);
-            }
-        });
+        jScrollPaneRelatedDocs.setMinimumSize(new java.awt.Dimension(100, 50));
 
         docSelectionThreshold.setValue(5);
         docSelectionThreshold.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -843,12 +832,6 @@ public class DocumentViewer extends JFrame {
             }
         });
 
-        jLabel2.setText("Select Docs above");
-
-        thresholdLabel.setText("5%");
-
-        jLabel3.setText("RT Ratio with Threshold:");
-
         JExportButton.setText("Export Doc");
         JExportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -856,72 +839,113 @@ public class DocumentViewer extends JFrame {
             }
         });
 
+        jLabel3.setText("RT Ratio with Threshold:");
+
+        jLabel2.setText("Select Docs above");
+
+        thresholdLabel.setText("5%");
+
+        acrossCorpusWordSearchText.setText("Filter Documents based on Keyword");
+        acrossCorpusWordSearchText.setToolTipText("");
+        acrossCorpusWordSearchText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                acrossCorpusWordSearchTextFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                acrossCorpusWordSearchTextFocusLost(evt);
+            }
+        });
+        acrossCorpusWordSearchText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acrossCorpusWordSearchTextActionPerformed(evt);
+            }
+        });
+        acrossCorpusWordSearchText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                acrossCorpusWordSearchTextKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(docSelectionThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(thresholdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44)
+                        .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(JExportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(297, 297, 297))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(docSelectionThreshold, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(thresholdLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(JExportButton))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jScrollPaneRelatedDocs)
-                                .addGap(10, 10, 10))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(64, 64, 64)
-                                        .addComponent(jLabel1))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(docSelectionThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(thresholdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(44, 44, 44)
-                                        .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(JExportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(89, 89, 89)))))
+                                .addComponent(jScrollPaneRelatedDocs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(10, 10, 10))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(64, 64, 64)
+                                .addComponent(jLabel1))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(docSelectionThreshold, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(thresholdLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(acrossCorpusWordSearchText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(RTRatio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(JExportButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(10, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 20, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPaneRelatedDocs, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-                .addGap(11, 11, 11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPaneRelatedDocs, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -931,9 +955,87 @@ public class DocumentViewer extends JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_searchKeywordWithinDocActionPerformed
 
+    private void searchKeywordWithinDocKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchKeywordWithinDocKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            System.out.println("Searching");
+            wordSearch();
+        }
+
+    }//GEN-LAST:event_searchKeywordWithinDocKeyReleased
+
+    private void searchKeywordWithinDocFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchKeywordWithinDocFocusGained
+        searchKeywordWithinDoc.setText("");
+    }//GEN-LAST:event_searchKeywordWithinDocFocusGained
+
+    private void searchKeywordWithinDocFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchKeywordWithinDocFocusLost
+        searchKeywordWithinDoc.setText("Highlight Keywords with in Selected Document");
+    }//GEN-LAST:event_searchKeywordWithinDocFocusLost
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+        // TODO add your handling code here:
+        
+        
+        
+        
+        
+    }//GEN-LAST:event_formComponentResized
+
+    private void acrossCorpusWordSearchTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_acrossCorpusWordSearchTextKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            System.out.println("Searching");
+            acrossCorpusWordSearch();
+        }
+    }//GEN-LAST:event_acrossCorpusWordSearchTextKeyReleased
+
     private void acrossCorpusWordSearchTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acrossCorpusWordSearchTextActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_acrossCorpusWordSearchTextActionPerformed
+
+    private void acrossCorpusWordSearchTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_acrossCorpusWordSearchTextFocusLost
+        acrossCorpusWordSearchText.setText("Filter Documents based on Keyword");
+    }//GEN-LAST:event_acrossCorpusWordSearchTextFocusLost
+
+    private void acrossCorpusWordSearchTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_acrossCorpusWordSearchTextFocusGained
+        acrossCorpusWordSearchText.setText("");
+    }//GEN-LAST:event_acrossCorpusWordSearchTextFocusGained
+
+    private void JExportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JExportButtonActionPerformed
+
+        //export csv files to folder:
+        int temprow = selectedDocuments.size();
+
+        List<String[]> content = new ArrayList<String[]>();
+        for (int i = 0; i < temprow; i++) {
+            String[] tmpdata = new String[columnNames.length];
+
+            int tempDocIdx = selectedDocuments.get(i);
+            for (int j = 0; j < columnNames.length; j++) {
+                tmpdata[j] = tmpDocs.get(tempDocIdx + 1)[j];
+            }
+
+            content.add(tmpdata);
+        }
+
+        au.com.bytecode.opencsv.CSVWriter csvW;
+        try {
+            //System.out.println(temprow);
+            if (parent.csvfFolderPath==null)
+            parent.csvfFolderPath = "";
+
+            csvW = new au.com.bytecode.opencsv.CSVWriter(new FileWriter(parent.csvfFolderPath + "\\export.csv"));
+            csvW.writeAll(content);
+            csvW.close();
+
+            JOptionPane.showMessageDialog(null, "Your document is here: " + parent.csvfFolderPath + "\\export.csv",
+                "Export Documents Successful!", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (IOException ex) {
+            System.out.println("Export unsuccessful, check please!");
+            Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JExportButtonActionPerformed
 
     private void docSelectionThresholdStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_docSelectionThresholdStateChanged
         // TODO add your handling code here:
@@ -965,19 +1067,19 @@ public class DocumentViewer extends JFrame {
             } else {
                 try {
                     this.updateDocViewContent(selectedDocuments, parent.host, parent.port, parent.database, parent.collection, parent.nameFields);
-                    
-                     DefaultTableModel dtm = 
-        (DefaultTableModel)jTable1.getModel();
-        for (int i=0; i<dtm.getColumnCount(); i++)
-        {
-            String cname = dtm.getColumnName(i);
-            if (hideString.contains(cname.toLowerCase()))
-            {
-                jTable1.removeColumn(jTable1.getColumn(cname));
-            }
-            
-        }
-        
+
+                    DefaultTableModel dtm =
+                    (DefaultTableModel)jTable1.getModel();
+                    for (int i=0; i<dtm.getColumnCount(); i++)
+                    {
+                        String cname = dtm.getColumnName(i);
+                        if (hideString.contains(cname.toLowerCase()))
+                        {
+                            jTable1.removeColumn(jTable1.getColumn(cname));
+                        }
+
+                    }
+
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ParseException ex) {
@@ -986,79 +1088,7 @@ public class DocumentViewer extends JFrame {
             }
 
         }
-
     }//GEN-LAST:event_docSelectionThresholdStateChanged
-
-    private void searchKeywordWithinDocKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchKeywordWithinDocKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            System.out.println("Searching");
-            wordSearch();
-        }
-
-    }//GEN-LAST:event_searchKeywordWithinDocKeyReleased
-
-    private void acrossCorpusWordSearchTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_acrossCorpusWordSearchTextKeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            System.out.println("Searching");
-            acrossCorpusWordSearch();
-        }
-    }//GEN-LAST:event_acrossCorpusWordSearchTextKeyReleased
-
-    private void acrossCorpusWordSearchTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_acrossCorpusWordSearchTextFocusGained
-        acrossCorpusWordSearchText.setText("");
-    }//GEN-LAST:event_acrossCorpusWordSearchTextFocusGained
-
-    private void searchKeywordWithinDocFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchKeywordWithinDocFocusGained
-        searchKeywordWithinDoc.setText("");
-    }//GEN-LAST:event_searchKeywordWithinDocFocusGained
-
-    private void acrossCorpusWordSearchTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_acrossCorpusWordSearchTextFocusLost
-        acrossCorpusWordSearchText.setText("Filter Documents based on Keyword");
-    }//GEN-LAST:event_acrossCorpusWordSearchTextFocusLost
-
-    private void searchKeywordWithinDocFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchKeywordWithinDocFocusLost
-        searchKeywordWithinDoc.setText("Highlight Keywords with in Selected Document");
-    }//GEN-LAST:event_searchKeywordWithinDocFocusLost
-
-    private void JExportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JExportButtonActionPerformed
-
-        //export csv files to folder:
-        int temprow = selectedDocuments.size();
-
-        List<String[]> content = new ArrayList<String[]>();
-        for (int i = 0; i < temprow; i++) {
-            String[] tmpdata = new String[columnNames.length];
-
-            int tempDocIdx = selectedDocuments.get(i);
-            for (int j = 0; j < columnNames.length; j++) {
-                tmpdata[j] = tmpDocs.get(tempDocIdx + 1)[j];
-            }
-
-            content.add(tmpdata);
-        }
-
-        au.com.bytecode.opencsv.CSVWriter csvW;
-        try {
-            //System.out.println(temprow);
-            if (parent.csvfFolderPath==null)
-                parent.csvfFolderPath = "";
-            
-            
-            
-            csvW = new au.com.bytecode.opencsv.CSVWriter(new FileWriter(parent.csvfFolderPath + "\\export.csv"));
-            csvW.writeAll(content);
-            csvW.close();
-
-            JOptionPane.showMessageDialog(null, "Your document is here: " + parent.csvfFolderPath + "\\export.csv",
-                    "Export Documents Successful!", JOptionPane.INFORMATION_MESSAGE);
-
-        } catch (IOException ex) {
-            System.out.println("Export unsuccessful, check please!");
-            Logger.getLogger(DocumentViewer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JExportButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1078,6 +1108,7 @@ public class DocumentViewer extends JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPaneRelatedDocs;
