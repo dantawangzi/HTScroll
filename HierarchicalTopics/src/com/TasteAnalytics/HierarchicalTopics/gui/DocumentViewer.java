@@ -758,11 +758,8 @@ public class DocumentViewer extends JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
         searchKeywordWithinDoc = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jScrollPaneRelatedDocs = new javax.swing.JScrollPane(relatedDocsContentPanel);
         jPanel1 = new javax.swing.JPanel();
         docSelectionThreshold = new javax.swing.JSlider();
         JExportButton = new javax.swing.JButton();
@@ -771,6 +768,10 @@ public class DocumentViewer extends JFrame {
         thresholdLabel = new javax.swing.JLabel();
         acrossCorpusWordSearchText = new javax.swing.JTextField();
         RTRatio = new javax.swing.JTextField();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jScrollPaneRelatedDocs = new javax.swing.JScrollPane(relatedDocsContentPanel);
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Document Viewer");
@@ -792,13 +793,6 @@ public class DocumentViewer extends JFrame {
             }
         ));
         jScrollPane1.setViewportView(jTable1);
-
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setMinimumSize(new java.awt.Dimension(100, 50));
-        jScrollPane2.setViewportView(jTextArea1);
 
         searchKeywordWithinDoc.setText("Highlight Keywords with in Selected Document");
         searchKeywordWithinDoc.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -822,8 +816,6 @@ public class DocumentViewer extends JFrame {
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel1.setText("0 Highlighted");
-
-        jScrollPaneRelatedDocs.setMinimumSize(new java.awt.Dimension(100, 50));
 
         docSelectionThreshold.setValue(5);
         docSelectionThreshold.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -909,42 +901,50 @@ public class DocumentViewer extends JFrame {
                 .addContainerGap())
         );
 
+        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        jScrollPaneRelatedDocs.setMinimumSize(new java.awt.Dimension(100, 50));
+        jSplitPane1.setRightComponent(jScrollPaneRelatedDocs);
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setRows(30);
+        jTextArea1.setMinimumSize(new java.awt.Dimension(100, 100));
+        jScrollPane2.setViewportView(jTextArea1);
+
+        jSplitPane1.setLeftComponent(jScrollPane2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSplitPane1)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPaneRelatedDocs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(10, 10, 10))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(64, 64, 64)
-                                .addComponent(jLabel1))
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap())
+                        .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(10, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 20, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(searchKeywordWithinDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPaneRelatedDocs, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(searchKeywordWithinDoc)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1112,6 +1112,7 @@ public class DocumentViewer extends JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPaneRelatedDocs;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField searchKeywordWithinDoc;
