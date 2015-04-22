@@ -136,8 +136,10 @@ public class LDAHTTPClient {
         String url = this.protocol + "://" + this.host + ":" + this.port + "/" + path + "?json=True&" + parameters;;
         //+parameters;
 
-       // System.out.println(url);
+        System.out.println(url);
         // Create local HTTP context
+        
+        
         HttpClientContext localContext = HttpClientContext.create();
 
         // Bind custom cookie store to the local context
